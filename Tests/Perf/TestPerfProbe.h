@@ -33,5 +33,7 @@ private slots:
     void deleteElement();
     void frames();
     void pan();
+    void run();
+    void runFitted();
     void wireExtents();
 };

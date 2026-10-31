@@ -5,10 +5,12 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 
 #include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
+#include <QMap>
 #include <QScrollBar>
 #include <QTest>
 #include <QUndoStack>
@@ -30,6 +32,13 @@ namespace PerfProbe {
 
 constexpr QSize kFrameSize(1280, 800);
 
+/// A run's ticks, each followed by a frame.
+constexpr int kRunTicks = 8;
+
+/// The time a tick steps: just over the half-period of a clock at its default 1 Hz, which flips on the first tick past
+/// its half-period, so every tick flips every clock and every frame paints a changed circuit.
+constexpr std::chrono::milliseconds kTickStep(501);
+
 /// The circuit under measurement: PROBE_FILE if set, otherwise a fixture small enough for a smoke test.
 QString probeFile()
 {
@@ -44,6 +53,8 @@ struct Probe {
     WorkSpace workspace;
     Scene *scene = workspace.scene();
     Simulation *simulation = scene->simulation();
+    /// The time a run steps: its clock edges are the same however slowly the run goes, under callgrind or not.
+    std::chrono::steady_clock::time_point now{std::chrono::hours(1)};
 };
 
 /// The ends of the wire the edit phases add.
@@ -215,6 +226,47 @@ Q_NEVER_INLINE void phaseDelete(Probe &probe)
     probe.simulation->update();
 }
 
+/// Starts the simulation on the probe's own time, as the application starts it after a load.
+void startRun(Probe &probe)
+{
+    probe.simulation->setTimeSource([&probe] { return probe.now; });
+    probe.simulation->start();
+}
+
+/// Simulates kRunTicks ticks of kTickStep each, painting a frame after every tick: the circuit running in view, its
+/// clocks flipping at every frame.
+Q_NEVER_INLINE void phaseRun(Probe &probe, GraphicsView *view)
+{
+    for (int tick = 0; tick < kRunTicks; ++tick) {
+        probe.now += kTickStep;
+        probe.simulation->update();
+        paintFrame(view, probe.scene);
+    }
+}
+
+/// What a run did: its frames, and how many outputs end at each status. Two runs of one build print the same line, so
+/// their counts are of the same work.
+void reportRun(const Probe &probe)
+{
+    QMap<int, int> statuses;
+    for (const auto *element : probe.scene->unsortedElements()) {
+        for (const auto *port : element->outputs()) {
+            ++statuses[static_cast<int>(port->status())];
+        }
+    }
+    QStringList counts;
+    for (auto it = statuses.cbegin(); it != statuses.cend(); ++it) {
+        counts << QString("%1:%2").arg(it.key()).arg(it.value());
+    }
+    qInfo().noquote() << "RUN" << kRunTicks << "frames, outputs by status" << counts.join(' ');
+}
+
+/// phaseRun() with the whole circuit zoomed to fit: its own name, so the script collects it apart.
+Q_NEVER_INLINE void phaseRunFitted(Probe &probe, GraphicsView *view)
+{
+    phaseRun(probe, view);
+}
+
 } // namespace PerfProbe
 
 void TestPerfProbe::initTestCase()
@@ -313,6 +365,34 @@ void TestPerfProbe::pan()
     auto *view = PerfProbe::showView(probe.workspace);
     QCOMPARE(view->size(), PerfProbe::kFrameSize);
     PerfProbe::phasePan(view, probe.scene);
+}
+
+void TestPerfProbe::run()
+{
+    PerfProbe::Probe probe;
+    QVERIFY2(PerfProbe::prepare(probe), qPrintable("No circuit in " + probe.file.fileName()));
+    auto *view = PerfProbe::showView(probe.workspace);
+    QCOMPARE(view->size(), PerfProbe::kFrameSize);
+    PerfProbe::showCircuitCorner(view, probe.scene);
+    PerfProbe::startRun(probe);
+    const auto start = probe.now;
+    PerfProbe::phaseRun(probe, view);
+    QCOMPARE(probe.now - start, PerfProbe::kRunTicks * PerfProbe::kTickStep);
+    PerfProbe::reportRun(probe);
+}
+
+void TestPerfProbe::runFitted()
+{
+    PerfProbe::Probe probe;
+    QVERIFY2(PerfProbe::prepare(probe), qPrintable("No circuit in " + probe.file.fileName()));
+    auto *view = PerfProbe::showView(probe.workspace);
+    QCOMPARE(view->size(), PerfProbe::kFrameSize);
+    view->zoomToFit();
+    PerfProbe::startRun(probe);
+    const auto start = probe.now;
+    PerfProbe::phaseRunFitted(probe, view);
+    QCOMPARE(probe.now - start, PerfProbe::kRunTicks * PerfProbe::kTickStep);
+    PerfProbe::reportRun(probe);
 }
 
 void TestPerfProbe::wireExtents()
