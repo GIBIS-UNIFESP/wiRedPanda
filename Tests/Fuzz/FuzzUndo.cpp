@@ -466,6 +466,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
                                        : g_validPanda;
 
     WorkSpace ws;
+    // The application's event loop polishes each item the scene is given; without it every item stays queued, and Qt
+    // removes each from that queue by a search as the workspace goes, quadratic in the circuit. Run before ws ends.
+    const auto polishBeforeTeardown = qScopeGuard([] { QCoreApplication::processEvents(); });
     {
         QDataStream stream(circuit);
         try {
