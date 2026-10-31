@@ -5,8 +5,6 @@
 
 #include <cmath>
 
-#include <QPainter>
-
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
@@ -82,7 +80,7 @@ void Demux::setOutputSize(const int size)
 void Demux::layoutPorts()
 {
     Element::layoutPorts();
-    generatePixmap();
+    pictureReplaced();
 }
 
 int Demux::bodyHeight() const
@@ -120,58 +118,6 @@ std::optional<Element::PortAttributes> Demux::outputAttributes(const int index) 
     // Outputs on the right, centred vertically
     const int y = (bodyHeight() / 2) - ((outputSize() - 1) * step) + (index * step * 2);
     return PortAttributes{.name = QString("Out%1").arg(index), .position = QPointF(48, y)};
-}
-
-void Demux::generatePixmap()
-{
-    // The body is drawn as vectors in drawBody()/paint(); m_pixmap is kept only so the base
-    // pixmapCenter()/measureBoundingRect() have the right size (its image content is never displayed).
-    const int height = static_cast<int>(renderBodyBounds().height());
-
-    QPixmap sizingPixmap(64, height);
-    sizingPixmap.fill(Qt::transparent);
-    m_appearance.setRenderPixmap(sizingPixmap);
-}
-
-void Demux::drawBody(QPainter &painter) const
-{
-    painter.save();
-    painter.setRenderHint(QPainter::Antialiasing);
-    // boundingRect()'s top-left may be negative when ports extend past the 64×64 body; align the
-    // local origin with it so the body lands exactly where the old rasterised pixmap was blitted.
-    painter.translate(boundingRect().topLeft());
-
-    const int height = renderPixmap().rect().height();
-
-    // Trapezoid body: narrower on left (input side), wider on right (output side)
-    const int bodyTop = 8;
-    const int bodyBottom = height - 10;
-    const int leftInset = 8; // fixed inset for the narrower left side
-
-    // Outer dark shape
-    painter.setBrush(QColor(38, 38, 38));
-    painter.setPen(QPen(QColor(38, 38, 38), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-
-    QPolygonF outer;
-    outer << QPointF(22, bodyTop + leftInset)
-          << QPointF(22, bodyBottom - leftInset)
-          << QPointF(42, bodyBottom)
-          << QPointF(42, bodyTop);
-    painter.drawPolygon(outer);
-
-    // Inner white fill
-    painter.setBrush(QColor(252, 252, 252));
-    painter.setPen(QPen(QColor(252, 252, 252), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-
-    const int fillInset = 4;
-    QPolygonF inner;
-    inner << QPointF(22 + fillInset, bodyTop + leftInset + fillInset - 2)
-          << QPointF(22 + fillInset, bodyBottom - leftInset - fillInset + 2)
-          << QPointF(42 - fillInset, bodyBottom - fillInset)
-          << QPointF(42 - fillInset, bodyTop + fillInset);
-    painter.drawPolygon(inner);
-
-    painter.restore();
 }
 
 void Demux::updateLogic()

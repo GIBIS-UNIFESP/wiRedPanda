@@ -365,12 +365,10 @@ void TestTruthTable::testLoadKeyOldVersion()
 // Rendering Under Rotation Tests
 // ============================================================================
 
-void TestTruthTable::testRotationKeepsSizingPixmap()
+void TestTruthTable::testRotationKeepsTheFootprint()
 {
-    // TruthTable::drawBody() sizes its body from pixmap().rect() — the sizing pixmap
-    // installed by generatePixmap(), which grows with the port count. Rotating must not
-    // swap it back for the fixed 64×64 base skin, or the body is drawn at the wrong size.
-    // pixmapCenter() is the public window onto that pixmap's geometry.
+    // The body is the footprint, which grows with the port count, and turns about its centre. Rotating must not
+    // measure it again as the fixed 64×64 picture, or the body is drawn at the wrong size.
     TruthTable truthTable;
     truthTable.setInputSize(8);
 
@@ -379,13 +377,15 @@ void TestTruthTable::testRotationKeepsSizingPixmap()
     // skin" from "still the base skin"; height can.
     QVERIFY(truthTable.boundingRect().height() > 64);
 
-    const QPointF footprintCenter = truthTable.pixmapCenter();
+    const BodyShape footprint = truthTable.body();
+    QVERIFY(footprint.body.height() > 64);
+    QCOMPARE(footprint.centre, footprint.body.center());
 
     truthTable.setRotation(90);
-    QCOMPARE(truthTable.pixmapCenter(), footprintCenter);
+    QCOMPARE(truthTable.body(), footprint);
 
     truthTable.setRotation(0);
-    QCOMPARE(truthTable.pixmapCenter(), footprintCenter);
+    QCOMPARE(truthTable.body(), footprint);
 }
 
 void TestTruthTable::testRotatedIconStaysUpright()

@@ -29,6 +29,7 @@
 #include "App/IO/Serialization.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Presentation/ElementPresenter.h"
+#include "App/Presentation/FootprintPresenters.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -428,7 +429,8 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
 QString SnapshotAccess::pixmapIdentity(const Element *element)
 {
     const ElementAppearance &appearance = element->appearance();
-    if (appearance.hasRenderPixmap()) {
+    if (dynamic_cast<const FootprintPresenter *>(&ElementPresenter::of(element->elementType()))
+        || appearance.hasRenderPixmap()) {
         return "footprint";
     }
     const PictureVariant *picture = ElementPictures::instance().shown(*element);

@@ -13,8 +13,8 @@
  * \class Mux
  * \brief Graphical representation of a multiplexer (2^N-to-1).
  *
- * \details The number of inputs is configurable.  The pixmap is dynamically
- * generated to reflect the current input count.
+ * \details The number of inputs is configurable.  The body is drawn to fit
+ * the current input count (MuxPresenter).
  */
 class Mux : public Element
 {
@@ -28,10 +28,6 @@ public:
 
     // --- Visual / Port Configuration ---
 
-    /// Draws the trapezoid body straight onto \a painter as vectors, so it stays crisp at any
-    /// zoom instead of blitting a fixed-resolution pixmap.
-    void drawBody(QPainter &painter) const override;
-
     /// The data inputs In0, In1, ... on the left, then the select lines S0, S1, ... at the bottom.
     std::optional<PortAttributes> inputAttributes(int index) const override;
 
@@ -42,12 +38,10 @@ public:
     void updateLogic() override;
 
 protected:
-    /// Lays the ports out, then redraws the body for the new port count.
+    /// Lays the ports out, then measures the body again for the new port count.
     void layoutPorts() override;
 
 private:
-    void generatePixmap();
-
     /// The body's height for the current data inputs, a multiple of 16 of at least 64.
     int bodyHeight() const;
 
