@@ -1,0 +1,89 @@
+// Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+/** \file
+ * \brief The presenters of the types whose body is a picture, with what some draw over it.
+ */
+
+#pragma once
+
+#include <QVector>
+
+#include "App/Presentation/ElementPresenter.h"
+
+class QRectF;
+
+/// The presenter of most types: the body is the picture the element shows, and turns about its centre.
+class PicturePresenter : public ElementPresenter
+{
+public:
+    BodyShape measure(const Element &element) const override;
+
+    /// Draws the picture \a element shows, then what its type draws over it (paintOverlay()).
+    void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override;
+
+    /// Returns the rectangle the picture \a element shows takes, at the origin; empty while it shows none.
+    static QRectF pictureRect(const Element &element);
+
+protected:
+    /// Draws over \a element's picture what its type shows of its state, in the element's own coordinates; nothing by
+    /// default.
+    virtual void paintOverlay(QPainter &painter, const Element &element) const;
+};
+
+/// The presenter of the inputs that show their level (InputButton, InputSwitch, Clock): off, then on.
+class LevelPresenter final : public PicturePresenter
+{
+public:
+    int pictureSlot(const Element &element) const override;
+};
+
+/// The presenter of the audio outputs (Buzzer, AudioBox): silent, then playing.
+class AudioPresenter final : public PicturePresenter
+{
+public:
+    int pictureSlot(const Element &element) const override;
+};
+
+/// The presenter of the LED: the slot its colour and inputs lit at its last refresh.
+class LedPresenter final : public PicturePresenter
+{
+public:
+    int pictureSlot(const Element &element) const override;
+};
+
+/// The presenter of InputRotary: a mark for every position around the dial, and the arrow at the selected one.
+class RotaryPresenter final : public PicturePresenter
+{
+protected:
+    void paintOverlay(QPainter &painter, const Element &element) const override;
+};
+
+/**
+ * \brief The presenter of the segment displays (Display7, Display14, Display16): the lit segments over the picture, in
+ * the display's colour.
+ * \details The body is the picture and the 64x64 box the segments are drawn in, which a custom picture need not cover;
+ * it turns about the picture's centre.
+ */
+class SegmentDisplayPresenter final : public PicturePresenter
+{
+public:
+    /// \a segments holds, for each input in order, the slot of the default appearance list of the segment it lights.
+    explicit SegmentDisplayPresenter(QVector<int> segments);
+
+    BodyShape measure(const Element &element) const override;
+
+protected:
+    void paintOverlay(QPainter &painter, const Element &element) const override;
+
+private:
+    QVector<int> m_segments;
+};
+
+/// The presenter of Text: the body holds its picture and its child items (the label and the empty-text hint), so a
+/// click on the text hits the element; it turns about its picture's centre.
+class TextPresenter final : public PicturePresenter
+{
+public:
+    BodyShape measure(const Element &element) const override;
+};

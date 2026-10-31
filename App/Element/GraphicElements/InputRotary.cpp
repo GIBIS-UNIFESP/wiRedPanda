@@ -4,8 +4,6 @@
 #include "App/Element/GraphicElements/InputRotary.h"
 
 #include <QGraphicsSceneMouseEvent>
-#include <QPainter>
-#include <QSvgRenderer>
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
@@ -136,58 +134,6 @@ std::optional<Element::PortAttributes> InputRotary::outputAttributes(const int i
 
     // Handle unexpected output sizes gracefully: for unhandled sizes, use a simple default positioning
     return PortAttributes{.name = QString::number(index + 1), .position = QPointF(32, index * 16)};
-}
-
-/// Shared, lazily-constructed vector renderer for the active-position arrow -- drawn directly in
-/// paint() so it stays crisp at any zoom instead of blitting a fixed-resolution pixmap. The arrow
-/// asset is a fixed built-in (never user-customizable, unlike the dial face), so one renderer
-/// suffices for every InputRotary instance. GUI-thread only, like pixmapCache().
-static QSvgRenderer &rotaryArrowRenderer()
-{
-    static QSvgRenderer renderer(QStringLiteral(":/Components/Input/rotary_arrow.svg"));
-    return renderer;
-}
-
-void InputRotary::drawBody(QPainter &painter) const
-{
-    // Draw a small position mark for every output port, evenly spaced around the dial.
-    // The active port also gets the arrow overlay drawn on top.
-    for (int port = 0; port < outputSize(); ++port) {
-        painter.save();
-
-        // Distribute marks evenly: port 0 is at the top (12 o'clock), increasing clockwise
-        const double angle = 360. / outputSize() * port;
-        const QPointF center = pixmapCenter();
-        // Mark rect coordinates are in the pre-rotation (top) position — the painter
-        // transform rotates the entire coordinate system around the dial center.
-        // 30.2, 8.727 = top-centre of the dial face (horizontally centred on the 64px body,
-        //               placed near the rim rather than the hub so it's visible on the SVG).
-        // 3.6 × 6.4 = small rectangular pip sized to match the tick marks on the SVG artwork.
-        const QRectF mark = QRectF{30.2, 8.727, 3.6, 6.4};
-
-        // Off-white / cream colour matches the dial face artwork, making the tick marks blend naturally
-        painter.setBrush(QBrush{QColor{255, 246, 213}});
-        painter.translate(center.x(), center.y());
-        painter.rotate(angle);
-        painter.translate(-center.x(), -center.y());
-        painter.drawRect(mark);
-
-        painter.restore();
-
-        if (outputValue() != port) {
-            continue;
-        }
-
-        // Overlay the arrow at the same rotation as the active mark
-        painter.save();
-
-        painter.translate(center.x(), center.y());
-        painter.rotate(angle);
-        painter.translate(-center.x(), -center.y());
-        rotaryArrowRenderer().render(&painter, QRectF(0, 0, 64, 64));
-
-        painter.restore();
-    }
 }
 
 bool InputRotary::isOn(const int port) const

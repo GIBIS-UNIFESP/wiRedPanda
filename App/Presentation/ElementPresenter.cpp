@@ -15,78 +15,9 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementAppearance.h"
 #include "App/Presentation/ElementPictures.h"
+#include "App/Presentation/PicturePresenters.h"
 
 namespace ElementPresenterDetail {
-
-/// Returns the rectangle the picture \a element shows takes, at the origin; empty while it shows none.
-QRectF pictureRect(const Element &element)
-{
-    const PictureVariant *picture = ElementPictures::instance().shown(element);
-    return picture ? QRectF(picture->pixmap.rect()) : QRectF();
-}
-
-/// The presenter of most types: the body is the picture the element shows, and turns about its centre; the element
-/// draws what it has of its own over it (a display's lit segments, a rotary's marks).
-class PicturePresenter : public ElementPresenter
-{
-public:
-    BodyShape measure(const Element &element) const override
-    {
-        const QRectF picture = pictureRect(element);
-        return {picture, picture.center()};
-    }
-
-    void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override
-    {
-        Q_UNUSED(context)
-        if (const PictureVariant *picture = ElementPictures::instance().shown(element)) {
-            ElementPictures::draw(painter, *picture);
-        }
-        element.drawBody(painter);
-    }
-};
-
-/// The presenter of the inputs that show their level (InputButton, InputSwitch, Clock): off, then on.
-class LevelPresenter : public PicturePresenter
-{
-public:
-    int pictureSlot(const Element &element) const override
-    {
-        return element.param<bool>(ParamId::On) ? 1 : 0;
-    }
-};
-
-/// The presenter of the audio outputs (Buzzer, AudioBox): silent, then playing.
-class AudioPresenter : public PicturePresenter
-{
-public:
-    int pictureSlot(const Element &element) const override
-    {
-        return element.param<bool>(ParamId::Playing) ? 1 : 0;
-    }
-};
-
-/// The presenter of the LED: the slot its colour and inputs lit at its last refresh.
-class LedPresenter : public PicturePresenter
-{
-public:
-    int pictureSlot(const Element &element) const override
-    {
-        return element.param<int>(ParamId::Lit);
-    }
-};
-
-/// The presenter of the segment displays: the body is their picture and the 64x64 box their lit segments are drawn in,
-/// which a custom picture need not cover; it turns about the picture's centre.
-class SegmentDisplayPresenter : public PicturePresenter
-{
-public:
-    BodyShape measure(const Element &element) const override
-    {
-        const QRectF picture = pictureRect(element);
-        return {picture.united(QRectF(0, 0, 64, 64)), picture.center()};
-    }
-};
 
 /**
  * \brief The presenter of the types whose body is drawn as vectors to fit their ports (IC, Mux, Demux, TruthTable).
@@ -100,25 +31,14 @@ public:
     BodyShape measure(const Element &element) const override
     {
         const QRectF body = element.renderBodyBounds();
-        return {body, element.appearance().hasRenderPixmap() ? body.center() : pictureRect(element).center()};
+        const bool rendered = element.appearance().hasRenderPixmap();
+        return {body, rendered ? body.center() : PicturePresenter::pictureRect(element).center()};
     }
 
     void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override
     {
         Q_UNUSED(context)
         element.drawBody(painter);
-    }
-};
-
-/// The presenter of Text: the body holds its picture and its child items (the label and the empty-text hint), so a
-/// click on the text hits the element; it turns about its picture's centre.
-class TextPresenter : public PicturePresenter
-{
-public:
-    BodyShape measure(const Element &element) const override
-    {
-        const QRectF picture = pictureRect(element);
-        return {picture.united(element.childrenBoundingRect()), picture.center()};
     }
 };
 
@@ -180,7 +100,7 @@ const ElementPresenter &ElementPresenter::of(const ElementType type)
     const ElementPresenter *presenter = find(type);
     Q_ASSERT_X(presenter, "ElementPresenter::of()", "a type without a presenter: installPresenters() lists every type");
     if (!presenter) {
-        static const ElementPresenterDetail::PicturePresenter fallback;
+        static const PicturePresenter fallback;
         return fallback; // LCOV_EXCL_LINE -- a broken invariant, unreachable while installPresenters() lists every type
     }
     return *presenter;
@@ -193,7 +113,11 @@ void installPresenters()
     static const LevelPresenter level;
     static const AudioPresenter audio;
     static const LedPresenter led;
-    static const SegmentDisplayPresenter segmentDisplay;
+    static const RotaryPresenter rotary;
+    // Each input's segment, as the slot of the display's default appearance list
+    static const SegmentDisplayPresenter display7({7, 6, 5, 4, 1, 2, 8, 3});
+    static const SegmentDisplayPresenter display14({7, 6, 5, 4, 1, 2, 15, 3, 8, 9, 10, 11, 12, 13, 14});
+    static const SegmentDisplayPresenter display16({9, 8, 7, 5, 6, 1, 2, 3, 17, 4, 10, 11, 12, 13, 14, 15, 16});
     static const FootprintPresenter footprint;
     static const TextPresenter text;
 
@@ -206,13 +130,13 @@ void installPresenters()
         {ElementType::DFlipFlop, &picture},
         {ElementType::DLatch, &picture},
         {ElementType::Demux, &footprint},
-        {ElementType::Display14, &segmentDisplay},
-        {ElementType::Display16, &segmentDisplay},
-        {ElementType::Display7, &segmentDisplay},
+        {ElementType::Display14, &display14},
+        {ElementType::Display16, &display16},
+        {ElementType::Display7, &display7},
         {ElementType::IC, &footprint},
         {ElementType::InputButton, &level},
         {ElementType::InputGnd, &picture},
-        {ElementType::InputRotary, &picture},
+        {ElementType::InputRotary, &rotary},
         {ElementType::InputSwitch, &level},
         {ElementType::InputVcc, &picture},
         {ElementType::JKFlipFlop, &picture},
