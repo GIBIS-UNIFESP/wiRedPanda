@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -767,6 +768,16 @@ void sendMouse(Scene &scene, const QEvent::Type type, const Element &element)
     QCoreApplication::sendEvent(&scene, &event);
 }
 
+void sendMouseAt(Scene &scene, const QEvent::Type type, const QPointF &pos, const Qt::MouseButton button,
+                 const Qt::MouseButtons buttons)
+{
+    QGraphicsSceneMouseEvent event(type);
+    event.setScenePos(pos);
+    event.setButton(button);
+    event.setButtons(buttons);
+    QCoreApplication::sendEvent(&scene, &event);
+}
+
 void click(Scene &scene, const Element &element)
 {
     sendMouse(scene, QEvent::GraphicsSceneMousePress, element);
@@ -961,4 +972,114 @@ void TestInputElements::testMiddlePressLeavesTheSwitchNotHoldingTheMouse()
 
     QVERIFY(!inputSwitch->isOn());
     QCOMPARE(scene.undoStack()->count(), 0);
+}
+
+void TestInputElements::testMiddleReleaseLeavesAHeldButtonPressed()
+{
+    // Only the left button's release lets a held button go
+    Scene scene;
+    auto *button = new InputButton;
+    scene.addItem(button);
+    const QPointF at = button->sceneBoundingRect().center();
+
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMousePress, at, Qt::LeftButton, Qt::LeftButton);
+    QVERIFY(button->isOn());
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::MiddleButton, Qt::LeftButton);
+    QVERIFY(button->isOn());
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
+    QVERIFY(!button->isOn());
+}
+
+void TestInputElements::testAButtonLockedWhileHeldStaysPressed()
+{
+    // A release is no operation of a locked input: a button locked while held stays pressed
+    Scene scene;
+    auto *button = new InputButton;
+    scene.addItem(button);
+
+    TestInputElementsHelpers::sendMouse(scene, QEvent::GraphicsSceneMousePress, *button);
+    QVERIFY(button->isOn());
+    button->setLocked(true);
+    TestInputElementsHelpers::sendMouse(scene, QEvent::GraphicsSceneMouseRelease, *button);
+    QVERIFY(button->isOn());
+}
+
+void TestInputElements::testLockedInputsIgnoreTheirTriggerKeys()
+{
+    Scene scene;
+    auto *inputSwitch = new InputSwitch;
+    auto *button = new InputButton;
+    inputSwitch->setTrigger(QKeySequence(Qt::Key_A));
+    button->setTrigger(QKeySequence(Qt::Key_B));
+    button->setPos(0, 128);
+    scene.addItem(inputSwitch);
+    scene.addItem(button);
+
+    // A locked switch's key toggles nothing
+    inputSwitch->setLocked(true);
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyPress, Qt::Key_A);
+    QVERIFY(!inputSwitch->isOn());
+    QCOMPARE(scene.undoStack()->count(), 0);
+
+    // A button locked while its key is held stays pressed when the key is let go
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyPress, Qt::Key_B);
+    QVERIFY(button->isOn());
+    button->setLocked(true);
+    TestInputElementsHelpers::sendKey(scene, QEvent::KeyRelease, Qt::Key_B);
+    QVERIFY(button->isOn());
+}
+
+void TestInputElements::testTheReleaseGoesToTheElementHoldingTheMouse()
+{
+    // A button held by the mouse lets go when the left button is released anywhere
+    Scene scene;
+    auto *button = new InputButton;
+    scene.addItem(button);
+
+    TestInputElementsHelpers::sendMouse(scene, QEvent::GraphicsSceneMousePress, *button);
+    QVERIFY(button->isOn());
+    const QPointF away = button->sceneBoundingRect().bottomRight() + QPointF(300, 300);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, away, Qt::LeftButton, Qt::NoButton);
+    QVERIFY(!button->isOn());
+}
+
+void TestInputElements::testADoubleClickOnTheElementJustPressedEditsItsLabel()
+{
+    // Qt sends press, release, double-click, release: the switch toggles once, and the double-click on the element
+    // that held the mouse asks to edit its label
+    Scene scene;
+    auto *inputSwitch = new InputSwitch;
+    scene.addItem(inputSwitch);
+    QSignalSpy editRequests(inputSwitch, &Element::inlineEditRequested);
+    const QPointF at = inputSwitch->sceneBoundingRect().center();
+
+    TestInputElementsHelpers::click(scene, *inputSwitch);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
+    QVERIFY(inputSwitch->isOn());
+    QCOMPARE(editRequests.count(), 1);
+}
+
+void TestInputElements::testADoubleClickOnAnotherElementPressesIt()
+{
+    // A double-click on an element other than the one that last held the mouse is a press of it: it operates, as one
+    // undoable step, and edits no label
+    Scene scene;
+    auto *first = new InputSwitch;
+    auto *second = new InputSwitch;
+    second->setPos(0, 128);
+    scene.addItem(first);
+    scene.addItem(second);
+    QSignalSpy editRequests(second, &Element::inlineEditRequested);
+    const QPointF at = second->sceneBoundingRect().center();
+
+    TestInputElementsHelpers::click(scene, *first);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
+    QVERIFY(first->isOn());
+    QVERIFY(second->isOn());
+    QCOMPARE(editRequests.count(), 0);
+    QCOMPARE(scene.undoStack()->count(), 2);
+    scene.undoStack()->undo();
+    QVERIFY(!second->isOn());
 }
