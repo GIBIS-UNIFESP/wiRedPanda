@@ -282,6 +282,8 @@ IC open, file drop, IC preview and truth-table edit requests; the audio service'
 kind of change and checks it was reported, and each bulk scope asserts one begin and end pair (on the branch five of
 the eight, paste among them, were in no test). The IC reload's test checks the bulk change only: what the reload's
 undo restores is plan 4's, tested there (its P4.5 and P4.6).
+The elements showing one picture file take a new version of it together and report their changes in no fixed order
+(plan 3's P3.16b keeps them as a set per file): a listener must not depend on the order in which they report.
 Plan 10's renderer and a pixel-changing change that does not notify are why: one funnel and the coverage test are its
 mitigation.
 
