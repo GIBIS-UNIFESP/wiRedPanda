@@ -52,11 +52,15 @@ private slots:
     void testRotaryClickIsOneUndoableCommand();
     void testRotaryClickThroughAZoomedViewIsOneUndoableCommand();
     void testMiddlePressLeavesTheSwitchNotHoldingTheMouse();
+    void testMiddlePressOnAHeldSwitchTogglesNothing();
     void testMiddleReleaseLeavesAHeldButtonPressed();
     void testAButtonLockedWhileHeldStaysPressed();
     void testLockedInputsIgnoreTheirTriggerKeys();
     void testTheReleaseGoesToTheElementHoldingTheMouse();
     void testADoubleClickOnTheElementJustPressedEditsItsLabel();
+    void testADoubleClickAfterAPressNothingTookEditsTheLabel();
+    void testADoubleClickAfterTheLastHolderLeftEditsTheLabel();
+    void testADoubleClickAfterTheLastHolderCameBackEditsTheLabel();
     void testADoubleClickOnAnotherElementPressesIt();
     void testTriggerKeyIsOneUndoableCommandKeepingTheSelection();
     void testButtonPressIsNotRecorded();

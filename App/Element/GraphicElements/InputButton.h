@@ -44,12 +44,4 @@ public:
 
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;
-
-protected:
-    // --- Event handlers ---
-
-    /// \reimp
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    /// \reimp
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 };

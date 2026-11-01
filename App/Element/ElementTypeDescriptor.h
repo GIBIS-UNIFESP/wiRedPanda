@@ -50,6 +50,15 @@ enum class KernelKind : quint8 {
     SRFlipFlop,
 };
 
+/// Which of a type's operations: what a press does (a click, a trigger key going down), or what its release does.
+enum class Operation : quint8 {
+    Press,
+    Release,
+};
+
+/// What an operation does to an element: it sets the element's parameters (Element::operate()).
+using ElementOperation = std::function<void(Element &element)>;
+
 /// One slot of a type's appearance: the key a file saves the slot's picture by, and the slot's built-in picture.
 struct AppearanceSlot {
     QString key;     ///< The slot's name in a file, unique among the type's slots.
@@ -112,6 +121,11 @@ struct ElementTypeDescriptor {
     /// Applied at the end of every load of the type's parameters, whatever the file held (a switch drives the level it
     /// has, a rotary its selection).
     std::function<void(Element &element)> loaded{};
+
+    // --- Operations ---
+
+    ElementOperation pressOperation{};   ///< What a press does: a switch toggles, a button goes down, a rotary steps.
+    ElementOperation releaseOperation{}; ///< What the press's release does: a button goes up.
 
     // --- Port configuration ---
 

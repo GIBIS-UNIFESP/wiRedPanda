@@ -85,12 +85,6 @@ protected:
     /// \reimp Shows a new selection (ParamId::Position) on the dial and the outputs.
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 
-    // --- Event handlers ---
-
-    /// \reimp Selects the next output on a left press, unless it is locked; the scene records the selection as one
-    /// undoable change (Scene::recordOperation()).
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-
 private:
     /// Shows the selection on the dial and drives the outputs with it, the selected one Active.
     void showSelection();

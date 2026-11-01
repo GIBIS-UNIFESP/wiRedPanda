@@ -15,6 +15,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/Element/BodyMeasure.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/PictureLibrary.h"
 
 class Element;
@@ -90,6 +91,10 @@ public:
 
     /// Returns where \a element's label goes: below a 64x64 body, upright, by default.
     virtual LabelPlacement label(const Element &element) const;
+
+    /// Returns the operation a click at \a point, in \a element's own coordinates, triggers: the press operation
+    /// anywhere by default, none for a type without one.
+    virtual std::optional<Operation> activationAt(const Element &element, const QPointF &point) const;
 
     /// Returns the presenter registered for the elements of \a type, or null if there is none.
     static const ElementPresenter *find(ElementType type);

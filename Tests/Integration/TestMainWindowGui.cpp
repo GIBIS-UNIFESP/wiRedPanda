@@ -2991,9 +2991,9 @@ void TestMainWindowGui::testInputButtonMomentary()
 
 void TestMainWindowGui::testInputButtonMousePressReleaseIsMomentary()
 {
-    // Drives InputButton::mousePressEvent()/mouseReleaseEvent() through the real
+    // Drives InputButton's press and release operations through the real
     // QGraphicsView/Scene event pipeline (unlike testInputButtonMomentary() above,
-    // which calls setOn() directly and never reaches those overrides at all).
+    // which calls setOn() directly and never reaches the scene's dispatch at all).
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();

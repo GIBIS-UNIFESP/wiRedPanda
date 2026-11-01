@@ -137,6 +137,19 @@ bool Element::offersParam(const ParamId id) const
     return (spec != nullptr) && (!spec->offered || spec->offered(*this));
 }
 
+bool Element::hasOperation(const Operation operation) const
+{
+    return static_cast<bool>((operation == Operation::Press) ? m_descriptor.pressOperation : m_descriptor.releaseOperation);
+}
+
+void Element::operate(const Operation operation)
+{
+    if (const ElementOperation &run = (operation == Operation::Press) ? m_descriptor.pressOperation
+                                                                       : m_descriptor.releaseOperation) {
+        run(*this);
+    }
+}
+
 bool Element::setParam(const ParamId id, const ParamValue &value)
 {
     const ParamSpec *spec = m_parameters.spec(id);

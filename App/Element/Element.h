@@ -261,6 +261,14 @@ public:
     /// element's state (ParamSpec::offered).
     bool offersParam(ParamId id) const;
 
+    /// Returns \c true if the element's type has \a operation (ElementTypeDescriptor::pressOperation and
+    /// releaseOperation).
+    bool hasOperation(Operation operation) const;
+
+    /// Runs the type's \a operation, which sets the element's parameters; one the type does not have does nothing. The
+    /// lock is the caller's to check: a locked input refuses the pointer and its trigger key, not operate().
+    void operate(Operation operation);
+
     /// Returns parameter \a id as a \a T, its kind; asking for one the type does not have, or as another kind, is a
     /// broken invariant (Parameters).
     template<typename T>

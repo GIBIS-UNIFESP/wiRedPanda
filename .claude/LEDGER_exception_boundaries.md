@@ -391,9 +391,9 @@ It does not cover a command the body pushes, directly or through the scene: that
 | `App/Scene/ICRegistry.cpp:96` | `ICRegistry::onFileChanged()` | Stays |
 | `App/Scene/Scene.cpp:98` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
 | `App/Scene/Scene.cpp:108` | `Scene::Scene()`: the Redo action's lambda (EB.5) | Stays |
-| `App/Scene/Scene.cpp:689` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
-| `App/Scene/Scene.cpp:1079` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
-| `App/Scene/Scene.cpp:1511` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
+| `App/Scene/Scene.cpp:693` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
+| `App/Scene/Scene.cpp:1083` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
+| `App/Scene/Scene.cpp:1515` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
 | `App/Scene/Workspace.cpp:778` | `WorkSpace::autosaveOnTimer()`: the first failure of a run (EB.7) | Stays |
 | `App/Simulation/Simulation.cpp:41` | `Simulation::Simulation()` | Stays |
 | `App/UI/ExportController.cpp:114` | `ExportController::exportArduinoDialog()` | Stays |

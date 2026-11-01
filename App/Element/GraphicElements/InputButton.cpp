@@ -3,8 +3,6 @@
 
 #include "App/Element/GraphicElements/InputButton.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
@@ -40,6 +38,9 @@ struct ElementInfo<InputButton> {
         };
         // A button is held only while pressed: its level is no state of the circuit
         descriptor.parameters = {ElementInput::levelSpec(nullptr), ElementInput::lockSpec()};
+        // Momentary: down on a press, up on its release, unlike a switch, which latches
+        descriptor.pressOperation = [](Element &element) { element.setParam(ParamId::On, true); };
+        descriptor.releaseOperation = [](Element &element) { element.setParam(ParamId::On, false); };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // 3.1 to 4.0 held the lock as a bare bool
             if (VersionInfo::hasLockState(context.version)) {
@@ -62,27 +63,6 @@ InputButton::InputButton(QGraphicsItem *parent)
     : ElementInput(ElementType::InputButton, parent)
 {
     InputButton::setOff();
-}
-
-void InputButton::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    // Momentary action: button goes HIGH on press, LOW on release (unlike InputSwitch which latches)
-    if (!isLocked() && (event->button() == Qt::LeftButton)) {
-        setOn();
-        event->accept();
-    }
-
-    QGraphicsItem::mousePressEvent(event);
-}
-
-void InputButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (!isLocked() && (event->button() == Qt::LeftButton)) {
-        setOff();
-        event->accept();
-    }
-
-    QGraphicsItem::mouseReleaseEvent(event);
 }
 
 bool InputButton::isOn(const int port) const

@@ -974,6 +974,22 @@ void TestInputElements::testMiddlePressLeavesTheSwitchNotHoldingTheMouse()
     QCOMPARE(scene.undoStack()->count(), 0);
 }
 
+void TestInputElements::testMiddlePressOnAHeldSwitchTogglesNothing()
+{
+    // Qt gives a middle press made while the left button holds a switch to the switch, and only a left press operates it
+    Scene scene;
+    auto *inputSwitch = new InputSwitch;
+    scene.addItem(inputSwitch);
+    const QPointF at = inputSwitch->sceneBoundingRect().center();
+
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMousePress, at, Qt::LeftButton, Qt::LeftButton);
+    QVERIFY(inputSwitch->isOn());
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMousePress, at, Qt::MiddleButton, Qt::LeftButton | Qt::MiddleButton);
+    QCOMPARE(scene.mouseGrabberItem(), inputSwitch);
+    QVERIFY(inputSwitch->isOn());
+    QCOMPARE(scene.undoStack()->count(), 1);
+}
+
 void TestInputElements::testMiddleReleaseLeavesAHeldButtonPressed()
 {
     // Only the left button's release lets a held button go
@@ -1057,6 +1073,78 @@ void TestInputElements::testADoubleClickOnTheElementJustPressedEditsItsLabel()
     TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
     TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
     QVERIFY(inputSwitch->isOn());
+    QCOMPARE(editRequests.count(), 1);
+}
+
+void TestInputElements::testADoubleClickAfterAPressNothingTookEditsTheLabel()
+{
+    // A press no item takes leaves no element having last held the mouse, so Qt gives a double-click that follows to
+    // the element under it as a double-click: it edits the label and operates nothing
+    Scene scene;
+    auto *inputSwitch = new InputSwitch;
+    scene.addItem(inputSwitch);
+    QSignalSpy editRequests(inputSwitch, &Element::inlineEditRequested);
+    const QPointF at = inputSwitch->sceneBoundingRect().center();
+    const QPointF away = inputSwitch->sceneBoundingRect().bottomRight() + QPointF(200, 200);
+
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMousePress, away, Qt::LeftButton, Qt::LeftButton);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, away, Qt::LeftButton, Qt::NoButton);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
+
+    QVERIFY(!inputSwitch->isOn());
+    QCOMPARE(scene.undoStack()->count(), 0);
+    QCOMPARE(editRequests.count(), 1);
+}
+
+void TestInputElements::testADoubleClickAfterTheLastHolderLeftEditsTheLabel()
+{
+    // Qt forgets the element that last held the mouse when it leaves the scene, as a deletion kept for undo does, so a
+    // double-click on another element is a double-click of it: it edits the label and operates nothing
+    Scene scene;
+    auto *first = new InputSwitch;
+    auto *second = new InputSwitch;
+    second->setPos(0, 128);
+    scene.addItem(first);
+    scene.addItem(second);
+    QSignalSpy editRequests(second, &Element::inlineEditRequested);
+    const QPointF at = second->sceneBoundingRect().center();
+
+    TestInputElementsHelpers::click(scene, *first);
+    QVERIFY(first->isOn());
+    // Through QGraphicsScene's own removeItem(), as Qt's code removes an item, past Scene::removeItem()
+    static_cast<QGraphicsScene &>(scene).removeItem(first);
+    const std::unique_ptr<InputSwitch> removed(first);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
+
+    QVERIFY(!second->isOn());
+    QCOMPARE(scene.undoStack()->count(), 1);
+    QCOMPARE(editRequests.count(), 1);
+}
+
+void TestInputElements::testADoubleClickAfterTheLastHolderCameBackEditsTheLabel()
+{
+    // An element that left the scene and came back, as a deletion undone does, is not the one that last held the
+    // mouse, which Qt forgot when it left: a double-click on another element is a double-click of it
+    Scene scene;
+    auto *first = new InputSwitch;
+    auto *second = new InputSwitch;
+    second->setPos(0, 128);
+    scene.addItem(first);
+    scene.addItem(second);
+    QSignalSpy editRequests(second, &Element::inlineEditRequested);
+    const QPointF at = second->sceneBoundingRect().center();
+
+    TestInputElementsHelpers::click(scene, *first);
+    QVERIFY(first->isOn());
+    scene.removeItem(first);
+    scene.addItem(first);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
+    TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
+
+    QVERIFY(!second->isOn());
+    QCOMPARE(scene.undoStack()->count(), 1);
     QCOMPARE(editRequests.count(), 1);
 }
 

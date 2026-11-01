@@ -3,8 +3,6 @@
 
 #include "App/Element/GraphicElements/InputRotary.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
@@ -70,6 +68,10 @@ struct ElementInfo<InputRotary> {
                 stream >> locked;
                 element.setParam(ParamId::Locked, locked);
             }
+        };
+        // A press steps the dial to the next output, the last one back to the first
+        descriptor.pressOperation = [](Element &element) {
+            element.setParam(ParamId::Position, (element.param<int>(ParamId::Position) + 1) % element.outputSize());
         };
         // Every load drives the selection on the outputs, those the load added included
         descriptor.loaded = [](Element &element) {
@@ -225,16 +227,6 @@ void InputRotary::setWaveformValue(const bool value, const int port)
     if (value) {
         setOn(true, port);
     }
-}
-
-void InputRotary::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (!isLocked() && (event->button() == Qt::LeftButton)) {
-        setOn(true, (outputValue() + 1) % outputSize());
-        event->accept();
-    }
-
-    QGraphicsItem::mousePressEvent(event);
 }
 
 void InputRotary::applyAppearance(const bool defaultAppearance, const QString &fileName)

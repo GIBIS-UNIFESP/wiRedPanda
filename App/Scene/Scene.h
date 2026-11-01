@@ -17,6 +17,7 @@
 #include <QMap>
 #include <QMimeData>
 #include <QPoint>
+#include <QPointer>
 #include <QStringList>
 #include <QTimer>
 #include <QUndoCommand>
@@ -26,6 +27,7 @@
 #include "App/Core/Enums.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Element/ElementChange.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/ICRegistry.h"
@@ -541,9 +543,18 @@ private:
     /// If \a event is a plain/Shift arrow key and something is selected, moves the selection by
     /// one grid step (Shift = a larger step) as a single undoable command and returns true.
     bool nudgeSelection(QKeyEvent *event);
-    /// Returns the elements Qt may give the press \a event to, for recordOperation(): the one holding the mouse and
-    /// those under the pointer, found as Qt finds them, each item standing for the element it belongs to.
-    [[nodiscard]] QList<Element *> pressTargets(const QGraphicsSceneMouseEvent *event) const;
+    /// Returns the element \a item belongs to, \a item itself or the element of a port or label: null for none.
+    [[nodiscard]] static Element *elementOf(QGraphicsItem *item);
+    /// Returns whether \a element is locked, so takes no operation from the mouse or its trigger key.
+    [[nodiscard]] static bool isLocked(const Element &element);
+    /**
+     * \brief Operates the element that took the press \a event, which Qt has dispatched, as one undoable change.
+     * \details Records the element holding the mouse as the one that last held it; a left press of it, unless it is
+     * locked, runs the operation its presenter's activationAt() picks for the point.
+     */
+    void operatePress(const QGraphicsSceneMouseEvent *event);
+    /// Runs \a operation of every unlocked element whose trigger key \a event is, as one undoable change.
+    void operateTriggered(const QKeyEvent *event, Operation operation);
     /// Returns the items whose shapes reach within 4 units of \a pos, topmost first.
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
     const QVector<Connection *> connections() const;
@@ -587,6 +598,10 @@ private:
 
     // Rendering
     QPen m_dots;
+
+    /// The element that held the mouse after the last press, null after a press nothing took or once it leaves the
+    /// scene, as Qt's: Qt gives a double-click on another element to it as a press.
+    QPointer<Element> m_lastHolder;
 
     // Mouse-move re-entrancy guard. Stays on Scene (not SceneInteraction) because it
     // must wrap the base QGraphicsScene::mouseMoveEvent call, where the re-entrancy

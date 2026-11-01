@@ -34,12 +34,12 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/DragPreview.h"
 #include "App/Scene/GraphicsView.h"
@@ -192,6 +192,10 @@ void Scene::removeItem(QGraphicsItem *item)
     }
     if (auto *iwid = dynamic_cast<ItemWithId *>(item)) {
         unregisterItem(iwid);
+    }
+    // Qt forgets the item that last held the mouse when it leaves the scene
+    if (item == m_lastHolder) {
+        m_lastHolder = nullptr;
     }
     QGraphicsScene::removeItem(item);
 }
@@ -1582,21 +1586,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
     // Skip keyboard triggers while Ctrl is held to avoid firing during Ctrl+Z/C/V shortcuts
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
-        QList<Element *> triggered;
-        QList<ElementInput *> inputs;
-        for (auto *element : unsortedElements()) {
-            if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
-                if (auto *input = qobject_cast<ElementInput *>(element); input && !input->isLocked()) {
-                    triggered.append(element);
-                    inputs.append(input);
-                }
-            }
-        }
-        recordOperation(triggered, [&inputs] {
-            for (auto *input : std::as_const(inputs)) {
-                input->setOn();
-            }
-        });
+        operateTriggered(event, Operation::Press);
     }
 
     QGraphicsScene::keyPressEvent(event);
@@ -1611,18 +1601,28 @@ void Scene::keyReleaseEvent(QKeyEvent *event)
         return;
     }
 
+    // Only a type with a release operation (a button) is let go on key-up; a switch stays latched
     if (!(event->modifiers().testFlag(Qt::ControlModifier))) {
-        for (auto *element : unsortedElements()) {
-            if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())) {
-                // Only InputButton (momentary) is released on key-up; InputSwitch stays latched
-                if (auto *input = qobject_cast<ElementInput *>(element); input && !input->isLocked() && (element->elementType() == ElementType::InputButton)) {
-                    input->setOff();
-                }
-            }
-        }
+        operateTriggered(event, Operation::Release);
     }
 
     QGraphicsScene::keyReleaseEvent(event);
+}
+
+void Scene::operateTriggered(const QKeyEvent *event, const Operation operation)
+{
+    QList<Element *> triggered;
+    for (auto *element : unsortedElements()) {
+        if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())
+            && !isLocked(*element) && element->hasOperation(operation)) {
+            triggered.append(element);
+        }
+    }
+    recordOperation(triggered, [&triggered, operation] {
+        for (auto *element : std::as_const(triggered)) {
+            element->operate(operation);
+        }
+    });
 }
 
 bool Scene::eventFilter(QObject *watched, QEvent *event)
@@ -1654,44 +1654,38 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_interaction.mousePress(event)) {
-        // What an element does with the press, such as a switch toggling, is one undoable change
-        recordOperation(pressTargets(event), [this, event] { QGraphicsScene::mousePressEvent(event); });
+        QGraphicsScene::mousePressEvent(event);
+        operatePress(event);
     }
 }
 
-QList<Element *> Scene::pressTargets(const QGraphicsSceneMouseEvent *event) const
+void Scene::operatePress(const QGraphicsSceneMouseEvent *event)
 {
-    // Qt gives a press to the item holding the mouse, else to the first item under the pointer that takes it, found
-    // as QGraphicsScenePrivate::itemsAtPosition() finds them: under the view's pixel at the pointer, or at the exact
-    // point without a view
-    QList<QGraphicsItem *> candidates;
-    if (auto *grabber = mouseGrabberItem()) {
-        candidates.append(grabber);
+    m_lastHolder = elementOf(mouseGrabberItem());
+    Element *element = m_lastHolder;
+    if ((event->button() != Qt::LeftButton) || !element || isLocked(*element)) {
+        return;
     }
-    auto *widget = event->widget();
-    auto *view = widget ? qobject_cast<QGraphicsView *>(widget->parentWidget()) : nullptr;
-    if (!view) {
-        candidates.append(items(event->scenePos(), Qt::IntersectsItemShape, Qt::DescendingOrder, QTransform()));
-    } else {
-        // Qt skips the mapping when the view is not transformed, where the transform is the identity
-        const QRectF pointRect(QPointF(widget->mapFromGlobal(event->screenPos())), QSizeF(1, 1));
-        const QTransform viewTransform = view->viewportTransform();
-        candidates.append(QGraphicsScene::items(viewTransform.inverted().map(pointRect), Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform));
+    // What the press does, such as a switch toggling, is one undoable change
+    if (const auto operation = ElementPresenter::of(element->elementType()).activationAt(*element, element->mapFromScene(event->scenePos()))) {
+        recordOperation({element}, [element, operation] { element->operate(*operation); });
     }
+}
 
-    QList<Element *> targets;
-    for (auto *item : std::as_const(candidates)) {
-        // A port or a label passes a press it ignores on to its element
-        for (; item; item = item->parentItem()) {
-            if (auto *element = qgraphicsitem_cast<Element *>(item)) {
-                if (!targets.contains(element)) {
-                    targets.append(element);
-                }
-                break;
-            }
+Element *Scene::elementOf(QGraphicsItem *item)
+{
+    // A port or a label passes a press it ignores on to its element
+    for (; item; item = item->parentItem()) {
+        if (auto *element = qgraphicsitem_cast<Element *>(item)) {
+            return element;
         }
     }
-    return targets;
+    return nullptr;
+}
+
+bool Scene::isLocked(const Element &element)
+{
+    return element.hasParam(ParamId::Locked) && element.param<bool>(ParamId::Locked);
 }
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -1718,6 +1712,10 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_interaction.mouseRelease(event)) {
+        // Qt gives the release to the element holding the mouse, wherever the pointer is
+        if (auto *holder = elementOf(mouseGrabberItem()); holder && (event->button() == Qt::LeftButton) && !isLocked(*holder) && holder->hasOperation(Operation::Release)) {
+            recordOperation({holder}, [holder] { holder->operate(Operation::Release); });
+        }
         QGraphicsScene::mouseReleaseEvent(event);
     }
 }
@@ -1726,8 +1724,13 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_interaction.mouseDoubleClick(event)) {
         // Qt gives a double-click on an element other than the one that last held the mouse to it as a press, through
-        // no mousePressEvent() of the scene's: what that press does is one undoable change too
-        recordOperation(pressTargets(event), [this, event] { QGraphicsScene::mouseDoubleClickEvent(event); });
+        // no mousePressEvent() of the scene's, and as a double-click, which edits its label, on that element or when no
+        // element held it last (a press nothing took, or the holder gone from the scene)
+        const Element *lastHolder = m_lastHolder;
+        QGraphicsScene::mouseDoubleClickEvent(event);
+        if (lastHolder && (lastHolder->scene() == this) && (elementOf(mouseGrabberItem()) != lastHolder)) {
+            operatePress(event);
+        }
     }
 }
 

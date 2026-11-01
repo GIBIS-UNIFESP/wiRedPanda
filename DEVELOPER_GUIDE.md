@@ -711,43 +711,27 @@ Key differences from combinational gates:
 
 ### Anatomy of an Input Element
 
-Input elements like `InputSwitch` are driven by user interaction, not by upstream logic:
+Input elements like `InputSwitch` are driven by user interaction, not by upstream logic. What a press and its release
+do is an operation in the type's descriptor, which sets the element's parameters:
 
 ```cpp
-// No updateLogic() — state is set by mouse events
-void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    if (!m_locked && (event->button() == Qt::LeftButton)) {
-        // Snapshot the pre-toggle state so the toggle can be pushed onto the undo
-        // stack as an UpdateCommand, same as any other property edit.
-        QByteArray oldData;
-        auto *scene_ = qobject_cast<Scene *>(scene());
-        if (scene_) {
-            QDataStream stream(&oldData, QIODevice::WriteOnly);
-            Serialization::writePandaHeader(stream);
-            save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-        }
+// InputSwitch's descriptor: a press toggles the level; a switch has no release operation
+descriptor.pressOperation = [](Element &element) {
+    element.setParam(ParamId::On, !element.param<bool>(ParamId::On));
+};
 
-        setOn(!m_isOn);   // Toggle the switch
-        event->accept();
-
-        if (scene_) {
-            scene_->receiveCommand(new UpdateCommand({this}, oldData, scene_));
-        }
-    }
-}
-
-// setOn(bool, int) is inherited from ElementInput:
-void ElementInput::setOn(const bool value, const int port) {
-    Q_UNUSED(port)
-    m_isOn = value;
-    setPixmap(static_cast<int>(m_isOn));                      // Visual update
-    if (auto *out = outputPort()) {
-        out->setStatus(static_cast<Status>(m_isOn));          // Electrical update
-    }
-}
+// InputButton's: momentary, down on a press and up on its release
+descriptor.pressOperation = [](Element &element) { element.setParam(ParamId::On, true); };
+descriptor.releaseOperation = [](Element &element) { element.setParam(ParamId::On, false); };
 ```
 
-Routing the toggle through `UpdateCommand` (rather than calling `setOn()` directly) makes it undoable and marks the tab modified.
+No input handles the mouse itself. The scene dispatches the operations (`Scene::mousePressEvent()`,
+`mouseReleaseEvent()`, `mouseDoubleClickEvent()`, `keyPressEvent()`, `keyReleaseEvent()`): a left press to the unlocked
+element that took it, running the operation its presenter's `activationAt()` picks for the point; a left release to the
+unlocked element holding the mouse; a trigger key to every unlocked element it names. `Element::operate()` runs an
+operation and ignores the lock, which the scene checks. Each goes through `Scene::recordOperation()`, which records
+what the operation changed in the element's saved state as one `UpdateCommand`, so a toggle is undoable and marks the
+tab modified, while a held button, which saves no level, records nothing.
 
 The `Clock` element is special: it is driven by wall-clock time via `updateClock()`, comparing elapsed time against a configurable frequency interval.
 

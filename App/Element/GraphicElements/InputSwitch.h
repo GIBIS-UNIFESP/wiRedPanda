@@ -44,11 +44,4 @@ public:
 
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;
-
-protected:
-    // --- Event handlers ---
-
-    /// \reimp Toggles the switch on a left press, unless it is locked; the scene records the toggle as one undoable
-    /// change (Scene::recordOperation()).
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };

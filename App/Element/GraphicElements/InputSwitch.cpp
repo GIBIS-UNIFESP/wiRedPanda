@@ -3,8 +3,6 @@
 
 #include "App/Element/GraphicElements/InputSwitch.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/SerializationContext.h"
@@ -39,6 +37,9 @@ struct ElementInfo<InputSwitch> {
             {"on", ":/Components/Input/switchOn.svg"},
         };
         descriptor.parameters = {ElementInput::levelSpec("isOn"), ElementInput::lockSpec()};
+        descriptor.pressOperation = [](Element &element) {
+            element.setParam(ParamId::On, !element.param<bool>(ParamId::On));
+        };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // Before 4.1 the level was a bare bool, then from 3.1 the lock another
             bool on = false;
@@ -91,16 +92,6 @@ void InputSwitch::setOff()
 void InputSwitch::setOn()
 {
     InputSwitch::setOn(!isOn());
-}
-
-void InputSwitch::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (!isLocked() && (event->button() == Qt::LeftButton)) {
-        setOn(!isOn());
-        event->accept();
-    }
-
-    QGraphicsItem::mousePressEvent(event);
 }
 
 QList<std::pair<int, QString>> InputSwitch::appearanceStates() const

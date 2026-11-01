@@ -100,6 +100,12 @@ LabelPlacement ElementPresenter::label(const Element &element) const
     return {QPointF(0, 64)};
 }
 
+std::optional<Operation> ElementPresenter::activationAt(const Element &element, const QPointF &point) const
+{
+    Q_UNUSED(point)
+    return element.hasOperation(Operation::Press) ? std::optional<Operation>(Operation::Press) : std::nullopt;
+}
+
 const ElementPresenter *ElementPresenter::find(const ElementType type)
 {
     return ElementPresenterDetail::registry().value(type, nullptr);
