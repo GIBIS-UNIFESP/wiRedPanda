@@ -55,6 +55,13 @@ private slots:
 
     // hoverEnterEvent()/hoverMoveEvent()'s "cursor over a port" branch
     void testHoverOverPortRequestsPreviewHide();
+    void testHoverOverTheBodyAsksForAPreviewAndFollowsThePointer();
+    void testHoverFromOneICToAnotherHidesTheFirst();
+    void testHoverLooksThroughOtherElementsToAnIC();
+    void testHoverWaitsWhileAButtonIsDown();
+    void testAPressOverAnICHoversIt();
+    void testLeavingTheViewHidesThePreview();
+    void testARemovedICIsForgottenWithoutAHide();
 
     // displayName() for an embedded (blob-backed) IC
     void testDisplayNameForEmbeddedIc();

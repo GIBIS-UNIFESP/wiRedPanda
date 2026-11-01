@@ -12,7 +12,6 @@
 #include <QFile>
 #include <QFontDatabase>
 #include <QFontInfo>
-#include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSimpleTextItem>
@@ -53,19 +52,6 @@ void sendDoubleClick(Scene *scene, const QPointF &scenePos)
     event.setButton(Qt::LeftButton);
     event.setButtons(Qt::LeftButton);
     QCoreApplication::sendEvent(scene, &event);
-}
-
-/// Finds the QLineEdit hosted by InlineLabelEditor's QGraphicsProxyWidget, if one is active.
-QLineEdit *findInlineEditor(Scene *scene)
-{
-    for (auto *item : scene->items()) {
-        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
-            if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
-                return lineEdit;
-            }
-        }
-    }
-    return nullptr;
 }
 
 } // namespace
@@ -194,7 +180,7 @@ void TestElement::testInlineDoubleClickRenamesLabelWithUndo()
 
     sendDoubleClick(workspace.scene(), led->mapToScene(led->boundingRect().center()));
 
-    QLineEdit *editor = findInlineEditor(workspace.scene());
+    QLineEdit *editor = TestUtils::inlineLabelEditor(workspace.scene());
     QVERIFY2(editor, "Double-clicking a labelable element must spawn an inline QLineEdit");
     QCOMPARE(editor->text(), QString("Original"));
 
@@ -220,7 +206,7 @@ void TestElement::testInlineDoubleClickEscapeCancelsWithoutUndo()
 
     sendDoubleClick(workspace.scene(), led->mapToScene(led->boundingRect().center()));
 
-    QLineEdit *editor = findInlineEditor(workspace.scene());
+    QLineEdit *editor = TestUtils::inlineLabelEditor(workspace.scene());
     QVERIFY(editor);
 
     editor->setText("Should not stick");
@@ -241,7 +227,7 @@ void TestElement::testInlineDoubleClickIgnoredWithoutLabel()
 
     sendDoubleClick(workspace.scene(), gate->mapToScene(gate->boundingRect().center()));
 
-    QVERIFY(!findInlineEditor(workspace.scene()));
+    QVERIFY(!TestUtils::inlineLabelEditor(workspace.scene()));
 }
 
 namespace TestElementDetail {

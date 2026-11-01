@@ -221,7 +221,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Element/ElementSerializer.cpp:852` | `ElementSerializer::loadPixmapAppearanceName()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/GraphicElements/AudioBox.cpp:132` | `AudioBox::reportFailedFiles()`: a sound that is gone or unreadable, reported when a file opens (EB.3 made `setAudio()` fall back, where this site was, at line 81); a restore, and an IC's circuit read inside one, never reach it (EB.14) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6) |
 | `App/Element/GraphicElements/Demux.cpp:171` | `Demux::loadState()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/Element/IC.cpp:152` | `IC::loadState()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/Element/IC.cpp:149` | `IC::loadState()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:150` | `ICLoader::loadFile()`: an IC's file that is gone or does not read: a snapshot restore reaches it (EB.4) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:226` | `ICLoader::loadFileDirectly()`: an IC's file that is gone or does not read: a snapshot restore reaches it (EB.4) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:237` | `ICLoader::loadFileDirectly()`: an IC's file that is gone or does not read: a snapshot restore reaches it (EB.4) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
@@ -389,11 +389,11 @@ It does not cover a command the body pushes, directly or through the scene: that
 | `App/BeWavedDolphin/BeWavedDolphin.cpp:1051` | `BewavedDolphin::on_actionAboutQt_triggered()` | Stays |
 | `App/Core/Application.h:137` | Its definition | Stays |
 | `App/Scene/ICRegistry.cpp:96` | `ICRegistry::onFileChanged()` | Stays |
-| `App/Scene/Scene.cpp:98` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
-| `App/Scene/Scene.cpp:108` | `Scene::Scene()`: the Redo action's lambda (EB.5) | Stays |
-| `App/Scene/Scene.cpp:699` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
-| `App/Scene/Scene.cpp:1089` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
-| `App/Scene/Scene.cpp:1534` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
+| `App/Scene/Scene.cpp:99` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
+| `App/Scene/Scene.cpp:109` | `Scene::Scene()`: the Redo action's lambda (EB.5) | Stays |
+| `App/Scene/Scene.cpp:691` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
+| `App/Scene/Scene.cpp:1081` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
+| `App/Scene/Scene.cpp:1526` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
 | `App/Scene/Workspace.cpp:778` | `WorkSpace::autosaveOnTimer()`: the first failure of a run (EB.7) | Stays |
 | `App/Simulation/Simulation.cpp:41` | `Simulation::Simulation()` | Stays |
 | `App/UI/ExportController.cpp:114` | `ExportController::exportArduinoDialog()` | Stays |

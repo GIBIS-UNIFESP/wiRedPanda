@@ -121,6 +121,7 @@ class Led;
 class Connection;
 class Simulation;
 class QGraphicsScene;
+class QLineEdit;
 
 /**
  * @brief Macro for accessing test data directory
@@ -668,6 +669,9 @@ QVector<DiffStep> generateDifferentialVectors(
     const QVector<int> &asyncHighIdx,
     quint32 seed,
     int numSteps);
+
+/// Returns the line edit of the label edit open in \a scene (InlineLabelEditor), or null when none is.
+QLineEdit *inlineLabelEditor(Scene *scene);
 
 } // namespace TestUtils
 

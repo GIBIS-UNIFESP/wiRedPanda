@@ -13,7 +13,9 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneHelpEvent>
+#include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMimeData>
@@ -35,7 +37,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -157,20 +158,8 @@ void Scene::addItem(QGraphicsItem *item)
         if (!elm) {
             return; // LCOV_EXCL_LINE — item->type() == Element::Type is Element's own hardcoded type() override, so qgraphicsitem_cast to Element can never fail for an item reporting that exact type.
         }
-        connect(elm, &Element::inlineEditRequested, this, [this](Element *element) {
-            m_inlineLabelEditor.start(element);
-        });
-        if (auto *ic = qobject_cast<IC *>(elm)) {
-            if (!ic->file().isEmpty()) {
-                m_icRegistry.watchFile(ic->file());
-            }
-            connect(ic, &IC::requestOpenSubCircuit, this, &Scene::icOpenRequested);
-            connect(ic, &IC::previewRequested, this, &Scene::icPreviewRequested);
-            connect(ic, &IC::previewMoved, this, &Scene::icPreviewMoved);
-            connect(ic, &IC::previewHideRequested, this, &Scene::icPreviewHideRequested);
-            connect(ic, &IC::previewCancelRequested, this, &Scene::icPreviewCancelRequested);
-        } else if (auto *tt = qobject_cast<TruthTable *>(elm)) {
-            connect(tt, &TruthTable::requestOpenTruthTableEditor, this, &Scene::openTruthTableRequested);
+        if (auto *ic = qobject_cast<IC *>(elm); ic && !ic->file().isEmpty()) {
+            m_icRegistry.watchFile(ic->file());
         }
         // An audio element that comes back playing, as a deletion undone does, plays again, muted with the scene
         AudioService::instance().sync(*elm);
@@ -195,9 +184,12 @@ void Scene::removeItem(QGraphicsItem *item)
     if (auto *iwid = dynamic_cast<ItemWithId *>(item)) {
         unregisterItem(iwid);
     }
-    // Qt forgets the item that last held the mouse when it leaves the scene
+    // Qt forgets the item that last held the mouse, and a hovered one, when it leaves the scene
     if (item == m_lastHolder) {
         m_lastHolder = nullptr;
+    }
+    if (item == m_hoveredIC) {
+        m_hoveredIC = nullptr;
     }
     // An audio element out of the scene plays nothing
     if (auto *element = qgraphicsitem_cast<Element *>(item)) {
@@ -1673,6 +1665,9 @@ bool Scene::eventFilter(QObject *watched, QEvent *event)
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_interaction.mousePress(event)) {
+        if (!mouseGrabberItem()) {
+            trackHover(event->scenePos(), event->screenPos(), event->widget());
+        }
         QGraphicsScene::mousePressEvent(event);
         operatePress(event);
     }
@@ -1724,6 +1719,9 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     const auto resetFlag = qScopeGuard([this] { m_handlingMouseMove = false; });
 
     if (!m_interaction.mouseMove(event)) {
+        if (!mouseGrabberItem() && !event->buttons()) {
+            trackHover(event->scenePos(), event->screenPos(), event->widget());
+        }
         QGraphicsScene::mouseMoveEvent(event);
     }
 }
@@ -1735,7 +1733,12 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         if (auto *holder = elementOf(mouseGrabberItem()); holder && (event->button() == Qt::LeftButton) && !isLocked(*holder) && holder->hasOperation(Operation::Release)) {
             recordOperation({holder}, [holder] { holder->operate(Operation::Release); });
         }
+        // Qt hovers again on the release of the last button, of an item that held the mouse
+        const bool held = (mouseGrabberItem() != nullptr);
         QGraphicsScene::mouseReleaseEvent(event);
+        if (held && !event->buttons()) {
+            trackHover(event->scenePos(), event->screenPos(), event->widget());
+        }
     }
 }
 
@@ -1747,10 +1750,96 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         // element held it last (a press nothing took, or the holder gone from the scene)
         const Element *lastHolder = m_lastHolder;
         QGraphicsScene::mouseDoubleClickEvent(event);
-        if (lastHolder && (lastHolder->scene() == this) && (elementOf(mouseGrabberItem()) != lastHolder)) {
+        auto *target = elementOf(mouseGrabberItem());
+        if (lastHolder && (lastHolder->scene() == this) && (target != lastHolder)) {
             operatePress(event);
+        } else if (target) {
+            doubleClicked(*target);
         }
     }
+}
+
+void Scene::doubleClicked(Element &element)
+{
+    if (auto *ic = qobject_cast<IC *>(&element)) {
+        // The preview hides at once, so it does not cover the sub-circuit's tab
+        emit icPreviewCancelRequested(ic);
+        emit icOpenRequested(ic->id(), ic->blobName(), ic->file());
+    } else if (element.elementType() == ElementType::TruthTable) {
+        emit openTruthTableRequested();
+    } else if (element.hasLabel()) {
+        m_inlineLabelEditor.start(&element);
+    }
+}
+
+void Scene::trackHover(const QPointF &scenePos, const QPoint &screenPos, QWidget *widget)
+{
+    // Qt hovers the first item under the pointer that takes hover events, an IC, found as
+    // QGraphicsScenePrivate::itemsAtPosition() finds them: under the view's pixel at the pointer, or at the exact point
+    // without a view
+    auto *view = widget ? qobject_cast<QGraphicsView *>(widget->parentWidget()) : nullptr;
+    QList<QGraphicsItem *> under;
+    if (!view) {
+        under = QGraphicsScene::items(scenePos, Qt::IntersectsItemShape, Qt::DescendingOrder, QTransform());
+    } else {
+        const QRectF pointRect(QPointF(widget->mapFromGlobal(screenPos)), QSizeF(1, 1));
+        const QTransform viewTransform = view->viewportTransform();
+        under = QGraphicsScene::items(viewTransform.inverted().map(pointRect), Qt::IntersectsItemShape, Qt::DescendingOrder, viewTransform);
+    }
+    IC *hovered = nullptr;
+    for (auto *item : std::as_const(under)) {
+        // Every element has Element's item type, so the item cast finds an element and the object cast an IC
+        if (auto *ic = qobject_cast<IC *>(qgraphicsitem_cast<Element *>(item))) {
+            hovered = ic;
+            break;
+        }
+    }
+
+    // Qt sends the IC it leaves a leave, the one it comes to an enter, and the one under the pointer a move
+    const auto previewAt = [&](IC *ic, const bool entering) {
+        if (ic->isCursorOverPort(ic->mapFromScene(scenePos))) {
+            emit icPreviewHideRequested();
+        } else if (entering) {
+            emit icPreviewRequested(ic, screenPos);
+        } else {
+            emit icPreviewMoved(ic, screenPos);
+        }
+    };
+    if (hovered != m_hoveredIC) {
+        if (m_hoveredIC) {
+            emit icPreviewHideRequested();
+        }
+        m_hoveredIC = hovered;
+        if (hovered) {
+            previewAt(hovered, true);
+        }
+    }
+    if (hovered) {
+        previewAt(hovered, false);
+    }
+}
+
+bool Scene::event(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::GraphicsSceneHoverEnter:
+    case QEvent::GraphicsSceneHoverMove:
+    case QEvent::GraphicsSceneHoverLeave: {
+        const auto *hover = static_cast<QGraphicsSceneHoverEvent *>(event);
+        trackHover(hover->scenePos(), hover->screenPos(), hover->widget());
+        break;
+    }
+    case QEvent::GraphicsSceneLeave:
+        // The pointer left the view: every hovered item gets a leave
+        if (m_hoveredIC) {
+            m_hoveredIC = nullptr;
+            emit icPreviewHideRequested();
+        }
+        break;
+    default:
+        break;
+    }
+    return QGraphicsScene::event(event);
 }
 
 void Scene::helpEvent(QGraphicsSceneHelpEvent *event)

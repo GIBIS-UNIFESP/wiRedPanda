@@ -578,7 +578,6 @@ void Element::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     if (hasLabel()) {
         event->accept();
-        emit inlineEditRequested(this);
         return;
     }
 

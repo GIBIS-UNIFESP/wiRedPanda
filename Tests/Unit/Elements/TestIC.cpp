@@ -15,6 +15,7 @@
 #include <QFile>
 #include <QGraphicsSceneEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
 #include <QHash>
 #include <QImage>
 #include <QKeySequence>
@@ -220,8 +221,8 @@ void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
     QVERIFY(ic->hasLabel()); // otherwise this test wouldn't distinguish the two code paths
     workspace.scene()->addItem(ic);
 
-    QSignalSpy openSpy(ic, &IC::requestOpenSubCircuit);
-    QSignalSpy inlineEditSpy(ic, &Element::inlineEditRequested);
+    QSignalSpy openSpy(workspace.scene(), &Scene::icOpenRequested);
+    QSignalSpy cancelSpy(workspace.scene(), &Scene::icPreviewCancelRequested);
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick);
     event.setScenePos(ic->mapToScene(ic->boundingRect().center()));
@@ -230,7 +231,9 @@ void TestICUnit::testDoubleClickOpensSubCircuitNotInlineEditor()
     QCoreApplication::sendEvent(workspace.scene(), &event);
 
     QCOMPARE(openSpy.count(), 1);
-    QCOMPARE(inlineEditSpy.count(), 0);
+    QCOMPARE(openSpy.constFirst().constFirst().toInt(), ic->id());
+    QCOMPARE(cancelSpy.count(), 1);
+    QVERIFY(!TestUtils::inlineLabelEditor(workspace.scene()));
 }
 
 void TestICUnit::testAnUnloadedIcTurnsAboutItsFootprint()
@@ -747,6 +750,226 @@ void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
     QVERIFY(!portMap.contains(201));
 }
 
+namespace TestICHoverHelpers {
+
+/// Adds to \a workspace an IC of a switch and an LED, saved in \a dir, at \a pos.
+IC *hoverProbe(WorkSpace &workspace, const QTemporaryDir &dir, const QPointF &pos = {})
+{
+    const QString path = dir.path() + "/hover_probe.panda";
+    if (!QFile::exists(path)) {
+        WorkSpace sub;
+        CircuitBuilder builder(sub.scene());
+        auto *input = new InputSwitch;
+        auto *led = new Led;
+        builder.add(input, led);
+        builder.connect(input, 0, led, 0);
+        if (sub.save(path) != WorkSpace::SaveOutcome::Saved) {
+            return nullptr;
+        }
+    }
+    auto *ic = new IC;
+    workspace.scene()->addItem(ic);
+    ic->loadFile(path, dir.path());
+    ic->setPos(pos);
+    return ic;
+}
+
+/// Sends \a scene a mouse move to \a scenePos, at the screen point of the same coordinates, with \a buttons down.
+void moveTo(Scene *scene, const QPointF &scenePos, const Qt::MouseButtons buttons = Qt::NoButton)
+{
+    QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseMove);
+    event.setScenePos(scenePos);
+    event.setScreenPos(scenePos.toPoint());
+    event.setButtons(buttons);
+    QCoreApplication::sendEvent(scene, &event);
+}
+
+/// The middle of \a ic's body, away from its ports, in scene coordinates.
+QPointF bodyOf(const IC &ic)
+{
+    return ic.mapToScene(ic.boundingRect().center());
+}
+
+} // namespace TestICHoverHelpers
+
+void TestICUnit::testHoverOverTheBodyAsksForAPreviewAndFollowsThePointer()
+{
+    // The pointer coming over an IC's body asks for its preview there, a move over it follows the pointer, and leaving
+    // it hides the preview
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    IC *ic = TestICHoverHelpers::hoverProbe(workspace, dir);
+    QVERIFY(ic);
+    QSignalSpy shown(scene, &Scene::icPreviewRequested);
+    QSignalSpy moved(scene, &Scene::icPreviewMoved);
+    QSignalSpy hidden(scene, &Scene::icPreviewHideRequested);
+    const QPointF body = TestICHoverHelpers::bodyOf(*ic);
+    QVERIFY(!ic->isCursorOverPort(ic->mapFromScene(body)));
+
+    TestICHoverHelpers::moveTo(scene, body);
+    QCOMPARE(shown.count(), 1);
+    QCOMPARE(qvariant_cast<IC *>(shown.constFirst().at(0)), ic);
+    QCOMPARE(shown.constFirst().at(1).toPoint(), body.toPoint());
+
+    const QPointF further = body + QPointF(1, 1);
+    TestICHoverHelpers::moveTo(scene, further);
+    QCOMPARE(shown.count(), 1);
+    QCOMPARE(qvariant_cast<IC *>(moved.constLast().at(0)), ic);
+    QCOMPARE(moved.constLast().at(1).toPoint(), further.toPoint());
+    QCOMPARE(hidden.count(), 0);
+
+    TestICHoverHelpers::moveTo(scene, ic->sceneBoundingRect().bottomRight() + QPointF(100, 100));
+    QCOMPARE(hidden.count(), 1);
+    TestICHoverHelpers::moveTo(scene, ic->sceneBoundingRect().bottomRight() + QPointF(120, 120));
+    QCOMPARE(hidden.count(), 1);
+}
+
+void TestICUnit::testHoverFromOneICToAnotherHidesTheFirst()
+{
+    // Going straight from one IC to another hides the first one's preview and asks for the second one's
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    IC *first = TestICHoverHelpers::hoverProbe(workspace, dir);
+    QVERIFY(first);
+    IC *second = TestICHoverHelpers::hoverProbe(workspace, dir, first->pos() + QPointF(first->boundingRect().width() / 2, 0));
+    QVERIFY(second);
+    QSignalSpy shown(scene, &Scene::icPreviewRequested);
+    QSignalSpy hidden(scene, &Scene::icPreviewHideRequested);
+
+    TestICHoverHelpers::moveTo(scene, TestICHoverHelpers::bodyOf(*first) - QPointF(first->boundingRect().width() / 4, 0));
+    TestICHoverHelpers::moveTo(scene, TestICHoverHelpers::bodyOf(*second));
+    QCOMPARE(shown.count(), 2);
+    QCOMPARE(qvariant_cast<IC *>(shown.constLast().at(0)), second);
+    QCOMPARE(hidden.count(), 1);
+}
+
+void TestICUnit::testHoverLooksThroughOtherElementsToAnIC()
+{
+    // Only an IC takes the hover: another element under the pointer asks for no preview, and one over an IC's body
+    // leaves the hover to the IC, as Qt's dispatch skipped the items that took no hover events
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    IC *ic = TestICHoverHelpers::hoverProbe(workspace, dir);
+    QVERIFY(ic);
+    auto *other = new InputSwitch;
+    scene->addItem(other);
+    other->setPos(ic->sceneBoundingRect().bottomRight() + QPointF(200, 200));
+    QSignalSpy shown(scene, &Scene::icPreviewRequested);
+
+    TestICHoverHelpers::moveTo(scene, other->sceneBoundingRect().center());
+    QCOMPARE(shown.count(), 0);
+
+    const QPointF body = TestICHoverHelpers::bodyOf(*ic);
+    other->setZValue(ic->zValue() + 1);
+    other->setPos(other->pos() + (body - other->sceneBoundingRect().center()));
+    QCOMPARE(scene->items(body, Qt::IntersectsItemShape, Qt::DescendingOrder).constFirst(), other);
+    TestICHoverHelpers::moveTo(scene, body);
+    QCOMPARE(shown.count(), 1);
+    QCOMPARE(qvariant_cast<IC *>(shown.constFirst().at(0)), ic);
+}
+
+void TestICUnit::testHoverWaitsWhileAButtonIsDown()
+{
+    // Qt hovers nothing while a button is down and nothing holds the mouse, as in a rubber-band selection
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    IC *ic = TestICHoverHelpers::hoverProbe(workspace, dir);
+    QVERIFY(ic);
+    QSignalSpy shown(scene, &Scene::icPreviewRequested);
+
+    TestICHoverHelpers::moveTo(scene, TestICHoverHelpers::bodyOf(*ic), Qt::LeftButton);
+    QCOMPARE(shown.count(), 0);
+    TestICHoverHelpers::moveTo(scene, TestICHoverHelpers::bodyOf(*ic));
+    QCOMPARE(shown.count(), 1);
+}
+
+void TestICUnit::testAPressOverAnICHoversIt()
+{
+    // A press while nothing holds the mouse hovers what is under the pointer first, as a move would, and the release
+    // of the last button of the IC holding the mouse hovers again
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    IC *ic = TestICHoverHelpers::hoverProbe(workspace, dir);
+    QVERIFY(ic);
+    QSignalSpy shown(scene, &Scene::icPreviewRequested);
+    QSignalSpy moved(scene, &Scene::icPreviewMoved);
+
+    const QPointF body = TestICHoverHelpers::bodyOf(*ic);
+    QGraphicsSceneMouseEvent press(QEvent::GraphicsSceneMousePress);
+    press.setScenePos(body);
+    press.setScreenPos(body.toPoint());
+    press.setButton(Qt::LeftButton);
+    press.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(scene, &press);
+    QCOMPARE(shown.count(), 1);
+    QCOMPARE(qvariant_cast<IC *>(shown.constFirst().at(0)), ic);
+    QCOMPARE(moved.count(), 1);
+    QCOMPARE(scene->mouseGrabberItem(), ic);
+
+    QGraphicsSceneMouseEvent release(QEvent::GraphicsSceneMouseRelease);
+    release.setScenePos(body);
+    release.setScreenPos(body.toPoint());
+    release.setButton(Qt::LeftButton);
+    release.setButtons(Qt::NoButton);
+    QCoreApplication::sendEvent(scene, &release);
+    QCOMPARE(shown.count(), 1);
+    QCOMPARE(moved.count(), 2);
+}
+
+void TestICUnit::testLeavingTheViewHidesThePreview()
+{
+    // The pointer leaving the view leaves every hovered item: the preview hides, and coming back asks for it again
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    IC *ic = TestICHoverHelpers::hoverProbe(workspace, dir);
+    QVERIFY(ic);
+    QGraphicsView view(scene);
+    QSignalSpy shown(scene, &Scene::icPreviewRequested);
+    QSignalSpy hidden(scene, &Scene::icPreviewHideRequested);
+    TestICHoverHelpers::moveTo(scene, TestICHoverHelpers::bodyOf(*ic));
+
+    QGraphicsSceneEvent leave(QEvent::GraphicsSceneLeave);
+    leave.setWidget(view.viewport());
+    QCoreApplication::sendEvent(scene, &leave);
+    QCOMPARE(hidden.count(), 1);
+
+    TestICHoverHelpers::moveTo(scene, TestICHoverHelpers::bodyOf(*ic));
+    QCOMPARE(shown.count(), 2);
+}
+
+void TestICUnit::testARemovedICIsForgottenWithoutAHide()
+{
+    // An IC that leaves the scene while hovered, as a deletion takes it, is forgotten without a hide, as Qt's hover
+    // items forget it: the pointer moving on over where it was hides nothing
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    IC *ic = TestICHoverHelpers::hoverProbe(workspace, dir);
+    QVERIFY(ic);
+    QSignalSpy hidden(scene, &Scene::icPreviewHideRequested);
+    const QPointF body = TestICHoverHelpers::bodyOf(*ic);
+    TestICHoverHelpers::moveTo(scene, body);
+
+    scene->removeItem(ic);
+    const std::unique_ptr<IC> removed(ic);
+    QCOMPARE(hidden.count(), 0);
+    TestICHoverHelpers::moveTo(scene, body + QPointF(1, 1));
+    QCOMPARE(hidden.count(), 0);
+}
+
 void TestICUnit::testHoverOverPortRequestsPreviewHide()
 {
     // isCursorOverPort() checks the hover position against each port's own small circular
@@ -770,8 +993,8 @@ void TestICUnit::testHoverOverPortRequestsPreviewHide()
     ic->loadFile(subPath, subDir.path());
     QVERIFY(ic->inputSize() >= 1);
 
-    QSignalSpy hideSpy(ic, &IC::previewHideRequested);
-    QSignalSpy showSpy(ic, &IC::previewRequested);
+    QSignalSpy hideSpy(workspace.scene(), &Scene::icPreviewHideRequested);
+    QSignalSpy showSpy(workspace.scene(), &Scene::icPreviewRequested);
 
     QGraphicsSceneHoverEvent enterEvent(QEvent::GraphicsSceneHoverEnter);
     enterEvent.setPos(ic->inputPort(0)->pos()); // IC-local position exactly at the port's own origin

@@ -3,8 +3,6 @@
 
 #include "App/Element/GraphicElements/TruthTable.h"
 
-#include <QGraphicsSceneMouseEvent>
-
 #include "App/Core/Constants.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
@@ -108,12 +106,6 @@ std::optional<Element::PortAttributes> TruthTable::outputAttributes(const int in
 {
     // Outputs are labeled S0, S1, ... to distinguish them from input names
     return PortAttributes{.name = "S" + QString::number(index)};
-}
-
-void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    event->accept();
-    emit requestOpenTruthTableEditor();
 }
 
 const QBitArray &TruthTable::key() const

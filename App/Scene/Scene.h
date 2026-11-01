@@ -505,10 +505,15 @@ signals:
     /// was rejected). Routed to the status bar by SceneUiBinder.
     void showStatusMessageRequested(const QString &message);
 
-    // --- IC hover-preview lifecycle (re-emitted from IC; see SceneUiBinder) ---
+    // --- IC hover-preview lifecycle (the scene's hover tracking, trackHover(); see SceneUiBinder) ---
+
+    /// Emitted when the pointer comes over \a ic's body, at \a screenPos.
     void icPreviewRequested(IC *ic, const QPoint &screenPos);
+    /// Emitted when the pointer moves over \a ic's body, at \a screenPos.
     void icPreviewMoved(IC *ic, const QPoint &screenPos);
+    /// Emitted when the pointer leaves an IC, or comes over one of its ports.
     void icPreviewHideRequested();
+    /// Emitted when \a ic is double-clicked, before its sub-circuit opens.
     void icPreviewCancelRequested(IC *ic);
 
     /// Emitted when a TruthTable element is double-clicked to request opening its editor.
@@ -539,6 +544,9 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     /// \reimp
     void helpEvent(QGraphicsSceneHelpEvent *event) override;
+    /// \reimp Tracks the hover over an IC (trackHover()) on a hover event sent to the scene and on the pointer
+    /// leaving the view, as Qt's hover dispatch does.
+    bool event(QEvent *event) override;
 
 private:
     // --- Helpers ---
@@ -558,6 +566,17 @@ private:
     void operatePress(const QGraphicsSceneMouseEvent *event);
     /// Runs \a operation of every unlocked element whose trigger key \a event is, as one undoable change.
     void operateTriggered(const QKeyEvent *event, Operation operation);
+    /// Acts on a double-click that Qt gave \a element as one: an IC opens its sub-circuit, a truth table its editor,
+    /// any other element with a label edits it.
+    void doubleClicked(Element &element);
+    /**
+     * \brief Follows the pointer at \a scenePos (\a screenPos on the screen, over \a widget, the view's viewport,
+     * if any) over the ICs, as Qt dispatched hover events to them: the topmost IC under it is hovered.
+     * \details A new IC hovered hides the last one's preview and asks for its own, then follows the move; over a
+     * port the preview hides instead. Called where Qt dispatches hover: a move or a press while nothing holds the
+     * mouse and no button is down, a release of the last button held by an item, and a hover event sent to the scene.
+     */
+    void trackHover(const QPointF &scenePos, const QPoint &screenPos, QWidget *widget);
     /// Returns the items whose shapes reach within 4 units of \a pos, topmost first.
     QList<QGraphicsItem *> itemsAt(const QPointF pos) const;
     const QVector<Connection *> connections() const;
@@ -605,6 +624,8 @@ private:
     /// The element that held the mouse after the last press, null after a press nothing took or once it leaves the
     /// scene, as Qt's: Qt gives a double-click on another element to it as a press.
     QPointer<Element> m_lastHolder;
+    /// The IC the pointer is over, as Qt's hover items held it; forgotten without a hide when it leaves the scene.
+    QPointer<IC> m_hoveredIC;
 
     // Mouse-move re-entrancy guard. Stays on Scene (not SceneInteraction) because it
     // must wrap the base QGraphicsScene::mouseMoveEvent call, where the re-entrancy

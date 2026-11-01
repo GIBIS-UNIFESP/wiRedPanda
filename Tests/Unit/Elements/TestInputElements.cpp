@@ -10,7 +10,6 @@
 #include <QFile>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
-#include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -1066,14 +1065,13 @@ void TestInputElements::testADoubleClickOnTheElementJustPressedEditsItsLabel()
     Scene scene;
     auto *inputSwitch = new InputSwitch;
     scene.addItem(inputSwitch);
-    QSignalSpy editRequests(inputSwitch, &Element::inlineEditRequested);
     const QPointF at = inputSwitch->sceneBoundingRect().center();
 
     TestInputElementsHelpers::click(scene, *inputSwitch);
     TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
     TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
     QVERIFY(inputSwitch->isOn());
-    QCOMPARE(editRequests.count(), 1);
+    QVERIFY(TestUtils::inlineLabelEditor(&scene));
 }
 
 void TestInputElements::testADoubleClickAfterAPressNothingTookEditsTheLabel()
@@ -1083,7 +1081,6 @@ void TestInputElements::testADoubleClickAfterAPressNothingTookEditsTheLabel()
     Scene scene;
     auto *inputSwitch = new InputSwitch;
     scene.addItem(inputSwitch);
-    QSignalSpy editRequests(inputSwitch, &Element::inlineEditRequested);
     const QPointF at = inputSwitch->sceneBoundingRect().center();
     const QPointF away = inputSwitch->sceneBoundingRect().bottomRight() + QPointF(200, 200);
 
@@ -1094,7 +1091,8 @@ void TestInputElements::testADoubleClickAfterAPressNothingTookEditsTheLabel()
 
     QVERIFY(!inputSwitch->isOn());
     QCOMPARE(scene.undoStack()->count(), 0);
-    QCOMPARE(editRequests.count(), 1);
+    QVERIFY(TestUtils::inlineLabelEditor(&scene));
+
 }
 
 void TestInputElements::testADoubleClickAfterTheLastHolderLeftEditsTheLabel()
@@ -1107,7 +1105,6 @@ void TestInputElements::testADoubleClickAfterTheLastHolderLeftEditsTheLabel()
     second->setPos(0, 128);
     scene.addItem(first);
     scene.addItem(second);
-    QSignalSpy editRequests(second, &Element::inlineEditRequested);
     const QPointF at = second->sceneBoundingRect().center();
 
     TestInputElementsHelpers::click(scene, *first);
@@ -1120,7 +1117,7 @@ void TestInputElements::testADoubleClickAfterTheLastHolderLeftEditsTheLabel()
 
     QVERIFY(!second->isOn());
     QCOMPARE(scene.undoStack()->count(), 1);
-    QCOMPARE(editRequests.count(), 1);
+    QVERIFY(TestUtils::inlineLabelEditor(&scene));
 }
 
 void TestInputElements::testADoubleClickAfterTheLastHolderCameBackEditsTheLabel()
@@ -1133,7 +1130,6 @@ void TestInputElements::testADoubleClickAfterTheLastHolderCameBackEditsTheLabel(
     second->setPos(0, 128);
     scene.addItem(first);
     scene.addItem(second);
-    QSignalSpy editRequests(second, &Element::inlineEditRequested);
     const QPointF at = second->sceneBoundingRect().center();
 
     TestInputElementsHelpers::click(scene, *first);
@@ -1145,7 +1141,7 @@ void TestInputElements::testADoubleClickAfterTheLastHolderCameBackEditsTheLabel(
 
     QVERIFY(!second->isOn());
     QCOMPARE(scene.undoStack()->count(), 1);
-    QCOMPARE(editRequests.count(), 1);
+    QVERIFY(TestUtils::inlineLabelEditor(&scene));
 }
 
 void TestInputElements::testADoubleClickOnAnotherElementPressesIt()
@@ -1158,7 +1154,6 @@ void TestInputElements::testADoubleClickOnAnotherElementPressesIt()
     second->setPos(0, 128);
     scene.addItem(first);
     scene.addItem(second);
-    QSignalSpy editRequests(second, &Element::inlineEditRequested);
     const QPointF at = second->sceneBoundingRect().center();
 
     TestInputElementsHelpers::click(scene, *first);
@@ -1166,7 +1161,7 @@ void TestInputElements::testADoubleClickOnAnotherElementPressesIt()
     TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
     QVERIFY(first->isOn());
     QVERIFY(second->isOn());
-    QCOMPARE(editRequests.count(), 0);
+    QVERIFY(!TestUtils::inlineLabelEditor(&scene));
     QCOMPARE(scene.undoStack()->count(), 2);
     scene.undoStack()->undo();
     QVERIFY(!second->isOn());

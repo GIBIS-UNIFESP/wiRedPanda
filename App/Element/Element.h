@@ -79,14 +79,6 @@ public:
     /// Out-of-line so the unique_ptr to the forward-declared QSvgRenderer can be destroyed.
     ~Element() override;
 
-signals:
-    /// Emitted on double-click for a labelable element (hasLabel()) whose type doesn't already
-    /// claim double-click for something else (IC/TruthTable override mouseDoubleClickEvent()
-    /// directly and this signal never fires for them). The owning Scene listens and drives the
-    /// actual inline edit widget -- see InlineLabelEditor.
-    void inlineEditRequested(Element *element);
-
-public:
     // --- External file dependencies ---
 
     /// Returns the list of external (non-resource) file paths this element depends on.
@@ -729,11 +721,9 @@ protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
     /**
-     * \brief Requests inline label editing on double-click.
-     * \details Only fires for hasLabel() elements; other types fall through to the base
-     * Qt behavior unchanged. IC and TruthTable override this method themselves (to open a
-     * sub-circuit / the truth-table editor instead), so this base implementation is never
-     * reached for them -- ordinary virtual dispatch, no elementType() check needed here.
+     * \brief Takes a double-click on an element with a label, which the scene acts on (Scene::doubleClicked()).
+     * \details The scene edits the label, or opens an IC's sub-circuit or a truth table's editor; an element without a
+     * label takes it as Qt does, as a press.
      */
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 

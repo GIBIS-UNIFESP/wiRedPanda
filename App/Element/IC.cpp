@@ -7,7 +7,6 @@
 
 #include <QDataStream>
 #include <QFileInfo>
-#include <QGraphicsSceneMouseEvent>
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Core/Common.h"
@@ -53,8 +52,6 @@ struct ElementInfo<IC> {
 IC::IC(QGraphicsItem *parent)
     : Element(ElementType::IC, parent)
 {
-    // Enable hover events so the preview popup can be shown/hidden
-    setAcceptHoverEvents(true);
 }
 
 IC::~IC()
@@ -312,14 +309,6 @@ IC::PortMetadata IC::buildPortMetadata(const QVector<Element *> &elements)
     return ICLoader::buildPortMetadata(elements);
 }
 
-void IC::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    // Hide the preview popup immediately on double-click so it doesn't overlap the sub-circuit tab
-    emit previewCancelRequested(this);
-    event->accept();
-    emit requestOpenSubCircuit(id(), m_blobName, m_file);
-}
-
 // --- Hover preview ---
 
 QString IC::displayName() const
@@ -336,38 +325,6 @@ bool IC::isCursorOverPort(const QPointF &localPos) const
     return std::any_of(ports.cbegin(), ports.cend(), [&](const Port *port) {
         return port->contains(mapToItem(port, localPos));
     });
-}
-
-void IC::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
-{
-    // The preview belongs to the IC body only — the ports are child items that
-    // don't consume hover events, so the IC also receives them over the pins.
-    if (isCursorOverPort(event->pos())) {
-        emit previewHideRequested();
-        return;
-    }
-
-    emit previewRequested(this, event->screenPos());
-}
-
-void IC::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
-{
-    if (isCursorOverPort(event->pos())) {
-        emit previewHideRequested();
-        return;
-    }
-
-    // Over the body: keep tracking the cursor while a show is pending, but
-    // re-arm the show when the cursor returns from a port within the same hover.
-    // (The "already active" vs. "needs re-arming" distinction is made by whoever
-    // drives the popup off this signal — see SceneUiBinder.)
-    emit previewMoved(this, event->screenPos());
-}
-
-void IC::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
-{
-    Q_UNUSED(event)
-    emit previewHideRequested();
 }
 
 void IC::initializeSimulation(const bool keepOutputs)

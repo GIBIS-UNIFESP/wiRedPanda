@@ -16,7 +16,7 @@ class Scene;
 /**
  * \class InlineLabelEditor
  * \brief Hosts a temporary QLineEdit directly on the canvas to rename an element's label
- * in place, in response to Element::inlineEditRequested().
+ * in place, when the scene takes a double-click on it (Scene::doubleClicked()).
  *
  * \details Follows the SceneDropHandler/ConnectionManager pattern: holds a back-reference to
  * the owning Scene and delegates the undo command back to it. Only one inline edit is ever

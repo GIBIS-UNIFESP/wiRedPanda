@@ -432,14 +432,21 @@ void TestTruthTable::testPaintingSelected()
 
 void TestTruthTable::testMouseDoubleClickRequestsEditor()
 {
-    TruthTable truthTable;
-    QSignalSpy spy(&truthTable, &TruthTable::requestOpenTruthTableEditor);
+    // The scene opens a truth table's editor on a double-click of it, and edits no label
+    Scene scene;
+    auto *truthTable = new TruthTable;
+    scene.addItem(truthTable);
+    QSignalSpy spy(&scene, &Scene::openTruthTableRequested);
 
     QGraphicsSceneMouseEvent event(QEvent::GraphicsSceneMouseDoubleClick);
-    truthTable.mouseDoubleClickEvent(&event);
+    event.setScenePos(truthTable->sceneBoundingRect().center());
+    event.setButton(Qt::LeftButton);
+    event.setButtons(Qt::LeftButton);
+    QCoreApplication::sendEvent(&scene, &event);
 
     QCOMPARE(spy.count(), 1);
     QVERIFY(event.isAccepted());
+    QVERIFY(!TestUtils::inlineLabelEditor(&scene));
 }
 
 void TestTruthTable::testDisconnectedInputsAreUnknown()

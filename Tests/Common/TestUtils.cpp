@@ -16,7 +16,9 @@
 
 #include <QAbstractButton>
 #include <QCoreApplication>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
+#include <QLineEdit>
 #include <QPainter>
 #include <QRandomGenerator>
 #include <QSet>
@@ -685,6 +687,18 @@ QVector<DiffStep> generateDifferentialVectors(
     }
 
     return steps;
+}
+
+QLineEdit *inlineLabelEditor(Scene *scene)
+{
+    for (auto *item : scene->items()) {
+        if (auto *proxy = qgraphicsitem_cast<QGraphicsProxyWidget *>(item)) {
+            if (auto *lineEdit = qobject_cast<QLineEdit *>(proxy->widget())) {
+                return lineEdit;
+            }
+        }
+    }
+    return nullptr;
 }
 } // namespace TestUtils
 
