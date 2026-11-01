@@ -37,3 +37,7 @@ A relwithdebinfo build.
 ## Plan 02b
 
 - Within 0.4% of the floor; every row is built with Qt 6.12.0, so the ceiling's move from 6.9.3 does not show here.
+
+## Plan 02c
+
+- Within 0.4% of the ceiling but `combinational_1000` zoomed to fit, 1.2% more.

@@ -8,7 +8,7 @@ row (`EB.4`, `EB.5`, ...) and a line in the log. Status: `todo`, `doing`, `done`
 the notes) or `dropped` (why, with the user's decision). The Commits column lists every commit of the item. Every
 status change gets a dated line in the log.
 
-**Branch:** `02c-exception-boundaries`, from `02b-qt-ceiling` at `d558089a1`, created 2026-10-29.
+**Branch:** `02c-exception-boundaries`, from `02b-qt-ceiling` at `9ae31e413`, created 2026-10-29.
 
 **Open decisions:** none.
 
@@ -29,6 +29,7 @@ status change gets a dated line in the log.
 | EB.13 | A push that drops its command throws out of `Scene::receiveCommand()` into the slot or event handler that pushed it, none of which catches: the BUILD path, the element editor's context menu and the exercise's and tour's steps | done | `eeaab9595` | Found 2026-10-29 reading EB.6's UI path. EB.5 made `receiveCommand()` throw what a dropped command kept once the stack returns, and guarded Undo, Redo and the MCP server, not the pushes. A push drops when its first `redo()` cannot read its snapshot back: the application's own bytes, except an IC file another program changed since, its cache dropped, which the IC builds again from the file (EB.D6); about 49 push sites in 12 files, from some 20 entries Qt calls. Fixed 2026-10-30 at the user's choice (EB.D7): `Scene::receiveCommand()`, which every push of the interface goes through, reports a dropped push inside `guardedSlot()`, the scene as it was; `Scene::pushCommand()` throws it, for the MCP server's handlers (whose processor answers it as an error) and `WorkSpace::saveChildICBlob()`, whose save must fail as a whole (EB.6). The MCP server's wireless-mode macro is closed by a scope guard when a push in it throws, so later edits do not join it; no test reaches it, the macro's update being a node's, which reads no file. Tests: `receiveCommand()` reports and `pushCommand()` throws, the history unchanged (`TestCommands`); the inline label editor's Return on such an IC, emitted rather than typed, since a key event goes through `notify()`, whose last-resort catch hid the throw from the first version of the test (`TestScene`); the MCP server's label set throws to its processor (`TestElementHandler`). Each fails with its part put back: `receiveCommand()` throwing (two), `pushCommand()` reporting (one), the handler pushing through `receiveCommand()` (one). The element editor's label field pushes a property command, which reads no snapshot, so it cannot drop. Tip checked 2026-10-30: release suite 227/227, five sources compiled alone, at `-O3` and with GCC 13, three tests alone, `fix_style.py` clean; no `tr()` string added or removed |
 | EB.14 | A restore that rebuilds an IC whose circuit names a picture or a sound that is gone throws and drops: an embedded IC's circuit change undone or redone, or any snapshot of such an IC; and the IC's palette preview is lost | done | `ad60c1ad6` | Found 2026-10-30 by EB.2's command steps: undoing an embedded IC's circuit change whose old circuit holds a gate with a picture, or an AudioBox with a sound, deleted since, threw `Couldn't load pixmap` and `Couldn't load audio` and dropped the step. A restore shows or plays the default (P2.50, EB.3), but an IC's circuit is file content, read with `PortableFile` for its paths, and `deserialize()` reported a file's failed pictures and sounds by purpose alone. Fixed: `SerializationContext::fallBackOnFailedFiles`, set on the circuits read while a snapshot's restore is under way (`ICLoader::withCarriedFiles()`, which `IC::load()` enters for an in-memory snapshot, a load inside it inheriting) and on a preview's read; opening a file still reports one, inside its ICs too. The preview, read again from the IC's definition when shown, caught the report and showed none: it shows the default. Tests: the command steps' blob rows (`TestCommands`), four failing with the restore not marked; an IC's preview with its circuit's picture deleted after the load (`TestICUnit`), failing with the preview not marked |
 | EB.15 | Whether Windows ends the process too for a throw through Qt's frames (§9) | done | | Answered 2026-10-30 (plan 2c's audit) from CI already run, nothing new: P2.16's test threw a `Pandaception` out of a command's `undo()` through `QUndoStack::undo()`, a QtGui frame, inside `QVERIFY_THROWS_EXCEPTION` (`cf2d4176b`, Build 40135689835). All three Windows jobs, built with MSVC, passed it (x64 on Qt 6.8.3 and 6.9.3, jobs 120996600845 and 120996600839; ARM64 on 6.9.3, job 120996600923; each log read): the exception unwound through Qt's frame to the test's catch, as on Linux; both macOS jobs ended the process ("terminating due to uncaught exception of type Pandaception"). So Windows does not end the process for a throw through a frame Qt calls synchronously; a throw from an event handler reaches `notify()` there, as Qt documents. The rule holds either way (§9) |
+| EB.16 | The rendering baseline at the plan's end (`PLAN_01_characterization.md` §4.7, `Scripts/profile_probe.sh baseline`), its row in `.claude/RENDERING_BASELINE.md` | done | | Measured 2026-10-31 at `bbfefb8e0`, after plan 1's P1.40 put the baseline in: clocked_2000 21.97 G / 3.46 G, combinational_1000 0.225 G / 0.628 G, ic_heavy 52.52 G / 10.64 G (`run` / `runfit`); two native runs of each phase alike. Within 0.4% of the ceiling but `combinational_1000` zoomed to fit, 1.2% more. |
 | EB.D2 | How the rule is kept (§5) | done | | Decided 2026-10-28 by the user: the inventory checked in CI against the sources, and a test through Qt's frame per fixed site; no `noexcept`, since `notify()` stays the last-resort reporter |
 | EB.D3 | What an AudioBox restored with its sound gone plays (§4) | done | | Decided 2026-10-28 by the user: its default sound, the path kept, as P2.50's pictures and plan 3's P3.D5 |
 | EB.D5 | What a command does when its own snapshot does not read (EB.5) | done | | Decided 2026-10-29 by the user: the operation is dropped and the failure thrown ("if it somehow fails to parse we should probably drop the operation and throw"), and nothing may be left half loaded ("the circuit should never go into an invalid state"). A throw through `QUndoStack` ends the process on macOS, so the command keeps the exception and the scene throws it once the stack has returned; a restore reads into copies before the live elements, since a catch after a partial load cannot undo it. A catch with the element left half loaded, and an assertion alone, were turned down |
@@ -46,45 +47,45 @@ status change gets a dated line in the log.
   sites read for plan 2's audit (AU.8), none of whose commands can throw today, go in the inventory.
 - 2026-10-28: EB.D2 and EB.D3 decided by the user: the rule kept by the inventory checked against the sources and a
   test per fixed site, no `noexcept`; an AudioBox restored with its sound gone plays its default. EB.2 and EB.3 `todo`.
-- 2026-10-29: the branch created from `02b-qt-ceiling` at `e9b105e18`. EB.1 `doing`: the sites recounted (the
+- 2026-10-29: the branch created from `02b-qt-ceiling` at `927dc3b83`. EB.1 `doing`: the sites recounted (the
   appendix), the entry paths begun; clangd set up for navigation to trace callers.
 - 2026-10-29: EB.1's inventory written (the appendix): every throw, catch and `guardedSlot()` site, the throw
   sites' paths from clangd's call graph. EB.5 to EB.9 found, `todo`.
-- 2026-10-29: EB.1 done (`d50ccdc95`).
-- 2026-10-29: rebased onto `02b-qt-ceiling` at `24724b02b`, the ceiling landed (QC.2 done); the hashes above
+- 2026-10-29: EB.1 done (`3372b0a7d`).
+- 2026-10-29: rebased onto `02b-qt-ceiling` at `141c90949`, the ceiling landed (QC.2 done); the hashes above
   re-mapped.
-- 2026-10-29: EB.3 done (`3c5fe7998`): the box plays its built-in sound; the inventory's AudioBox site moved to
+- 2026-10-29: EB.3 done (`5384206ac`): the box plays its built-in sound; the inventory's AudioBox site moved to
   `reportFailedFiles()`, and EB.9 loses the built-in sound.
 - 2026-10-29: EB.D4 decided by the user: an IC restored with its file gone loads the content its snapshot carries.
   EB.10 found asking it, `doing`: undoing an IC file's removal from the palette leaves the file in the trash.
-- 2026-10-29: EB.10 done (`d841818ad`).
-- 2026-10-29: EB.4 done (`0d9a108cc`): a snapshot carries the IC files its ICs read (EB.D4).
+- 2026-10-29: EB.10 done (`a69b64b06`).
+- 2026-10-29: EB.4 done (`1356d1aea`): a snapshot carries the IC files its ICs read (EB.D4).
 - 2026-10-29: CI at `9559fa4fa` and `0fcfae66d`: EB.3's test failed with no output device and EB.10's constructor
   lacked parameter docs; both fixed and folded, the hashes above re-mapped.
 - 2026-10-29: CI green at `87f1b2f2f` for EB.3, EB.10 and EB.4 (Build 40896757311, Sanitizers 40896757433, API docs
   40896759215; none skipped).
-- 2026-10-29: EB.5 `doing`: its first slice (`a34a5325e`), the commands' own throws given up instead.
+- 2026-10-29: EB.5 `doing`: its first slice (`1eeee6be8`), the commands' own throws given up instead.
 - 2026-10-29: EB.D5 and EB.D6 decided by the user: a snapshot that does not read drops its command, which the scene
   throws once the stack has returned, with nothing half loaded; the copies read first stay, an IC's unchanged circuit
   kept.
-- 2026-10-29: EB.5 done (`14e2c6d89`): a snapshot that does not read drops its command, nothing half loaded.
+- 2026-10-29: EB.5 done (`d3e4477bb`): a snapshot that does not read drops its command, nothing half loaded.
 - 2026-10-29: CI green at `c160244d5` (Build 40906915433, Sanitizers 40906915419, API docs 40906915418) and at
-  `1a430ab9a` for EB.5 (Build 40966577050, Sanitizers 40966577062, API docs 40966577045); none skipped.
-- 2026-10-29: EB.6 `doing`: OPEN-Q (`943460a05`), PASTE (`73d9f9e55`) and PALETTE (`ed24ad206`) report in their
-  slots. EB.11 found and done (`110207db2`): stream-error messages left `%2` unfilled. EB.12 found and done
-  (`53e7681d6`): an added element's payload that does not read leaked.
-- 2026-10-29: EB.6 done (`b104fd268`, `5be1e2c99`): a sub-circuit tab's save hands its blob to the parent directly,
+  `b1cf55575` for EB.5 (Build 40966577050, Sanitizers 40966577062, API docs 40966577045); none skipped.
+- 2026-10-29: EB.6 `doing`: OPEN-Q (`479432a35`), PASTE (`6e8ed86e7`) and PALETTE (`61a99d217`) report in their
+  slots. EB.11 found and done (`b014bfee5`): stream-error messages left `%2` unfilled. EB.12 found and done
+  (`e51398102`): an added element's payload that does not read leaked.
+- 2026-10-29: EB.6 done (`1813c38c9`, `f9d018cfc`): a sub-circuit tab's save hands its blob to the parent directly,
   and a sub-circuit that does not read leaves no tab; the UI path read, its throws EB.9's and EB.13's. EB.13 found,
   `todo`: a push that drops its command throws into the slot that pushed it.
 - 2026-10-30: CI green at `5f5171e8d` (Build 40971282786, Sanitizers 40971282663, API docs 40971282402) and at
-  `641d696e6` for EB.6 (Build 40973622842, Sanitizers 40973622844, API docs 40973622872); none skipped.
+  `28102d39a` for EB.6 (Build 40973622842, Sanitizers 40973622844, API docs 40973622872); none skipped.
 - 2026-10-30: EB.D7 decided by the user: a push that drops is reported
   by the scene, a throwing `pushCommand()` kept for the MCP server and the sub-circuit save. EB.13 done
-  (`569e62a5b`).
-- 2026-10-30: EB.7 done (`15101a1e4`): the autosave's timer reports a failure once. EB.8 done (`22c1adc36`): a drag
+  (`118fa2a41`).
+- 2026-10-30: EB.7 done (`e6ffaa51d`): the autosave's timer reports a failure once. EB.8 done (`0e5287a1b`): a drag
   that does not read is refused, a drop that fails reported. Tip checked: release suite 227/227, six sources compiled
   alone, at `-O3` and with GCC 13, five tests alone, `fix_style.py` clean; no `tr()` string added or removed.
-- 2026-10-30: EB.9 done (`36718f661`): broken invariants from the interface are assertions, and a stream refuses a
+- 2026-10-30: EB.9 done (`bc276f68a`): broken invariants from the interface are assertions, and a stream refuses a
   type it cannot build. Two tests from EB.7 and EB.8 did not build against Qt 6.9 (a `QPointF` drag-enter event, a
   `QTRY_VERIFY` default timeout under `-Wconversion`); fixed with `makeDragEnterEvent()` and `TestUtils::waitFor()`,
   folded into them. Tip checked: release suite 227/227, debug
@@ -93,9 +94,9 @@ status change gets a dated line in the log.
   clean, the strings golden updated.
 - 2026-10-30: CI at `84a18b6bb` failed the two drag tests and the autosave test on Qt 6.8, fixed in the fold logged
   above.
-- 2026-10-30: EB.2 done (`0dd1a99ab`, `00efc7904`, `7eabfdc0b`): the inventory checked in CI against the sources,
+- 2026-10-30: EB.2 done (`31f098844`, `0311b41b5`, `4c2e05d50`): the inventory checked in CI against the sources,
   and every command step that reads a snapshot tested with each external file gone. EB.14 found by it and done
-  (`7eabfdc0b`): a restore threw for a picture or a sound gone inside an IC's circuit. Tip checked: release suite
+  (`4c2e05d50`): a restore threw for a picture or a sound gone inside an IC's circuit. Tip checked: release suite
   227/227, five sources compiled alone, at `-O3` and with GCC 13, `fix_style.py` clean, the inventory check clean;
   no `tr()` string added or removed.
 - 2026-10-30: the UNDO path's BeWavedDolphin actions read: its command reaches no throw site, so they need no guard.
@@ -103,18 +104,24 @@ status change gets a dated line in the log.
   41062510533) failed EB.2's command-step test: it read the element's id after the step that deleted it (an
   addition's undo, a deletion, a morph), a use after free ASan reported and macOS failed on, and GCC 13 at `-O3`
   raised `-Wnull-dereference` on the id's fallback; the id is taken when the element is added. GCC 13 at `-O3`
-  fails the old test and passes the new; folded into the fix (`7eabfdc0b`).
+  fails the old test and passes the new; folded into the fix (`4c2e05d50`).
 - 2026-10-30: CI green at `b4778e528` (Build 41065411927, Sanitizers 41065411494, API docs 41065411536, Exception
   inventory 41065411455), the macOS-15 jobs on 15.8.2 included; none skipped.
 - 2026-10-30: plan 2c audited against the plan, not the ledger's statuses: EB.8's test went around Qt's frame and
   missed the clone case and the report, closed and folded into the fix; the two failed-file report sites listed the
   UNDO path that EB.14 closed; §9's question had no row (EB.15, answered from P2.16's CI); the
   appendix's counts recounted by the check's script; CLAUDE.md gains GCC 13's `-O3` null-dereference.
-  Tip checked at `2103aa93b`: release and debug suites 227/227.
+  Tip checked at `2f7810111`: release and debug suites 227/227.
 - 2026-10-30: CI green at `f49d72cf2` (Build 41069500976, Sanitizers 41069501044, API docs 41069501292, Lint
   41069501290, Exception inventory 41069501128); none skipped.
 - 2026-10-30: rebased onto plan 2's P2.97, the growth tests timed by the thread's CPU, and P2.98, the update
   checker's failed reply from a local server, recorded here at first; the hashes above re-mapped.
+- 2026-10-31: EB.16 added and done: the rendering baseline measured at the plan's end, `bbfefb8e0`, after plan 1 took it
+  (P1.40).
+- 2026-11-01: CI's Exception inventory failed at `00fc1c8a6`, this branch's tip: plan 2's P2.97 and P2.98, rebased in
+  below this branch, moved `Simulation::Simulation()`'s `guardedSlot()` from line 39 to 40 and its row stayed at 39. The
+  row moved in `c554a71d0`, the commit that wrote it, and in every commit after it, as this branch was rebased onto plan
+  2's P2.100.
 
 ## Appendix: the inventory (EB.1)
 
@@ -126,7 +133,7 @@ EB.5's first slice takes out the commands' ten throws in `Commands.cpp` and its 
 adds a catch and its rethrow in `openICInTab()`, EB.7 and EB.8 a catch each; EB.9 takes out three throws and adds the
 reader's refusal of a type it cannot build; EB.5 to EB.13 add eleven `guardedSlot()` uses. Recounted 2026-10-30 by
 `Scripts/check_exception_inventory.py` (EB.2), which CI runs: 124 throw sites, 53 catches, and 93 `guardedSlot()` uses
-with its definition, 94 sites; the base's counts above are the same script's, run on `24724b02b`.
+with its definition, 94 sites; the base's counts above are the same script's, run on `141c90949`.
 
 Classes (the plan's §2): **B**, below a boundary, caught there; **E**, an expected condition, which needs a fallback, a
 refusal before anything changes, or a report where the user acted; **I**, a broken invariant, to be an assertion; **Q**,
@@ -168,24 +175,24 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/BeWavedDolphin/BeWavedDolphin.cpp:612` | `BewavedDolphin::on_actionSetClockWave_triggered()`: no cells selected | boundaries only | E | B: stays |
 | `App/BeWavedDolphin/DolphinExporter.cpp:70` | `exportToPdf()`: a PDF that cannot be written | boundaries only | E | B: stays |
 | `App/BeWavedDolphin/DolphinFile.cpp:26` | `save()`: a waveform file that cannot be written | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:43` | `save()`: a waveform file that cannot be written | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:52` | `load()`: a waveform file that does not read | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:57` | `load()`: a waveform file that does not read | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:72` | `load()`: a waveform file that does not read | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:87` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:94` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:103` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/DolphinFile.cpp:116` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:46` | `save()`: a waveform file that cannot be written | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:58` | `load()`: a waveform file that does not read | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:66` | `load()`: a waveform file that does not read | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:84` | `load()`: a waveform file that does not read | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:102` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:111` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:123` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/DolphinFile.cpp:140` | `parseTerminal()`: a waveform text file that does not parse | boundaries only | E | B: stays |
 | `App/BeWavedDolphin/DolphinModelBuilder.cpp:65` | `collect()`: a circuit with no inputs or outputs | MCP | E | B: stays |
-| `App/BeWavedDolphin/DolphinModelBuilder.cpp:97` | `collect()`: a circuit with no inputs or outputs | MCP | E | B: stays |
-| `App/BeWavedDolphin/DolphinModelBuilder.cpp:101` | `collect()`: a circuit with no inputs or outputs | MCP | E | B: stays |
-| `App/BeWavedDolphin/DolphinModelBuilder.cpp:105` | `collect()`: a circuit with no inputs or outputs | MCP | E | B: stays |
+| `App/BeWavedDolphin/DolphinModelBuilder.cpp:100` | `collect()`: a circuit with no inputs or outputs | MCP | E | B: stays |
+| `App/BeWavedDolphin/DolphinModelBuilder.cpp:108` | `collect()`: a circuit with no inputs or outputs | MCP | E | B: stays |
+| `App/BeWavedDolphin/DolphinModelBuilder.cpp:116` | `collect()`: a circuit with no inputs or outputs | MCP | E | B: stays |
 | `App/BeWavedDolphin/Serializer.cpp:36` | `loadBinary()`: a waveform file that does not read | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/Serializer.cpp:44` | `loadBinary()`: a waveform file that does not read | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/Serializer.cpp:92` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/Serializer.cpp:99` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/Serializer.cpp:107` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
-| `App/BeWavedDolphin/Serializer.cpp:117` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/Serializer.cpp:46` | `loadBinary()`: a waveform file that does not read | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/Serializer.cpp:94` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/Serializer.cpp:103` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/Serializer.cpp:113` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
+| `App/BeWavedDolphin/Serializer.cpp:123` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
 | `App/CodeGen/ArduinoCodeGen.cpp:31` | `ArduinoCodeGen::ArduinoCodeGen()`: a file that cannot be opened | MCP | E | B: stays |
 | `App/CodeGen/ArduinoCodeGen.cpp:197` | `ArduinoCodeGen::generate()`: rethrow (catch at `:194`) | MCP | — | B: stays |
 | `App/CodeGen/ArduinoCodeGen.cpp:783` | `ArduinoCodeGen::assignVariablesRec()`: a circuit the generator cannot express | MCP, TEST-ONLY | E | B: stays |
@@ -224,38 +231,38 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Element/ICLoader.cpp:406` | `ICLoader::deserializeAndLoad()`: an IC's file that does not read | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/IO/FileUtils.h:37` | `copyToDir()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/IO/Serialization.cpp:43` | `readVersionNumber()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:89` | `readBoundedString()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:107` | `readBoundedByteArray()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:126` | `readBoundedStringList()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:142` | `readBoundedKeySequence()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:156` | `readBoundedBitArray()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:226` | `readBoundedVariant()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:257` | `readBoundedVariant()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:283` | `Serialization::readBoundedMetadata()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:286` | `Serialization::readBoundedMetadata()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:303` | `Serialization::readBoundedBlobMap()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:306` | `Serialization::readBoundedBlobMap()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:345` | `Serialization::readPayload()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:356` | `Serialization::readPayload()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:387` | `Serialization::inflatePayload()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:399` | `Serialization::readPandaHeader()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:435` | `Serialization::readPandaHeader()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:90` | `readBoundedString()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:109` | `readBoundedByteArray()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:129` | `readBoundedStringList()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:146` | `readBoundedKeySequence()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:161` | `readBoundedBitArray()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:232` | `readBoundedVariant()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:264` | `readBoundedVariant()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:291` | `Serialization::readBoundedMetadata()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:294` | `Serialization::readBoundedMetadata()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:311` | `Serialization::readBoundedBlobMap()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:314` | `Serialization::readBoundedBlobMap()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:353` | `Serialization::readPayload()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:365` | `Serialization::readPayload()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:397` | `Serialization::inflatePayload()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:410` | `Serialization::readPandaHeader()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:457` | `Serialization::readPandaHeader()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/IO/Serialization.cpp:446` | `Serialization::readPandaHeader()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:453` | `Serialization::readPandaHeader()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:474` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
-| `App/IO/Serialization.cpp:494` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
-| `App/IO/Serialization.cpp:499` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
-| `App/IO/Serialization.cpp:517` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
-| `App/IO/Serialization.cpp:630` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:642` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:648` | `Serialization::deserialize()`: an element type this build cannot build: a newer version's or a retired one (EB.9) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:660` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:692` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:707` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:760` | `Serialization::createVersionedBackup()`: a backup that cannot be written | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:789` | `Serialization::readPreamble()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/IO/Serialization.cpp:853` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
-| `App/IO/Serialization.cpp:872` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
+| `App/IO/Serialization.cpp:464` | `Serialization::readPandaHeader()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:485` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
+| `App/IO/Serialization.cpp:505` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
+| `App/IO/Serialization.cpp:510` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
+| `App/IO/Serialization.cpp:528` | `Serialization::readDolphinHeader()`: a waveform file or clipboard that does not read | boundaries only | E | B: stays |
+| `App/IO/Serialization.cpp:641` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:653` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:659` | `Serialization::deserialize()`: an element type this build cannot build: a newer version's or a retired one (EB.9) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:671` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:703` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:718` | `Serialization::deserialize()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:771` | `Serialization::createVersionedBackup()`: a backup that cannot be written | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:800` | `Serialization::readPreamble()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/IO/Serialization.cpp:864` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
+| `App/IO/Serialization.cpp:883` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/Scene/ICRegistry.cpp:126` | `ICRegistry::onFileChanged()`: rethrow (catch at `:123`) | boundaries only | — | B: stays |
 | `App/Scene/ICRegistry.cpp:286` | `ICRegistry::embedICsByFile()`: rethrow (catch at `:284`) | boundaries only | — | B: stays |
 | `App/Scene/ICRegistry.cpp:306` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
@@ -271,8 +278,8 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Scene/Workspace.cpp:747` | `WorkSpace::autosave()`: an autosave file that cannot be written | TIMER | E | Q: TIMER (EB.7) |
 | `App/Scene/Workspace.cpp:888` | `WorkSpace::saveChildICBlob()`: rethrow (catch at `:885`); called from `WorkSpace::save()`, whose callers are boundaries (EB.6) | boundaries only | — | B: stays |
 | `App/UI/CircuitExporter.cpp:39` | `renderToPdf()`: an export that cannot be written | boundaries only | E | B: stays |
-| `App/UI/CircuitExporter.cpp:75` | `renderScaledImage()`: an image too large to render | boundaries only | E | B: stays |
-| `App/UI/CircuitExporter.cpp:90` | `renderToImage()`: an image that cannot be written | boundaries only | E | B: stays |
+| `App/UI/CircuitExporter.cpp:77` | `renderScaledImage()`: an image too large to render | boundaries only | E | B: stays |
+| `App/UI/CircuitExporter.cpp:94` | `renderToImage()`: an image that cannot be written | boundaries only | E | B: stays |
 | `App/UI/ExportController.cpp:38` | `ExportController::exportToArduino()`: an export that cannot be written | MCP | E | B: stays |
 | `App/UI/ExportController.cpp:44` | `ExportController::exportToArduino()`: an export that cannot be written | MCP | E | B: stays |
 | `App/UI/ExportController.cpp:70` | `ExportController::exportToSystemVerilog()`: an export that cannot be written | MCP | E | B: stays |
@@ -321,7 +328,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Core/Application.h:141` | `Application::guardedSlot()` | Any `std::exception` from the slot's body: reported | Stays: the boundary of every guarded slot |
 | `App/Core/DragDropPayload.cpp:43` | `readDragDropPayload(const QMimeData *)` | A payload that does not read: no payload, the drag refused (EB.8) | Stays |
 | `App/Element/ICLoader.cpp:530` | `ICLoader::renderPreview()` | A definition that no longer loads: no preview | Stays: a fallback |
-| `App/IO/Serialization.cpp:918` | `Serialization::copyPandaFile()` | A copied file whose preamble does not read: its sub-circuits not followed | Stays: a fallback |
+| `App/IO/Serialization.cpp:929` | `Serialization::copyPandaFile()` | A copied file whose preamble does not read: its sub-circuits not followed | Stays: a fallback |
 | `App/Main.cpp:443` | `main()` | Any `std::exception` from the command-line modes: a message box or stderr | Stays: CLI's boundary |
 | `App/Scene/ClipboardManager.cpp:140` | `ClipboardManager::paste()` | A blob registry that does not read: pasted without it | Stays: a fallback; the items' own read refuses the paste when they need a missing blob |
 | `App/Scene/ClipboardManager.cpp:144` | `ClipboardManager::paste()` | The legacy registry, as `:140` | Stays, as `:140` |
