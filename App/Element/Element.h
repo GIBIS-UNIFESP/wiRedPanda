@@ -308,7 +308,10 @@ public:
     /// Returns \c true if the element offers its colour for editing (an LED with one input, a display).
     bool hasColors() const;
 
-    /// Maps a color name ("White","Red","Green","Blue","Purple") to indices 0–4.
+    /// The colour names an LED and a display offer, in their index order: White, Red, Green, Blue and Purple.
+    static const QStringList &colorNames();
+
+    /// Maps a color name of colorNames() to its index, 0 to 4; any other name to 0, White's.
     static int colorNameToIndex(const QString &color);
 
     /// Returns the name of the next color in the element's color list.
@@ -333,10 +336,6 @@ public:
 
     /// Sets the frequency to \a freq Hz (ParamId::Frequency), as its spec takes it.
     void setFrequency(const double freq);
-
-    /// Returns whether setFrequency() takes \a freq (the spec's rule); one it does not take leaves the frequency as
-    /// it was, and a type without a frequency takes none.
-    bool acceptsFrequency(const double freq) const;
 
     /// Sets the phase delay to \a delay (ParamId::Delay), as its spec takes it.
     void setDelay(const double delay);

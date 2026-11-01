@@ -5,6 +5,10 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
+#include <optional>
+#include <type_traits>
+#include <variant>
 
 #include <QIODevice>
 #include <QJsonArray>
@@ -29,20 +33,126 @@
 
 namespace ElementHandlerProperties {
 
-/// The colours the property editor offers, by their untranslated names.
-const QStringList kColors{"White", "Red", "Green", "Blue", "Purple"};
+/// A property MCP reads and writes through the element, under its key in schema-mcp.json.
+struct KeyedProperty {
+    const char *key;
+    ElementProperty property;
+};
+
+/// The properties list_elements reports and set_element_properties sets, each where it applies to the element
+/// (SetPropertyCommand::appliesTo()): the label to every element, a parameter where the element offers it.
+const QList<KeyedProperty> &keyedProperties()
+{
+    static const QList<KeyedProperty> properties{
+        {"label", ElementProperty::label()},
+        {"color", ElementProperty::parameter(ParamId::Colour)},
+        {"frequency", ElementProperty::parameter(ParamId::Frequency)},
+        {"delay", ElementProperty::parameter(ParamId::Delay)},
+        {"trigger", ElementProperty::trigger()},
+        {"volume", ElementProperty::parameter(ParamId::Volume)},
+        {"locked", ElementProperty::parameter(ParamId::Locked)},
+        {"wireless_mode", ElementProperty::parameter(ParamId::Wireless)},
+    };
+    return properties;
+}
+
+/// Returns \a value as JSON; no keyed property holds a truth table's columns.
+QJsonValue toJson(const ParamValue &value)
+{
+    return std::visit([](const auto &held) {
+        if constexpr (std::is_same_v<std::decay_t<decltype(held)>, QBitArray>) {
+            return QJsonValue(); // LCOV_EXCL_LINE — no keyed property is a truth table's columns
+        } else {
+            return QJsonValue(held);
+        }
+    }, value);
+}
+
+/// Returns \a json as a value of the kind of \a kind, or nothing when it is no such value: a whole number for an int,
+/// a finite one for a double.
+std::optional<ParamValue> fromJson(const QJsonValue &json, const ParamValue &kind)
+{
+    return std::visit([&json](const auto &held) -> std::optional<ParamValue> {
+        using Kind = std::decay_t<decltype(held)>;
+        if constexpr (std::is_same_v<Kind, bool>) {
+            if (json.isBool()) {
+                return json.toBool();
+            }
+        } else if constexpr (std::is_same_v<Kind, int>) {
+            constexpr qint64 notWhole = std::numeric_limits<qint64>::min();
+            if (const qint64 whole = json.toInteger(notWhole);
+                json.isDouble() && (whole >= std::numeric_limits<int>::min()) && (whole <= std::numeric_limits<int>::max())) {
+                return static_cast<int>(whole);
+            }
+        } else if constexpr (std::is_same_v<Kind, double>) {
+            if (json.isDouble() && std::isfinite(json.toDouble())) {
+                return json.toDouble();
+            }
+        } else if constexpr (std::is_same_v<Kind, QString>) {
+            if (json.isString()) {
+                return json.toString();
+            }
+        }
+        return std::nullopt;
+    }, kind);
+}
+
+/// Returns what a value of the kind of \a kind is, for a refusal.
+QString kindName(const ParamValue &kind)
+{
+    return std::visit([](const auto &held) {
+        using Kind = std::decay_t<decltype(held)>;
+        if constexpr (std::is_same_v<Kind, bool>) {
+            return QStringLiteral("a boolean");
+        } else if constexpr (std::is_same_v<Kind, int>) {
+            return QStringLiteral("a whole number");
+        } else if constexpr (std::is_same_v<Kind, double>) {
+            return QStringLiteral("a finite number");
+        } else {
+            return QStringLiteral("a string");
+        }
+    }, kind);
+}
+
+/// Returns \a value as a number, or nothing when it is of another kind.
+std::optional<double> numberOf(const ParamValue &value)
+{
+    if (const int *whole = std::get_if<int>(&value)) {
+        return *whole;
+    }
+    if (const double *real = std::get_if<double>(&value)) {
+        return *real;
+    }
+    return std::nullopt;
+}
+
+/// Returns \a value as text, for a refusal: a number as itself, a boolean as true or false, a text quoted.
+QString valueText(const ParamValue &value)
+{
+    const QJsonValue json = toJson(value);
+    return json.isDouble() ? QString::number(json.toDouble())
+           : json.isBool() ? QString(json.toBool() ? "true" : "false")
+                           : QString("\"%1\"").arg(json.toString());
+}
+
+/// Returns \a range as text, an open bound as an infinity.
+QString rangeText(const ParamRange &range)
+{
+    return QString("[%1, %2]").arg(range.minimum ? QString::number(*range.minimum) : QStringLiteral("-inf"),
+                                   range.maximum ? QString::number(*range.maximum) : QStringLiteral("inf"));
+}
 
 /// Returns the first reason set_element_properties refuses \a params for \a element, or an empty string when every
-/// value passes: the property exists on the type, the value has its kind, lies in its range and is one the type takes,
-/// an appearance index comes with an appearance and names one of the element's states, a picture loads, and no
-/// second Tx would share a label.
+/// value passes: each keyed property applies to the element, its value has the property's kind and is one its spec
+/// takes (within the range, among the choices, one \c accept takes); a trigger is one key, as the editor's field
+/// takes it; an appearance index comes with an appearance and names one of the element's states, a picture loads,
+/// and no second Tx would share a label.
 QString refusal(const Element &element, const QJsonObject &params, const Scene *scene)
 {
     const auto lacks = [&element](const QString &property) {
         return QString("Element %1 (%2) has no property '%3'")
             .arg(QString::number(element.id()), ElementFactory::typeToText(element.elementType()), property);
     };
-    const auto has = [&element](const ElementProperty property) { return SetPropertyCommand::appliesTo(element, property); };
     const auto number = [&params](const QString &key) {
         const QJsonValue value = params.value(key);
         return value.isDouble() && std::isfinite(value.toDouble());
@@ -54,66 +164,42 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         return QString("Parameter '%1' must be %2").arg(key, what);
     };
 
-    // Every element takes a label and a rotation, a label shown or not: MCP's callers label gates too
-    if (params.contains("label") && !params.value("label").isString()) {
-        return kind("label", "a string");
-    }
-    if (params.contains("rotation") && !number("rotation")) {
-        return kind("rotation", "a finite number");
-    }
-    if (params.contains("color")) {
-        if (!has(ElementProperty::parameter(ParamId::Colour))) {
-            return lacks("color");
+    for (const KeyedProperty &keyed : keyedProperties()) {
+        const QString key = QString::fromLatin1(keyed.key);
+        if (!params.contains(key)) {
+            continue;
         }
-        if (!params.value("color").isString() || !kColors.contains(params.value("color").toString())) {
-            return kind("color", "one of " + kColors.join(", "));
+        if (!SetPropertyCommand::appliesTo(element, keyed.property)) {
+            return lacks(key);
         }
-    }
-    if (params.contains("frequency")) {
-        if (!has(ElementProperty::parameter(ParamId::Frequency))) {
-            return lacks("frequency");
-        }
-        if (!number("frequency")) {
-            return kind("frequency", "a finite number");
-        }
-        if (!element.acceptsFrequency(params.value("frequency").toDouble())) {
-            return QString("Parameter 'frequency' %1 is not a frequency this element takes")
-                .arg(params.value("frequency").toDouble());
-        }
-    }
-    if (params.contains("delay")) {
-        if (!has(ElementProperty::parameter(ParamId::Delay))) {
-            return lacks("delay");
-        }
-        if (!number("delay") || (params.value("delay").toDouble() < -1.0) || (params.value("delay").toDouble() > 1.0)) {
-            return kind("delay", "a number in [-1, 1] (fraction of period; negative advances the clock)");
-        }
-    }
-    if (params.contains("trigger")) {
-        if (!has(ElementProperty::trigger())) {
-            return lacks("trigger");
+        const ParamValue current = SetPropertyCommand::read(element, keyed.property);
+        const std::optional<ParamValue> value = fromJson(params.value(key), current);
+        if (!value) {
+            return kind(key, kindName(current));
         }
         // The editor's field takes one letter, digit or space, or none
         static const QRegularExpression editorKey("^[A-Za-z0-9 ]?$");
-        if (!params.value("trigger").isString() || !editorKey.match(params.value("trigger").toString()).hasMatch()) {
-            return kind("trigger", "one letter, digit or space, or empty");
+        if ((keyed.property == ElementProperty::trigger()) && !editorKey.match(std::get<QString>(*value)).hasMatch()) {
+            return kind(key, "one letter, digit or space, or empty");
+        }
+        if (keyed.property.kind != ElementProperty::Kind::Parameter) {
+            continue;
+        }
+        const ParamSpec &spec = *element.parameters().spec(keyed.property.id);
+        if (const std::optional<double> numeric = numberOf(*value); numeric && !spec.range.contains(*numeric)) {
+            return kind(key, "in " + rangeText(spec.range));
+        }
+        if (!spec.choices.isEmpty() && !spec.choices.contains(std::get<QString>(*value))) {
+            return kind(key, "one of " + spec.choices.join(", "));
+        }
+        if (spec.accept && !spec.accept(element, *value)) {
+            return QString("Parameter '%1' %2 is not a value this element takes").arg(key, valueText(*value));
         }
     }
-    if (params.contains("locked")) {
-        if (!has(ElementProperty::parameter(ParamId::Locked))) {
-            return lacks("locked");
-        }
-        if (!params.value("locked").isBool()) {
-            return kind("locked", "a boolean");
-        }
-    }
-    if (params.contains("volume")) {
-        if (!has(ElementProperty::parameter(ParamId::Volume))) {
-            return lacks("volume");
-        }
-        if (!number("volume") || (params.value("volume").toDouble() < 0.0) || (params.value("volume").toDouble() > 1.0)) {
-            return kind("volume", "a number between 0.0 and 1.0");
-        }
+
+    // Every element takes a rotation
+    if (params.contains("rotation") && !number("rotation")) {
+        return kind("rotation", "a finite number");
     }
     if (params.contains("appearance")) {
         if (!element.canChangeAppearance()) {
@@ -136,14 +222,6 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         });
         if (!named) {
             return kind("appearance_index", "the index of one of the element's appearance states");
-        }
-    }
-    if (params.contains("wireless_mode")) {
-        if (!has(ElementProperty::parameter(ParamId::Wireless))) {
-            return lacks("wireless_mode");
-        }
-        if (!whole("wireless_mode") || (params.value("wireless_mode").toInt() < 0) || (params.value("wireless_mode").toInt() > 2)) {
-            return "Invalid wireless_mode. Must be 0 (None), 1 (Tx), or 2 (Rx)";
         }
     }
 
@@ -340,28 +418,14 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
         elementObj["y"] = element->pos().y();
         elementObj["width"] = br.width();
         elementObj["height"] = br.height();
-        elementObj["label"] = element->label();
         elementObj["rotation"] = element->rotation();
         elementObj["input_size"] = element->inputSize();
         elementObj["output_size"] = element->outputSize();
 
-        if (element->hasColors()) {
-            elementObj["color"] = element->color();
-        }
-        if (element->hasFrequency()) {
-            elementObj["frequency"] = element->frequency();
-        }
-        if (element->hasDelay()) {
-            elementObj["delay"] = element->delay();
-        }
-        if (element->hasTrigger()) {
-            elementObj["trigger"] = element->trigger().toString();
-        }
-        if (element->hasVolume()) {
-            elementObj["volume"] = element->volume();
-        }
-        if (const auto *inputElm = qobject_cast<const ElementInput *>(element)) {
-            elementObj["locked"] = inputElm->isLocked();
+        for (const auto &keyed : ElementHandlerProperties::keyedProperties()) {
+            if (SetPropertyCommand::appliesTo(*element, keyed.property)) {
+                elementObj[keyed.key] = ElementHandlerProperties::toJson(SetPropertyCommand::read(*element, keyed.property));
+            }
         }
 
         elements.append(elementObj);

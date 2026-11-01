@@ -41,11 +41,12 @@ struct ElementInfo<Display7> {
             {"g", ":/Components/Output/Counter/counter_g.svg"},
             {"dp", ":/Components/Output/Counter/counter_dp.svg"},
         };
-        // Any name is kept; one not in the list is drawn as White
+        // A file keeps any name, one not among the choices drawn as White; MCP sets the choices alone
         descriptor.parameters = {{
             .id = ParamId::Colour,
             .defaultValue = QString(Display7::kDefaultColor),
             .key = "color",
+            .choices = Element::colorNames(),
         }};
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // The inputs were in another order before 1.6 (VersionInfo::hasDisplay7Color()) and again before 1.7

@@ -39,6 +39,7 @@ struct ElementInfo<Node> {
                 .id = ParamId::Wireless,
                 .defaultValue = static_cast<int>(WirelessMode::None),
                 .key = "wirelessMode",
+                .range = {0.0, 2.0},
                 .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
                     const int mode = std::get<int>(value);
                     return ((mode >= 0) && (mode <= 2)) ? value : ParamValue(static_cast<int>(WirelessMode::None));

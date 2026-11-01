@@ -734,7 +734,7 @@ bool SetPropertyCommand::appliesTo(const Element &element, const ElementProperty
 {
     switch (property.kind) {
     case ElementProperty::Kind::Parameter: return element.offersParam(property.id);
-    case ElementProperty::Kind::Label:     return element.hasLabel();
+    case ElementProperty::Kind::Label:     return true;
     case ElementProperty::Kind::Trigger:   return element.hasTrigger();
     }
     return false;

@@ -145,6 +145,11 @@
         },
         "locked": {
           "type": "boolean"
+        },
+        "wireless_mode": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
         }
       },
       "required": [

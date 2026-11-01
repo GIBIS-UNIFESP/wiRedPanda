@@ -15,6 +15,7 @@
 #include <QBitArray>
 #include <QList>
 #include <QString>
+#include <QStringList>
 #include <QVersionNumber>
 
 class Element;
@@ -42,6 +43,18 @@ inline constexpr int kParamIdCount = static_cast<int>(ParamId::Carried) + 1;
 /// A parameter's value: one kind per parameter, the kind of its default.
 using ParamValue = std::variant<bool, int, double, QString, QBitArray>;
 
+/// The bounds of a number parameter's values; either may be open.
+struct ParamRange {
+    std::optional<double> minimum;
+    std::optional<double> maximum;
+
+    /// Returns whether \a value is within the bounds.
+    bool contains(const double value) const
+    {
+        return (!minimum || (value >= *minimum)) && (!maximum || (value <= *maximum));
+    }
+};
+
 /**
  * \struct ParamSpec
  * \brief One parameter of an element type: its default, the key a file keeps it under, the values it takes, when it
@@ -60,6 +73,14 @@ struct ParamSpec {
 
     /// The key a file keeps it under; none for a transient parameter, whose change is no change of the circuit.
     const char *key = nullptr;
+
+    /// The values of a number parameter that a writer told of a refusal (MCP) may set; open: every value \c accept
+    /// takes. A file's value outside it is still taken as \c accept takes it, so a file with one opens.
+    ParamRange range{};
+
+    /// The values of a text parameter that a writer told of a refusal may set; none: every value \c accept takes. A
+    /// file's other value is still taken as \c accept takes it.
+    QStringList choices{};
 
     Accept accept{};   ///< None: every value of its kind is taken as it is.
     Offered offered{}; ///< None: always offered.

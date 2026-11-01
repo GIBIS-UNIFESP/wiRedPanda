@@ -35,6 +35,7 @@ ParamSpec AudioOutputElement::volumeSpec(const double defaultVolume)
         .id = ParamId::Volume,
         .defaultValue = defaultVolume,
         .key = "volume",
+        .range = {0.0, 1.0},
         // A volume that is not finite is refused, leaving the volume as it was: a file's loads as the default
         .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
             const double volume = std::get<double>(value);

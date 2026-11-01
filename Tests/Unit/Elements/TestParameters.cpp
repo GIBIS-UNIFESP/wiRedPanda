@@ -397,17 +397,16 @@ void TestParameters::testAClocksFrequencyAndDelayAreItsRules()
     Clock clock;
 
     // A frequency is finite and non-zero with a half-period of at least a microsecond; one it does not take leaves
-    // the frequency as it was, and acceptsFrequency() asks the same rule
+    // the frequency as it was
     QVERIFY(clock.setParam(ParamId::Frequency, 2.5));
     QCOMPARE(clock.frequency(), 2.5);
     for (const double refused : {0.0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity(),
                                  1.0e9}) {
-        QVERIFY(!clock.acceptsFrequency(refused));
         QVERIFY(!clock.setParam(ParamId::Frequency, refused));
         clock.setFrequency(refused);
         QCOMPARE(clock.frequency(), 2.5);
     }
-    QVERIFY(clock.acceptsFrequency(400000.0));
+    QVERIFY(clock.setParam(ParamId::Frequency, 400000.0));
     clock.setFrequency(10.0);
     QCOMPARE(clock.param<double>(ParamId::Frequency), 10.0);
 
@@ -423,7 +422,7 @@ void TestParameters::testAClocksFrequencyAndDelayAreItsRules()
 
     // A type without them has none and takes none
     const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(!gate->acceptsFrequency(1.0));
+    QVERIFY(!gate->setParam(ParamId::Frequency, 1.0));
     gate->setFrequency(1.0);
     gate->setDelay(0.5);
     QCOMPARE(gate->frequency(), 0.0);
@@ -477,11 +476,11 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
     QCOMPARE(buzzer.frequency(), 440.0);
     for (const double refused : {0.0, -5.0, std::numeric_limits<double>::quiet_NaN(),
                                  std::numeric_limits<double>::infinity()}) {
-        QVERIFY(!buzzer.acceptsFrequency(refused));
+        QVERIFY(!buzzer.setParam(ParamId::Frequency, refused));
         buzzer.setFrequency(refused);
         QCOMPARE(buzzer.frequency(), 440.0);
     }
-    QVERIFY(buzzer.acceptsFrequency(1.0e9));
+    QVERIFY(buzzer.setParam(ParamId::Frequency, 1.0e9));
 
     // A volume is any value as it is, but one that is exactly a float, as every earlier version kept the volume, is that
     // float's shortest decimal: the nearest float to 0.1 is written out, since i386's x87 can fold

@@ -347,8 +347,8 @@ public:
     [[nodiscard]] static Applied apply(const QList<Element *> &elements, ElementProperty property,
                                        const ParamValue &value, Scene *scene, int session = -1);
 
-    /// Returns whether \a element has \a property: a parameter it offers for editing, or a label or a trigger key it
-    /// shows.
+    /// Returns whether \a element has \a property: a parameter it offers for editing, its label (every element keeps
+    /// one, shown or not: MCP and the IC generators label gates), or the trigger key of a type that shows one.
     static bool appliesTo(const Element &element, ElementProperty property);
 
     /// Returns the property an input's value is, which the editor and MCP set: a rotary switch's selected output, a

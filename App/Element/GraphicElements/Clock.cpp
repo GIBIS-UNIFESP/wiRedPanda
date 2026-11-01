@@ -62,6 +62,7 @@ struct ElementInfo<Clock> {
                 .id = ParamId::Delay,
                 .defaultValue = 0.0,
                 .key = "delay",
+                .range = {-1.0, 1.0},
                 .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
                     const double delay = std::get<double>(value);
                     if (!std::isfinite(delay)) {

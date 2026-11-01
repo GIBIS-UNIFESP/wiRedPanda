@@ -852,13 +852,15 @@ void TestElementHandler::testSetElementPropertiesRefusesAFrequencyTheClockCannot
 
 void TestElementHandler::testSetElementPropertiesRefusesAColourTheEditorDoesNotOffer()
 {
+    // The spec's choices, for an LED and each display
     MainWindow window;
     ElementHandler handler(&window, nullptr);
-    const int id = createElement(handler, "Led");
-
-    QVERIFY(refuses(window, handler, {{"element_id", id}, {"color", "Orange"}}));
-    QVERIFY(refuses(window, handler, {{"element_id", id}, {"color", "blue"}}));
-    QVERIFY(refuses(window, handler, {{"element_id", id}, {"color", ""}}));
+    for (const QString type : {"Led", "Display7", "Display14", "Display16"}) {
+        const int id = createElement(handler, type);
+        QVERIFY2(refuses(window, handler, {{"element_id", id}, {"color", "Orange"}}), qPrintable(type));
+        QVERIFY2(refuses(window, handler, {{"element_id", id}, {"color", "blue"}}), qPrintable(type));
+        QVERIFY2(refuses(window, handler, {{"element_id", id}, {"color", ""}}), qPrintable(type));
+    }
 }
 
 void TestElementHandler::testSetElementPropertiesRefusesATriggerTheEditorDoesNotTake()

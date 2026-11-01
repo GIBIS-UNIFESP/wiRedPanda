@@ -3,6 +3,7 @@
 
 #include "App/Element/Element.h"
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 
@@ -781,14 +782,15 @@ QString Element::color() const
     return hasParam(ParamId::Colour) ? param<QString>(ParamId::Colour) : QString();
 }
 
+const QStringList &Element::colorNames()
+{
+    static const QStringList names{"White", "Red", "Green", "Blue", "Purple"};
+    return names;
+}
+
 int Element::colorNameToIndex(const QString &color)
 {
-    if (color == "White")  { return 0; }
-    if (color == "Red")    { return 1; }
-    if (color == "Green")  { return 2; }
-    if (color == "Blue")   { return 3; }
-    if (color == "Purple") { return 4; }
-    return 0;
+    return std::max(0, static_cast<int>(colorNames().indexOf(color)));
 }
 
 void Element::setAudio(const QString &audio)
@@ -901,12 +903,6 @@ double Element::frequency() const
 void Element::setFrequency(const double freq)
 {
     setParam(ParamId::Frequency, freq);
-}
-
-bool Element::acceptsFrequency(const double freq) const
-{
-    const ParamSpec *spec = m_parameters.spec(ParamId::Frequency);
-    return (spec != nullptr) && (!spec->accept || spec->accept(*this, freq).has_value());
 }
 
 double Element::delay() const

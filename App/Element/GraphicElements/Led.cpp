@@ -62,13 +62,14 @@ struct ElementInfo<Led> {
             {"code-14", ":/Components/Output/Led/YellowLed.png"},
             {"code-15", ":/Components/Output/Led/WhiteLed.png"},
         };
-        // Any name is kept; one not in the list is drawn as White. With more than one input the inputs' code picks
-        // the colour, so only a single-input LED offers it
+        // A file keeps any name, one not among the choices drawn as White; MCP sets the choices alone. With more than
+        // one input the inputs' code picks the colour, so only a single-input LED offers it
         descriptor.parameters = {
             {
                 .id = ParamId::Colour,
                 .defaultValue = QString(Led::kDefaultColor),
                 .key = "color",
+                .choices = Element::colorNames(),
                 .offered = [](const Element &element) { return element.inputSize() == 1; },
             },
             // The slot shown changes as refresh() reads the inputs, not as the colour or the inputs change

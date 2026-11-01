@@ -2368,7 +2368,7 @@ void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
 
 void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
 {
-    // A gate has no label and is left out; a switch that already has the value stays in, so every step of an edit
+    // A gate has no lock and is left out; a switch that already has the value stays in, so every step of an edit
     // session names the same elements. An edit that changes no value is no command.
     WorkSpace workspace;
     auto *scene = workspace.scene();
@@ -2376,21 +2376,29 @@ void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
     auto *named = new InputSwitch();
     auto *other = new InputSwitch();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, named, other}, scene));
-    named->setLabel("x");
+    named->setLocked(true);
+    const ElementProperty locked = ElementProperty::parameter(ParamId::Locked);
 
-    QCOMPARE(SetPropertyCommand::apply({gate, named}, ElementProperty::label(), QString("x"), scene).command, nullptr);
-    QCOMPARE(gate->label(), QString());
+    QCOMPARE(SetPropertyCommand::apply({gate, named}, locked, true, scene).command, nullptr);
 
-    auto *command = SetPropertyCommand::apply({gate, named, other}, ElementProperty::label(), QString("x"), scene).command;
+    auto *command = SetPropertyCommand::apply({gate, named, other}, locked, true, scene).command;
     QVERIFY(command != nullptr);
-    QCOMPARE(gate->label(), QString());
-    QCOMPARE(other->label(), QString("x"));
+    QVERIFY(other->isLocked());
     scene->receiveCommand(command);
     QCOMPARE(command->text(), QString("Update 2 elements"));
 
     scene->undoStack()->undo();
-    QCOMPARE(named->label(), QString("x"));
-    QCOMPARE(other->label(), QString());
+    QVERIFY(named->isLocked());
+    QVERIFY(!other->isLocked());
+
+    // Every element has a label, shown or not: MCP and the IC generators label gates
+    QVERIFY(SetPropertyCommand::appliesTo(*gate, ElementProperty::label()));
+    command = SetPropertyCommand::apply({gate}, ElementProperty::label(), QString("g"), scene).command;
+    QVERIFY(command != nullptr);
+    QCOMPARE(gate->label(), QString("g"));
+    scene->receiveCommand(command);
+    scene->undoStack()->undo();
+    QCOMPARE(gate->label(), QString());
 }
 
 void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
