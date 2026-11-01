@@ -124,6 +124,10 @@ What no single change owns: the pitfalls of building and testing this code base,
 - MSVC's C4702 (unreachable code) comes from its code generator, which `/external:W0` does not reach, so Qt 6.12's
   overflow helpers raise it from Qt's own headers; the build disables it (`/wd4702`), as Microsoft documents for the
   back end's C47xx warnings.
+- `<windows.h>` defines plain words as macros: `rpcndr.h` makes `small` a `char` and `hyper` an `__int64`, and
+  `minwindef.h` makes `near` and `far` nothing. So an identifier with one of those names, in a file that includes it
+  (`App/Main.cpp`, `MCP/Server/Core/MCPProcessor.cpp`, `Tests/Common/TestUtils.cpp`), fails MSVC's build ("'int'
+  followed by 'char'", C2632) while GCC builds it.
 - CI's Debian i386 job has a 32-bit `qsizetype`, so a `qint64` such as `QIODevice::pos()` passed where a `qsizetype` is
   taken narrows (`-Wconversion`), while a `static_cast<qsizetype>` is a useless cast on 64-bit Qt, where
   `qsizetype` is `qint64`: a value known to be small is cast to `int`.
