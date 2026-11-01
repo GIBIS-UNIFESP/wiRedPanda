@@ -25,9 +25,8 @@
 #include <QUndoStack>
 #include <QXmlStreamReader>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/LabelMeasure.h"
@@ -126,7 +125,7 @@ void TestElement::testLineElement()
 void TestElement::testDisplay14Paint()
 {
     WorkSpace workspace;
-    auto *disp = new Display14;
+    auto *disp = ElementFactory::buildElement(ElementType::Display14);
     workspace.scene()->addItem(disp);
     disp->setColor("Green");
 
@@ -150,7 +149,7 @@ void TestElement::testDisplay14Paint()
 void TestElement::testDisplay16Paint()
 {
     WorkSpace workspace;
-    auto *disp = new Display16;
+    auto *disp = ElementFactory::buildElement(ElementType::Display16);
     workspace.scene()->addItem(disp);
     disp->setColor("Blue");
 

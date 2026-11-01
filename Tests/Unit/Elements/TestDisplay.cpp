@@ -3,14 +3,13 @@
 
 #include "Tests/Unit/Elements/TestDisplay.h"
 
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display16.h"
+#include "App/Element/Element.h"
 #include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestDisplay::testDisplay14AllColors()
 {
-    Display14 display;
+    Element display{ElementType::Display14};
     const QStringList colors = {"White", "Red", "Green", "Blue", "Purple"};
     for (const QString &color : colors) {
         display.setColor(color);
@@ -20,7 +19,7 @@ void TestDisplay::testDisplay14AllColors()
 
 void TestDisplay::testDisplay16AllColors()
 {
-    Display16 display;
+    Element display{ElementType::Display16};
     const QStringList colors = {"White", "Red", "Green", "Blue", "Purple"};
     for (const QString &color : colors) {
         display.setColor(color);
@@ -30,7 +29,7 @@ void TestDisplay::testDisplay16AllColors()
 
 void TestDisplay::testDisplay14NextPrevColor()
 {
-    Display14 display;
+    Element display{ElementType::Display14};
     display.setColor("Red");
     QString next = display.nextColor();
     QVERIFY(!next.isEmpty());
@@ -43,7 +42,7 @@ void TestDisplay::testDisplay14NextPrevColor()
 
 void TestDisplay::testDisplay16NextPrevColor()
 {
-    Display16 display;
+    Element display{ElementType::Display16};
     display.setColor("Red");
     QString next = display.nextColor();
     QVERIFY(!next.isEmpty());
@@ -56,7 +55,7 @@ void TestDisplay::testDisplay16NextPrevColor()
 
 void TestDisplay::testDisplay14Save()
 {
-    Display14 display;
+    Element display{ElementType::Display14};
     display.setColor("Blue");
 
     QByteArray data;
@@ -67,7 +66,7 @@ void TestDisplay::testDisplay14Save()
 
 void TestDisplay::testDisplay16Save()
 {
-    Display16 display;
+    Element display{ElementType::Display16};
     display.setColor("Purple");
 
     QByteArray data;

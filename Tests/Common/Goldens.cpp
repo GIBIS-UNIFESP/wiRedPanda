@@ -22,9 +22,7 @@
 #include <QVariant>
 
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display16.h"
-#include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -425,7 +423,7 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
         WorkSpace definition;
         CircuitBuilder inner(definition.scene());
         auto *segment = new InputSwitch;
-        auto *shown = new Display7;
+        auto *shown = ElementFactory::buildElement(ElementType::Display7);
         segment->setLabel("Segment");
         shown->setLabel("Shown");
         inner.add(segment, shown);
@@ -435,9 +433,9 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
 
     auto *ic = new IC;
     ic->loadFile(icFile, directory);
-    auto *display7 = new Display7;
-    auto *display14 = new Display14;
-    auto *display16 = new Display16;
+    auto *display7 = ElementFactory::buildElement(ElementType::Display7);
+    auto *display14 = ElementFactory::buildElement(ElementType::Display14);
+    auto *display16 = ElementFactory::buildElement(ElementType::Display16);
     auto *icSegment = new InputSwitch;
     auto *segment7 = new InputSwitch;
     auto *segment14 = new InputSwitch;

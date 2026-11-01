@@ -43,4 +43,8 @@ private slots:
     // Lit segments past a custom picture smaller than their box
     void testLitSegmentsPastACustomPictureStayInTheBounds_data();
     void testLitSegmentsPastACustomPictureStayInTheBounds();
+
+    // A segment's new level repaints the body the presenter lights it on
+    void testASegmentsNewLevelRepaintsTheDisplay_data();
+    void testASegmentsNewLevelRepaintsTheDisplay();
 };

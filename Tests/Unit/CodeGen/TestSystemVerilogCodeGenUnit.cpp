@@ -17,9 +17,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display16.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -1021,12 +1018,12 @@ void andGate(CircuitBuilder &builder)
 }
 
 /// A segment display with two of its segments driven by switches: its port names are translated strings.
-template <typename Display>
+template <ElementType type>
 void display(CircuitBuilder &builder)
 {
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
-    auto *shown = new Display;
+    auto *shown = ElementFactory::buildElement(type);
     builder.add(sw1, sw2, shown);
     builder.connect(sw1, 0, shown, 0);
     builder.connect(sw2, 0, shown, 1);
@@ -1040,9 +1037,9 @@ void TestSystemVerilogCodeGenUnit::testModuleUnderTranslationMatchesGolden()
     // first, since a module names elements and segments in the source language.
     const QList<std::pair<QString, std::function<void(CircuitBuilder &)>>> circuits{
         {"and_gate", SystemVerilogTranslatedModule::andGate},
-        {"display7", SystemVerilogTranslatedModule::display<Display7>},
-        {"display14", SystemVerilogTranslatedModule::display<Display14>},
-        {"display16", SystemVerilogTranslatedModule::display<Display16>},
+        {"display7", SystemVerilogTranslatedModule::display<ElementType::Display7>},
+        {"display14", SystemVerilogTranslatedModule::display<ElementType::Display14>},
+        {"display16", SystemVerilogTranslatedModule::display<ElementType::Display16>},
     };
     const QString goldens = QString(QUOTE(CURRENTDIR)) + "/Integration/Translated/";
     for (const auto &[name, build] : circuits) {

@@ -3,20 +3,21 @@
 
 #include "Tests/Unit/Elements/TestDisplays.h"
 
+#include <QGraphicsScene>
 #include <QImage>
 #include <QKeySequence>
 #include <QPainter>
 #include <QPointF>
+#include <QSignalSpy>
 #include <QStyleOptionGraphicsItem>
 #include <QTemporaryDir>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display16.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
 #include "App/Wiring/Port.h"
@@ -54,7 +55,7 @@ QByteArray buildOldFormatDisplayStream(int inputPortCount, const QString &color)
 
 void TestDisplays::testDisplay7Configuration()
 {
-    Display7 display;
+    Element display{ElementType::Display7};
 
     // Verify input/output counts
     QCOMPARE(display.inputSize(), 8);
@@ -83,7 +84,7 @@ void TestDisplays::testDisplay7Configuration()
 
 void TestDisplays::testDisplay7SegmentControl()
 {
-    Display7 display;
+    Element display{ElementType::Display7};
 
     // Verify segment count (7 segments + decimal point = 8 inputs)
     QCOMPARE(display.inputSize(), 8);
@@ -96,7 +97,7 @@ void TestDisplays::testDisplay7SegmentControl()
 
 void TestDisplays::testDisplay7PortNames()
 {
-    Display7 display;
+    Element display{ElementType::Display7};
 
     // Verify all ports exist and have proper names (not relying on translation)
     // Port order: 0=G, 1=F, 2=E, 3=D, 4=A, 5=B, 6=DP, 7=C (top, top-left, mid-left, bottom-left, top, top-right, decimal, bottom-right)
@@ -127,7 +128,7 @@ void TestDisplays::testDisplay7PortNames()
 
 void TestDisplays::testDisplay14Configuration()
 {
-    Display14 display;
+    Element display{ElementType::Display14};
 
     // Verify input/output counts
     QCOMPARE(display.inputSize(), 15);
@@ -156,7 +157,7 @@ void TestDisplays::testDisplay14Configuration()
 
 void TestDisplays::testDisplay14SegmentControl()
 {
-    Display14 display;
+    Element display{ElementType::Display14};
 
     // Verify 14 segments + 1 decimal point = 15 inputs
     QCOMPARE(display.inputSize(), 15);
@@ -171,7 +172,7 @@ void TestDisplays::testDisplay14SegmentControl()
 
 void TestDisplays::testDisplay16Configuration()
 {
-    Display16 display;
+    Element display{ElementType::Display16};
 
     // Verify input/output counts
     QCOMPARE(display.inputSize(), 17);
@@ -200,7 +201,7 @@ void TestDisplays::testDisplay16Configuration()
 
 void TestDisplays::testDisplay16SegmentControl()
 {
-    Display16 display;
+    Element display{ElementType::Display16};
 
     // Verify 16 segments + 1 decimal point = 17 inputs
     QCOMPARE(display.inputSize(), 17);
@@ -216,7 +217,7 @@ void TestDisplays::testDisplay16SegmentControl()
 void TestDisplays::testDisplayColors()
 {
     // Test Display_7
-    Display7 display7;
+    Element display7{ElementType::Display7};
     QCOMPARE(display7.color(), QString("Red"));
     display7.setColor("Green");
     QCOMPARE(display7.color(), QString("Green"));
@@ -230,7 +231,7 @@ void TestDisplays::testDisplayColors()
     QCOMPARE(display7.color(), QString("Red"));
 
     // Test Display_14
-    Display14 display14;
+    Element display14{ElementType::Display14};
     QCOMPARE(display14.color(), QString("Red"));
     display14.setColor("Green");
     QCOMPARE(display14.color(), QString("Green"));
@@ -238,7 +239,7 @@ void TestDisplays::testDisplayColors()
     QCOMPARE(display14.color(), QString("Blue"));
 
     // Test Display_16
-    Display16 display16;
+    Element display16{ElementType::Display16};
     QCOMPARE(display16.color(), QString("Red"));
     display16.setColor("Purple");
     QCOMPARE(display16.color(), QString("Purple"));
@@ -255,7 +256,7 @@ void TestDisplays::testDisplay7InCircuit()
 
     // Create circuit: 8 InputSwitches → Display_7
     InputSwitch sw0, sw1, sw2, sw3, sw4, sw5, sw6, sw7;
-    Display7 display;
+    Element display{ElementType::Display7};
 
     builder.add(&sw0, &sw1, &sw2, &sw3, &sw4, &sw5, &sw6, &sw7, &display);
 
@@ -312,7 +313,7 @@ void TestDisplays::testDisplayWithDecoder()
     // Create simple 2-bit decoder → Display_7
     // This simulates a partial BCD decoder for digit display
     InputSwitch bit0, bit1;
-    Display7 display;
+    Element display{ElementType::Display7};
     Element andGate{ElementType::And};
 
     builder.add(&bit0, &bit1, &andGate, &display);
@@ -355,7 +356,7 @@ void TestDisplays::testDisplayWithDecoder()
 
 void TestDisplays::testDisplay7()
 {
-    Display7 elm;
+    Element elm{ElementType::Display7};
     // 7-segment display has 8 inputs: a, b, c, d, e, f, g, dp (decimal point)
     QCOMPARE(elm.inputSize(), 8);
     QCOMPARE(elm.outputSize(), 0);
@@ -375,7 +376,7 @@ void TestDisplays::testDisplay7()
 
 void TestDisplays::testDisplay14LoadOldFormatBareColor()
 {
-    Display14 display;
+    Element display{ElementType::Display14};
     const QByteArray data = buildOldFormatDisplayStream(display.inputSize(), "Green");
 
     QHash<quint64, Port *> portMap;
@@ -389,7 +390,7 @@ void TestDisplays::testDisplay14LoadOldFormatBareColor()
 
 void TestDisplays::testDisplay16LoadOldFormatBareColor()
 {
-    Display16 display;
+    Element display{ElementType::Display16};
     const QByteArray data = buildOldFormatDisplayStream(display.inputSize(), "Blue");
 
     QHash<quint64, Port *> portMap;
@@ -403,14 +404,14 @@ void TestDisplays::testDisplay16LoadOldFormatBareColor()
 
 void TestDisplays::testDisplay16SaveLoadCurrentFormat()
 {
-    Display16 display1;
+    Element display1{ElementType::Display16};
     display1.setColor("Purple");
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     display1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
-    Display16 display2;
+    Element display2{ElementType::Display16};
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile};
@@ -487,5 +488,58 @@ void TestDisplays::testLitSegmentsPastACustomPictureStayInTheBounds()
                 QVERIFY(belowPicture);
             }
         }
+    }
+}
+
+void TestDisplays::testASegmentsNewLevelRepaintsTheDisplay_data()
+{
+    QTest::addColumn<ElementType>("type");
+    QTest::newRow("Display7") << ElementType::Display7;
+    QTest::newRow("Display14") << ElementType::Display14;
+    QTest::newRow("Display16") << ElementType::Display16;
+}
+
+void TestDisplays::testASegmentsNewLevelRepaintsTheDisplay()
+{
+    QFETCH(ElementType, type);
+
+    // The presenter lights the segments from the inputs' levels, so a new level repaints the body, not only the port
+    // that took it: the body's centre, which no port covers, is in the region the scene reports changed. A scene with
+    // no view reports it; a view would take the update itself.
+    Scene scene;
+    CircuitBuilder builder(&scene);
+    InputSwitch input;
+    auto *display = ElementFactory::buildElement(type);
+    // Away from the switch, whose own repaint would cover it, and before the scene has it: a move in a scene with no
+    // view stays pending, and is reported with the next change near it.
+    display->setPos(200, 0);
+    builder.add(&input, display);
+    builder.connect(&input, 0, display, 0);
+    auto *simulation = builder.initSimulation();
+    QVERIFY(simulation != nullptr);
+    simulation->update();
+    QCoreApplication::processEvents();
+
+    const QPointF centre = display->sceneBoundingRect().center();
+    QVERIFY(!input.sceneBoundingRect().contains(centre));
+    for (int i = 0; i < display->inputSize(); ++i) {
+        QVERIFY(!display->inputPort(i)->sceneBoundingRect().contains(centre));
+    }
+
+    QSignalSpy changed(&scene, &QGraphicsScene::changed);
+    for (const bool on : {true, false}) {
+        changed.clear();
+        input.setOn(on);
+        simulation->update();
+        QCOMPARE(display->inputPort(0)->status(), on ? Status::Active : Status::Inactive);
+        QCoreApplication::processEvents();
+        bool repainted = false;
+        for (const auto &arguments : std::as_const(changed)) {
+            for (const QRectF &region : arguments.at(0).value<QList<QRectF>>()) {
+                repainted = repainted || region.contains(centre);
+            }
+        }
+        QVERIFY2(repainted, on ? "the display was not repainted on a segment lit"
+                               : "the display was not repainted on a segment cleared");
     }
 }

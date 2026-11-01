@@ -154,6 +154,8 @@ struct ElementTypeDescriptor {
     /// Whether the body is measured from the port counts (a Mux, a Demux, a truth table), so a layout of the ports
     /// measures it again.
     bool bodyFollowsPorts = false;
+    /// Whether the picture shows the inputs as they are (a display's lit segments), so a refresh redraws it.
+    bool pictureFollowsInputs = false;
 
     // --- Appearance configuration ---
 

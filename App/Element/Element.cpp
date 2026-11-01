@@ -365,21 +365,6 @@ QPointF Element::snapToGrid(const QPointF &pos, const int step)
     return {std::round(pos.x() / step) * step + 0.0, std::round(pos.y() / step) * step + 0.0};
 }
 
-Element::PortAttributes Element::describedPort(const char *letter, const char *description) const
-{
-    // One builder for the shown name and its source, so the two differ only by the description's translation
-    const auto described = [letter](const QString &text) {
-        return QString::fromUtf8(letter) + " (" + text + ')';
-    };
-    const QMetaObject *meta = metaObject();
-    PortAttributes attributes;
-    attributes.derivedName = PortAttributes::DerivedName{
-        [described, meta, description] { return described(meta->tr(description, nullptr)); },
-        described(QString::fromUtf8(description)),
-    };
-    return attributes;
-}
-
 void Element::setRotation(const qreal angle)
 {
     // The ports a non-rotatable element turns, and the oriented picture of a rotatable one, are part of the turn.
@@ -529,6 +514,9 @@ std::optional<Element::PortAttributes> Element::attributesAt(const QList<PortAtt
 
 void Element::refresh()
 {
+    if (m_descriptor.pictureFollowsInputs) {
+        pictureChanged();
+    }
 }
 
 QVariant Element::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)

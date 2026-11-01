@@ -9,7 +9,8 @@
 #include <QPointF>
 #include <QStyleOptionGraphicsItem>
 
-#include "App/Element/GraphicElements/Display7.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
@@ -18,7 +19,7 @@
 
 void TestDisplay7::testDisplay7ColorSetting()
 {
-    Display7 display;
+    Element display{ElementType::Display7};
     display.setColor("Red");
     QCOMPARE(display.color(), QString("Red"));
 
@@ -28,7 +29,7 @@ void TestDisplay7::testDisplay7ColorSetting()
 
 void TestDisplay7::testDisplay7SaveLoad()
 {
-    Display7 display;
+    Element display{ElementType::Display7};
     display.setColor("Red");
 
     QByteArray data;
@@ -39,7 +40,7 @@ void TestDisplay7::testDisplay7SaveLoad()
 
 void TestDisplay7::testDisplay7AllColors()
 {
-    Display7 display;
+    Element display{ElementType::Display7};
     const QStringList colors = {"White", "Red", "Green", "Blue", "Purple"};
     for (const QString &color : colors) {
         display.setColor(color);
@@ -50,7 +51,7 @@ void TestDisplay7::testDisplay7AllColors()
 void TestDisplay7::testDisplay7Paint()
 {
     WorkSpace workspace;
-    auto *disp = new Display7;
+    auto *disp = ElementFactory::buildElement(ElementType::Display7);
     workspace.scene()->addItem(disp);
     disp->setColor("Red");
 
@@ -95,7 +96,7 @@ void TestDisplay7::testDisplay7LoadPreV16RemapsPinsToCanonicalOrder()
     QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, Versions::V_1_4, SerializationPurpose::PortableFile};
 
-    Display7 display;
+    Element display{ElementType::Display7};
     QDataStream readStream(data);
     display.load(readStream, context);
 

@@ -4,8 +4,8 @@
 #include "Tests/Unit/Serialization/TestDolphinModelBuilder.h"
 
 #include "App/BeWavedDolphin/DolphinModelBuilder.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -53,7 +53,7 @@ void TestDolphinModelBuilder::testCollectBuildsIndexedLabelsForMultiPortElements
 
     auto *rotary = new InputRotary();
     rotary->setLabel("Rot");
-    auto *display = new Display7();
+    auto *display = ElementFactory::buildElement(ElementType::Display7);
     display->setLabel("Disp");
 
     scene->addItem(rotary);

@@ -13,7 +13,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
@@ -479,7 +478,7 @@ void TestElementContextMenu::testMorphSubmenuOutputDisplay()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *display = new Display7();
+    auto *display = ElementFactory::buildElement(ElementType::Display7);
     scene->receiveCommand(new AddItemsCommand({display}, scene));
     display->setSelected(true);
 

@@ -8,9 +8,6 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display16.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/PropertyShortcutHandler.h"
@@ -135,8 +132,8 @@ void TestPropertyShortcutHandler::testLedColorSecondary()
 void TestPropertyShortcutHandler::testDisplayColorPrev()
 {
     WorkSpace workspace;
-    auto *disp14 = new Display14;
-    auto *disp7 = new Display7;
+    auto *disp14 = ElementFactory::buildElement(ElementType::Display14);
+    auto *disp7 = ElementFactory::buildElement(ElementType::Display7);
     workspace.scene()->addItem(disp14);
     workspace.scene()->addItem(disp7);
 
@@ -248,7 +245,7 @@ void TestPropertyShortcutHandler::testDisplay16ColorPrevMainProperty()
 {
     // Only previous-color is handled for Display16 (no next-color cycling).
     WorkSpace workspace;
-    auto *disp16 = new Display16;
+    auto *disp16 = ElementFactory::buildElement(ElementType::Display16);
     workspace.scene()->addItem(disp16);
 
     PropertyShortcutHandler handler(workspace.scene());

@@ -1,8 +1,8 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Display7.h"
-
+#include "App/Element/DisplaySegments.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -44,7 +44,7 @@ struct ElementInfo<ElementType::Display7> {
         // A file keeps any name, one not among the choices drawn as White; MCP sets the choices alone
         descriptor.parameters = {{
             .id = ParamId::Colour,
-            .defaultValue = QString(Display7::kDefaultColor),
+            .defaultValue = QStringLiteral("Red"),
             .key = "color",
             .choices = Element::colorNames(),
         }};
@@ -72,54 +72,30 @@ struct ElementInfo<ElementType::Display7> {
                 element.setParam(ParamId::Colour, Serialization::readBoundedString(stream));
             }
         };
+        descriptor.inputAttributes = [](const Element &element, const int index) {
+            // Ports on the left side (x=0) correspond to the left segments (G, F, E, D);
+            // ports on the right side (x=64) correspond to the right segments and DP (A, B, DP, C).
+            // This matches the physical pin layout used by common 7-segment display ICs.
+            static constexpr DisplaySegment segments[] = {
+                {  0,    8, "G",  QT_TRANSLATE_NOOP("Display7", "middle")},
+                {  0,   24, "F",  QT_TRANSLATE_NOOP("Display7", "upper left")},
+                {  0,   40, "E",  QT_TRANSLATE_NOOP("Display7", "lower left")},
+                {  0,   56, "D",  QT_TRANSLATE_NOOP("Display7", "bottom")},
+                { 64,    8, "A",  QT_TRANSLATE_NOOP("Display7", "top")},
+                { 64,   24, "B",  QT_TRANSLATE_NOOP("Display7", "upper right")},
+                { 64,   40, "DP", QT_TRANSLATE_NOOP("Display7", "dot")},
+                { 64,   56, "C",  QT_TRANSLATE_NOOP("Display7", "lower right")},
+            };
+            return DisplaySegments::input(element, segments, index);
+        };
+        // The segments the inputs light are drawn as the inputs are now
+        descriptor.pictureFollowsInputs = true;
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Display7(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Display7::Display7(QGraphicsItem *parent)
-    : Element(ElementType::Display7, parent)
-{
-    updatePortsProperties();
-}
-
-void Display7::refresh()
-{
-    pictureChanged();
-}
-
-std::optional<Element::PortAttributes> Display7::inputAttributes(const int index) const
-{
-    // Ports on the left side (x=0) correspond to the left segments (G, F, E, D);
-    // ports on the right side (x=64) correspond to the right segments and DP (A, B, DP, C).
-    // This matches the physical pin layout used by common 7-segment display ICs.
-    static constexpr Display7::SegmentPort segments[] = {
-        {  0,    8, "G",  QT_TR_NOOP("middle")},
-        {  0,   24, "F",  QT_TR_NOOP("upper left")},
-        {  0,   40, "E",  QT_TR_NOOP("lower left")},
-        {  0,   56, "D",  QT_TR_NOOP("bottom")},
-        { 64,    8, "A",  QT_TR_NOOP("top")},
-        { 64,   24, "B",  QT_TR_NOOP("upper right")},
-        { 64,   40, "DP", QT_TR_NOOP("dot")},
-        { 64,   56, "C",  QT_TR_NOOP("lower right")},
-    };
-    if ((index < 0) || (index >= static_cast<int>(std::size(segments)))) {
-        return std::nullopt;
-    }
-    const Display7::SegmentPort &segment = segments[index];
-    return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
-}
-
-Element::PortAttributes Display7::segmentInput(PortAttributes described, const SegmentPort &segment)
-{
-    PortAttributes attributes = std::move(described);
-    attributes.required = false;
-    attributes.defaultStatus = Status::Inactive;
-    attributes.position = QPointF(segment.x, segment.y);
-    return attributes;
-}

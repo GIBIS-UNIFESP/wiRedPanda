@@ -15,8 +15,8 @@
 #include <QString>
 
 #include "App/Core/ThemeManager.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -47,7 +47,7 @@ void TestPort::testSetInputsReindexesPorts()
     // positions — stale indices after the permutation cross-wired the display
     // pins on the next save/load round trip. setInputs() must restore the
     // index() == position invariant for any permutation.
-    Display7 display;
+    Element display{ElementType::Display7};
 
     QVector<InputPort *> reversed = display.inputs();
     std::reverse(reversed.begin(), reversed.end());

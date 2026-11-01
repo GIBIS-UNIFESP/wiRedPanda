@@ -33,8 +33,8 @@
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/Core/Application.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -1815,7 +1815,7 @@ void TestBewavedDolphinGui::testSnapshotMatchesModelRowsForMultiPortElements()
 
     auto *rotary = new InputRotary();
     auto *sw = new InputSwitch();
-    auto *display = new Display7();
+    auto *display = ElementFactory::buildElement(ElementType::Display7);
     scene->addItem(rotary);
     scene->addItem(sw);
     scene->addItem(display);

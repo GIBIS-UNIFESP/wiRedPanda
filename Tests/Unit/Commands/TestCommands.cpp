@@ -20,8 +20,6 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -420,7 +418,7 @@ void TestCommands::testFlipNonRotatablePorts()
 
     // --- Display7: overrides updatePortsProperties with off-centre, two-column ports ---
     // Guards the path where the override bypasses the base updatePortsProperties().
-    auto *display = new Display7();
+    auto *display = ElementFactory::buildElement(ElementType::Display7);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{display}, scene));
     display->setPos(300, 100);
 
@@ -824,7 +822,7 @@ void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *disp7 = new Display7();
+    auto *disp7 = ElementFactory::buildElement(ElementType::Display7);
     auto *sw = new InputSwitch();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{disp7, sw}, scene));
     const int dispId = disp7->id();

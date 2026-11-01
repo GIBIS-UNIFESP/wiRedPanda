@@ -41,7 +41,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -3815,7 +3814,7 @@ void TestScene::testHelpEventOverASegmentPortNamesItInTheCurrentLanguage()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *display = new Display7();
+    auto *display = ElementFactory::buildElement(ElementType::Display7);
     display->setPos(100, 100);
     scene->addItem(display);
     auto *segment = display->inputPort(0);

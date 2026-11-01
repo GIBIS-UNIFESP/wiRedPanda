@@ -782,16 +782,6 @@ protected:
     /// Sets the minimum number of output ports to \a minOutputSize.
     void setMinOutputSize(const int minOutputSize);
 
-    // --- Port Names ---
-
-    /**
-     * \brief Returns a port's attributes named "<letter> (<description>)", as a segment display names its inputs.
-     * \details The name is derived: each time it is asked for, it translates \a description in this element's class
-     * context; its source keeps \a description as written. Mark \a description with QT_TR_NOOP() in the element's own
-     * code, so it is extracted in that context. Both must outlive the element, as string literals do.
-     */
-    PortAttributes describedPort(const char *letter, const char *description) const;
-
     /// Owns the input/output port vectors and their creation/resize lifecycle; this element
     /// forwards its port-access interface here.  See ElementPorts.
     ElementPorts m_ports{this};

@@ -22,7 +22,6 @@
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -455,7 +454,7 @@ void TestParameters::testAColourIsAnyNameAndTheLedOffersItWithOneInput()
     QVERIFY(led.hasColors());
     QCOMPARE(led.appearanceStates().constFirst().first, 6);
 
-    Display7 display;
+    Element display{ElementType::Display7};
     QVERIFY(display.hasColors());
     display.setColor(QStringLiteral("Purple"));
     QCOMPARE(display.color(), QStringLiteral("Purple"));

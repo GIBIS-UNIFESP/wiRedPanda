@@ -19,7 +19,7 @@
 /// sets the requirement or the default elsewhere (a wireless node, say) keeps doing so.
 struct PortAttributes {
     /// A name derived each time it is asked for, so a translated name follows the language, given with the same
-    /// name in the source language. Built by Element::describedPort().
+    /// name in the source language. Built by DisplaySegments::input().
     struct DerivedName {
         std::function<QString()> name;
         QString source;

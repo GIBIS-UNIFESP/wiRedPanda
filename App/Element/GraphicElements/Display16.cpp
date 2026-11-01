@@ -1,11 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Display16.h"
-
+#include "App/Element/DisplaySegments.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -53,7 +52,7 @@ struct ElementInfo<ElementType::Display16> {
         // A file keeps any name, one not among the choices drawn as White; MCP sets the choices alone
         descriptor.parameters = {{
             .id = ParamId::Colour,
-            .defaultValue = QString(Display16::kDefaultColor),
+            .defaultValue = QStringLiteral("Red"),
             .key = "color",
             .choices = Element::colorNames(),
         }};
@@ -63,56 +62,41 @@ struct ElementInfo<ElementType::Display16> {
                 element.setParam(ParamId::Colour, Serialization::readBoundedString(stream));
             }
         };
+        descriptor.inputAttributes = [](const Element &element, const int index) {
+            // Ports on the left (x=0) drive left-side and center segments;
+            // ports on the right (x=64) drive right-side segments and DP.
+            // The port order follows the standard 16-segment naming convention
+            // (A1/A2 = top, B/C = right verticals, D1/D2 = bottom, E/F = left verticals,
+            //  G1/G2 = middle, H/J/K/L/M/N = diagonals and center verticals).
+            static constexpr DisplaySegment segments[] = {
+                {  0,   -8, "G1", QT_TRANSLATE_NOOP("Display16", "middle left horizontal")},
+                {  0,    8, "F",  QT_TRANSLATE_NOOP("Display16", "upper left vertical")},
+                {  0,   24, "E",  QT_TRANSLATE_NOOP("Display16", "lower left vertical")},
+                {  0,   40, "D1", QT_TRANSLATE_NOOP("Display16", "bottom left horizontal")},
+                {  0,   56, "D2", QT_TRANSLATE_NOOP("Display16", "bottom right horizontal")},
+                { 64,   -8, "A1", QT_TRANSLATE_NOOP("Display16", "top left horizontal")},
+                { 64,    8, "A2", QT_TRANSLATE_NOOP("Display16", "top right horizontal")},
+                { 64,   24, "B",  QT_TRANSLATE_NOOP("Display16", "upper right vertical")},
+                { 64,   40, "DP", QT_TRANSLATE_NOOP("Display16", "dot")},
+                { 64,   56, "C",  QT_TRANSLATE_NOOP("Display16", "lower right vertical")},
+                {  0,   72, "G2", QT_TRANSLATE_NOOP("Display16", "middle right horizontal")},
+                {  0,   88, "H",  QT_TRANSLATE_NOOP("Display16", "upper left diagonal")},
+                {  0,  104, "J",  QT_TRANSLATE_NOOP("Display16", "upper center vertical")},
+                { 64,   72, "K",  QT_TRANSLATE_NOOP("Display16", "upper right diagonal")},
+                { 64,   88, "L",  QT_TRANSLATE_NOOP("Display16", "lower right diagonal")},
+                { 64,  104, "M",  QT_TRANSLATE_NOOP("Display16", "lower center vertical")},
+                { 64,  120, "N",  QT_TRANSLATE_NOOP("Display16", "lower left diagonal")},
+            };
+            return DisplaySegments::input(element, segments, index);
+        };
+        // The segments the inputs light are drawn as the inputs are now
+        descriptor.pictureFollowsInputs = true;
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Display16(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Display16::Display16(QGraphicsItem *parent)
-    : Element(ElementType::Display16, parent)
-{
-    updatePortsProperties();
-}
-
-void Display16::refresh()
-{
-    pictureChanged();
-}
-
-std::optional<Element::PortAttributes> Display16::inputAttributes(const int index) const
-{
-    // Ports on the left (x=0) drive left-side and center segments;
-    // ports on the right (x=64) drive right-side segments and DP.
-    // The port order follows the standard 16-segment naming convention
-    // (A1/A2 = top, B/C = right verticals, D1/D2 = bottom, E/F = left verticals,
-    //  G1/G2 = middle, H/J/K/L/M/N = diagonals and center verticals).
-    static constexpr Display7::SegmentPort segments[] = {
-        {  0,   -8, "G1", QT_TR_NOOP("middle left horizontal")},
-        {  0,    8, "F",  QT_TR_NOOP("upper left vertical")},
-        {  0,   24, "E",  QT_TR_NOOP("lower left vertical")},
-        {  0,   40, "D1", QT_TR_NOOP("bottom left horizontal")},
-        {  0,   56, "D2", QT_TR_NOOP("bottom right horizontal")},
-        { 64,   -8, "A1", QT_TR_NOOP("top left horizontal")},
-        { 64,    8, "A2", QT_TR_NOOP("top right horizontal")},
-        { 64,   24, "B",  QT_TR_NOOP("upper right vertical")},
-        { 64,   40, "DP", QT_TR_NOOP("dot")},
-        { 64,   56, "C",  QT_TR_NOOP("lower right vertical")},
-        {  0,   72, "G2", QT_TR_NOOP("middle right horizontal")},
-        {  0,   88, "H",  QT_TR_NOOP("upper left diagonal")},
-        {  0,  104, "J",  QT_TR_NOOP("upper center vertical")},
-        { 64,   72, "K",  QT_TR_NOOP("upper right diagonal")},
-        { 64,   88, "L",  QT_TR_NOOP("lower right diagonal")},
-        { 64,  104, "M",  QT_TR_NOOP("lower center vertical")},
-        { 64,  120, "N",  QT_TR_NOOP("lower left diagonal")},
-    };
-    if ((index < 0) || (index >= static_cast<int>(std::size(segments)))) {
-        return std::nullopt;
-    }
-    const Display7::SegmentPort &segment = segments[index];
-    return Display7::segmentInput(describedPort(segment.letter, segment.description), segment);
-}

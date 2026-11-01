@@ -14,9 +14,8 @@
 #include <QTemporaryDir>
 #include <QUndoCommand>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Display14.h"
-#include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -1955,7 +1954,7 @@ void TestSceneUndoredo::testMorphDisplay14ToDisplay7RemovesDanglingConnection()
     // undo must restore that connection on the recreated Display14.
     Scene scene;
 
-    auto *disp14 = new Display14();
+    auto *disp14 = ElementFactory::buildElement(ElementType::Display14);
     auto *sw     = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(disp14);
     scene.addItem(sw);
@@ -2022,7 +2021,7 @@ void TestSceneUndoredo::testMorphToFewerPortsAllDroppedConnectionsRemoved()
     // ports must be deleted, while connections on preserved ports are kept.
     Scene scene;
 
-    auto *disp14 = new Display14();
+    auto *disp14 = ElementFactory::buildElement(ElementType::Display14);
     scene.addItem(disp14);
     const int dispId = disp14->id();
     QCOMPARE(disp14->inputSize(), 15);
@@ -2111,7 +2110,7 @@ void TestSceneUndoredo::testMorphUndoRestoresConnectionWithOriginalId()
     // (e.g. DeleteItemsCommand) can still find it via scene->itemById().
     Scene scene;
 
-    auto *disp14 = new Display14();
+    auto *disp14 = ElementFactory::buildElement(ElementType::Display14);
     auto *sw     = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(disp14);
     scene.addItem(sw);
