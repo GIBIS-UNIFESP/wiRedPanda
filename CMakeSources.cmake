@@ -60,6 +60,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/KernelLogic.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.cpp
@@ -96,7 +97,6 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Buzzer.h
@@ -108,32 +108,24 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Display7.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/DLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputButton.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputGND.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputSwitch.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputVCC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/JKFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Led.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Line.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Mux.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Nand.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Node.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Nor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Not.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Or.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/SRFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/SRLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Text.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LabelMeasure.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/PortAttributes.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h
@@ -142,6 +134,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneItemRegistry.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/KernelLogic.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/Simulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Simulation/SimulationThrottleDisabler.h

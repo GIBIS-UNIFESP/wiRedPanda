@@ -21,7 +21,6 @@
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputButton.h"
@@ -413,7 +412,7 @@ void TestElementChanges::testALayoutReportsTheLabelOnlyWhenItMoves()
 {
     Scene scene;
     ElementChangesTestDetail::Recorder recorder(scene);
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *table = new TruthTable;
     scene.addItem(gate);
     scene.addItem(table);
@@ -439,7 +438,7 @@ void TestElementChanges::testEachChangeIsReportedOnce()
 {
     Scene scene;
     ElementChangesTestDetail::Recorder recorder(scene);
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *clock = new Clock;
     auto *demux = new Demux;
     scene.addItem(gate);
@@ -577,7 +576,7 @@ void TestElementChanges::testAChangeThatThrowsIsStillReported()
 {
     Scene scene;
     ElementChangesTestDetail::Recorder recorder(scene);
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene.addItem(gate);
     const int gateId = gate->id();
 
@@ -625,7 +624,7 @@ void TestElementChanges::testElementsOutOfASceneMeasureTheirBoundsLive()
 
     // A port moved behind the element's back shows the difference: in a scene the bounds Qt has hold still until a
     // change tells Qt, out of one they follow at once.
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene.addItem(gate);
     const QRectF held = gate->boundingRect();
     gate->inputPort(0)->setPos(gate->inputPort(0)->pos() - QPointF(48, 0));

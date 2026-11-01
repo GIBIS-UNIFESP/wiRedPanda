@@ -3,24 +3,17 @@
 
 #include "Tests/Unit/Logic/TestElementLogic.h"
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/DLatch.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
-#include "App/Element/GraphicElements/Nand.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Nor.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
-#include "App/Element/GraphicElements/Xnor.h"
-#include "App/Element/GraphicElements/Xor.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::initSrc;
@@ -29,7 +22,7 @@ using TestUtils::initElm;
 void TestElementLogic::init()
 {
     std::generate(m_inputs.begin(), m_inputs.end(), [] {
-        auto *src = new InputVcc();
+        auto *src = ElementFactory::buildElement(ElementType::InputVcc);
         initSrc(*src);
         return src;
     });
@@ -82,7 +75,7 @@ void TestElementLogic::testAnd()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    And elm; initElm(elm);
+    Element elm{ElementType::And}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -112,7 +105,7 @@ void TestElementLogic::testOr()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Or elm; initElm(elm);
+    Element elm{ElementType::Or}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -126,7 +119,7 @@ void TestElementLogic::testOr()
 
 void TestElementLogic::testSource()
 {
-    InputVcc elm; initSrc(elm);
+    Element elm{ElementType::InputVcc}; initSrc(elm);
     // InputVcc port has defaultStatus=Active, so initSimulationVectors sets output to Active.
     QCOMPARE(elm.outputValue(), Status::Active);
     elm.setOutputValue(false);
@@ -142,7 +135,10 @@ void TestElementLogic::testSource()
  */
 void TestElementLogic::testSourceMultiOutput()
 {
-    InputVcc src; src.initSimulationVectors(0, 4); src.setOutputValue(0, Status::Active);  // output 0 = Active, outputs 1-3 = Inactive
+    // output 0 = Active, outputs 1-3 = Inactive
+    Element src{ElementType::InputVcc};
+    src.initSimulationVectors(0, 4);
+    src.setOutputValue(0, Status::Active);
 
     QCOMPARE(src.outputValue(0), Status::Active);
     QCOMPARE(src.outputValue(1), Status::Inactive);
@@ -172,7 +168,12 @@ void TestElementLogic::testSourceMultiOutput()
 void TestElementLogic::testSink()
 {
     Led sink; sink.setInputSize(3); sink.initSimulationVectors(3, 3);
-    InputVcc in0, in1, in2; initSrc(in0); initSrc(in1); initSrc(in2);
+    Element in0{ElementType::InputVcc};
+    Element in1{ElementType::InputVcc};
+    Element in2{ElementType::InputVcc};
+    initSrc(in0);
+    initSrc(in1);
+    initSrc(in2);
 
     sink.connectPredecessor(0, &in0, 0);
     sink.connectPredecessor(1, &in1, 0);
@@ -198,7 +199,7 @@ void TestElementLogic::testSink()
 
     // Null predecessor on Led (optional ports) → defaults to Inactive
     Led sinkPartial; sinkPartial.setInputSize(2); sinkPartial.initSimulationVectors(2, 2);
-    InputVcc onlyInput; initSrc(onlyInput);
+    Element onlyInput{ElementType::InputVcc}; initSrc(onlyInput);
     sinkPartial.connectPredecessor(0, &onlyInput, 0);
     // port 1 left null — Led ports are optional, defaulting to Inactive
     onlyInput.setOutputValue(true);
@@ -627,7 +628,7 @@ void TestElementLogic::testXnor()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Xnor elm; initElm(elm);
+    Element elm{ElementType::Xnor}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -653,7 +654,7 @@ void TestElementLogic::testNot()
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    Not elm; initElm(elm);
+    Element elm{ElementType::Not}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
@@ -678,7 +679,7 @@ void TestElementLogic::testNotGateViaBuilder()
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    Not notGate; initElm(notGate);
+    Element notGate{ElementType::Not}; initElm(notGate);
     notGate.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
@@ -718,10 +719,10 @@ void TestElementLogic::testNotGateInAnd()
     QFETCH(bool, expectedNotInput1);
     QFETCH(bool, expectedAndOutput);
 
-    Not invGate; initElm(invGate);
+    Element invGate{ElementType::Not}; initElm(invGate);
     invGate.connectPredecessor(0, m_inputs.at(1), 0);
 
-    And andGate; initElm(andGate);
+    Element andGate{ElementType::And}; initElm(andGate);
     andGate.connectPredecessor(0, m_inputs.at(0), 0);
     andGate.connectPredecessor(1, &invGate, 0);
 
@@ -753,7 +754,7 @@ void TestElementLogic::testNand()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Nand elm; initElm(elm);
+    Element elm{ElementType::Nand}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -783,7 +784,7 @@ void TestElementLogic::testNor()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Nor elm; initElm(elm);
+    Element elm{ElementType::Nor}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -813,7 +814,7 @@ void TestElementLogic::testXor()
     QFETCH(bool, input2);
     QFETCH(bool, expected);
 
-    Xor elm; initElm(elm);
+    Element elm{ElementType::Xor}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -891,7 +892,7 @@ void TestElementLogic::test3InputAnd()
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(3); initElm(elm);
+    Element elm{ElementType::And}; elm.setInputSize(3); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -930,7 +931,7 @@ void TestElementLogic::test3InputOr()
     QFETCH(bool, input3);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(3); initElm(elm);
+    Element elm{ElementType::Or}; elm.setInputSize(3); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -979,7 +980,7 @@ void TestElementLogic::test4InputAnd()
     QFETCH(bool, input4);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(4); initElm(elm);
+    Element elm{ElementType::And}; elm.setInputSize(4); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -1030,7 +1031,7 @@ void TestElementLogic::test4InputOr()
     QFETCH(bool, input4);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(4); initElm(elm);
+    Element elm{ElementType::Or}; elm.setInputSize(4); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -1074,7 +1075,7 @@ void TestElementLogic::test3InputXor()
     // Xor::updateLogic() is setOutputValue(StatusOps::statusXorAll(simInputs())), the same
     // native N-input path And/Or use (minInputSize=2, maxInputSize=8) -- exercise a single
     // 3-input gate directly, not a cascade of two 2-input gates simulating one.
-    Xor elm; elm.setInputSize(3); initElm(elm);
+    Element elm{ElementType::Xor}; elm.setInputSize(3); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -1118,7 +1119,7 @@ void TestElementLogic::test3InputXnor()
     QFETCH(bool, expected);
 
     // Exercise a single native 3-input Xnor gate, not a cascade of two 2-input gates.
-    Xnor elm; elm.setInputSize(3); initElm(elm);
+    Element elm{ElementType::Xnor}; elm.setInputSize(3); initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -1152,7 +1153,7 @@ void TestElementLogic::test5InputAnd()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(5); initElm(elm);
+    Element elm{ElementType::And}; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1185,7 +1186,7 @@ void TestElementLogic::test5InputOr()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(5); initElm(elm);
+    Element elm{ElementType::Or}; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1218,7 +1219,7 @@ void TestElementLogic::test5InputNand()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nand elm; elm.setInputSize(5); initElm(elm);
+    Element elm{ElementType::Nand}; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1251,7 +1252,7 @@ void TestElementLogic::test5InputNor()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nor elm; elm.setInputSize(5); initElm(elm);
+    Element elm{ElementType::Nor}; elm.setInputSize(5); initElm(elm);
     for (int i = 0; i < 5; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1291,7 +1292,7 @@ void TestElementLogic::test8InputAnd()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(8); initElm(elm);
+    Element elm{ElementType::And}; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1331,7 +1332,7 @@ void TestElementLogic::test8InputOr()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Or elm; elm.setInputSize(8); initElm(elm);
+    Element elm{ElementType::Or}; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1370,7 +1371,7 @@ void TestElementLogic::test8InputNand()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nand elm; elm.setInputSize(8); initElm(elm);
+    Element elm{ElementType::Nand}; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1410,7 +1411,7 @@ void TestElementLogic::test8InputNor()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    Nor elm; elm.setInputSize(8); initElm(elm);
+    Element elm{ElementType::Nor}; elm.setInputSize(8); initElm(elm);
     for (int i = 0; i < 8; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }
@@ -1450,10 +1451,10 @@ void TestElementLogic::testFanOut()
     QFETCH(bool, expectedXor);
 
     // Single LogicSource drives 3 different gates (fan-out test)
-    InputVcc source; initSrc(source);
-    And andGate; initElm(andGate);
-    Or orGate; initElm(orGate);
-    Xor xorGate; initElm(xorGate);
+    Element source{ElementType::InputVcc}; initSrc(source);
+    Element andGate{ElementType::And}; initElm(andGate);
+    Element orGate{ElementType::Or}; initElm(orGate);
+    Element xorGate{ElementType::Xor}; initElm(xorGate);
 
     // Connect same source to all three gates
     andGate.connectPredecessor(0, &source, 0);
@@ -1502,7 +1503,7 @@ void TestElementLogic::test6InputAnd()
     QFETCH(int, value);
     QFETCH(bool, expected);
 
-    And elm; elm.setInputSize(6); initElm(elm);
+    Element elm{ElementType::And}; elm.setInputSize(6); initElm(elm);
     for (int i = 0; i < 6; ++i) {
         elm.connectPredecessor(i, m_inputs.at(i), 0);
     }

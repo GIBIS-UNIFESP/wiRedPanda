@@ -4,7 +4,6 @@
 #include "Tests/Unit/Common/TestPriorities.h"
 
 #include "App/Core/Priorities.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Workspace.h"
@@ -21,7 +20,7 @@ void TestPriorities::testPriorityBasic()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw, &andGate, &led);
@@ -70,7 +69,7 @@ void TestPriorities::testPriorityMemoization()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw1, &sw2, &andGate, &led);

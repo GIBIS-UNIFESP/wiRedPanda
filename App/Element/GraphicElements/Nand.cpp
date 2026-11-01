@@ -1,9 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Nand.h"
-
-#include "App/Core/StatusOps.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -34,21 +32,7 @@ struct ElementInfo<ElementType::Nand> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Nand(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Nand::Nand(QGraphicsItem *parent)
-    : Element(ElementType::Nand, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-}
-
-void Nand::updateLogic()
-{
-    if (!simUpdateInputsAllowUnknown()) {
-        return;
-    }
-    setOutputValue(StatusOps::statusNot(StatusOps::statusAndAll(simInputs())));
-}

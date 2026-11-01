@@ -36,7 +36,7 @@
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -324,7 +324,7 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
 void TestICUnit::testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp()
 {
     IC ic;
-    auto elm = std::make_unique<And>();
+    auto elm = std::make_unique<Element>(ElementType::And);
     elm->setPos(std::numeric_limits<qreal>::quiet_NaN(), 0);
 
     QList<QGraphicsItem *> items{elm.get()};
@@ -339,8 +339,8 @@ void TestICUnit::testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty()
     // rounding to 0 (empty), which must reset the preview to null rather than construct a
     // degenerate QPixmap.
     IC ic;
-    auto elm1 = std::make_unique<And>();
-    auto elm2 = std::make_unique<And>();
+    auto elm1 = std::make_unique<Element>(ElementType::And);
+    auto elm2 = std::make_unique<Element>(ElementType::And);
     elm1->setPos(0, 0);
     elm2->setPos(100000000, 0);
 
@@ -355,8 +355,8 @@ void TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange()
     // A finite extent past int's range is scaled down before it is rounded to whole pixels, so it fits the popup like
     // any other, keeping its aspect ratio.
     IC ic;
-    auto elm1 = std::make_unique<And>();
-    auto elm2 = std::make_unique<And>();
+    auto elm1 = std::make_unique<Element>(ElementType::And);
+    auto elm2 = std::make_unique<Element>(ElementType::And);
     elm1->setPos(0, 0);
     elm2->setPos(2e11, 1e11);
 
@@ -388,7 +388,7 @@ void TestICUnit::testAPreviewShowsTheDefaultForAPictureThatIsGone()
     Led innerLed;
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     innerWorkspace.scene()->addItem(gate);
     gate->setAppearance(false, png);
     const QString innerPath = subDir.filePath("pictured.panda");
@@ -683,7 +683,7 @@ void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
     WorkSpace bigWorkspace;
     CircuitBuilder bigBuilder(bigWorkspace.scene());
     InputSwitch bigSw1, bigSw2;
-    And andGate;
+    Element andGate{ElementType::And};
     Led bigLed1, bigLed2;
     bigBuilder.add(&bigSw1, &bigSw2, &andGate, &bigLed1, &bigLed2);
     bigBuilder.connect(&bigSw1, 0, &andGate, 0);

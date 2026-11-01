@@ -1,9 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Xor.h"
-
-#include "App/Core/StatusOps.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -34,21 +32,7 @@ struct ElementInfo<ElementType::Xor> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Xor(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Xor::Xor(QGraphicsItem *parent)
-    : Element(ElementType::Xor, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-}
-
-void Xor::updateLogic()
-{
-    if (!simUpdateInputsAllowUnknown()) {
-        return;
-    }
-    setOutputValue(StatusOps::statusXorAll(simInputs()));
-}

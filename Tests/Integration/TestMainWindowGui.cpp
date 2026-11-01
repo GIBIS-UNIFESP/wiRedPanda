@@ -38,14 +38,13 @@
 #include "App/Core/MimeTypes.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
@@ -311,7 +310,7 @@ void TestMainWindowGui::testRecoveredTabIsMarked()
     tab->setRecovered(true);
     auto *scene = tab->scene();
     auto *view = tab->view();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     clickElement(view, andGate);
@@ -397,7 +396,7 @@ void TestMainWindowGui::testSaveAndReload()
         std::unique_ptr<MainWindow> window(createMW());
         auto *scene = window->currentTab()->scene();
         scene->addItem(new InputSwitch());
-        scene->addItem(new And());
+        scene->addItem(ElementFactory::buildElement(ElementType::And));
 
         ScopedFileDialogStub guard;
         guard.stub.saveResult = {savePath, "Panda files (*.panda)"};
@@ -479,7 +478,7 @@ void TestMainWindowGui::testReloadFile()
     auto *scene = window->currentTab()->scene();
     int elemsBefore = static_cast<int>(scene->elements().size());
 
-    scene->addItem(new And());
+    scene->addItem(ElementFactory::buildElement(ElementType::And));
     QCOMPARE(static_cast<int>(scene->elements().size()), elemsBefore + 1);
 
     QTest::keyClick(window.get(), Qt::Key_F5, Qt::ControlModifier);
@@ -528,7 +527,7 @@ void TestMainWindowGui::testPastingAClipboardThatDoesNotReadReportsIt()
     // Another program may have written the clipboard: Edit's Paste, a slot Qt calls, reports it there, nothing added
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
-    scene->addItem(new And());
+    scene->addItem(ElementFactory::buildElement(ElementType::And));
     const auto elementCount = scene->elements().size();
 
     QByteArray itemData;
@@ -803,7 +802,7 @@ void TestMainWindowGui::testDeleteViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -825,7 +824,7 @@ void TestMainWindowGui::testDeleteViaKeyboardSurvivesMistranslatedShortcut()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -843,7 +842,7 @@ void TestMainWindowGui::testCopyPasteViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -863,7 +862,7 @@ void TestMainWindowGui::testDuplicateViaKeyboard()
     // Duplicate must not disturb the system clipboard.
     QApplication::clipboard()->setText(QStringLiteral("sentinel-clipboard"));
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(96, 96);
     scene->addItem(andGate);
     clickElement(view, andGate);
@@ -890,7 +889,7 @@ void TestMainWindowGui::testCutPasteViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -908,7 +907,7 @@ void TestMainWindowGui::testUndoRedoViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -929,7 +928,7 @@ void TestMainWindowGui::testSelectAllViaKeyboard()
     auto *scene = window->currentTab()->scene();
 
     scene->addItem(new InputSwitch());
-    scene->addItem(new And());
+    scene->addItem(ElementFactory::buildElement(ElementType::And));
     scene->addItem(new Led());
 
     QTest::keyClick(window.get(), Qt::Key_A, Qt::ControlModifier);
@@ -943,7 +942,7 @@ void TestMainWindowGui::testRotateRightViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     int id = andGate->id();
@@ -962,7 +961,7 @@ void TestMainWindowGui::testRotateLeftViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     int id = andGate->id();
@@ -981,7 +980,7 @@ void TestMainWindowGui::testFlipHorizontallyViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     int id = andGate->id();
@@ -1052,7 +1051,7 @@ void TestMainWindowGui::testMouseClickSelectsElement()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -1069,7 +1068,7 @@ void TestMainWindowGui::testMouseCtrlClickMultiSelect()
     auto *view = window->currentTab()->view();
 
     auto *sw = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     sw->setPos(50, 100);
     andGate->setPos(200, 100);
     scene->addItem(sw);
@@ -1088,7 +1087,7 @@ void TestMainWindowGui::testMouseDragMovesElement()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     int id = andGate->id();
@@ -1121,7 +1120,7 @@ void TestMainWindowGui::testMouseClickEmptyDeselects()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -1141,10 +1140,10 @@ void TestMainWindowGui::testMousePanWithSpace()
     // Panning only moves the viewport when there is a scrollable range, so
     // spread elements far beyond the viewport first and assert the range
     // exists — otherwise this test silently degrades into a no-op drag.
-    auto *farGate = new And();
+    auto *farGate = ElementFactory::buildElement(ElementType::And);
     farGate->setPos(4000, 3000);
     scene->addItem(farGate);
-    auto *nearGate = new And();
+    auto *nearGate = ElementFactory::buildElement(ElementType::And);
     nearGate->setPos(-4000, -3000);
     scene->addItem(nearGate);
     QApplication::processEvents();
@@ -1525,7 +1524,7 @@ void TestMainWindowGui::testChangeSkin()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     andGate->setSelected(true);
     QCoreApplication::processEvents();
@@ -1552,7 +1551,7 @@ void TestMainWindowGui::testDefaultSkin()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     andGate->setAppearance(false, customImagePath);
     andGate->setSelected(true);
@@ -1714,7 +1713,7 @@ void TestMainWindowGui::testEmbeddedICSelectAllDeleteUndo()
     scene->setContextDir(m_fixtureDir);
 
     placeEmbeddedIC(scene, m_fixtureDir, "selall", {100, 100});
-    scene->addItem(new And());
+    scene->addItem(ElementFactory::buildElement(ElementType::And));
     scene->addItem(new Led());
 
     int origCount = static_cast<int>(scene->elements().size());
@@ -2513,7 +2512,7 @@ void TestMainWindowGui::testInlineICSaveNoFileDialog()
     QVERIFY(window->currentTab()->isInlineIC());
 
     // Add an element so there's something to save
-    window->currentTab()->scene()->addItem(new And());
+    window->currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::And));
 
     // Save — stub should NOT be called
     ScopedFileDialogStub guard;
@@ -2569,7 +2568,7 @@ void TestMainWindowGui::testClearSelectionViaEscape()
     auto *scene = window->currentTab()->scene();
 
     scene->addItem(new InputSwitch());
-    scene->addItem(new And());
+    scene->addItem(ElementFactory::buildElement(ElementType::And));
     scene->addItem(new Led());
 
     scene->selectAll();
@@ -2587,7 +2586,7 @@ void TestMainWindowGui::testFlipVertically()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
 
@@ -2695,7 +2694,7 @@ void TestMainWindowGui::testUndoPastStack()
 
     // The scene must still be genuinely usable afterward, not left in a broken state.
     auto *scene = window->currentTab()->scene();
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
     QVERIFY(undoStack->canUndo());
     undoStack->undo();
     QVERIFY(!undoStack->canUndo());
@@ -2719,7 +2718,7 @@ void TestMainWindowGui::testToolbarHasUndoRedoActions()
     // On a clean stack undo is disabled; an undoable edit enables it (the toolbar button follows
     // the same action, so it enables too).
     QVERIFY(!scene->undoAction()->isEnabled());
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     clickElement(view, andGate);
@@ -2737,10 +2736,10 @@ void TestMainWindowGui::testStatusBarShowsZoomAndSelection()
     QVERIFY(statusInfo);
 
     // Two elements, one selected — the indicator reports the current zoom and selection.
-    auto *a = new And();
+    auto *a = ElementFactory::buildElement(ElementType::And);
     a->setPos(0, 0);
     scene->addItem(a);
-    auto *b = new And();
+    auto *b = ElementFactory::buildElement(ElementType::And);
     b->setPos(200, 0);
     scene->addItem(b);
     scene->clearSelection();
@@ -2761,7 +2760,7 @@ void TestMainWindowGui::testRedoAfterNewAction()
     auto *view = window->currentTab()->view();
 
     // Add element, select, delete via action
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     clickElement(view, andGate);
@@ -2833,7 +2832,7 @@ void TestMainWindowGui::testRubberBandSelection()
     auto *view = window->currentTab()->view();
 
     auto *sw = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led();
     sw->setPos(100, 100);
     andGate->setPos(150, 100);
@@ -2910,7 +2909,7 @@ void TestMainWindowGui::testPropertyCycleMain()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     int initInputSize = andGate->inputSize();
@@ -3098,7 +3097,7 @@ void TestMainWindowGui::testContextMenuRealRightClickRotatesElement()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     clickElement(view, andGate);
@@ -3192,7 +3191,7 @@ void TestMainWindowGui::testContextMenuChangeColor()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     andGate->setSelected(true);
     QCoreApplication::processEvents();
@@ -3252,7 +3251,7 @@ void TestMainWindowGui::testMorphPrevNextViaKeyboard()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     clickElement(view, andGate);
@@ -3417,7 +3416,7 @@ void TestMainWindowGui::testWindowTitleShowsFile()
     // An undoable edit marks the window modified.
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(100, 100);
     scene->addItem(andGate);
     clickElement(view, andGate);
@@ -3480,7 +3479,7 @@ void TestMainWindowGui::testElementColorChange()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     andGate->setSelected(true);
     QCoreApplication::processEvents();
@@ -3507,7 +3506,7 @@ void TestMainWindowGui::testElementInputCountChange()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     andGate->setSelected(true);
     QCoreApplication::processEvents();
@@ -4081,7 +4080,7 @@ void TestMainWindowGui::testCloseEventClosesAfterConfirmedSave()
     // Dirty the tab's undo stack so hasModifiedFiles() is true, driving closeEvent() into the
     // closeFiles() branch rather than the plain "Are you sure?" one.
     auto *scene = window->currentTab()->scene();
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
     QVERIFY(!scene->undoStack()->isClean());
 
     // Discard (don't save) so closeTab()/closeFiles() succeed without needing a real path.
@@ -4162,9 +4161,9 @@ void TestMainWindowGui::testAlignDistributeFlipZoomToFitActionsWithTab()
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
 
-    auto *and1 = new And();
-    auto *and2 = new And();
-    auto *and3 = new And();
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
+    auto *and3 = ElementFactory::buildElement(ElementType::And);
     and1->setPos(0, 0);
     and2->setPos(200, 80);
     and3->setPos(400, 160);
@@ -4278,7 +4277,7 @@ void TestMainWindowGui::testRetranslateUiHandlesInlineIcAndElementsAndEngines()
 {
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
 
     const QString exercisePath = writeJsonFixture(m_tempDir, "retranslate_exercise.json", R"({
         "id": "test-mw-retranslate-ex",
@@ -4505,7 +4504,7 @@ void TestMainWindowGui::testStartExerciseDrivesClickTargetsAndOverlayParenting()
 
     // Step 1's requirement is already satisfied -- any further circuit change advances to
     // step 2 (context ""), exercising the "!wantBwd && currentTab()" branch's m_bwd-detach line.
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
     QVERIFY2(TestUtils::waitFor([&] { return window->m_exerciseOverlay && window->m_exerciseOverlay->parentWidget() == static_cast<QWidget *>(window->currentTab()); }),
              "step 2 must have reparented the overlay back onto the current tab");
 
@@ -4537,7 +4536,8 @@ void TestMainWindowGui::testStartExerciseDrivesClickTargetsAndOverlayParenting()
     QVERIFY(window->m_exerciseEngine->isActive());
     QCOMPARE(window->m_exerciseEngine->currentStep(), 0);
     window->m_exerciseOverlay = nullptr;
-    scene->receiveCommand(new AddItemsCommand({new Or()}, scene)); // satisfies g0 -> advances to g1
+    // satisfies g0 -> advances to g1
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::Or)}, scene));
 
     // The guard must only skip the overlay-touching part of the handler, not the rest of it --
     // the engine itself must still have advanced to g1 despite the null overlay.

@@ -33,7 +33,7 @@
 #include "App/BeWavedDolphin/DolphinHost.h"
 #include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/Core/Application.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
@@ -62,7 +62,7 @@ static std::unique_ptr<WorkSpace> createAndCircuit()
 
     auto *sw0 = new InputSwitch();
     auto *sw1 = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led();
 
     scene->addItem(sw0);

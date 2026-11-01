@@ -26,7 +26,6 @@
 #include <QVariant>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
@@ -234,7 +233,7 @@ void TestElementEditor::testRetranslateUi()
 void TestElementEditor::testSetCurrentElementsEmpty()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -252,7 +251,7 @@ void TestElementEditor::testSetCurrentElementsEmpty()
 void TestElementEditor::testSetCurrentElementsGate()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -349,7 +348,7 @@ void TestElementEditor::testSelectionDoesNotPushPortSizeCommandB21()
     // the rebuild signal storm; a fresh selection must therefore leave the
     // undo stack untouched.
     WorkSpace workspace;
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -495,7 +494,7 @@ void TestElementEditor::testContextMenuAppearanceRevertSetsDefaultAppearance()
     QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
 #endif
     WorkSpace workspace;
-    auto *andGate = new And(); // And has canChangeAppearance == true.
+    auto *andGate = ElementFactory::buildElement(ElementType::And); // And has canChangeAppearance == true.
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -616,7 +615,7 @@ void TestElementEditor::testContextMenuExtractToFileEmitsForEmbeddedIC()
 void TestElementEditor::testUpdateElementAppearanceCancelledDialogIsNoOp()
 {
     WorkSpace workspace;
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -682,7 +681,7 @@ void TestElementEditor::testUpdateElementAppearanceViaTileGridUpdatesSelectedSta
 void TestElementEditor::testUpdateElementAppearanceFallbackAppliesToAllSelected()
 {
     WorkSpace workspace;
-    auto *andGate = new And(); // single-state: no appearance-states tile grid.
+    auto *andGate = ElementFactory::buildElement(ElementType::And); // single-state: no appearance-states tile grid.
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -775,7 +774,7 @@ void TestElementEditor::testPickingAPictureThatDoesNotLoadChangesNothing()
     broken.close();
 
     WorkSpace workspace;
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -1023,7 +1022,7 @@ void TestElementEditor::testApplyWirelessModeChangeSeversExistingConnection()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
     auto *node = new Node();
-    auto *sink = new And();
+    auto *sink = ElementFactory::buildElement(ElementType::And);
     builder.add(node, sink);
     auto *conn = builder.connect(node, 0, sink, 0);
     QVERIFY(conn);
@@ -1313,7 +1312,7 @@ void TestElementEditor::testBlobNameEditingFinishedRenamesSuccessfully()
 void TestElementEditor::testInputIndexChangedGuardsEmptyOrDisabled()
 {
     WorkSpace workspace;
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -1336,7 +1335,7 @@ void TestElementEditor::testInputIndexChangedGuardsEmptyOrDisabled()
 void TestElementEditor::testInputIndexChangedSendsChangePortSizeCommand()
 {
     WorkSpace workspace;
-    auto *andGate = new And(); // 2..8 inputs, default 2.
+    auto *andGate = ElementFactory::buildElement(ElementType::And); // 2..8 inputs, default 2.
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);
@@ -1537,7 +1536,7 @@ void TestElementEditor::testSetTruthTablePropositionTogglesOutputBit()
 void TestElementEditor::testAudioBoxGuardsNonAudioBoxSelection()
 {
     WorkSpace workspace;
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     ElementEditor editor(&workspace);

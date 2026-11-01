@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdio>
+#include <deque>
 #include <functional>
 #include <iterator>
 #include <memory>
@@ -673,6 +674,27 @@ QLineEdit *inlineLabelEditor(Scene *scene);
 
 } // namespace TestUtils
 
+/// Elements of one type built in place, each at a fixed address: what a C array of one element class was. An element
+/// can be neither copied nor moved, so they live in a deque, which never moves what it holds.
+class ElementArray
+{
+public:
+    /// Builds \a count elements of \a type.
+    ElementArray(const ElementType type, const int count)
+    {
+        for (int i = 0; i < count; ++i) {
+            m_elements.emplace_back(type);
+        }
+    }
+
+    Element &operator[](const int index) { return m_elements[static_cast<std::size_t>(index)]; }
+    const Element &operator[](const int index) const { return m_elements[static_cast<std::size_t>(index)]; }
+    int size() const { return static_cast<int>(m_elements.size()); }
+
+private:
+    std::deque<Element> m_elements;
+};
+
 /**
  * @brief Helper class for building test circuits with less boilerplate
  *
@@ -681,7 +703,7 @@ QLineEdit *inlineLabelEditor(Scene *scene);
  *   CircuitBuilder builder(workspace.scene());
  *
  *   InputSwitch sw1, sw2;
- *   And andGate;
+ *   Element andGate{ElementType::And};
  *   Led led;
  *
  *   builder.add(&sw1, &sw2, &andGate, &led);

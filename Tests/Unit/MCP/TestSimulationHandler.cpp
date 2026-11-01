@@ -15,9 +15,9 @@
 #include <QTest>
 
 #include "App/BeWavedDolphin/SignalModel.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Not.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -252,7 +252,7 @@ void TestSimulationHandler::testCreateWaveformResponseValidatesAgainstTheSchema(
 
     auto *sw = new InputSwitch();
     sw->setLabel("sw1");
-    auto *notGate = new Not();
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *led = new Led();
     scene->receiveCommand(new AddItemsCommand({sw, notGate, led}, scene));
 

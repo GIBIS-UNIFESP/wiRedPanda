@@ -3,12 +3,11 @@
 
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestSequential.h"
 
-#include "App/Element/GraphicElements/And.h"
+#include <array>
+
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
 #include "Tests/Common/TestUtils.h"
@@ -243,11 +242,12 @@ void TestSequential::testCounterAsyncReset()
     Led counterOut[4];
 
     // Increment logic gates (ripple carry counter)
-    Not notQ[4];
-    And carryAnd[2];
-    And xorAnd[4][2];
-    Or xorOr[4];
-    Not notCarry[3];
+    ElementArray notQ{ElementType::Not, 4};
+    ElementArray carryAnd{ElementType::And, 2};
+    std::array<ElementArray, 4> xorAnd{
+        {{ElementType::And, 2}, {ElementType::And, 2}, {ElementType::And, 2}, {ElementType::And, 2}}};
+    ElementArray xorOr{ElementType::Or, 4};
+    ElementArray notCarry{ElementType::Not, 3};
 
     // Add all elements
     builder.add(&clk, &clear);
@@ -262,7 +262,7 @@ void TestSequential::testCounterAsyncReset()
     }
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 2; ++j) {
-            builder.add(&xorAnd[i][j]);
+            builder.add(&xorAnd[static_cast<std::size_t>(i)][j]);
         }
     }
 

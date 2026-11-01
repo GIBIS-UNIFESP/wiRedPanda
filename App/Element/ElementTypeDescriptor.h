@@ -18,6 +18,7 @@
 
 #include "App/Core/Enums.h"
 #include "App/Element/Parameters.h"
+#include "App/Element/PortAttributes.h"
 
 class QDataStream;
 struct SerializationContext;
@@ -133,6 +134,12 @@ struct ElementTypeDescriptor {
     quint64 maxInputSize = 0;  ///< Maximum number of input ports.
     quint64 minOutputSize = 0; ///< Minimum number of output ports.
     quint64 maxOutputSize = 0; ///< Maximum number of output ports.
+
+    /// The attributes the type sets on input port \a index of \a element (Element::inputAttributes()), or nothing when
+    /// the port keeps its own; none, every port keeps its own.
+    std::function<std::optional<PortAttributes>(const Element &element, int index)> inputAttributes{};
+    /// As inputAttributes, for output port \a index.
+    std::function<std::optional<PortAttributes>(const Element &element, int index)> outputAttributes{};
 
     // --- Appearance configuration ---
 

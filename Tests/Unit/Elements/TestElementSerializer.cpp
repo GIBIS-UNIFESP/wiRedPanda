@@ -19,11 +19,9 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Line.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
@@ -198,7 +196,7 @@ void TestElementSerializer::testReadPortListEntryReadFailureThrows()
 
 void TestElementSerializer::testRemovePortFromMapErasesMatchingEntries()
 {
-    And gate;
+    Element gate{ElementType::And};
     Port *target = gate.inputPort(0);
     Port *other = gate.inputPort(1);
 
@@ -218,7 +216,7 @@ void TestElementSerializer::testLoadOldFormatDrainsUnusedPriorityField()
     // hasUnusedPriority() is V_4_0_1-only (removed in 4.1's QMap format); no version both old-format
     // *and* carrying this field is reachable via the public load() dispatch table's boundary tests
     // elsewhere, so this drives loadOldFormat() directly with that exact version.
-    And gate;
+    Element gate{ElementType::And};
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -243,7 +241,7 @@ void TestElementSerializer::testLoadOldFormatDrainsUnusedPriorityField()
 
 void TestElementSerializer::testLoadNewFormatPropertiesStreamErrorThrows()
 {
-    And gate;
+    Element gate{ElementType::And};
 
     // Same reasoning as testReadPortListEntryReadFailureThrows(): the count and key must both
     // read successfully (past readBoundedMetadata()'s own implausible-count guard) so the value
@@ -269,7 +267,7 @@ void TestElementSerializer::testLoadNewFormatPropertiesStreamErrorThrows()
 void TestElementSerializer::testLoadNewFormatAppearanceIndexOutOfRangeThrows()
 {
     // Line has exactly 1 appearance slot; declare 2 entries in the stream.
-    Line line;
+    Element line{ElementType::Line};
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -296,7 +294,7 @@ void TestElementSerializer::testLoadNewFormatAppearanceIndexOutOfRangeThrows()
 
 void TestElementSerializer::testLoadInputPortsImplausibleCountThrows()
 {
-    And gate;
+    Element gate{ElementType::And};
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -317,7 +315,7 @@ void TestElementSerializer::testLoadInputPortsImplausibleCountThrows()
 
 void TestElementSerializer::testLoadOutputPortsImplausibleCountThrows()
 {
-    And gate;
+    Element gate{ElementType::And};
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -338,7 +336,7 @@ void TestElementSerializer::testLoadOutputPortsImplausibleCountThrows()
 
 void TestElementSerializer::testLoadPixmapAppearanceNamesImplausibleCountThrows()
 {
-    Line line;
+    Element line{ElementType::Line};
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -360,7 +358,7 @@ void TestElementSerializer::testLoadPixmapAppearanceNamesImplausibleCountThrows(
 void TestElementSerializer::testLoadPixmapAppearanceNamesIndexOutOfRangeThrows()
 {
     // Line has exactly 1 appearance slot; declare 2 names in the stream.
-    Line line;
+    Element line{ElementType::Line};
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -383,7 +381,7 @@ void TestElementSerializer::testLoadPixmapAppearanceNamesIndexOutOfRangeThrows()
 
 void TestElementSerializer::testLoadPixmapAppearanceNamesAppliesResolvedPath()
 {
-    Line line;
+    Element line{ElementType::Line};
 
     QTemporaryFile tempFile("XXXXXX.svg");
     QVERIFY(tempFile.open());
@@ -420,7 +418,7 @@ void TestElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw1, sw2;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
     subBuilder.add(&sw1, &sw2, &andGate, &led);
     subBuilder.connect(&sw1, 0, &andGate, 0);

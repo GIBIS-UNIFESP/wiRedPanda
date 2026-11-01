@@ -9,7 +9,7 @@
 #include <QTabWidget>
 #include <QTest>
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -23,7 +23,7 @@ namespace {
 
 int addAnd(Scene *scene)
 {
-    auto *elm = new And();
+    auto *elm = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({elm}, scene));
     return elm->id();
 }

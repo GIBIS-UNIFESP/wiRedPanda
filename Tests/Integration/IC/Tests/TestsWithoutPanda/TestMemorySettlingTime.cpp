@@ -3,10 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.h"
 
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Not.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::inputStatus;
@@ -32,8 +30,8 @@ struct SingleStageDecoderCircuit {
     InputSwitch addressBits[6];
     InputSwitch controlSignal;
     Led outputs[64];
-    And decoders[64];
-    Not notGates[6];
+    ElementArray decoders{ElementType::And, 64};
+    ElementArray notGates{ElementType::Not, 6};
 };
 
 void buildSingleStageDecoder6bit(WorkSpace* workspace,
@@ -65,12 +63,12 @@ void buildSingleStageDecoder6bit(WorkSpace* workspace,
     }
 
     for (int addr = 0; addr < 64; addr++) {
-        And *decoder = &circuit->decoders[addr];
+        Element *decoder = &circuit->decoders[addr];
 
         for (int bit = 0; bit < 6; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
             Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
-                                         : static_cast<Element *>(&circuit->notGates[bit]);
+                                         : &circuit->notGates[bit];
             builder.connect(src, 0, decoder, bit);
         }
         builder.connect(&circuit->controlSignal, 0, decoder, 6);
@@ -96,9 +94,9 @@ struct CascadedDecoderCircuit {
     InputSwitch addressBits[6];
     InputSwitch controlSignal;
     Led outputs[64];
-    And level1Decoders[64];  // low 3 address bits
-    And level2Decoders[64];  // level1 + high 3 bits + control
-    Not notGates[6];
+    ElementArray level1Decoders{ElementType::And, 64};  // low 3 address bits
+    ElementArray level2Decoders{ElementType::And, 64};  // level1 + high 3 bits + control
+    ElementArray notGates{ElementType::Not, 6};
 };
 
 void buildCascadedDecoder6bit(WorkSpace* workspace,
@@ -131,14 +129,14 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
     }
 
     for (int addr = 0; addr < 64; addr++) {
-        And *l1 = &circuit->level1Decoders[addr];
-        And *l2 = &circuit->level2Decoders[addr];
+        Element *l1 = &circuit->level1Decoders[addr];
+        Element *l2 = &circuit->level2Decoders[addr];
 
         // Level 1: decode the low three address bits.
         for (int bit = 0; bit < 3; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
             Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
-                                         : static_cast<Element *>(&circuit->notGates[bit]);
+                                         : &circuit->notGates[bit];
             builder.connect(src, 0, l1, bit);
         }
 
@@ -147,7 +145,7 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
         for (int bit = 3; bit < 6; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
             Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
-                                         : static_cast<Element *>(&circuit->notGates[bit]);
+                                         : &circuit->notGates[bit];
             builder.connect(src, 0, l2, bit - 2);
         }
         builder.connect(&circuit->controlSignal, 0, l2, 4);

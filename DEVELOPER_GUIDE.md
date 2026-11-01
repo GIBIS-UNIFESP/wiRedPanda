@@ -181,8 +181,9 @@ wiRedPanda/
 │   │   ├── ICRenderer.cpp/h                #     Builds an IC's hover-preview pixmap
 │   │   ├── ICSimulation.cpp/h              #     Builds/runs an IC's internal simulation graph
 │   │   ├── ElementSerializer.cpp/h         #     Serialization
-│   │   └── GraphicElements/                #     31 concrete element implementations
+│   │   └── GraphicElements/                #     Each element type's descriptor, and its class if it has one
 │   ├── Simulation/                         #   Simulation engine
+│   │   ├── KernelLogic.cpp/h               #     Each kernel's logic
 │   │   ├── Simulation.cpp/h                #     Main simulation loop
 │   │   └── SimulationBlocker.cpp/h         #     Pause mechanism
 │   ├── Wiring/                             #   Ports and wire connections
@@ -441,16 +442,15 @@ QGraphicsObject
         │     ├── InputSwitch     (toggle on/off)
         │     ├── InputButton     (momentary press)
         │     ├── InputRotary     (multi-position rotary switch)
-        │     ├── InputVcc        (constant HIGH)
-        │     ├── InputGnd        (constant LOW)
         │     └── Clock           (frequency-driven square wave)
-        ├── And, Or, Not, ...     (combinational logic gates)
         ├── DFlipFlop, SRLatch... (sequential logic)
         ├── Led, Buzzer, Display  (output elements)
         ├── Mux, Demux            (multiplexing)
         ├── IC                    (sub-circuit / integrated circuit)
-        └── Node, Line, Text      (structural/annotation)
+        └── Node, Text            (structural/annotation)
 ```
+
+The gates, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a gate, `KernelLogic` computes.
 
 ### Element: The Base Class
 
@@ -601,25 +601,17 @@ The 31 concrete elements live in `App/Element/GraphicElements/`:
 
 ### Anatomy of a Logic Gate
 
-Here is the complete AND gate, the simplest element to understand:
-
-**`App/Element/GraphicElements/And.h`**:
-
-```cpp
-class And : public Element {
-    Q_OBJECT
-public:
-    explicit And(QGraphicsItem *parent = nullptr);
-    void updateLogic() override;
-};
-```
+Here is the complete AND gate, the simplest element to understand. A gate has no class of its own: it is an
+`Element` whose type's descriptor names its kernel, and the kernel's logic lives in `KernelLogic`.
 
 **`App/Element/GraphicElements/And.cpp`**:
 
 ```cpp
-#include "And.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
+#include "App/Element/ElementInfo.h"
 
-// 1. Registration: define constraints and the descriptor
+// Registration: the constraints and the descriptor, keyed by the type
 template<>
 struct ElementInfo<ElementType::And> {
     static constexpr ElementConstraints constraints{
@@ -633,7 +625,8 @@ struct ElementInfo<ElementType::And> {
 
     static ElementTypeDescriptor describe() {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = [] { return QStringLiteral(":/Components/Logic/and.svg"); };
+        descriptor.kernel = KernelKind::And;
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/and.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("And", "AND");
         descriptor.translatedName = QT_TRANSLATE_NOOP("And", "And");
         descriptor.trContext = "And";
@@ -643,29 +636,40 @@ struct ElementInfo<ElementType::And> {
 
     static inline const bool registered = [] {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new And; });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
+```
 
-// 2. Constructor: just calls parent with the element type
-And::And(QGraphicsItem *parent) : Element(ElementType::And, parent) {}
+**`App/Simulation/KernelLogic.cpp`** (the AND kernel's logic, and its entry in `KernelLogic::of()`):
 
-// 3. Logic: the one method that matters
-void And::updateLogic() {
-    if (!simUpdateInputsAllowUnknown()) return;
-    setOutputValue(StatusOps::statusAndAll(simInputs()));
+```cpp
+void andGate(Element &element)
+{
+    if (!element.simUpdateInputsAllowUnknown()) {
+        return;
+    }
+    element.setOutputValue(StatusOps::statusAndAll(element.simInputs()));
+}
+
+KernelLogic::Logic KernelLogic::of(const KernelKind kind)
+{
+    switch (kind) {
+    case KernelKind::And:  return &KernelLogicDetail::andGate;
+    // ...
+    }
 }
 ```
 
-**What happens in `updateLogic()`:**
+**What happens in `Element::updateLogic()`:** it runs `KernelLogic::of(descriptor.kernel)`, here `andGate()`:
 
 1. `simUpdateInputsAllowUnknown()` reads the current value from each connected predecessor's output port (or uses the port's default if unconnected). Returns `false` if a required input has no value — the element does nothing this cycle.
 2. `simInputs()` returns a `QVector<Status>` snapshot of all input values.
 3. `StatusOps::statusAndAll()` ANDs all inputs together using the four-state logic rules.
 4. `setOutputValue()` writes the result to output port 0. If the value changed, the element is flagged for downstream propagation.
 
-All other combinational gates (`Or`, `Not`, `Xor`, `Nand`, `Nor`, `Xnor`) follow this exact same three-part pattern. The only difference is the `StatusOps` function called.
+All other combinational gates (`Or`, `Not`, `Xor`, `Nand`, `Nor`, `Xnor`) follow this exact same pattern: a descriptor naming the kernel, and the kernel's function in `KernelLogic`. The only difference is the `StatusOps` function called.
 
 ### Anatomy of a Sequential Element
 
@@ -1221,7 +1225,6 @@ private slots:
 ```cpp
 #include "TestMyGate.h"
 #include "Tests/Common/TestUtils.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 
@@ -1231,7 +1234,7 @@ void TestMyGate::testAndTruthTable()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw0, sw1;
-    And gate;
+    Element gate{ElementType::And};
     Led led;
 
     builder.add(&sw0, &sw1, &gate, &led);
@@ -1391,29 +1394,29 @@ The project uses **GitHub Actions** for continuous integration:
 
 ## How To: Add a New Element
 
-This walkthrough adds a hypothetical **Buffer** gate (output = input, 1 input, 1 output).
+This walkthrough adds a hypothetical **Buffer** gate (output = input, 1 input, 1 output). A gate is a descriptor and
+its kernel's logic; it has no class of its own.
 
-### Step 1: Create the Header
+### Step 1: Name the Kernel and Write Its Logic
 
-**`App/Element/GraphicElements/Buffer.h`**:
+1. Add `KernelKind::Buffer` to the `KernelKind` enum in `App/Element/ElementTypeDescriptor.h`.
+2. Add its logic to `App/Simulation/KernelLogic.cpp`, and its entry to `KernelLogic::of()` (the switch names every kind,
+   so the compiler finds a kind left out):
 
 ```cpp
-// Copyright (C) 2026 - Your Name
-// SPDX-License-Identifier: GPL-3.0-or-later
+void bufferGate(Element &element)
+{
+    if (!element.simUpdateInputsAllowUnknown()) {
+        return;
+    }
+    element.setOutputValue(element.simInputs().at(0)); // Pass input through
+}
 
-#pragma once
-
-#include "App/Element/Element.h"
-
-class Buffer : public Element {
-    Q_OBJECT
-public:
-    explicit Buffer(QGraphicsItem *parent = nullptr);
-    void updateLogic() override;
-};
+// in KernelLogic::of():
+    case KernelKind::Buffer: return &KernelLogicDetail::bufferGate;
 ```
 
-### Step 2: Create the Implementation
+### Step 2: Describe the Type
 
 **`App/Element/GraphicElements/Buffer.cpp`**:
 
@@ -1421,8 +1424,7 @@ public:
 // Copyright (C) 2026 - Your Name
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "Buffer.h"
-
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -1439,7 +1441,8 @@ struct ElementInfo<ElementType::Buffer> {
 
     static ElementTypeDescriptor describe() {
         auto descriptor = descriptorFromConstraints(constraints);
-        descriptor.pixmapPath = [] { return QStringLiteral(":/Components/Logic/buffer.svg"); };
+        descriptor.kernel = KernelKind::Buffer;
+        descriptor.pixmapPath = QStringLiteral(":/Components/Logic/buffer.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Buffer", "BUFFER");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Buffer", "Buffer");
         descriptor.trContext = "Buffer";
@@ -1449,25 +1452,17 @@ struct ElementInfo<ElementType::Buffer> {
 
     static inline const bool registered = [] {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Buffer; });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Buffer::Buffer(QGraphicsItem *parent) : Element(ElementType::Buffer, parent) {}
-
-void Buffer::updateLogic() {
-    if (!simUpdateInputsAllowUnknown()) return;
-    setOutputValue(simInputs().at(0));  // Pass input through
-}
 ```
 
 ### Step 3: Add to the Build System
 
 1. Add `ElementType::Buffer` to the enum in `App/Core/Enums.h`.
-2. Add both files to `CMakeSources.cmake` in **alphabetical order**:
-   - `App/Element/GraphicElements/Buffer.cpp` in the `MODEL_SOURCES` list.
-   - `App/Element/GraphicElements/Buffer.h` in the `MODEL_HEADERS` list.
+2. Add `App/Element/GraphicElements/Buffer.cpp` to the `MODEL_SOURCES` list in `CMakeSources.cmake`, in
+   **alphabetical order**.
 3. Create an SVG icon at `App/Resources/Components/Logic/buffer.svg`.
 4. Add the SVG to the resource file if needed.
 
@@ -1625,8 +1620,8 @@ The project uses **Conventional Commits**:
 
 ### Week 2: Read the Code
 
-1. **Read one gate end-to-end**: Start with `And.h` → `And.cpp` → the `ElementInfo<ElementType::And>` specialization → `StatusOps::statusAndAll()`.
-2. **Compare with other gates**: `Not.cpp`, `Or.cpp`, `Xor.cpp` — notice the pattern.
+1. **Read one gate end-to-end**: Start with `And.cpp`'s `ElementInfo<ElementType::And>` specialization → its kernel's logic in `KernelLogic.cpp` → `StatusOps::statusAndAll()`.
+2. **Compare with other gates**: `Not.cpp`, `Or.cpp`, `Xor.cpp` and their kernels — notice the pattern.
 3. **Read a sequential element**: `DFlipFlop.cpp` — understand edge detection and state storage.
 4. **Read a test**: `TestLogicGates.cpp` — see how `CircuitBuilder` and `TestUtils` work.
 5. **Trace the simulation loop**: Read `Simulation::update()` to see the five phases.

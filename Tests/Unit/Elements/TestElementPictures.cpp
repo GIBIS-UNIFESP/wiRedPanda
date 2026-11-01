@@ -25,7 +25,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Presentation/ElementPictures.h"
@@ -134,7 +133,7 @@ void TestElementPictures::testOnlyAFileIsWatched()
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(64, 64)));
 
     // A resource's picture never has another version, so no element showing one is watched
-    const And gate;
+    const Element gate{ElementType::And};
     const QString resource = gate.appearance().picturePath(0);
     QVERIFY(resource.startsWith(":/"));
     QCOMPARE(ElementAppearance::showingCount(resource), 0);
@@ -238,7 +237,7 @@ void TestElementPictures::testVariantsAreBuiltFromTheSourceReadAtLoad()
                    R"(<rect width="64" height="64" fill="white"/><text x="8" y="40" font-size="24">AB</text></svg>)");
     }
 
-    And gate;
+    Element gate{ElementType::And};
     gate.setAppearance(false, path);
     QVERIFY(!ElementPictures::instance().shown(gate, Theme::Light)->oriented);
 
@@ -267,7 +266,7 @@ void TestElementPictures::testTheVariantsShownLatelyStayWithinTheBudget()
         file.write(source);
     }
 
-    And gate;
+    Element gate{ElementType::And};
     gate.setAppearance(false, path);
     const PictureId id = *gate.appearance().picture(0);
     const qsizetype before = ElementPictures::variantBytes(id);
@@ -316,7 +315,7 @@ void TestElementPictures::testAPictureWithoutLabelsHasOneVariant()
                    R"(<rect width="64" height="64" fill="white"/><circle cx="32" cy="32" r="16"/></svg>)");
     }
 
-    And gate;
+    Element gate{ElementType::And};
     gate.setAppearance(false, path);
     const PictureId id = *gate.appearance().picture(0);
     const std::shared_ptr<QSvgRenderer> renderer = ElementPictures::instance().shown(gate, Theme::Light)->renderer;
@@ -339,7 +338,7 @@ void TestElementPictures::testTheBundledPicturesFitTheBudget()
     QSet<PictureId> labelled;
     QDirIterator it(QStringLiteral(":/Components"), {QStringLiteral("*.svg"), QStringLiteral("*.png")}, QDir::Files,
                     QDirIterator::Subdirectories);
-    And gate;
+    Element gate{ElementType::And};
     while (it.hasNext()) {
         gate.setAppearance(false, it.next());
         const std::optional<PictureId> id = gate.appearance().picture(0);
@@ -396,7 +395,7 @@ void TestElementPictures::testASourceThatIsNotSvgShowsItsRaster()
         QVERIFY(file.readAll().contains("<text>"));
     }
 
-    And gate;
+    Element gate{ElementType::And};
     gate.setAppearance(false, path);
     QVERIFY(gate.appearance().picture(0).has_value());
     for (const qreal angle : {0.0, 37.0, 90.0}) {

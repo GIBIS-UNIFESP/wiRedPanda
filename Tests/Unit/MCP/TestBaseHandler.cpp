@@ -10,7 +10,7 @@
 #include <QTabWidget>
 #include <QTest>
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Scene.h"
@@ -249,7 +249,7 @@ void TestBaseHandler::testValidateElementIdAcceptsReal()
     StubHandler handler(&window, nullptr);
 
     auto *scene = window.currentTab()->scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(andGate);
 
     QString errorMsg;
@@ -302,7 +302,7 @@ void TestBaseHandler::testValidatePortRangeRejectsOutOfRange()
     MainWindow window;
     StubHandler handler(&window, nullptr);
 
-    And andGate; // 2 inputs, 1 output by default
+    Element andGate{ElementType::And}; // 2 inputs, 1 output by default
     QString errorMsg;
     QVERIFY(!handler.validatePortRange(&andGate, static_cast<int>(andGate.inputs().size()), false, "port", errorMsg));
     QVERIFY2(errorMsg.contains("out of range"), qPrintable(errorMsg));
@@ -315,7 +315,7 @@ void TestBaseHandler::testValidatePortRangeAcceptsInRange()
     MainWindow window;
     StubHandler handler(&window, nullptr);
 
-    And andGate;
+    Element andGate{ElementType::And};
     QString errorMsg;
     QVERIFY(handler.validatePortRange(&andGate, 0, false, "port", errorMsg));
     QVERIFY(handler.validatePortRange(&andGate, 0, true, "port", errorMsg));
@@ -349,8 +349,8 @@ void TestBaseHandler::testValidatedElementRejectsNonElementItem()
     StubHandler handler(&window, nullptr);
 
     auto *scene = window.currentTab()->scene();
-    auto sw1 = std::make_unique<And>();
-    auto sw2 = std::make_unique<And>();
+    auto sw1 = std::make_unique<Element>(ElementType::And);
+    auto sw2 = std::make_unique<Element>(ElementType::And);
     scene->addItem(sw1.get());
     scene->addItem(sw2.get());
 
@@ -371,7 +371,7 @@ void TestBaseHandler::testValidatedElementAcceptsRealElement()
     StubHandler handler(&window, nullptr);
 
     auto *scene = window.currentTab()->scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(andGate);
 
     const QJsonObject params{{"element_id", andGate->id()}};
@@ -396,7 +396,7 @@ void TestBaseHandler::testInputPortByLabelRejectsNotFound()
     MainWindow window;
     StubHandler handler(&window, nullptr);
 
-    And andGate;
+    Element andGate{ElementType::And};
     int portIndex = -1;
     QString errorMsg;
     QVERIFY(!handler.inputPortByLabel(&andGate, "NoSuchLabel", portIndex, errorMsg));
@@ -408,7 +408,7 @@ void TestBaseHandler::testInputPortByLabelFindsRealPort()
     MainWindow window;
     StubHandler handler(&window, nullptr);
 
-    And andGate;
+    Element andGate{ElementType::And};
     andGate.inputPort(1)->setName("CLK");
     int portIndex = -1;
     QString errorMsg;
@@ -432,7 +432,7 @@ void TestBaseHandler::testOutputPortByLabelRejectsNotFound()
     MainWindow window;
     StubHandler handler(&window, nullptr);
 
-    And andGate;
+    Element andGate{ElementType::And};
     int portIndex = -1;
     QString errorMsg;
     QVERIFY(!handler.outputPortByLabel(&andGate, "NoSuchLabel", portIndex, errorMsg));
@@ -444,7 +444,7 @@ void TestBaseHandler::testOutputPortByLabelFindsRealPort()
     MainWindow window;
     StubHandler handler(&window, nullptr);
 
-    And andGate;
+    Element andGate{ElementType::And};
     andGate.outputPort(0)->setName("Q");
     int portIndex = -1;
     QString errorMsg;
@@ -462,7 +462,7 @@ void TestBaseHandler::testAvailableInputPortsHandlesNullZeroAndNamed()
     InputSwitch inputSwitch; // 0 input ports (source element)
     QCOMPARE(handler.availableInputPorts(&inputSwitch), QStringLiteral("(no input ports)"));
 
-    And andGate; // 2 unnamed input ports by default
+    Element andGate{ElementType::And}; // 2 unnamed input ports by default
     QVERIFY2(handler.availableInputPorts(&andGate).contains("(unnamed)"), qPrintable(handler.availableInputPorts(&andGate)));
 
     andGate.inputPort(0)->setName("A");
@@ -479,7 +479,7 @@ void TestBaseHandler::testAvailableOutputPortsHandlesNullZeroAndNamed()
     Led led; // 0 output ports (display-only element)
     QCOMPARE(handler.availableOutputPorts(&led), QStringLiteral("(no output ports)"));
 
-    And andGate;
+    Element andGate{ElementType::And};
     QVERIFY2(handler.availableOutputPorts(&andGate).contains("(unnamed)"), qPrintable(handler.availableOutputPorts(&andGate)));
 
     andGate.outputPort(0)->setName("Q");

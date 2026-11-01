@@ -121,7 +121,7 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
  *
  *     static inline const bool registered = []() {
  *         ElementTypeDescriptor::add(describe());
- *         ElementFactory::registerCreator(constraints.type, [] { return new And(); });
+ *         ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
  *         return true;
  *     }();
  * };

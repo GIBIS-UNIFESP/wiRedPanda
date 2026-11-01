@@ -5,10 +5,8 @@
 
 #include <QFileInfo>
 
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Not.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::inputStatus;
@@ -19,8 +17,8 @@ struct Decoder8To256Fixture {
     WorkSpace workspace;
     CircuitBuilder builder;
     InputSwitch swAddr[8];
-    Not notGates[8];
-    And andGates[256];
+    ElementArray notGates{ElementType::Not, 8};
+    ElementArray andGates{ElementType::And, 256};
     Led ledOut[256];
     Simulation *simulation = nullptr;
 
@@ -39,7 +37,7 @@ struct Decoder8To256Fixture {
             builder.connect(&swAddr[i], 0, &notGates[i], 0);
 
         for (int addr = 0; addr < 256; ++addr) {
-            And *andGate = &andGates[addr];
+            Element *andGate = &andGates[addr];
             for (int bit = 0; bit < 8; ++bit) {
                 bool bitSet = (addr & (1 << bit)) != 0;
                 if (bitSet)

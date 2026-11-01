@@ -10,7 +10,7 @@
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
@@ -29,7 +29,7 @@ void TestConnectionManager::testConnectionCreation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 
@@ -47,7 +47,7 @@ void TestConnectionManager::testConnectionValidation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
 
     QVERIFY(ConnectionManager::isConnectionAllowed(sw.outputPort(0), andGate.inputPort(0)));
@@ -67,7 +67,7 @@ void TestConnectionManager::testConnectionDeletion()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     Connection *conn = builder.connect(&sw, 0, &andGate, 0);
     QVERIFY(sw.outputPort(0)->isConnected(andGate.inputPort(0)));
@@ -85,8 +85,8 @@ void TestConnectionManager::testMultiPortConnection()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And and1;
-    And and2;
+    Element and1{ElementType::And};
+    Element and2{ElementType::And};
     and1.setPos(100, 0);
     and2.setPos(100, 100);
     builder.add(&sw, &and1, &and2);
@@ -106,7 +106,7 @@ void TestConnectionManager::testHoverShowsConnectedPortLabels()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 
@@ -153,7 +153,7 @@ void TestConnectionManager::testHoverSkipsUnnamedPortLabels()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 
@@ -189,8 +189,8 @@ void TestConnectionManager::testHoverFanOutShowsAllPeerLabels()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And and1;
-    And and2;
+    Element and1{ElementType::And};
+    Element and2{ElementType::And};
     builder.add(&sw, &and1, &and2);
     builder.connect(&sw, 0, &and1, 0);
     builder.connect(&sw, 0, &and2, 0);
@@ -277,7 +277,7 @@ void TestConnectionManager::testHoverReleaseClearsPeerHighlightAfterWireDeleted(
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     auto *connection = builder.connect(&sw, 0, &andGate, 0);
 
@@ -306,7 +306,7 @@ void TestConnectionManager::testShowHoverLabelsBiasesLabelForRotatedElementPort(
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
     andGate.setRotation(90);
@@ -337,7 +337,7 @@ void TestConnectionManager::testHoverPortReturnsNullForOutOfRangeStaleIndex()
     // index rather than a raw pointer so it survives undo/redo, but a stale index (e.g. left
     // over after the element's port count shrank) must resolve to nullptr, not a wrong port.
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     auto *manager = workspace.scene()->connectionManager();
 
@@ -353,7 +353,7 @@ void TestConnectionManager::testHoverPortReturnsNullForOutOfRangeStaleIndex()
 void TestConnectionManager::testStartFromInputBeginsWireAnchoredAtEnd()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     auto *manager = workspace.scene()->connectionManager();
 
@@ -369,7 +369,7 @@ void TestConnectionManager::testTryCompleteFromInputCompletesAtOutputPort()
 {
     WorkSpace workspace;
     auto *sw = new InputSwitch;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(150, 0);
     workspace.scene()->addItem(sw);
     workspace.scene()->addItem(andGate);
@@ -390,7 +390,7 @@ void TestConnectionManager::testUpdateEditedEndForInputAnchoredWireMovesStart()
     // endPort-anchored branch must be taken (not the "lost both ports" cleanup path) -- the
     // wire must remain in progress, still anchored at the same input.
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     auto *manager = workspace.scene()->connectionManager();
 
@@ -406,7 +406,7 @@ void TestConnectionManager::testUpdateEditedEndForInputAnchoredWireMovesStart()
 void TestConnectionManager::testTryCompleteWithNoPortUnderCursorIsNoOp()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     auto *manager = workspace.scene()->connectionManager();
 
@@ -421,8 +421,8 @@ void TestConnectionManager::testTryCompleteWithNoPortUnderCursorIsNoOp()
 void TestConnectionManager::testTryCompleteAtWrongPortTypeIsNoOp()
 {
     WorkSpace workspace;
-    auto *and1 = new And;
-    auto *and2 = new And;
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
     and2->setPos(150, 0);
     workspace.scene()->addItem(and1);
     workspace.scene()->addItem(and2);
@@ -438,7 +438,7 @@ void TestConnectionManager::testTryCompleteAtWrongPortTypeIsNoOp()
 void TestConnectionManager::testTryCompleteRejectedConnectionDeletesWireAndShowsMessage()
 {
     WorkSpace workspace;
-    auto *andGate = new And; // 2 inputs, 1 output
+    auto *andGate = ElementFactory::buildElement(ElementType::And); // 2 inputs, 1 output
     workspace.scene()->addItem(andGate);
 
     auto *manager = workspace.scene()->connectionManager();
@@ -452,7 +452,7 @@ void TestConnectionManager::testTryCompleteRejectedConnectionDeletesWireAndShows
 void TestConnectionManager::testCancelDeletesInProgressWire()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     auto *manager = workspace.scene()->connectionManager();
 
@@ -469,7 +469,7 @@ void TestConnectionManager::testDetachRewiresFromSameOutput()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 
@@ -487,7 +487,7 @@ void TestConnectionManager::testDetachRewiresFromSameOutput()
 void TestConnectionManager::testDetachWithNoWireIsNoOp()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     auto *manager = workspace.scene()->connectionManager();
 
@@ -510,7 +510,7 @@ void TestConnectionManager::testUpdateEditedEndWithNoConnectionIsNoOp()
 void TestConnectionManager::testUpdateEditedEndWithBothPortsLostCleansUp()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     auto *manager = workspace.scene()->connectionManager();
 
@@ -526,8 +526,8 @@ void TestConnectionManager::testUpdateEditedEndWithBothPortsLostCleansUp()
 void TestConnectionManager::testUpdateHoverShowsForbiddenCursorForSamePolarityPort()
 {
     WorkSpace workspace;
-    auto *and1 = new And;
-    auto *and2 = new And;
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
     and2->setPos(150, 0);
     workspace.scene()->addItem(and1);
     workspace.scene()->addItem(and2);
@@ -545,7 +545,7 @@ void TestConnectionManager::testClearHoverReleasesHoveredPort()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 
@@ -564,7 +564,7 @@ void TestConnectionManager::testConnectionRejectionReasonForAlreadyConnectedPort
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
 

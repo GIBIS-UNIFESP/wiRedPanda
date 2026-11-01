@@ -8,11 +8,9 @@
 #include <QTest>
 
 #include "App/Core/Application.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -43,8 +41,8 @@ void TestConnections::testSetPorts()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *andGate = new And();
-    auto *orGate = new Or();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *orGate = ElementFactory::buildElement(ElementType::Or);
     scene->addItem(andGate);
     scene->addItem(orGate);
 
@@ -65,7 +63,7 @@ void TestConnections::testDisconnectPorts()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(andGate);
 
     auto conn = std::make_unique<Connection>();
@@ -108,7 +106,7 @@ void TestConnections::testValidOutputToInput()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
 
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);  // Valid: output to input
@@ -136,8 +134,8 @@ void TestConnections::testRejectOutputToOutput()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *and1 = new And();
-    auto *and2 = new And();
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
     and2->setPos(150, 0);
     scene->addItem(and1);
     scene->addItem(and2);
@@ -160,8 +158,8 @@ void TestConnections::testRejectInputToInput()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *and1 = new And();
-    auto *and2 = new And();
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
     and2->setPos(150, 0);
     scene->addItem(and1);
     scene->addItem(and2);
@@ -185,7 +183,7 @@ void TestConnections::testRejectSelfConnection()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(andGate);
 
     QVERIFY2(!ConnectionManager::isConnectionAllowed(andGate->outputPort(), andGate->inputPort(0)),
@@ -202,7 +200,7 @@ void TestConnections::testRejectDuplicateConnection()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
 
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -227,7 +225,7 @@ void TestConnections::testSingleInputConnection()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
 
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -246,7 +244,7 @@ void TestConnections::testMultipleInputInvalid()
 
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw1);
     scene->addItem(sw2);
     scene->addItem(andGate);
@@ -276,9 +274,9 @@ void TestConnections::testOutputFanOut()
     auto *scene = workspace.scene();
 
     auto *sw = new InputSwitch();
-    auto *and1 = new And();
-    auto *and2 = new And();
-    auto *and3 = new And();
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
+    auto *and3 = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw);
     scene->addItem(and1);
     scene->addItem(and2);
@@ -332,7 +330,7 @@ void TestConnections::testRequiredPortValidation()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(andGate);
 
     auto *input = andGate->inputPort(0);
@@ -449,7 +447,7 @@ void TestConnections::testInvalidPortStatus()
 
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw1);
     scene->addItem(sw2);
     scene->addItem(andGate);
@@ -536,8 +534,8 @@ void TestConnections::testPortIsConnected()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
-    Or orGate;
+    Element andGate{ElementType::And};
+    Element orGate{ElementType::Or};
 
     builder.add(&sw, &andGate, &orGate);
     builder.connect(&sw, 0, &andGate, 0);

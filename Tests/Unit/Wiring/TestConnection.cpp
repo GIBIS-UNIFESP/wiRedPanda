@@ -14,7 +14,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
@@ -76,7 +76,7 @@ void TestConnection::testConnectionDestruction()
     // Destroying a connection must detach it from both of its ports, leaving no dangling
     // pointer behind in the ports' connection lists.
     auto inputSwitch = std::make_unique<InputSwitch>();
-    auto andGate = std::make_unique<And>();
+    auto andGate = std::make_unique<Element>(ElementType::And);
 
     OutputPort *outPort = inputSwitch->outputPort(0);
     InputPort *inPort = andGate->inputPort(0);
@@ -259,7 +259,7 @@ void TestConnection::testPortAttachConnectionIgnoresNull()
 
 void TestConnection::testPortConstElementAccessor()
 {
-    auto andGate = std::make_unique<And>();
+    auto andGate = std::make_unique<Element>(ElementType::And);
     const Port *constPort = andGate->outputPort();
 
     QCOMPARE(constPort->element(), andGate.get());
@@ -271,12 +271,12 @@ void TestConnection::testAttachAndDetachLeaveSiblingWiresAlone()
     // are set, and neither the later wires' attaching nor the other gates' deletion refreshes it again.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *source = new And();
+    auto *source = ElementFactory::buildElement(ElementType::And);
     scene->addItem(source);
-    QList<And *> sinks;
+    QList<Element *> sinks;
     QList<Connection *> wires;
     for (int i = 0; i < 200; ++i) {
-        auto *sink = new And();
+        auto *sink = ElementFactory::buildElement(ElementType::And);
         sink->setPos(160, 16 * i);
         scene->addItem(sink);
         auto *wire = new Connection();
@@ -305,8 +305,8 @@ void TestConnection::testSettingThePortsPlacesTheWire()
     const TestUtils::ScopedRendering rendering;
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *source = new And();
-    auto *sink = new And();
+    auto *source = ElementFactory::buildElement(ElementType::And);
+    auto *sink = ElementFactory::buildElement(ElementType::And);
     sink->setPos(160, 48);
     scene->addItem(source);
     scene->addItem(sink);

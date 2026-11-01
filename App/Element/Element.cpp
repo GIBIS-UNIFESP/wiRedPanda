@@ -28,6 +28,7 @@
 #include "App/Element/BodyPainter.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/IO/SerializationContext.h"
+#include "App/Simulation/KernelLogic.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -503,14 +504,12 @@ void Element::layoutPorts()
 
 std::optional<Element::PortAttributes> Element::inputAttributes(const int index) const
 {
-    Q_UNUSED(index)
-    return std::nullopt;
+    return m_descriptor.inputAttributes ? m_descriptor.inputAttributes(*this, index) : std::nullopt;
 }
 
 std::optional<Element::PortAttributes> Element::outputAttributes(const int index) const
 {
-    Q_UNUSED(index)
-    return std::nullopt;
+    return m_descriptor.outputAttributes ? m_descriptor.outputAttributes(*this, index) : std::nullopt;
 }
 
 std::optional<Element::PortAttributes> Element::attributesAt(const QList<PortAttributes> &table, const int index)
@@ -933,7 +932,10 @@ void Element::setDelay(const double delay)
 
 void Element::updateLogic()
 {
-    // Default no-op — decorative elements (Line, Text) have no simulation behaviour.
+    // The logic of the type's kernel; a type with none (a source, a decoration) computes nothing here
+    if (const KernelLogic::Logic logic = KernelLogic::of(m_descriptor.kernel)) {
+        logic(*this);
+    }
 }
 
 void Element::resetSimState()

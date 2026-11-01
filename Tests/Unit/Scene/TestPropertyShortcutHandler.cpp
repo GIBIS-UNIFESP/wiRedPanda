@@ -3,7 +3,7 @@
 
 #include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
@@ -12,7 +12,6 @@
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/Scene.h"
@@ -22,7 +21,7 @@
 void TestPropertyShortcutHandler::testGateInputCountNext()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
     int originalInputs = andGate->inputSize();
 
@@ -37,7 +36,7 @@ void TestPropertyShortcutHandler::testGateInputCountNext()
 void TestPropertyShortcutHandler::testGateInputCountPrev()
 {
     WorkSpace workspace;
-    auto *orGate = new Or;
+    auto *orGate = ElementFactory::buildElement(ElementType::Or);
     workspace.scene()->addItem(orGate);
 
     PropertyShortcutHandler handler(workspace.scene());
@@ -182,7 +181,7 @@ void TestPropertyShortcutHandler::testInputRotaryOutputSize()
 void TestPropertyShortcutHandler::testMorphNextElement()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     PropertyShortcutHandler handler(workspace.scene());
@@ -199,7 +198,7 @@ void TestPropertyShortcutHandler::testMorphNextElement()
 void TestPropertyShortcutHandler::testMorphPrevElement()
 {
     WorkSpace workspace;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(andGate);
 
     PropertyShortcutHandler handler(workspace.scene());
@@ -336,8 +335,8 @@ void TestPropertyShortcutHandler::testMultiElementSecondaryPropertyIsSingleUndoS
 void TestPropertyShortcutHandler::testMultiElementMorphNextIsSingleUndoStep()
 {
     WorkSpace workspace;
-    auto *and1 = new And;
-    auto *and2 = new And;
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
     and2->setPos(200, 0);
     workspace.scene()->addItem(and1);
     workspace.scene()->addItem(and2);
@@ -366,8 +365,8 @@ void TestPropertyShortcutHandler::testMultiElementMorphNextIsSingleUndoStep()
 void TestPropertyShortcutHandler::testMultiElementMorphPrevIsSingleUndoStep()
 {
     WorkSpace workspace;
-    auto *and1 = new And;
-    auto *and2 = new And;
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
     and2->setPos(200, 0);
     workspace.scene()->addItem(and1);
     workspace.scene()->addItem(and2);

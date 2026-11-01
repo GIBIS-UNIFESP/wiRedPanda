@@ -16,7 +16,7 @@
 #include <QTemporaryDir>
 #include <QUndoStack>
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -162,7 +162,7 @@ void TestICController::testEmbedSelectedICNoOpWithEmptySelection()
 void TestICController::testEmbedSelectedICNoOpWithNonICSelected()
 {
     ICControllerFixture f;
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     f.tab.scene()->addItem(gate);
     gate->setSelected(true);
     ICController controller(f.host);
@@ -338,7 +338,7 @@ void TestICController::testEmbedSelectedICEmbedsEveryFileAsOneStep()
         file.write(minimalPandaBytes());
     }
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     f.tab.scene()->addItem(gate);
     gate->setSelected(true);
     const QList<IC *> ics{selectFileBackedIC(f.tab, QStringLiteral("a.panda")), selectFileBackedIC(f.tab, QStringLiteral("b.panda")),
@@ -375,7 +375,7 @@ void TestICController::testExtractSelectedICExtractsEveryBlobAsOneStep()
     QVERIFY(dir.isValid());
     saveProject(f.tab, f.host, dir);
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     f.tab.scene()->addItem(gate);
     gate->setSelected(true);
     const QList<IC *> ics{selectEmbeddedIC(f.tab, QStringLiteral("a"), minimalPandaBytes()),
@@ -415,7 +415,7 @@ void TestICController::testEmbedAndExtractWithOnlyAGateSelectedChangeNothing()
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     saveProject(f.tab, f.host, dir);
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     f.tab.scene()->addItem(gate);
     gate->setSelected(true);
     auto *stack = f.tab.scene()->undoStack();
@@ -618,7 +618,7 @@ void TestICController::testMakeSelfContainedSkipsNonFileBackedElements()
 
     // A non-IC element and an already-embedded IC must both be skipped by the file-backed
     // scan -- only the file-backed IC below should end up in uniqueFiles.
-    f.tab.scene()->addItem(new And());
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::And));
     selectEmbeddedIC(f.tab, QStringLiteral("alreadyEmbedded"), minimalPandaBytes());
     selectFileBackedIC(f.tab, QStringLiteral("dep.panda"));
 
@@ -1107,7 +1107,8 @@ void TestICController::testRemoveICFileDeletesInstancesAndSaves()
     icFile.close();
 
     selectFileBackedIC(f.tab, QStringLiteral("dep.panda"));
-    auto *gate = new And(); // non-IC element: must be skipped by the IC-only scan, not deleted
+    // non-IC element: must be skipped by the IC-only scan, not deleted
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     f.tab.scene()->addItem(gate);
 
     ICController controller(f.host);

@@ -13,7 +13,6 @@
 #include <QTest>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Presentation/ElementPainter.h"
 
@@ -74,7 +73,7 @@ void TestElementPainter::testASelectedElementHasItsSelectionUnderItsBody()
     // A selected element is drawn over a rounded rectangle in the selection colours, which shows where the body leaves
     // the outline clear; where the body is opaque, it is drawn as it is when the element is not selected
     const ThemeAttributes theme = attributesOf(Theme::Light);
-    And gate;
+    Element gate{ElementType::And};
     const QImage plain = drawn(gate, theme);
 
     gate.setSelected(true);

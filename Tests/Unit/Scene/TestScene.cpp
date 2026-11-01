@@ -41,14 +41,11 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
@@ -78,24 +75,6 @@ void TestScene::cleanup()
 
 void TestScene::cleanupTestCase()
 {
-}
-
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
-// Count all GraphicsItems of a given type in the scene
-template<typename T>
-static int countItems(Scene *scene)
-{
-    int count = 0;
-    const auto items = scene->items();
-    for (auto *item : std::as_const(items)) {
-        if (qgraphicsitem_cast<T *>(item)) {
-            ++count;
-        }
-    }
-    return count;
 }
 
 // ============================================================================
@@ -231,7 +210,7 @@ void TestScene::testConnectionsQuery()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw, &andGate, &led);
@@ -562,8 +541,8 @@ void TestScene::testPasteElement()
     QCOMPARE(elements.size(), 2);
 
     // Both should be AND gates
-    QVERIFY(dynamic_cast<And *>(elements[0]) != nullptr);
-    QVERIFY(dynamic_cast<And *>(elements[1]) != nullptr);
+    QCOMPARE(elements[0]->elementType(), ElementType::And);
+    QCOMPARE(elements[1]->elementType(), ElementType::And);
 }
 
 void TestScene::testPasteMultipleTimes()
@@ -594,7 +573,7 @@ void TestScene::testPasteMultipleTimes()
 
     // All three should be AND gates
     for (auto *elem : scene->elements()) {
-        QVERIFY(dynamic_cast<And *>(elem) != nullptr);
+        QCOMPARE(elem->elementType(), ElementType::And);
     }
 }
 
@@ -903,7 +882,7 @@ void TestScene::testUndoDelete()
     QCOMPARE(scene->elements().size(), 1);
 
     // Verify it's an AND gate
-    QVERIFY(dynamic_cast<And *>(scene->elements()[0]) != nullptr);
+    QCOMPARE(scene->elements()[0]->elementType(), ElementType::And);
 }
 
 void TestScene::testRedoDelete()
@@ -2197,7 +2176,7 @@ void TestScene::testSortSimpleChain()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw, &andGate, &led);
@@ -2246,8 +2225,8 @@ void TestScene::testSortMultipleChains()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    And andGate;
-    Or orGate;
+    Element andGate{ElementType::And};
+    Element orGate{ElementType::Or};
     Led led1, led2;
 
     builder.add(&sw1, &sw2, &andGate, &orGate, &led1, &led2);
@@ -2298,8 +2277,8 @@ void TestScene::testSortCycleDetection()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
-    Or orGate;
+    Element andGate{ElementType::And};
+    Element orGate{ElementType::Or};
 
     builder.add(&sw, &andGate, &orGate);
 
@@ -2354,7 +2333,7 @@ void TestScene::testSortDisconnectedComponents()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw1, &sw2, &andGate, &led);
@@ -3029,7 +3008,7 @@ void TestScene::testCtrlClickTogglesElementSelection()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(100, 100);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -3126,7 +3105,7 @@ void TestScene::testRightClickOnElementOpensContextMenu()
     Scene *scene = workspace.scene();
     GraphicsView *view = workspace.view();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(50, 50);
     scene->addItem(gate);
 
@@ -3145,7 +3124,7 @@ void TestScene::testDraggingElementPastTimerThresholdEnsuresVisible()
     GraphicsView *view = workspace.view();
     view->resize(400, 300);
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(50, 50);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -3180,7 +3159,7 @@ void TestScene::testDraggingElementInACentredSceneKeepsTheViewStill()
     QVERIFY(QTest::qWaitForWindowExposed(&workspace));
     Scene *scene = workspace.scene();
     GraphicsView *view = workspace.view();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(Element::snapToGrid(view->mapToScene(QPoint(600, 400))));
     scene->addItem(gate);
     const QPointF corner = view->mapToScene(QPoint(0, 0));
@@ -3364,7 +3343,7 @@ void TestScene::testContextMenuOnSelectedItemEmitsWithoutClearingSelection()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(50, 50);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -3414,7 +3393,7 @@ void TestScene::testContextMenuOnEmptyCanvasWithPasteableClipboard()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(50, 50);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -3571,7 +3550,7 @@ void TestScene::testDropEventHandlesCloneDragFormat()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(48, 48);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -3632,7 +3611,7 @@ void TestScene::testDropThatDoesNotReadIsReported_data()
     // A clone's items, from another wiRedPanda, that stop halfway
     QByteArray items;
     QDataStream itemsStream(&items, QIODevice::WriteOnly);
-    And gate;
+    Element gate{ElementType::And};
     Serialization::serialize({&gate}, itemsStream, {.purpose = SerializationPurpose::InMemorySnapshot});
     QByteArray clonePayload;
     QDataStream cloneStream(&clonePayload, QIODevice::WriteOnly);
@@ -3705,7 +3684,7 @@ void TestScene::testNudgeSelectionIgnoresCtrlAndAltModifiers()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(0, 0);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -3742,7 +3721,7 @@ void TestScene::testEventFilterRemapsShiftClickToCtrlClick()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(100, 100);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -3786,7 +3765,7 @@ void TestScene::testHelpEventShowsTheTopmostItemsText()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(100, 100);
     scene->addItem(gate);
     const QPointF overGate = gate->sceneBoundingRect().center();
@@ -3880,7 +3859,7 @@ void TestScene::testElementCountAgreesAfterEveryMutation()
     QCOMPARE(scene->elementCount(), 2);
     QVERIFY2(agrees(), "after adding two elements");
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
     QCOMPARE(scene->elementCount(), 3);
     QVERIFY2(agrees(), "after adding a gate through a command");
@@ -3968,7 +3947,7 @@ void TestScene::testUnsortedElementsFollowTheStacking()
 
     auto *sw = new InputSwitch();
     auto *led = new Led();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw);
     scene->addItem(led);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
@@ -3977,7 +3956,7 @@ void TestScene::testUnsortedElementsFollowTheStacking()
     // An element given back a smaller id stacks below those with larger ones
     QVERIFY(led->id() < gate->id());
     scene->removeItem(led);
-    auto *early = new Not();
+    auto *early = ElementFactory::buildElement(ElementType::Not);
     scene->updateItemId(early, led->id());
     delete led;
     scene->addItem(early);
@@ -4033,7 +4012,7 @@ void TestScene::testUnsortedElementsSkipTheStackingSort()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     for (int i = 0; i < 2000; ++i) {
-        auto *gate = new And();
+        auto *gate = ElementFactory::buildElement(ElementType::And);
         gate->setInputSize(8);
         gate->setPos((i % 50) * 64, (i / 50) * 64);
         scene->addItem(gate);

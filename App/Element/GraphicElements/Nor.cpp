@@ -1,9 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Nor.h"
-
-#include "App/Core/StatusOps.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -34,21 +32,7 @@ struct ElementInfo<ElementType::Nor> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Nor(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Nor::Nor(QGraphicsItem *parent)
-    : Element(ElementType::Nor, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-}
-
-void Nor::updateLogic()
-{
-    if (!simUpdateInputsAllowUnknown()) {
-        return;
-    }
-    setOutputValue(StatusOps::statusNot(StatusOps::statusOrAll(simInputs())));
-}

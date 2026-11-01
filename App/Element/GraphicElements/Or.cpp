@@ -1,9 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Or.h"
-
-#include "App/Core/StatusOps.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -34,21 +32,7 @@ struct ElementInfo<ElementType::Or> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Or(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Or::Or(QGraphicsItem *parent)
-    : Element(ElementType::Or, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-}
-
-void Or::updateLogic()
-{
-    if (!simUpdateInputsAllowUnknown()) {
-        return;
-    }
-    setOutputValue(StatusOps::statusOrAll(simInputs()));
-}

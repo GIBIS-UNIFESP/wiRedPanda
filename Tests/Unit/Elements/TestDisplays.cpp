@@ -11,7 +11,6 @@
 #include <QTemporaryDir>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
@@ -314,7 +313,7 @@ void TestDisplays::testDisplayWithDecoder()
     // This simulates a partial BCD decoder for digit display
     InputSwitch bit0, bit1;
     Display7 display;
-    And andGate;
+    Element andGate{ElementType::And};
 
     builder.add(&bit0, &bit1, &andGate, &display);
 

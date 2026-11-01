@@ -13,8 +13,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputGND.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -501,8 +499,8 @@ void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
     QVERIFY(node != nullptr);
     node->setWirelessMode(WirelessMode::Tx); // the presenter draws the indicator
 
-    InputVcc vcc;
-    InputGnd gnd;
+    Element vcc{ElementType::InputVcc};
+    Element gnd{ElementType::InputGnd};
     builder.add(node, &vcc, &gnd);
     builder.connect(&vcc, 0, node, 0);
     builder.connect(&gnd, 0, node, 0); // second driver on the same input -> bus conflict
@@ -524,7 +522,7 @@ void TestWirelessNode::testANewLevelCarriedRepaintsTheNode()
     auto *node = new Node; // the scene takes ownership
     scene.addItem(node);
     node->setWirelessMode(WirelessMode::Tx);
-    InputVcc source;
+    Element source{ElementType::InputVcc};
     source.initSimulationVectors(0, 1);
     node->initSimulationVectors(1, 1);
     node->connectPredecessor(0, &source, 0);

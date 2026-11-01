@@ -4,7 +4,7 @@
 #include "Tests/Unit/Serialization/TestDolphinModelBuilder.h"
 
 #include "App/BeWavedDolphin/DolphinModelBuilder.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -79,7 +79,7 @@ void TestDolphinModelBuilder::testCollectRejectsSceneWithNeitherInputsNorOutputs
 {
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
-    scene->addItem(new And());
+    scene->addItem(ElementFactory::buildElement(ElementType::And));
 
     QVERIFY_THROWS_EXCEPTION(std::exception, DolphinModelBuilder::collect(scene));
 }

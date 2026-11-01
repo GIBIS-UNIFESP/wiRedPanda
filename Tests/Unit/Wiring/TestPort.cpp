@@ -15,7 +15,7 @@
 #include <QString>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Wiring/Connection.h"
@@ -121,7 +121,7 @@ void TestPort::testDefaultValueGetterSetter()
 void TestPort::testDefaultSetWhileConnectedLeavesTheInputOnItsWire()
 {
     // ~Preset is optional with an Active default; its driver reads Inactive.
-    And driver;
+    Element driver{ElementType::And};
     DFlipFlop flipFlop;
     flipFlop.setPos(150, 0);
     auto *preset = flipFlop.inputPort(2);
@@ -158,7 +158,7 @@ void TestPort::testGlobalIndexForInputVsOutputPort()
 {
     // For inputs, globalIndex() == index(); for outputs, index() is offset by the element's
     // input count so inputs and outputs share one combined 0..N-1 sequence.
-    And andGate; // 2 inputs, 1 output
+    Element andGate{ElementType::And}; // 2 inputs, 1 output
 
     QCOMPARE(andGate.inputPort(0)->globalIndex(), 0);
     QCOMPARE(andGate.inputPort(1)->globalIndex(), 1);
@@ -175,7 +175,7 @@ void TestPort::testMakeSerialIdPacksElementBaseAndGlobalIndex()
 
 void TestPort::testSetElementBindsAccessor()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     InputPort port;
     QVERIFY(port.element() == nullptr);
 
@@ -187,7 +187,7 @@ void TestPort::testAttachConnectionIsIdempotent()
 {
     // Connection::setStartPort() already calls attachConnection() internally; calling it again
     // directly (as IC rewiring can) must not duplicate the entry in connections().
-    And andGate;
+    Element andGate{ElementType::And};
     auto *output = andGate.outputPort();
 
     auto conn = std::make_unique<Connection>();
@@ -202,7 +202,7 @@ void TestPort::testAttachConnectionIsIdempotent()
 
 void TestPort::testDetachConnectionRemovesFromListAndClearsPortReference()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     auto *output = andGate.outputPort();
 
     auto conn = std::make_unique<Connection>();
@@ -217,8 +217,8 @@ void TestPort::testDetachConnectionRemovesFromListAndClearsPortReference()
 
 void TestPort::testIsConnectedTrueOnlyForPortsSharingAConnection()
 {
-    And and1;
-    And and2;
+    Element and1{ElementType::And};
+    Element and2{ElementType::And};
     and2.setPos(150, 0);
 
     auto conn = std::make_unique<Connection>();
@@ -235,7 +235,7 @@ void TestPort::testIsConnectedTrueOnlyForPortsSharingAConnection()
 
 void TestPort::testInputPortIsValidRequiredVsOptionalUnconnected()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     auto *input = andGate.inputPort(0);
 
     input->setRequired(true);
@@ -244,7 +244,7 @@ void TestPort::testInputPortIsValidRequiredVsOptionalUnconnected()
     input->setRequired(false);
     QVERIFY2(input->isValid(), "an optional, unconnected input must be valid");
 
-    auto *sourceGate = new And();
+    auto *sourceGate = ElementFactory::buildElement(ElementType::And);
     auto conn = std::make_unique<Connection>();
     conn->setStartPort(sourceGate->outputPort());
     conn->setEndPort(input);
@@ -257,10 +257,10 @@ void TestPort::testInputPortIsValidRequiredVsOptionalUnconnected()
 
 void TestPort::testOutputPortIsValidAlwaysTrueRegardlessOfConnections()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     QVERIFY2(andGate.outputPort()->isValid(), "an unconnected output must still be valid -- fan-out has no connectivity constraint");
 
-    And downstream;
+    Element downstream{ElementType::And};
     downstream.setPos(150, 0);
     auto conn = std::make_unique<Connection>();
     conn->setStartPort(andGate.outputPort());

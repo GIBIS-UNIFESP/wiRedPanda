@@ -1,9 +1,7 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Not.h"
-
-#include "App/Core/StatusOps.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
@@ -34,21 +32,7 @@ struct ElementInfo<ElementType::Not> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Not(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Not::Not(QGraphicsItem *parent)
-    : Element(ElementType::Not, parent)
-{
-    // Skip full initialisation when building a property-probe instance (see ElementFactory).
-}
-
-void Not::updateLogic()
-{
-    if (!simUpdateInputsAllowUnknown()) {
-        return;
-    }
-    setOutputValue(StatusOps::statusNot(simInputs().at(0)));
-}

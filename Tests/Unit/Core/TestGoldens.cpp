@@ -20,7 +20,6 @@
 
 #include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -331,7 +330,7 @@ void TestGoldens::testOrientations()
     QVERIFY(names.contains("r0"));
     QVERIFY(names.contains("r270xy"));
 
-    And gate;
+    Element gate{ElementType::And};
     TestUtils::orient(&gate, {180, true, false});
     QCOMPARE(gate.rotation(), 180.0);
     QVERIFY(gate.isFlippedX());
@@ -345,7 +344,7 @@ void TestGoldens::testElementsById()
     auto *scene = workspace.scene();
     auto *led = new Led();
     auto *sw = new InputSwitch();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(led);
     scene->addItem(sw);
     scene->addItem(gate);
@@ -389,9 +388,9 @@ void TestGoldens::testScenePointer()
     // move command; a click without movement selects the element alone.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(gate);
-    auto *other = new And();
+    auto *other = ElementFactory::buildElement(ElementType::And);
     other->setPos(256, 0);
     scene->addItem(other);
     other->setSelected(true);
@@ -409,7 +408,7 @@ void TestGoldens::testScenePointer()
 void TestGoldens::testPortCountsAndOrientationPasses()
 {
     // A Demux's inputs follow its outputs, so only its output count is set; other elements take both.
-    And gate;
+    Element gate{ElementType::And};
     TestUtils::applyPortCounts(&gate, 3, 1);
     QCOMPARE(gate.inputSize(), 3);
     Demux demux;
@@ -421,7 +420,7 @@ void TestGoldens::testPortCountsAndOrientationPasses()
     // the differing descriptions after the other text when it does.
     WorkSpace workspace;
     const TestUtils::ElementBuilder build = [](Scene *scene) {
-        auto element = std::make_unique<And>();
+        auto element = std::make_unique<Element>(ElementType::And);
         scene->addItem(element.get());
         return std::unique_ptr<Element>(std::move(element));
     };
@@ -470,7 +469,7 @@ void TestGoldens::testPixmapIdentity()
 {
     // A gate shows its resource picture, the same rotated, since its picture has no text to keep upright. A flip-flop's
     // picture has text, so rotated an oriented variant replaces it. A Mux draws a body to fit its ports.
-    And gate;
+    Element gate{ElementType::And};
     const QString upright = SnapshotAccess::pixmapIdentity(&gate);
     QVERIFY2(upright.startsWith("64x64::/"), qPrintable(upright));
     gate.setRotation(90);

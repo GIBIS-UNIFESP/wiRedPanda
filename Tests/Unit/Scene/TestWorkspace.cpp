@@ -17,7 +17,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/Serialization.h"
@@ -320,7 +320,7 @@ void TestWorkspaceUnit::testSaveReturnsReadOnlyTargetWhenCommitFailsInteractive(
     // write failure surfaces as at commit()) the same as an open()-time permission
     // failure, so in interactive mode this must return ReadOnlyTarget, not throw.
     WorkSpace workspace;
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
 
     QTemporaryDir dir;
@@ -350,7 +350,7 @@ void TestWorkspaceUnit::testSaveThrowsWhenCommitFailsNonInteractive()
     // Application::interactiveMode stays false (the test-suite default), so save()'s
     // commit()-failure guard takes the throw branch instead of ReadOnlyTarget.
     WorkSpace workspace;
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
 
     QTemporaryDir dir;
@@ -582,7 +582,7 @@ void TestWorkspaceUnit::testAutosaveFallsBackToAppDataWhenProjectDirIsReadOnly()
 
     WorkSpace workspace;
     workspace.m_fileInfo = QFileInfo(dir.filePath("project.panda"));
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
     QVERIFY(!workspace.scene()->undoStack()->isClean());
 
@@ -611,7 +611,7 @@ void TestWorkspaceUnit::testAutosaveFallsBackToAppDataForBundledExamplesDir()
 
     WorkSpace workspace;
     workspace.m_fileInfo = QFileInfo(examplesDir + QStringLiteral("/counter.panda"));
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
     QVERIFY(!workspace.scene()->undoStack()->isClean());
 
@@ -649,7 +649,7 @@ void TestWorkspaceUnit::testAutosaveRemovesPreviousFileWhenProjectDirChanges()
     workspace.m_autosaveFileName = oldAutosavePath;
     workspace.m_fileInfo = QFileInfo(newDir.filePath("project.panda"));
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
 
     workspace.autosave();
@@ -674,7 +674,7 @@ void TestWorkspaceUnit::testAutosaveThrowsWhenFileCannotBeOpened()
     workspace.m_fileInfo = QFileInfo(dir.filePath("project.panda"));
     workspace.m_autosaveFileName = autosavePath;
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
 
     bool threw = false;
@@ -692,7 +692,7 @@ void TestWorkspaceUnit::testAutosaveThrowsWhenCommitFails()
     QSKIP("RLIMIT_FSIZE (used to force a deferred QSaveFile write failure) has no Windows equivalent");
 #else
     WorkSpace workspace;
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, workspace.scene()));
 
     bool threw = false;
@@ -741,7 +741,8 @@ void TestWorkspaceUnit::testAutosaveTimerReportsAFailureOnceAndTriesAgain()
         }
     });
     const auto changeAndAutosave = [&] {
-        scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{new And()}, scene));
+        auto *gate = ElementFactory::buildElement(ElementType::And);
+        scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
         QVERIFY(TestUtils::waitFor([&] { return workspace.m_autosaveDebounceTimer.isActive(); }));
         QVERIFY(TestUtils::waitFor([&] { return !workspace.m_autosaveDebounceTimer.isActive(); }));
     };

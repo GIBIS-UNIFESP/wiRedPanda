@@ -5,8 +5,7 @@
 
 #include <QTest>
 
-#include "App/Element/GraphicElements/And.h"
-#include "App/Element/GraphicElements/InputVCC.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -16,7 +15,7 @@ using TestUtils::initElm;
 void TestNodeLogic::init()
 {
     std::generate(m_inputs.begin(), m_inputs.end(), [] {
-        auto *src = new InputVcc();
+        auto *src = ElementFactory::buildElement(ElementType::InputVcc);
         initSrc(*src);
         return src;
     });
@@ -53,7 +52,7 @@ void TestNodeLogic::testNodeChainPropagation()
 void TestNodeLogic::testNodeFanOut()
 {
     Node node;
-    And and1, and2;
+    Element and1{ElementType::And}, and2{ElementType::And};
     initElm(node); initElm(and1); initElm(and2);
 
     node.connectPredecessor(0, m_inputs.at(0), 0);

@@ -9,7 +9,7 @@
 #include <QTest>
 #include <QUndoStack>
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -75,7 +75,7 @@ void TestHistoryHandler::testHandleUndoPerformsRealUndo()
 {
     MainWindow window;
     auto *scene = window.currentTab()->scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     const int elementId = andGate->id();
     QVERIFY(scene->itemById(elementId));
@@ -109,7 +109,7 @@ void TestHistoryHandler::testHandleRedoPerformsRealRedo()
 {
     MainWindow window;
     auto *scene = window.currentTab()->scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     const int elementId = andGate->id();
 
@@ -133,7 +133,7 @@ void TestHistoryHandler::testHandleGetUndoStackReportsRealState()
 {
     MainWindow window;
     auto *scene = window.currentTab()->scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
 
     HistoryHandler handler(&window, nullptr);

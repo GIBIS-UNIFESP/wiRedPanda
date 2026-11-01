@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QVector>
 
-class InputVcc;
+class Element;
 
 class TestElementLogic : public QObject
 {
@@ -108,5 +108,5 @@ private slots:
     void test6InputAnd();
 
 private:
-    QVector<InputVcc *> m_inputs{8};
+    QVector<Element *> m_inputs{8};
 };

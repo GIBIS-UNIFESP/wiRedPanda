@@ -12,7 +12,7 @@
 #include <QTemporaryDir>
 
 #include "App/CodeGen/ArduinoCodeGen.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Demux.h"
@@ -22,12 +22,9 @@
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
@@ -56,7 +53,7 @@ void TestArduinoCodeGenUnit::testAndGateCircuit()
 
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led;
 
     builder.add(sw1, sw2, andGate, led);
@@ -87,8 +84,8 @@ void TestArduinoCodeGenUnit::testMultiGateCircuit()
 
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
-    auto *orGate = new Or;
-    auto *notGate = new Not;
+    auto *orGate = ElementFactory::buildElement(ElementType::Or);
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *led = new Led;
 
     builder.add(sw1, sw2, orGate, notGate, led);
@@ -405,7 +402,7 @@ void TestArduinoCodeGenUnit::testTruthTableInputTiedToVccResolvesToHigh()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *vcc = new InputVcc;
+    auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
     auto *sw = new InputSwitch;
     auto *tt = new TruthTable;
     auto *led = new Led;
@@ -440,7 +437,7 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchNonSequentialSettleLoop()
 
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
-    auto *andGate = new And;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led;
 
     builder.add(sw1, sw2, andGate, led);
@@ -529,7 +526,7 @@ void andGate(CircuitBuilder &builder)
 {
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led;
     builder.add(sw1, sw2, gate, led);
     builder.connect(sw1, 0, gate, 0);

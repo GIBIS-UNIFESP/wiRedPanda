@@ -3,20 +3,13 @@
 
 #include "Tests/Unit/Elements/TestLogicGates.h"
 
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Nand.h"
-#include "App/Element/GraphicElements/Nor.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
-#include "App/Element/GraphicElements/Xnor.h"
-#include "App/Element/GraphicElements/Xor.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestLogicGates::testAnd()
 {
-    And elm;
+    Element elm{ElementType::And};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
@@ -25,7 +18,7 @@ void TestLogicGates::testAnd()
 
 void TestLogicGates::testOr()
 {
-    Or elm;
+    Element elm{ElementType::Or};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
@@ -34,7 +27,7 @@ void TestLogicGates::testOr()
 
 void TestLogicGates::testNot()
 {
-    Not elm;
+    Element elm{ElementType::Not};
     QCOMPARE(elm.inputSize(), 1);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 1);
@@ -44,7 +37,7 @@ void TestLogicGates::testNot()
 
 void TestLogicGates::testNand()
 {
-    Nand elm;
+    Element elm{ElementType::Nand};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
@@ -53,7 +46,7 @@ void TestLogicGates::testNand()
 
 void TestLogicGates::testNor()
 {
-    Nor elm;
+    Element elm{ElementType::Nor};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
@@ -62,7 +55,7 @@ void TestLogicGates::testNor()
 
 void TestLogicGates::testXor()
 {
-    Xor elm;
+    Element elm{ElementType::Xor};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
@@ -71,7 +64,7 @@ void TestLogicGates::testXor()
 
 void TestLogicGates::testXnor()
 {
-    Xnor elm;
+    Element elm{ElementType::Xnor};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 2);
@@ -88,7 +81,7 @@ void TestLogicGates::testAndGateBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw1, &sw2, &andGate, &led);
@@ -118,7 +111,7 @@ void TestLogicGates::testOrGateBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Or orGate;
+    Element orGate{ElementType::Or};
     Led led;
 
     builder.add(&sw1, &sw2, &orGate, &led);
@@ -148,7 +141,7 @@ void TestLogicGates::testNotGateBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    Not notGate;
+    Element notGate{ElementType::Not};
     Led led;
 
     builder.add(&sw, &notGate, &led);
@@ -171,7 +164,7 @@ void TestLogicGates::testNandGateBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Nand nandGate;
+    Element nandGate{ElementType::Nand};
     Led led;
 
     builder.add(&sw1, &sw2, &nandGate, &led);
@@ -201,7 +194,7 @@ void TestLogicGates::testNorGateBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Nor norGate;
+    Element norGate{ElementType::Nor};
     Led led;
 
     builder.add(&sw1, &sw2, &norGate, &led);
@@ -231,7 +224,7 @@ void TestLogicGates::testXorGateBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Xor xorGate;
+    Element xorGate{ElementType::Xor};
     Led led;
 
     builder.add(&sw1, &sw2, &xorGate, &led);
@@ -261,7 +254,7 @@ void TestLogicGates::testXnorGateBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Xnor xnorGate;
+    Element xnorGate{ElementType::Xnor};
     Led led;
 
     builder.add(&sw1, &sw2, &xnorGate, &led);

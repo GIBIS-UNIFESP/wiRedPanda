@@ -16,7 +16,6 @@
 
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
@@ -27,11 +26,8 @@
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -48,10 +44,10 @@
 
 namespace {
 /// Reads the picture an element shows in its orientation, so flip-variant rendering can be asserted.
-template <typename Element>
-struct PixmapProbe : Element {
-    QImage displayedImage() const { return ElementPictures::instance().shown(*this, Theme::Light)->pixmap.toImage(); }
-};
+QImage displayedImage(const Element &element)
+{
+    return ElementPictures::instance().shown(element, Theme::Light)->pixmap.toImage();
+}
 } // namespace
 
 namespace TestCommandsHelpers {
@@ -128,7 +124,7 @@ void TestCommands::testAddItemsCommand()
     auto *undoStack = scene->undoStack();
 
     // Add a single element
-    QList<QGraphicsItem *> items{new And()};
+    QList<QGraphicsItem *> items{ElementFactory::buildElement(ElementType::And)};
     scene->receiveCommand(new AddItemsCommand(items, scene));
 
     QCOMPARE(scene->elements().size(), 1);
@@ -153,7 +149,8 @@ void TestCommands::testDeleteItemsCommand()
     auto *undoStack = scene->undoStack();
 
     // First add elements
-    QList<QGraphicsItem *> items{new And(), new Or()};
+    QList<QGraphicsItem *> items{ElementFactory::buildElement(ElementType::And),
+                                 ElementFactory::buildElement(ElementType::Or)};
     scene->receiveCommand(new AddItemsCommand(items, scene));
     QCOMPARE(scene->elements().size(), 2);
 
@@ -173,7 +170,10 @@ void TestCommands::testDeleteItemsCommand()
 void TestCommands::testAddDeleteUndoRedo()
 {
     // This is the original test - kept for regression testing
-    QList<QGraphicsItem *> items{new And(), new And(), new And(), new And()};
+    QList<QGraphicsItem *> items;
+    for (int i = 0; i < 4; ++i) {
+        items.append(ElementFactory::buildElement(ElementType::And));
+    }
 
     WorkSpace workspace;
     auto *scene = workspace.scene();
@@ -210,7 +210,7 @@ void TestCommands::testRotateCommand()
     auto *undoStack = scene->undoStack();
 
     // Add an element
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     QList<QGraphicsItem *> items{andGate};
     scene->receiveCommand(new AddItemsCommand(items, scene));
 
@@ -239,7 +239,7 @@ void TestCommands::testMoveCommand()
     auto *undoStack = scene->undoStack();
 
     // Add an element
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     QList<QGraphicsItem *> items{andGate};
     scene->receiveCommand(new AddItemsCommand(items, scene));
 
@@ -277,8 +277,8 @@ void TestCommands::testFlipCommand()
     auto *undoStack = scene->undoStack();
 
     // Add elements
-    auto *gate1 = new And();
-    auto *gate2 = new And();
+    auto *gate1 = ElementFactory::buildElement(ElementType::And);
+    auto *gate2 = ElementFactory::buildElement(ElementType::And);
 
     QList<QGraphicsItem *> items{gate1, gate2};
     scene->receiveCommand(new AddItemsCommand(items, scene));
@@ -315,46 +315,46 @@ void TestCommands::testFlipTextPixmapVariant()
     // Memory elements bake their pin letters (D, E, Q...) into the SVG. Flipping must swap in a
     // text-corrected pixmap variant (so the glyphs stay upright after the item-level mirror),
     // while a text-free element keeps its base pixmap (the item transform alone handles it).
-    PixmapProbe<DLatch> latch;
-    const QImage baseImage = latch.displayedImage();
+    DLatch latch;
+    const QImage baseImage = displayedImage(latch);
     QVERIFY(!baseImage.isNull());
 
     latch.setFlippedX(true);
-    QVERIFY2(latch.displayedImage() != baseImage,
+    QVERIFY2(displayedImage(latch) != baseImage,
              "Flipping a latch must produce a text-corrected pixmap variant");
 
     // Unflipping must round-trip back to exactly the base pixmap (zero regression).
     latch.setFlippedX(false);
-    QCOMPARE(latch.displayedImage(), baseImage);
+    QCOMPARE(displayedImage(latch), baseImage);
 
     // A text-free element re-uses its base pixmap when flipped (no redundant re-render).
-    PixmapProbe<And> gate;
-    const QImage gateBase = gate.displayedImage();
+    Element gate{ElementType::And};
+    const QImage gateBase = displayedImage(gate);
     gate.setFlippedX(true);
-    QCOMPARE(gate.displayedImage(), gateBase);
+    QCOMPARE(displayedImage(gate), gateBase);
 }
 
 void TestCommands::testRotateTextPixmapVariant()
 {
     // Same idea as flipping, for rotation: a rotated memory element must swap in a pixmap whose
     // baked-in labels are counter-rotated, so the pin letters stay upright while the body rotates.
-    PixmapProbe<DLatch> latch;
-    const QImage baseImage = latch.displayedImage();
+    DLatch latch;
+    const QImage baseImage = displayedImage(latch);
     QVERIFY(!baseImage.isNull());
 
     latch.setRotation(90);
-    QVERIFY2(latch.displayedImage() != baseImage,
+    QVERIFY2(displayedImage(latch) != baseImage,
              "Rotating a latch must produce a text-corrected pixmap variant");
 
     // Rotating back to 0 must round-trip to exactly the base pixmap (zero regression).
     latch.setRotation(0);
-    QCOMPARE(latch.displayedImage(), baseImage);
+    QCOMPARE(displayedImage(latch), baseImage);
 
     // A text-free element re-uses its base pixmap when rotated (no redundant re-render).
-    PixmapProbe<And> gate;
-    const QImage gateBase = gate.displayedImage();
+    Element gate{ElementType::And};
+    const QImage gateBase = displayedImage(gate);
     gate.setRotation(90);
-    QCOMPARE(gate.displayedImage(), gateBase);
+    QCOMPARE(displayedImage(gate), gateBase);
 }
 
 void TestCommands::testFlipRotateTextPixmapVariant()
@@ -362,29 +362,29 @@ void TestCommands::testFlipRotateTextPixmapVariant()
     // The combined rotate+flip state is the one orientation case whose correction order matters
     // (the glyph carries Rotate(-angle) then the flip). Verify the combined variant is distinct
     // from base, rotate-only and flip-only, and round-trips back through each state to the base.
-    PixmapProbe<DLatch> latch;
-    const QImage baseImage = latch.displayedImage();
+    DLatch latch;
+    const QImage baseImage = displayedImage(latch);
     QVERIFY(!baseImage.isNull());
 
     latch.setRotation(90);
-    const QImage rotateOnly = latch.displayedImage();
+    const QImage rotateOnly = displayedImage(latch);
     QVERIFY(rotateOnly != baseImage);
 
     latch.setFlippedX(true); // now rotated AND flipped
-    const QImage rotateFlip = latch.displayedImage();
+    const QImage rotateFlip = displayedImage(latch);
     QVERIFY2(rotateFlip != baseImage, "Rotated+flipped latch must differ from the base pixmap");
     QVERIFY2(rotateFlip != rotateOnly, "Rotated+flipped must differ from rotate-only");
 
     // ...and from a flip-only latch (flipped but not rotated).
-    PixmapProbe<DLatch> flipOnly;
+    DLatch flipOnly;
     flipOnly.setFlippedX(true);
-    QVERIFY2(rotateFlip != flipOnly.displayedImage(), "Rotated+flipped must differ from flip-only");
+    QVERIFY2(rotateFlip != displayedImage(flipOnly), "Rotated+flipped must differ from flip-only");
 
     // Round-trip: unflip → back to rotate-only; then unrotate → back to the base (zero regression).
     latch.setFlippedX(false);
-    QCOMPARE(latch.displayedImage(), rotateOnly);
+    QCOMPARE(displayedImage(latch), rotateOnly);
     latch.setRotation(0);
-    QCOMPARE(latch.displayedImage(), baseImage);
+    QCOMPARE(displayedImage(latch), baseImage);
 }
 
 void TestCommands::testFlipNonRotatablePorts()
@@ -502,7 +502,7 @@ void TestCommands::testChangeInputSizeCommand()
     auto *undoStack = scene->undoStack();
 
     // Add an AND gate (default 2 inputs)
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     QList<QGraphicsItem *> items{andGate};
     scene->receiveCommand(new AddItemsCommand(items, scene));
 
@@ -533,7 +533,7 @@ void TestCommands::testChangeInputSizeCommandShrinkDropsAndRestoresConnection()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *sw = new InputSwitch();
     andGate->setPos(200, 0);
     sw->setPos(0, 0);
@@ -571,7 +571,7 @@ void TestCommands::testConnectionPreservation()
     // Create a simple circuit: Switch -> AND -> LED
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led();
 
     sw1->setPos(0, 0);
@@ -676,9 +676,9 @@ void TestCommands::testUndoLimit()
     undoStack->setUndoLimit(2);
 
     // Add 3 elements one at a time
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
 
     QCOMPARE(scene->elements().size(), 3);
 
@@ -729,7 +729,7 @@ void TestCommands::testMorphCommand()
     auto *undoStack = scene->undoStack();
 
     // Add an AND gate
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     QList<QGraphicsItem *> items{andGate};
     scene->receiveCommand(new AddItemsCommand(items, scene));
 
@@ -763,7 +763,7 @@ void TestCommands::testMorphPreservesFlip()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
 
     andGate->setFlippedX(true);
@@ -975,7 +975,7 @@ void TestCommands::testUpdateCommand()
     auto *undoStack = scene->undoStack();
 
     // Add an AND gate with a label
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     QList<QGraphicsItem *> items{andGate};
     scene->receiveCommand(new AddItemsCommand(items, scene));
 
@@ -1019,7 +1019,7 @@ void TestCommands::testUpdateCommandPropertyEditDoesNotRebuild()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     RebuildProbe probe(scene);
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
 
     auto *sim = scene->simulation();
@@ -1183,7 +1183,7 @@ void TestCommands::testToggleTruthTableOutputCommandBounds()
     }
 
     // So is an element that is no truth table (both callers check its type): the stack drops the command
-    auto *notGate = new Not();
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{notGate}, scene));
     const int index = scene->undoStack()->index();
     scene->receiveCommand(new ToggleTruthTableOutputCommand(notGate, 0, scene));
@@ -1198,7 +1198,7 @@ void TestCommands::testMorphNotToNodeAdjustsPosition()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *notGate = new Not();
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
     notGate->setPos(100, 100);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{notGate}, scene));
     const int id = notGate->id();
@@ -1261,7 +1261,7 @@ void TestCommands::testMorphDropsAndRestoresOutputConnection()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led();
     andGate->setPos(0, 0);
     led->setPos(200, 0);
@@ -1299,7 +1299,7 @@ void TestCommands::testMorphUndoSkipsRestoringConnectionToDeletedPeer()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led();
     andGate->setPos(0, 0);
     led->setPos(200, 0);
@@ -1503,7 +1503,7 @@ void TestCommands::testSetPosIsExact()
 {
     // Setting a position in a scene keeps it as given; only the edits that decide a place snap.
     WorkSpace workspace;
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     workspace.scene()->addItem(gate);
     gate->setPos(279.333, 311.5);
     QCOMPARE(gate->pos(), QPointF(279.333, 311.5));
@@ -1519,8 +1519,8 @@ void TestCommands::testAddItemsUndoAbandonedWhenItemMissing()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *andGate = new And();
-    auto *orGate = new Or();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *orGate = ElementFactory::buildElement(ElementType::Or);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, orGate}, scene));
     const int count = undoStack->count();
 
@@ -1542,7 +1542,7 @@ void TestCommands::testLoadItemsRefusesACountMismatch()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(andGate);
 
     QByteArray itemData;
@@ -1571,7 +1571,7 @@ void TestCommands::testUpdateRedoAbandonedWhenElementMissing()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
 
     QByteArray oldData;
@@ -1632,11 +1632,11 @@ void TestCommands::testMorphUndoRestoresInputsTheNewTypeCannotHave()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
     andGate->setInputSize(4);
     for (int i = 0; i < 4; ++i) {
-        auto *vcc = new InputVcc();
+        auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
         vcc->setPos(-128, i * 64);
         scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{vcc}, scene));
         auto *conn = new Connection();
@@ -1867,8 +1867,8 @@ void TestCommands::testUndoWithASnapshotThatDoesNotReadChangesNothing()
     using namespace TestCommandsHelpers;
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *first = new And();
-    auto *second = new And();
+    auto *first = ElementFactory::buildElement(ElementType::And);
+    auto *second = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
     first->setLabel("old");
     second->setLabel("old");
@@ -1890,8 +1890,8 @@ void TestCommands::testUndoActionReportsASnapshotThatDoesNotRead()
     using namespace TestCommandsHelpers;
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *first = new And();
-    auto *second = new And();
+    auto *first = ElementFactory::buildElement(ElementType::And);
+    auto *second = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
     const QByteArray oldData = snapshotCutShort({first, second});
     first->setLabel("new");
@@ -1912,8 +1912,8 @@ void TestCommands::testLoadItemsWithARecordThatDoesNotReadChangesNothing()
     // A deletion's record whose item stops halfway: the element wired to it is not loaded, nor the item added
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *wired = new And();
-    auto *item = new Or();
+    auto *wired = ElementFactory::buildElement(ElementType::And);
+    auto *item = ElementFactory::buildElement(ElementType::Or);
     scene->addItem(wired);
     scene->addItem(item);
     wired->setLabel("old");
@@ -1950,7 +1950,7 @@ void TestCommands::testUpdateBlobUndoThatDoesNotReadKeepsTheRegistry()
     auto *ic = new IC();
     scene->addItem(ic);
     ICTestHelpers::embedIC(ic, ICTestHelpers::minimalPandaBytes(), "blob", scene->contextDir(), scene->icRegistry());
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(gate);
     const QByteArray oldData = snapshotCutShort({ic, gate});
     const QByteArray newBlob = scene->icRegistry()->blob("blob");
@@ -1971,7 +1971,7 @@ void TestCommands::testChangePortSizeUndoThatDoesNotReadChangesNothing()
     using namespace TestCommandsHelpers;
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *sw = new InputSwitch();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, sw}, scene));
     scene->receiveCommand(new ChangePortSizeCommand({gate}, 3, scene, true));
@@ -1999,7 +1999,7 @@ void TestCommands::testMorphUndoThatDoesNotReadChangesNothing()
     using namespace TestCommandsHelpers;
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
     const int id = gate->id();
     auto *command = new MorphCommand({gate}, ElementType::Or, scene);
@@ -2204,9 +2204,9 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
     int id = 0;
     // An element of the file's kind on the scene, whose file is set by setFile()
     const auto addElement = [&] {
-        Element *element = (file == "picture") ? static_cast<Element *>(new And())
-            : (file == "sound")                         ? static_cast<Element *>(new AudioBox())
-                                                        : static_cast<Element *>(new IC());
+        Element *element = (file == "picture") ? ElementFactory::buildElement(ElementType::And)
+                         : (file == "sound")   ? static_cast<Element *>(new AudioBox())
+                                               : static_cast<Element *>(new IC());
         scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{element}, scene));
         id = element->id();
         return element;
@@ -2241,9 +2241,9 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
     const auto circuitWithFile = [&] {
         WorkSpace source;
         source.scene()->setContextDir(dir.path());
-        Element *element = (file == "picture") ? static_cast<Element *>(new And())
-            : (file == "sound")                         ? static_cast<Element *>(new AudioBox())
-                                                        : static_cast<Element *>(new IC());
+        Element *element = (file == "picture") ? ElementFactory::buildElement(ElementType::And)
+                         : (file == "sound")   ? static_cast<Element *>(new AudioBox())
+                                               : static_cast<Element *>(new IC());
         source.scene()->addItem(element);
         if (file == "picture") {
             element->setAppearance(false, path);
@@ -2379,7 +2379,7 @@ void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
     // session names the same elements. An edit that changes no value is no command.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *named = new InputSwitch();
     auto *other = new InputSwitch();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, named, other}, scene));

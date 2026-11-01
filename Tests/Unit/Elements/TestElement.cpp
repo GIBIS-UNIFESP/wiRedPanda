@@ -26,11 +26,9 @@
 #include <QXmlStreamReader>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Line.h"
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
@@ -58,7 +56,7 @@ void sendDoubleClick(Scene *scene, const QPointF &scenePos)
 
 void TestElement::testElementPaintSelection()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     andGate.setSelected(true);
     QVERIFY(andGate.isSelected());
 
@@ -68,7 +66,7 @@ void TestElement::testElementPaintSelection()
 
 void TestElement::testElementSaveLoad()
 {
-    And gate;
+    Element gate{ElementType::And};
     gate.setRotation(90);
 
     QByteArray data;
@@ -94,7 +92,7 @@ void TestElement::testElementHelpTextIsItsName()
 {
     // An element's help text is its type's name, here in English with no translator loaded; it carries no tooltip or
     // object name of its own.
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.helpText(), QStringLiteral("And"));
     QCOMPARE(andGate.translatedName(), QStringLiteral("And"));
     QVERIFY(andGate.toolTip().isEmpty());
@@ -103,7 +101,7 @@ void TestElement::testElementHelpTextIsItsName()
 
 void TestElement::testElementDoubleClick()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.elementType(), ElementType::And);
 }
 
@@ -119,7 +117,7 @@ void TestElement::testTextElement()
 void TestElement::testLineElement()
 {
     WorkSpace workspace;
-    auto *line = new Line;
+    auto *line = ElementFactory::buildElement(ElementType::Line);
     workspace.scene()->addItem(line);
     QCOMPARE(line->elementType(), ElementType::Line);
     QVERIFY(!line->boundingRect().isNull());
@@ -221,7 +219,7 @@ void TestElement::testInlineDoubleClickIgnoredWithoutLabel()
     // And has no hasLabel() support -- double-click must fall through to default Qt
     // behavior and must not spawn an inline editor.
     WorkSpace workspace;
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     QVERIFY(!gate->hasLabel());
     workspace.scene()->addItem(gate);
 
@@ -293,7 +291,7 @@ void TestElement::testLabelFontIsAFamilyThePlatformHas()
 {
     // A label asks for a family the platform has under that name: one it lacks is matched through Qt's table of family
     // aliases, which Qt builds on first use (costly on macOS, where "Sans Serif" is no family)
-    And gate;
+    Element gate{ElementType::And};
     QGraphicsScene scene;
     scene.addItem(&gate);
     const auto leaveScene = qScopeGuard([&] { scene.removeItem(&gate); });
@@ -377,7 +375,7 @@ void TestElement::testSceneEventSwallowsCtrlClickPress()
     // not reliably reproduce the requested keyboard modifier on the resulting scene event (a
     // real Shift-modifier request was observed arriving as Control at the scene level), making
     // that route non-deterministic for this specific guard.
-    And gate;
+    Element gate{ElementType::And};
 
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
     pressEvent.setButton(Qt::LeftButton);
@@ -396,7 +394,7 @@ void TestElement::testColorCycleFunctionsDefaultToWhiteForNonColoredElement()
     // The base Element::color() always returns an empty string; previousColor()/
     // nextColor() must fall back to "White" (not an empty/garbage result) for an element type
     // that never overrides color(), e.g. And.
-    And gate;
+    Element gate{ElementType::And};
     QCOMPARE(gate.color(), QString());
     QCOMPARE(gate.previousColor(), QString("White"));
     QCOMPARE(gate.nextColor(), QString("White"));
@@ -414,7 +412,7 @@ void TestElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
     // the visual chain shows where validity breaks.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
-    auto *gate = new And;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led;
     builder.add(gate, led);
     builder.connect(gate, 0, led, 0);
@@ -431,7 +429,7 @@ void TestElement::testBaseSettersAreNoOpsForUnsupportedProperties()
     // Element's default setColor()/setAudio()/setVolume()/setFrequency()/setDelay() are
     // no-ops for element types that don't override them -- confirm the matching getters stay at
     // their fixed defaults afterward.
-    And gate;
+    Element gate{ElementType::And};
     gate.setColor("Red");
     QCOMPARE(gate.color(), QString());
 
@@ -450,7 +448,7 @@ void TestElement::testBaseSettersAreNoOpsForUnsupportedProperties()
 
 void TestElement::testBlobNameDefaultsToEmptyForNonIcElement()
 {
-    And gate;
+    Element gate{ElementType::And};
     QVERIFY(gate.blobName().isEmpty());
 }
 
@@ -477,7 +475,7 @@ void TestElement::testBodiesDrawnInCodeOfferNoAppearance()
 void TestElement::testTheNameFollowsTheLanguage()
 {
     // Made before a translator is installed, the element names itself in the language current when asked.
-    And gate;
+    Element gate{ElementType::And};
     TestUtils::TagEveryStringTranslator tagging;
     QCoreApplication::installTranslator(&tagging);
     const QString tagged = gate.translatedName();

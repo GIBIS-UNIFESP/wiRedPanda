@@ -5,13 +5,7 @@
 
 #include <QtTest>
 
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
-#include "App/Element/GraphicElements/InputVCC.h"
-#include "App/Element/GraphicElements/Nor.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
-#include "App/Element/GraphicElements/Xnor.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::initSrc;
@@ -23,8 +17,8 @@ using TestUtils::initElm;
 
 void TestElementLogicErrors::testNullPredecessor()
 {
-    And andGate;
-    InputVcc input;
+    Element andGate{ElementType::And};
+    Element input{ElementType::InputVcc};
     initElm(andGate); initSrc(input);
     andGate.connectPredecessor(0, &input, 0);
 
@@ -36,7 +30,7 @@ void TestElementLogicErrors::testNullPredecessor()
     andGate.updateLogic();
     QCOMPARE(andGate.outputValue(), Status::Unknown);
 
-    Or orGate;
+    Element orGate{ElementType::Or};
     initElm(orGate);
     orGate.connectPredecessor(0, &input, 0);
 
@@ -51,27 +45,27 @@ void TestElementLogicErrors::testNullPredecessor()
 
 void TestElementLogicErrors::testDisconnectedInput()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     initElm(andGate);
     andGate.updateLogic();
     QCOMPARE(andGate.outputValue(), Status::Unknown);
 
-    Or orGate;
+    Element orGate{ElementType::Or};
     initElm(orGate);
     orGate.updateLogic();
     QCOMPARE(orGate.outputValue(), Status::Unknown);
 
-    Not notGate;
+    Element notGate{ElementType::Not};
     initElm(notGate);
     notGate.updateLogic();
     QCOMPARE(notGate.outputValue(), Status::Unknown);
 
-    Nor norGate;
+    Element norGate{ElementType::Nor};
     initElm(norGate);
     norGate.updateLogic();
     QCOMPARE(norGate.outputValue(), Status::Unknown);
 
-    Xnor xnorGate;
+    Element xnorGate{ElementType::Xnor};
     initElm(xnorGate);
     xnorGate.updateLogic();
     QCOMPARE(xnorGate.outputValue(), Status::Unknown);
@@ -79,8 +73,8 @@ void TestElementLogicErrors::testDisconnectedInput()
 
 void TestElementLogicErrors::testMultipleConnectionsSamePort()
 {
-    And gate;
-    InputVcc first, second, other;
+    Element gate{ElementType::And};
+    Element first{ElementType::InputVcc}, second{ElementType::InputVcc}, other{ElementType::InputVcc};
     initElm(gate); initSrc(first); initSrc(second); initSrc(other);
 
     gate.connectPredecessor(0, &first, 0);
@@ -105,8 +99,8 @@ void TestElementLogicErrors::testMultipleConnectionsSamePort()
 
 void TestElementLogicErrors::testRapidStateChanges()
 {
-    And andGate;
-    InputVcc input1, input2;
+    Element andGate{ElementType::And};
+    Element input1{ElementType::InputVcc}, input2{ElementType::InputVcc};
     initElm(andGate); initSrc(input1); initSrc(input2);
 
     andGate.connectPredecessor(0, &input1, 0);
@@ -123,12 +117,12 @@ void TestElementLogicErrors::testRapidStateChanges()
 
 void TestElementLogicErrors::testUnconnectedGate()
 {
-    And gate;
+    Element gate{ElementType::And};
     initElm(gate);
     gate.updateLogic();
     QCOMPARE(gate.outputValue(), Status::Unknown);
 
-    Not notGate;
+    Element notGate{ElementType::Not};
     initElm(notGate);
     notGate.updateLogic();
     QCOMPARE(notGate.outputValue(), Status::Unknown);
@@ -136,8 +130,11 @@ void TestElementLogicErrors::testUnconnectedGate()
 
 void TestElementLogicErrors::testDeepCascading()
 {
-    InputVcc in1, in2, in3, in4;
-    And stage1, stage2, stage3;
+    Element in1{ElementType::InputVcc};
+    Element in2{ElementType::InputVcc};
+    Element in3{ElementType::InputVcc};
+    Element in4{ElementType::InputVcc};
+    Element stage1{ElementType::And}, stage2{ElementType::And}, stage3{ElementType::And};
     initSrc(in1); initSrc(in2); initSrc(in3); initSrc(in4);
     initElm(stage1); initElm(stage2); initElm(stage3);
 
@@ -177,10 +174,10 @@ void TestElementLogicErrors::testDeepCascading()
 
 void TestElementLogicErrors::testInvalidOutputPortIndex()
 {
-    And andGate;
-    Or orGate;
+    Element andGate{ElementType::And};
+    Element orGate{ElementType::Or};
     orGate.setInputSize(3);
-    Not notGate;
+    Element notGate{ElementType::Not};
     initElm(andGate); initElm(orGate); initElm(notGate);
 
     QCOMPARE(andGate.simOutputSize(), 1);
@@ -192,7 +189,7 @@ void TestElementLogicErrors::testInvalidOutputPortIndex()
     QCOMPARE(notGate.outputValue(0), Status::Inactive);
 
     // Multi-output source
-    InputVcc input;
+    Element input{ElementType::InputVcc};
     input.initSimulationVectors(0, 4);
     input.setOutputValue(0, Status::Active);
     QCOMPARE(input.simOutputSize(), 4);
@@ -209,7 +206,7 @@ void TestElementLogicErrors::testInvalidOutputPortIndex()
 
 void TestElementLogicErrors::testSelfLoopOscillation()
 {
-    Not notGate;
+    Element notGate{ElementType::Not};
     initElm(notGate);
     notGate.connectPredecessor(0, &notGate, 0);
 
@@ -227,13 +224,13 @@ void TestElementLogicErrors::testSelfLoopOscillation()
 
 void TestElementLogicErrors::testGateWithZeroInputs()
 {
-    And andGate;
+    Element andGate{ElementType::And};
     andGate.setInputSize(0);
     andGate.initSimulationVectors(0, 1);
     andGate.updateLogic();
     QCOMPARE(andGate.outputValue(), Status::Active);
 
-    Or orGate;
+    Element orGate{ElementType::Or};
     orGate.setInputSize(0);
     orGate.initSimulationVectors(0, 1);
     orGate.updateLogic();
@@ -242,11 +239,11 @@ void TestElementLogicErrors::testGateWithZeroInputs()
 
 void TestElementLogicErrors::testConnectPredecessorOutOfBoundsIsNoOp()
 {
-    And andGate; // 2 inputs
+    Element andGate{ElementType::And}; // 2 inputs
     initElm(andGate);
 
     // An index past the connection vector must be silently ignored, not crash.
-    InputVcc input;
+    Element input{ElementType::InputVcc};
     initSrc(input);
     andGate.connectPredecessor(5, &input, 0);
 
@@ -263,7 +260,7 @@ void TestElementLogicErrors::testResetSimStateWithMoreSimOutputsThanPorts()
     // doesn't resync simulation vectors; only initSimulationVectors() does, normally called
     // by Simulation::initialize()). Inflate m_outputs past the real port count directly to
     // exercise the "no matching real port" fallback deterministically.
-    And andGate;
+    Element andGate{ElementType::And};
     initElm(andGate);
     andGate.initSimulationVectors(andGate.inputSize(), andGate.outputSize() + 2);
     QCOMPARE(andGate.simOutputSize(), 3);
@@ -278,9 +275,9 @@ void TestElementLogicErrors::testResetSimStateWithMoreSimOutputsThanPorts()
 
 void TestElementLogicErrors::testInvalidPropagatesChain()
 {
-    And andGate;
-    Not notGate;
-    InputVcc input;
+    Element andGate{ElementType::And};
+    Element notGate{ElementType::Not};
+    Element input{ElementType::InputVcc};
     initElm(andGate); initElm(notGate); initSrc(input);
 
     andGate.connectPredecessor(0, &input, 0);
@@ -304,7 +301,7 @@ void TestElementLogicErrors::testInvalidPropagatesChain()
 
 void TestElementLogicErrors::testBoolOverloadMapsToStatus()
 {
-    InputVcc src;
+    Element src{ElementType::InputVcc};
     src.initSimulationVectors(0, 2);
 
     src.setOutputValue(true);
@@ -330,7 +327,10 @@ void TestElementLogicErrors::testFlipFlopNoSpuriousEdgeAfterInvalidInputs()
     // *while* inputs were invalid, recovery saw clk=Active with a stale
     // lastClk=Inactive and fabricated a rising edge, latching stale data.
     DFlipFlop dff;
-    InputVcc d, clk, prst, clr;
+    Element d{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(dff);
     initSrc(d);
     initSrc(clk);

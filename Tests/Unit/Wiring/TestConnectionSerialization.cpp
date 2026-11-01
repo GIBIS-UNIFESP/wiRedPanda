@@ -9,10 +9,8 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
@@ -38,8 +36,8 @@ void TestConnectionSerialization::testLoadWithEmptyPortMapDirectRestore()
     auto *scene = workspace.scene();
 
     // Create source elements
-    auto andGate = std::make_unique<And>();
-    auto orGate = std::make_unique<Or>();
+    auto andGate = std::make_unique<Element>(ElementType::And);
+    auto orGate = std::make_unique<Element>(ElementType::Or);
     scene->addItem(andGate.get());
     scene->addItem(orGate.get());
 
@@ -77,8 +75,8 @@ void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
     auto *scene = workspace.scene();
 
     // Create original elements and connection
-    auto andGate1 = std::make_unique<And>();
-    auto orGate1 = std::make_unique<Or>();
+    auto andGate1 = std::make_unique<Element>(ElementType::And);
+    auto orGate1 = std::make_unique<Element>(ElementType::Or);
     scene->addItem(andGate1.get());
     scene->addItem(orGate1.get());
 
@@ -101,8 +99,8 @@ void TestConnectionSerialization::testLoadWithPortMapIndirectRestore()
     quint64 origInputSerial = static_cast<quint64>(orGate1->id()) << 16 | 0;
 
     // Create new elements (simulating new circuit load)
-    auto andGate2 = std::make_unique<And>();
-    auto orGate2 = std::make_unique<Or>();
+    auto andGate2 = std::make_unique<Element>(ElementType::And);
+    auto orGate2 = std::make_unique<Element>(ElementType::Or);
     scene->addItem(andGate2.get());
     scene->addItem(orGate2.get());
 
@@ -134,7 +132,7 @@ void TestConnectionSerialization::testLoadInvalidPortReferencesHandled()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto andGate = std::make_unique<And>();
+    auto andGate = std::make_unique<Element>(ElementType::And);
     scene->addItem(andGate.get());
 
     auto *outputPort = andGate->outputPort();
@@ -227,7 +225,7 @@ void TestConnectionSerialization::testLoadMultipleConnectionsOnSamePorts()
 
     auto sw1 = std::make_unique<InputSwitch>();
     auto sw2 = std::make_unique<InputSwitch>();
-    auto andGate = std::make_unique<And>();
+    auto andGate = std::make_unique<Element>(ElementType::And);
     scene->addItem(sw1.get());
     scene->addItem(sw2.get());
     scene->addItem(andGate.get());
@@ -296,8 +294,8 @@ void TestConnectionSerialization::testSaveLoadRoundTripPreservesPorts()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto andGate = std::make_unique<And>();
-    auto orGate = std::make_unique<Or>();
+    auto andGate = std::make_unique<Element>(ElementType::And);
+    auto orGate = std::make_unique<Element>(ElementType::Or);
     scene->addItem(andGate.get());
     scene->addItem(orGate.get());
 
@@ -402,8 +400,8 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     auto *scene = workspace.scene();
 
     auto sw = std::make_unique<InputSwitch>();
-    auto and1 = std::make_unique<And>();
-    auto and2 = std::make_unique<And>();
+    auto and1 = std::make_unique<Element>(ElementType::And);
+    auto and2 = std::make_unique<Element>(ElementType::And);
     scene->addItem(sw.get());
     scene->addItem(and1.get());
     scene->addItem(and2.get());

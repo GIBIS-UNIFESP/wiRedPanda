@@ -36,6 +36,7 @@ private slots:
     // Simulation kernels
     void testEachTypeNamesItsKernel_data();
     void testEachTypeNamesItsKernel();
+    void testEachKernelIsComputedByItsLogicOrDrivesItself();
     void testAnInputsSourceLevelComesFromItsParameters();
 
     // Appearance slots

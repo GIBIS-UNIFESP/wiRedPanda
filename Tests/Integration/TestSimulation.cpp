@@ -7,18 +7,12 @@
 
 #include "App/Core/Priorities.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Nand.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Nor.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRLatch.h"
-#include "App/Element/GraphicElements/Xor.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -34,7 +28,7 @@ void TestSimulation::testTopologicalSorting()
     CircuitBuilder builder(workspace.scene());
 
     InputButton button1, button2;
-    And andItem;
+    Element andItem{ElementType::And};
     Led led;
 
     builder.add(&button1, &button2, &andItem, &led);
@@ -63,7 +57,7 @@ void TestSimulation::testAndGatePropagation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw1, &sw2, &andGate, &led);
@@ -93,7 +87,7 @@ void TestSimulation::testOrGatePropagation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Or orGate;
+    Element orGate{ElementType::Or};
     Led led;
 
     builder.add(&sw1, &sw2, &orGate, &led);
@@ -122,7 +116,7 @@ void TestSimulation::testNotGatePropagation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    Not notGate;
+    Element notGate{ElementType::Not};
     Led led;
 
     builder.add(&sw, &notGate, &led);
@@ -144,7 +138,7 @@ void TestSimulation::testNandGatePropagation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Nand nandGate;
+    Element nandGate{ElementType::Nand};
     Led led;
 
     builder.add(&sw1, &sw2, &nandGate, &led);
@@ -173,7 +167,7 @@ void TestSimulation::testNorGatePropagation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Nor norGate;
+    Element norGate{ElementType::Nor};
     Led led;
 
     builder.add(&sw1, &sw2, &norGate, &led);
@@ -202,7 +196,7 @@ void TestSimulation::testXorGatePropagation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    Xor xorGate;
+    Element xorGate{ElementType::Xor};
     Led led;
 
     builder.add(&sw1, &sw2, &xorGate, &led);
@@ -232,8 +226,8 @@ void TestSimulation::testCascadedGates()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swA, swB, swC;
-    And andGate;
-    Or orGate;
+    Element andGate{ElementType::And};
+    Element orGate{ElementType::Or};
     Led led;
 
     builder.add(&swA, &swB, &swC, &andGate, &orGate, &led);
@@ -268,7 +262,7 @@ void TestSimulation::testMultiCycleStability()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&sw1, &sw2, &andGate, &led);
@@ -336,9 +330,9 @@ void TestSimulation::testElementProcessingOrderConsistency()
         // Create a complex circuit with many elements at same position
         // to test stable sorting behavior
         InputButton button1, button2, button3;
-        And and1, and2;
-        Or or1;
-        Not not1;
+        Element and1{ElementType::And}, and2{ElementType::And};
+        Element or1{ElementType::Or};
+        Element not1{ElementType::Not};
         Led led;
 
         // Position elements to potentially have same priorities
@@ -410,7 +404,7 @@ void TestSimulation::testSceneInitializationDeterminism()
 
         // Add items in same order to test deterministic element ordering
         InputButton button1, button2;
-        And andGate;
+        Element andGate{ElementType::And};
         Led led;
         Connection conn1, conn2, conn3;
 
@@ -462,7 +456,7 @@ void TestSimulation::testSimulationOutputReproducibility()
 
         // Create deterministic test circuit: AND gate with two inputs
         InputButton button1, button2;
-        And andGate;
+        Element andGate{ElementType::And};
         Led led;
 
         button1.setPos(0, 0);
@@ -539,9 +533,9 @@ void TestSimulation::testSimulationGraphStability()
 
         // Create circuit with complex dependencies
         InputButton input1, input2, input3;
-        And and1, and2;
-        Or or1;
-        Not not1, not2;
+        Element and1{ElementType::And}, and2{ElementType::And};
+        Element or1{ElementType::Or};
+        Element not1{ElementType::Not}, not2{ElementType::Not};
         Led led1, led2;
 
         // Position elements to create complex priority relationships
@@ -650,7 +644,7 @@ void TestSimulation::testCircuitWithFeedbackLoops()
 
         // Create NAND-based SR latch circuit (classic feedback example)
         InputButton setBtn, resetBtn;
-        Nand nand1, nand2;
+        Element nand1{ElementType::Nand}, nand2{ElementType::Nand};
         Led qLed, notQLed;
 
         setBtn.setPos(0, 0);
@@ -1248,7 +1242,7 @@ void TestSimulation::testWirelessRxFeedsCombinationalLogic()
     InputSwitch sw1, sw2;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     tx->setLabel("X"); tx->setWirelessMode(WirelessMode::Tx);
@@ -1290,7 +1284,7 @@ void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
 
     InputSwitch sw1, sw2, sw3;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     tx->setLabel("DEAD_END");
@@ -1389,10 +1383,10 @@ void TestSimulation::testWirelessFeedbackLoop()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    And andGate;
+    Element andGate{ElementType::And};
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Not notGate;
+    Element notGate{ElementType::Not};
     Led led;
 
     tx->setLabel("FB"); tx->setWirelessMode(WirelessMode::Tx);
@@ -1457,7 +1451,7 @@ void TestSimulation::testUnconnectedRequiredInputGraceful()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&andGate, &led);
@@ -1482,9 +1476,9 @@ void TestSimulation::testPartiallyConnectedCircuitIsolation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    And andWorking;
+    Element andWorking{ElementType::And};
     Led led;
-    And andIsolated;  // no connections — will be unknown
+    Element andIsolated{ElementType::And};  // no connections — will be unknown
 
     builder.add(&sw1, &sw2, &andWorking, &led, &andIsolated);
     builder.connect(&sw1, 0, &andWorking, 0);
@@ -1515,7 +1509,7 @@ void TestSimulation::testDanglingConnectionGraceful()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    And andGate;
+    Element andGate{ElementType::And};
     Led led;
 
     builder.add(&andGate, &led);

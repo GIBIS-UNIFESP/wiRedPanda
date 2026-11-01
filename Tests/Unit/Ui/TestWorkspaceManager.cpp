@@ -15,7 +15,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -56,7 +56,7 @@ struct WorkspaceManagerFixture {
 // the same technique TestWorkspace.cpp uses to dirty a workspace deterministically.
 void dirtyUndoStack(WorkSpace *ws)
 {
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     ws->scene()->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, ws->scene()));
 }
 

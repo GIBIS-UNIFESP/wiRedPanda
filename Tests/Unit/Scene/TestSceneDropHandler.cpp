@@ -15,7 +15,6 @@
 #include "App/Core/MimeTypes.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
@@ -106,7 +105,7 @@ void TestSceneDropHandler::testHandleCloneDragClonesSelectionAtOffsetPosition()
 
     // Positions/offset are multiples of the grid snap unit (Constants::gridSize / 2 == 8) so
     // Element::itemChange()'s grid snap doesn't perturb the expected result below.
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(48, 48);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -155,7 +154,7 @@ void TestSceneDropHandler::testHandleCloneDragAcceptsLegacyMimeFormat()
     Scene *scene = workspace.scene();
     SceneDropHandler handler(scene);
 
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(48, 48);
     scene->addItem(gate);
     gate->setSelected(true);
@@ -322,7 +321,7 @@ void TestSceneDropHandler::testCloneDragGhostIsWhereTheDropPutsTheCopies()
 {
     WorkSpace workspace;
     Scene *scene = workspace.scene();
-    auto *gate = new And();
+    auto *gate = ElementFactory::buildElement(ElementType::And);
     gate->setPos(48, 48);
     scene->addItem(gate);
     gate->setSelected(true);

@@ -7,13 +7,11 @@
 #include <QDataStream>
 #include <QIODevice>
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,7 +21,7 @@
 void TestElementProperties::testInputSizeVariableElement()
 {
     // AND gate: inputs [2, 8], outputs [1, 1]
-    And andGate;
+    Element andGate{ElementType::And};
 
     // Verify default
     QCOMPARE(andGate.inputSize(), 2);
@@ -46,7 +44,7 @@ void TestElementProperties::testInputSizeVariableElement()
 
 void TestElementProperties::testInputSizeConstraints()
 {
-    And andGate;
+    Element andGate{ElementType::And};
 
     // Try below minimum (invalid)
     andGate.setInputSize(1);  // Min is 2
@@ -82,7 +80,7 @@ void TestElementProperties::testInputSizeFixed()
     QCOMPARE(dff.inputSize(), 4);  // Unchanged
 
     // Verify NOT gate also fixed
-    Not notGate;
+    Element notGate{ElementType::Not};
     QCOMPARE(notGate.inputSize(), 1);
     QCOMPARE(notGate.minInputSize(), 1);
     QCOMPARE(notGate.maxInputSize(), 1);
@@ -93,7 +91,7 @@ void TestElementProperties::testInputSizeFixed()
 
 void TestElementProperties::testInputSizePortCreation()
 {
-    Or orGate;
+    Element orGate{ElementType::Or};
     orGate.setInputSize(2);  // Start with 2
 
     // Increase to 5
@@ -123,7 +121,7 @@ void TestElementProperties::testOutputSizeVariableElement()
     // Test that API works for elements that support variable outputs
     // For now, verify API is callable and returns expected fixed outputs
 
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.outputSize(), 1);
 
     // Attempt to change (should fail silently for AND)
@@ -134,7 +132,7 @@ void TestElementProperties::testOutputSizeVariableElement()
 void TestElementProperties::testOutputSizeFixed()
 {
     // AND: outputs [1, 1] (fixed)
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.outputSize(), 1);
     QCOMPARE(andGate.minOutputSize(), 1);
     QCOMPARE(andGate.maxOutputSize(), 1);
@@ -190,7 +188,7 @@ void TestElementProperties::testLabelPersistence()
 {
     // Create element with label
     WorkSpace workspace1;
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     const QString label = "TestLabel123";
     andGate->setLabel(label);
     workspace1.scene()->addItem(andGate);
@@ -211,8 +209,8 @@ void TestElementProperties::testLabelPersistence()
     const auto elements = workspace2.scene()->elements();
     QVERIFY2(!elements.isEmpty(), "Scene should contain loaded element");
 
-    auto *loaded = dynamic_cast<And *>(elements.first());
-    QVERIFY2(loaded != nullptr, "Loaded element should be an AND gate");
+    auto *loaded = elements.first();
+    QVERIFY2(loaded->elementType() == ElementType::And, "Loaded element should be an AND gate");
     QCOMPARE(loaded->label(), label);
 }
 
@@ -286,7 +284,7 @@ void TestElementProperties::testColorCycling()
 
 void TestElementProperties::testRotationProperty()
 {
-    And andGate;
+    Element andGate{ElementType::And};
 
     // Default rotation
     QCOMPARE(andGate.rotation(), 0.0);
@@ -307,7 +305,7 @@ void TestElementProperties::testRotationProperty()
 
 void TestElementProperties::testRotationNormalization()
 {
-    And andGate;
+    Element andGate{ElementType::And};
 
     // Test angle >= 360 (normalized)
     andGate.setRotation(360.0);
@@ -398,7 +396,7 @@ void TestElementProperties::testPropertiesSaveLoad()
     // Create element with multiple properties set
     WorkSpace workspace1;
 
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setInputSize(5);
     andGate->setLabel("SavedGate");
     andGate->setRotation(90.0);
@@ -432,13 +430,13 @@ void TestElementProperties::testPropertiesSaveLoad()
     QCOMPARE(elements.size(), 3);
 
     // Find elements by type
-    And *loadedAnd = nullptr;
+    Element *loadedAnd = nullptr;
     Led *loadedLed = nullptr;
     Clock *loadedClock = nullptr;
 
     for (auto *elem : elements) {
         if (elem->elementType() == ElementType::And) {
-            loadedAnd = dynamic_cast<And *>(elem);
+            loadedAnd = elem;
         } else if (elem->elementType() == ElementType::Led) {
             loadedLed = dynamic_cast<Led *>(elem);
         } else if (elem->elementType() == ElementType::Clock) {
@@ -472,7 +470,7 @@ void TestElementProperties::testPropertiesSaveLoad()
 void TestElementProperties::testInputPortByIndexValid()
 {
     // Create an AND gate with 4 inputs
-    And andGate;
+    Element andGate{ElementType::And};
     andGate.setInputSize(4);
 
     // Verify we can access each input port by valid index
@@ -486,7 +484,7 @@ void TestElementProperties::testInputPortByIndexValid()
 void TestElementProperties::testInputPortByIndexInvalid()
 {
     // Create an AND gate with 2 inputs (default)
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.inputSize(), 2);
 
     // inputPort() uses QVector::at() which asserts on invalid index
@@ -504,7 +502,7 @@ void TestElementProperties::testInputPortByIndexInvalid()
 void TestElementProperties::testOutputPortByIndexValid()
 {
     // Create an AND gate (1 output by default)
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.outputSize(), 1);
 
     // Access the output port
@@ -516,7 +514,7 @@ void TestElementProperties::testOutputPortByIndexValid()
 void TestElementProperties::testOutputPortByIndexInvalid()
 {
     // Create an AND gate (1 output)
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.outputSize(), 1);
 
     // outputPort() uses QVector::at() which asserts on invalid index
@@ -529,7 +527,7 @@ void TestElementProperties::testOutputPortByIndexInvalid()
 void TestElementProperties::testInputsVectorReference()
 {
     // Create an AND gate with 3 inputs
-    And andGate;
+    Element andGate{ElementType::And};
     andGate.setInputSize(3);
 
     // Get inputs vector reference
@@ -552,7 +550,7 @@ void TestElementProperties::testInputsVectorReference()
 void TestElementProperties::testOutputsVectorReference()
 {
     // Create an AND gate (1 output by default)
-    And andGate;
+    Element andGate{ElementType::And};
 
     // Get outputs vector reference
     const auto &outputs = andGate.outputs();
@@ -570,7 +568,7 @@ void TestElementProperties::testOutputsVectorReference()
 void TestElementProperties::testPortCountAfterSizeChange()
 {
     // Create an AND gate with default 2 inputs
-    And andGate;
+    Element andGate{ElementType::And};
     QCOMPARE(andGate.inputSize(), 2);
 
     // Change to 5 inputs
@@ -595,13 +593,13 @@ void TestElementProperties::testPortCountAfterSizeChange()
 void TestElementProperties::testPortListIntegrity()
 {
     // Create multiple elements with different port counts
-    And andGate;
+    Element andGate{ElementType::And};
     andGate.setInputSize(4);
 
-    Or orGate;
+    Element orGate{ElementType::Or};
     orGate.setInputSize(3);
 
-    Not notGate;  // Fixed 1 input, 1 output
+    Element notGate{ElementType::Not};  // Fixed 1 input, 1 output
 
     // Verify AND gate integrity
     for (int i = 0; i < 4; ++i) {
@@ -637,7 +635,7 @@ void TestElementProperties::testWirelessModeProperty()
     QVERIFY(node.hasWirelessMode());
     QCOMPARE(node.wirelessMode(), WirelessMode::None);
 
-    And andGate;
+    Element andGate{ElementType::And};
     QVERIFY(!andGate.hasWirelessMode());
 
     // Tx and Rx transitions on a Node

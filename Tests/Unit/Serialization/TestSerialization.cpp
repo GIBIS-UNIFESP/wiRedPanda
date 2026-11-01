@@ -20,12 +20,9 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -340,8 +337,8 @@ void TestSerialization::testComplexCircuitSaveLoad()
     CircuitBuilder builder(workspace1.scene());
 
     InputSwitch sw1, sw2, sw3;
-    And and1, and2;
-    Or orGate;
+    Element and1{ElementType::And}, and2{ElementType::And};
+    Element orGate{ElementType::Or};
     Led led1, led2;
 
     builder.add(&sw1, &sw2, &sw3, &and1, &and2, &orGate, &led1, &led2);

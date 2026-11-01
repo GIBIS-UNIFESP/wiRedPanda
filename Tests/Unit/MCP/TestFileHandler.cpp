@@ -15,7 +15,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
@@ -32,7 +32,7 @@ namespace {
 
 void addAndGate(Scene *scene)
 {
-    scene->receiveCommand(new AddItemsCommand({new And()}, scene));
+    scene->receiveCommand(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
 }
 
 } // namespace

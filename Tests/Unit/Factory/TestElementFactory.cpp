@@ -22,6 +22,7 @@
 #include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Scene/Scene.h"
+#include "App/Simulation/KernelLogic.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -437,6 +438,36 @@ void TestElementFactory::testEachTypeNamesItsKernel()
     // A type whose elements have outputs computes them, an IC through its definition; one without computes nothing
     const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
     QCOMPARE(descriptor.kernel != KernelKind::None, (element->outputSize() > 0) || (type == ElementType::IC));
+}
+
+void TestElementFactory::testEachKernelIsComputedByItsLogicOrDrivesItself()
+{
+    // A kind updateLogic() computes has its logic (KernelLogic), or, until its family's subclass goes (P3.23), a
+    // subclass that computes it; a source drives its outputs itself, by its rule, with no logic: a constant by its
+    // outputs' defaults, each a level, an input by its source level (testEachTypeNamesItsKernel), a clock by its phase.
+    // None and Instance have no logic: a decoration or an output computes nothing, an IC its definition.
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if (!ElementTypeDescriptor::has(type)) {
+            continue;
+        }
+        const char *key = metaEnum.key(i);
+        const KernelKind kind = ElementTypeDescriptor::of(type).kernel;
+        const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
+        const bool ownClass = (element->metaObject() != &Element::staticMetaObject);
+
+        if (KernelLogic::isSource(kind) || (kind == KernelKind::None) || (kind == KernelKind::Instance)) {
+            QVERIFY2(!KernelLogic::of(kind), key);
+        } else {
+            QVERIFY2(KernelLogic::of(kind) || ownClass, key);
+        }
+        if (kind == KernelKind::Constant) {
+            for (const auto *port : element->outputs()) {
+                QVERIFY2((port->defaultValue() == Status::Active) || (port->defaultValue() == Status::Inactive), key);
+            }
+        }
+    }
 }
 
 void TestElementFactory::testAnOlderFilesPositionsReadAsTheSlotsTheyNamed_data()

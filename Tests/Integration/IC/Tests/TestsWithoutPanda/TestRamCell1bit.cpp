@@ -3,7 +3,6 @@
 
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestRamCell1bit.h"
 
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -19,7 +18,7 @@ using TestUtils::clockCycle;
 struct RamCellFixture {
     WorkSpace ws;
     InputSwitch dataIn, writeEnable, clock;
-    And writeControlGate;
+    Element writeControlGate{ElementType::And};
     Mux cellDataMux;
     DFlipFlop storage;
     Led dataOut;

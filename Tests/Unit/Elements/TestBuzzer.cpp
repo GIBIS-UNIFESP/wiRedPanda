@@ -12,8 +12,6 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Buzzer.h"
-#include "App/Element/GraphicElements/InputGND.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"

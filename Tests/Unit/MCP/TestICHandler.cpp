@@ -15,7 +15,7 @@
 
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
@@ -660,7 +660,7 @@ void TestICHandler::testHandleEmbedIcRejectsNonIcElement()
 {
     MainWindow window;
     Scene *scene = window.currentTab()->scene();
-    auto *elm = new And();
+    auto *elm = ElementFactory::buildElement(ElementType::And);
     scene->addItem(elm);
 
     ICHandler handler(&window, nullptr);

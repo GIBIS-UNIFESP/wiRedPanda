@@ -8,7 +8,7 @@
 #include <QVector>
 
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
@@ -266,7 +266,7 @@ void TestElementTabNavigator::testTabRevertsToOriginalElementWhenNoOtherFieldIsE
     makeViewLargeEnoughToShowEverything(workspace);
     auto *scene = workspace.scene();
     auto *inputSwitch = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     inputSwitch->setPos(0, 0);
     andGate->setPos(200, 0);
     scene->addItem(inputSwitch);

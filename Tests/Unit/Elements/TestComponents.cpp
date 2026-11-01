@@ -6,8 +6,6 @@
 #include <QFile>
 
 #include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputGND.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
@@ -27,7 +25,7 @@ void TestComponents::testNode()
 
 void TestComponents::testVCC()
 {
-    InputVcc vcc;
+    Element vcc{ElementType::InputVcc};
     QCOMPARE(vcc.outputSize(), 1);
     QCOMPARE(vcc.inputSize(), 0);
     QCOMPARE(vcc.outputPort()->status(), Status::Active);
@@ -35,7 +33,7 @@ void TestComponents::testVCC()
 
 void TestComponents::testGND()
 {
-    InputGnd gnd;
+    Element gnd{ElementType::InputGnd};
     QCOMPARE(gnd.outputSize(), 1);
     QCOMPARE(gnd.inputSize(), 0);
     QCOMPARE(gnd.outputPort()->status(), Status::Inactive);

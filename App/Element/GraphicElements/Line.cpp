@@ -1,11 +1,13 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Line.h"
-
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 
+// Line is a purely decorative element: 0 inputs and 0 outputs mean it has no
+// simulation role. It exists so users can draw visual separators and annotation
+// lines on the canvas.
 template<>
 struct ElementInfo<ElementType::Line> {
     static constexpr ElementConstraints constraints{
@@ -31,15 +33,7 @@ struct ElementInfo<ElementType::Line> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Line(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-// Line is a purely decorative element: 0 inputs and 0 outputs mean it has no
-// simulation role. It exists so users can draw visual separators and annotation
-// lines on the canvas.
-Line::Line(QGraphicsItem *parent)
-    : Element(ElementType::Line, parent)
-{
-}

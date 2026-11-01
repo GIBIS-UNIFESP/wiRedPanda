@@ -25,7 +25,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"

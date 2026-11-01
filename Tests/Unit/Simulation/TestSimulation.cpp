@@ -14,7 +14,6 @@
 #include "App/Core/SimulationHost.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -122,7 +121,7 @@ void TestSimulationUnit::testElementRemovalMidSimulation()
     auto *sim = scene->simulation();
 
     auto *sw = new InputSwitch();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = new Led();
     scene->addItem(sw);
     scene->addItem(andGate);
@@ -529,7 +528,8 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
     QCOMPARE(led->inputPort(0)->status(), Status::Active);
 
     // A structural edit elsewhere rebuilds the simulation, with no edge: the flip-flop keeps its Q.
-    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{new And()}, scene));
+    auto *gate = ElementFactory::buildElement(ElementType::And);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate}, scene));
     sim->update();
     QCOMPARE(led->inputPort(0)->status(), Status::Active);
 

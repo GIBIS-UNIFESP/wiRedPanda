@@ -28,6 +28,7 @@
 #include "App/Element/ElementSimState.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/LabelMeasure.h"
+#include "App/Element/PortAttributes.h"
 
 struct SerializationContext;
 struct SerializationOptions;
@@ -110,26 +111,13 @@ public:
      */
     void updatePortsProperties();
 
-    /// The attributes of one port that its element sets. An unset field is left as the port has it, so an element that
-    /// sets the requirement or the default elsewhere (a wireless node, say) keeps doing so.
-    struct PortAttributes {
-        /// A name derived each time it is asked for, so a translated name follows the language, given with the same
-        /// name in the source language. Built by describedPort().
-        struct DerivedName {
-            std::function<QString()> name;
-            QString source;
-        };
-
-        std::optional<QString> name = std::nullopt; ///< An explicit name, its own source.
-        std::optional<DerivedName> derivedName = std::nullopt; ///< Takes the place of \c name.
-        std::optional<bool> required = std::nullopt;
-        std::optional<Status> defaultStatus = std::nullopt;
-        std::optional<QPointF> position = std::nullopt; ///< Where the port sits; unset, the port is placed in its column.
-    };
+    /// The attributes of one port that its element sets (PortAttributes).
+    using PortAttributes = ::PortAttributes;
 
     /**
      * \brief Returns the attributes of input port \a index, or nothing when the port keeps its own.
-     * \details The base layoutPorts() applies the attributes it returns; the base class returns nothing.
+     * \details The base layoutPorts() applies the attributes it returns; the base class returns its type's
+     * (ElementTypeDescriptor::inputAttributes), or nothing.
      */
     virtual std::optional<PortAttributes> inputAttributes(int index) const;
 
@@ -493,7 +481,7 @@ public:
 
     /**
      * \brief Computes this element's output values from its current inputs.
-     * \details Override in subclasses to implement element-specific logic.
+     * \details Runs the logic of its type's kernel (KernelLogic); the subclasses still left override it.
      */
     virtual void updateLogic();
 
@@ -626,6 +614,39 @@ public:
 
     /// Read-only view of the current simulation output values.
     const QVector<Status> &simOutputs() const { return m_sim.outputs(); }
+
+    // --- Direct Simulation Helpers (the kernels' logic, KernelLogic) ---
+
+    /**
+     * \brief Snapshots each predecessor's output into the simulation input cache.
+     *
+     * If any predecessor output is Unknown or Error, all outputs are set to
+     * Unknown and the method returns \c false so that sequential elements
+     * (flip-flops, latches) can skip computation with incomplete data.
+     * Unconnected inputs (null predecessor) use the corresponding port's
+     * defaultStatus(), replacing the old global GND/VCC approach.
+     *
+     * \return \c true if all inputs are Active or Inactive (simulation can proceed).
+     */
+    bool simUpdateInputs() { return m_sim.updateInputs(false, m_ports.inputs()); }
+
+    /**
+     * \brief Like simUpdateInputs(), but allows Unknown/Error values through.
+     * \details Combinational gates use this so their domination rules
+     * (e.g. AND(0, X) = 0) can short-circuit even with unknown inputs.
+     * Only a truly unconnected input (null predecessor whose port default
+     * is Unknown) triggers an early all-outputs-Unknown return.
+     */
+    bool simUpdateInputsAllowUnknown() { return m_sim.updateInputs(true, m_ports.inputs()); }
+
+    /**
+     * \brief Decodes \a count select-line statuses from simInputs() into a binary index.
+     * \param offset  Index of the first select-line input in simInputs().
+     * \param count   Number of select lines to read.
+     * \return An integer where bit i is 1 if simInputs()[offset+i] == Active.
+     * \details Used by Mux and Demux to convert select-line signals into a data-port index.
+     */
+    int decodeSelectValue(int offset, int count) const { return m_sim.decodeSelectValue(offset, count); }
 
     // --- Theme ---
 
@@ -770,39 +791,6 @@ protected:
     ElementAppearance m_appearance{this};
 
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
-
-    // --- Direct Simulation Helpers ---
-
-    /**
-     * \brief Snapshots each predecessor's output into the simulation input cache.
-     *
-     * If any predecessor output is Unknown or Error, all outputs are set to
-     * Unknown and the method returns \c false so that sequential elements
-     * (flip-flops, latches) can skip computation with incomplete data.
-     * Unconnected inputs (null predecessor) use the corresponding port's
-     * defaultStatus(), replacing the old global GND/VCC approach.
-     *
-     * \return \c true if all inputs are Active or Inactive (simulation can proceed).
-     */
-    bool simUpdateInputs() { return m_sim.updateInputs(false, m_ports.inputs()); }
-
-    /**
-     * \brief Like simUpdateInputs(), but allows Unknown/Error values through.
-     * \details Combinational gates use this so their domination rules
-     * (e.g. AND(0, X) = 0) can short-circuit even with unknown inputs.
-     * Only a truly unconnected input (null predecessor whose port default
-     * is Unknown) triggers an early all-outputs-Unknown return.
-     */
-    bool simUpdateInputsAllowUnknown() { return m_sim.updateInputs(true, m_ports.inputs()); }
-
-    /**
-     * \brief Decodes \a count select-line statuses from simInputs() into a binary index.
-     * \param offset  Index of the first select-line input in simInputs().
-     * \param count   Number of select lines to read.
-     * \return An integer where bit i is 1 if simInputs()[offset+i] == Active.
-     * \details Used by Mux and Demux to convert select-line signals into a data-port index.
-     */
-    int decodeSelectValue(int offset, int count) const { return m_sim.decodeSelectValue(offset, count); }
 
 private:
     Q_DISABLE_COPY_MOVE(Element)

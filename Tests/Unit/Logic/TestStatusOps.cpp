@@ -6,24 +6,16 @@
 #include <QTest>
 
 #include "App/Core/StatusOps.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/DLatch.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Mux.h"
-#include "App/Element/GraphicElements/Nand.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Nor.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
 #include "App/Element/GraphicElements/SRFlipFlop.h"
 #include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/Element/GraphicElements/TruthTable.h"
-#include "App/Element/GraphicElements/Xnor.h"
-#include "App/Element/GraphicElements/Xor.h"
 #include "Tests/Common/TestUtils.h"
 
 using S = Status;
@@ -256,7 +248,7 @@ void TestStatusOps::testStatusXorAll()
 
 void TestStatusOps::testAndGateUnknownDomination()
 {
-    And gate; InputVcc in0, in1;
+    Element gate{ElementType::And}; Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -288,7 +280,7 @@ void TestStatusOps::testAndGateUnknownDomination()
 
 void TestStatusOps::testOrGateUnknownDomination()
 {
-    Or gate; InputVcc in0, in1;
+    Element gate{ElementType::Or}; Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -320,7 +312,7 @@ void TestStatusOps::testOrGateUnknownDomination()
 
 void TestStatusOps::testNotGateUnknownPassthrough()
 {
-    Not gate; InputVcc in0;
+    Element gate{ElementType::Not}; Element in0{ElementType::InputVcc};
     initElm(gate); initSrc(in0);
     gate.connectPredecessor(0, &in0, 0);
 
@@ -344,7 +336,7 @@ void TestStatusOps::testNotGateUnknownPassthrough()
 
 void TestStatusOps::testNandGateUnknownDomination()
 {
-    Nand gate; InputVcc in0, in1;
+    Element gate{ElementType::Nand}; Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -370,7 +362,7 @@ void TestStatusOps::testNandGateUnknownDomination()
 
 void TestStatusOps::testNorGateUnknownDomination()
 {
-    Nor gate; InputVcc in0, in1;
+    Element gate{ElementType::Nor}; Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -396,7 +388,7 @@ void TestStatusOps::testNorGateUnknownDomination()
 
 void TestStatusOps::testXorGateUnknownPropagation()
 {
-    Xor gate; InputVcc in0, in1;
+    Element gate{ElementType::Xor}; Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -421,7 +413,7 @@ void TestStatusOps::testXorGateUnknownPropagation()
 
 void TestStatusOps::testXnorGateUnknownPropagation()
 {
-    Xnor gate; InputVcc in0, in1;
+    Element gate{ElementType::Xnor}; Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -447,9 +439,9 @@ void TestStatusOps::testXnorGateUnknownPropagation()
 void TestStatusOps::testErrorPropagationThroughChain()
 {
     // Chain: Source → NOT → AND → output
-    InputVcc src, other;
-    Not notGate;
-    And andGate;
+    Element src{ElementType::InputVcc}, other{ElementType::InputVcc};
+    Element notGate{ElementType::Not};
+    Element andGate{ElementType::And};
     initSrc(src); initSrc(other);
     initElm(notGate); initElm(andGate);
 
@@ -475,7 +467,7 @@ void TestStatusOps::testErrorPropagationThroughChain()
 void TestStatusOps::testMuxUnknownSelectLine()
 {
     Mux mux;  // Default 3 inputs: data0, data1, select
-    InputVcc data0, data1, sel;
+    Element data0{ElementType::InputVcc}, data1{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(mux); initSrc(data0); initSrc(data1); initSrc(sel);
     mux.connectPredecessor(0, &data0, 0);
     mux.connectPredecessor(1, &data1, 0);
@@ -502,7 +494,7 @@ void TestStatusOps::testMuxUnknownSelectLine()
 void TestStatusOps::testDemuxUnknownSelectLine()
 {
     Demux demux;  // Default 2 outputs: out0, out1
-    InputVcc data, sel;
+    Element data{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(demux); initSrc(data); initSrc(sel);
     demux.connectPredecessor(0, &data, 0);
     demux.connectPredecessor(1, &sel, 0);
@@ -530,7 +522,7 @@ void TestStatusOps::testDemuxUnknownSelectLine()
 void TestStatusOps::testMuxUnknownDataInput()
 {
     Mux mux;
-    InputVcc data0, data1, sel;
+    Element data0{ElementType::InputVcc}, data1{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(mux); initSrc(data0); initSrc(data1); initSrc(sel);
     mux.connectPredecessor(0, &data0, 0);
     mux.connectPredecessor(1, &data1, 0);
@@ -558,7 +550,7 @@ void TestStatusOps::testMuxUnknownDataInput()
 void TestStatusOps::testDemuxUnknownDataInput()
 {
     Demux demux;
-    InputVcc data, sel;
+    Element data{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(demux); initSrc(data); initSrc(sel);
     demux.connectPredecessor(0, &data, 0);
     demux.connectPredecessor(1, &sel, 0);
@@ -587,7 +579,7 @@ void TestStatusOps::testTruthTableUnknownInput()
     QBitArray key(256, false);
     key.setBit(3);  // Row 11 (both inputs Active) → output Active
     tt.setkey(key);
-    InputVcc in0, in1;
+    Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(tt); initSrc(in0); initSrc(in1);
     tt.connectPredecessor(0, &in0, 0);
     tt.connectPredecessor(1, &in1, 0);
@@ -611,7 +603,7 @@ void TestStatusOps::testTruthTableUnknownInput()
 
 void TestStatusOps::testNodePassesUnknownAndError()
 {
-    Node node; InputVcc src;
+    Node node; Element src{ElementType::InputVcc};
     initElm(node); initSrc(src);
     node.connectPredecessor(0, &src, 0);
 
@@ -630,9 +622,9 @@ void TestStatusOps::testNodePassesUnknownAndError()
 
 void TestStatusOps::test3InputAndWithUnknown()
 {
-    And gate;
+    Element gate{ElementType::And};
     gate.setInputSize(3);
-    InputVcc in0, in1, in2;
+    Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc}, in2{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1); initSrc(in2);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -663,9 +655,9 @@ void TestStatusOps::test3InputAndWithUnknown()
 
 void TestStatusOps::test3InputOrWithUnknown()
 {
-    Or gate;
+    Element gate{ElementType::Or};
     gate.setInputSize(3);
-    InputVcc in0, in1, in2;
+    Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc}, in2{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1); initSrc(in2);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -700,7 +692,11 @@ void TestStatusOps::test3InputOrWithUnknown()
 
 void TestStatusOps::testDFlipFlopUnknownInputHolds()
 {
-    DFlipFlop dff; InputVcc d, clk, prst, clr;
+    DFlipFlop dff;
+    Element d{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(dff); initSrc(d); initSrc(clk); initSrc(prst); initSrc(clr);
     dff.connectPredecessor(0, &d, 0);
     dff.connectPredecessor(1, &clk, 0);
@@ -726,7 +722,11 @@ void TestStatusOps::testDFlipFlopUnknownClockNoEdge()
     // Drive the clock directly from Unknown to Active (skipping Inactive) and confirm D is NOT
     // spuriously latched -- a buggy implementation that failed to reset m_simLastClk would
     // incorrectly treat this as a rising edge and resolve Q to D's value.
-    DFlipFlop dff; InputVcc d, clk, prst, clr;
+    DFlipFlop dff;
+    Element d{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(dff); initSrc(d); initSrc(clk); initSrc(prst); initSrc(clr);
     dff.connectPredecessor(0, &d, 0);
     dff.connectPredecessor(1, &clk, 0);
@@ -767,7 +767,12 @@ void TestStatusOps::testDFlipFlopUnknownClockNoEdge()
 
 void TestStatusOps::testJKFlipFlopUnknownPresetClearNoTrigger()
 {
-    JKFlipFlop jkff; InputVcc j, clk, k, prst, clr;
+    JKFlipFlop jkff;
+    Element j{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element k{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(jkff); initSrc(j); initSrc(clk); initSrc(k);
     initSrc(prst); initSrc(clr);
     jkff.connectPredecessor(0, &j, 0);
@@ -807,7 +812,11 @@ void TestStatusOps::testJKFlipFlopUnknownPresetClearNoTrigger()
 
 void TestStatusOps::testTFlipFlopUnknownInput()
 {
-    TFlipFlop tff; InputVcc t, clk, prst, clr;
+    TFlipFlop tff;
+    Element t{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(tff); initSrc(t); initSrc(clk); initSrc(prst); initSrc(clr);
     tff.connectPredecessor(0, &t, 0);
     tff.connectPredecessor(1, &clk, 0);
@@ -838,7 +847,12 @@ void TestStatusOps::testTFlipFlopUnknownInput()
 
 void TestStatusOps::testSRFlipFlopUnknownPresetClear()
 {
-    SRFlipFlop srff; InputVcc s, clk, r, prst, clr;
+    SRFlipFlop srff;
+    Element s{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element r{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(srff); initSrc(s); initSrc(clk); initSrc(r);
     initSrc(prst); initSrc(clr);
     srff.connectPredecessor(0, &s, 0);
@@ -873,7 +887,7 @@ void TestStatusOps::testSRFlipFlopUnknownPresetClear()
 
 void TestStatusOps::testDLatchUnknownInput()
 {
-    DLatch latch; InputVcc d, en;
+    DLatch latch; Element d{ElementType::InputVcc}, en{ElementType::InputVcc};
     initElm(latch); initSrc(d); initSrc(en);
     latch.connectPredecessor(0, &d, 0);
     latch.connectPredecessor(1, &en, 0);
@@ -900,7 +914,7 @@ void TestStatusOps::testDLatchUnknownInput()
 
 void TestStatusOps::testSRLatchUnknownInput()
 {
-    SRLatch latch; InputVcc s, r;
+    SRLatch latch; Element s{ElementType::InputVcc}, r{ElementType::InputVcc};
     initElm(latch); initSrc(s); initSrc(r);
     latch.connectPredecessor(0, &s, 0);
     latch.connectPredecessor(1, &r, 0);
@@ -926,7 +940,11 @@ void TestStatusOps::testSRLatchUnknownInput()
 
 void TestStatusOps::testUpdateInputsBlocksUnknown()
 {
-    DFlipFlop dff; InputVcc d, clk, prst, clr;
+    DFlipFlop dff;
+    Element d{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(dff); initSrc(d); initSrc(clk); initSrc(prst); initSrc(clr);
     dff.connectPredecessor(0, &d, 0);
     dff.connectPredecessor(1, &clk, 0);
@@ -945,7 +963,11 @@ void TestStatusOps::testUpdateInputsBlocksUnknown()
 
 void TestStatusOps::testUpdateInputsBlocksError()
 {
-    DFlipFlop dff; InputVcc d, clk, prst, clr;
+    DFlipFlop dff;
+    Element d{ElementType::InputVcc};
+    Element clk{ElementType::InputVcc};
+    Element prst{ElementType::InputVcc};
+    Element clr{ElementType::InputVcc};
     initElm(dff); initSrc(d); initSrc(clk); initSrc(prst); initSrc(clr);
     dff.connectPredecessor(0, &d, 0);
     dff.connectPredecessor(1, &clk, 0);
@@ -964,7 +986,7 @@ void TestStatusOps::testUpdateInputsBlocksError()
 
 void TestStatusOps::testUpdateInputsAllowUnknownPassesThrough()
 {
-    And gate; InputVcc in0, in1;
+    Element gate{ElementType::And}; Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(gate); initSrc(in0); initSrc(in1);
     gate.connectPredecessor(0, &in0, 0);
     gate.connectPredecessor(1, &in1, 0);
@@ -978,7 +1000,7 @@ void TestStatusOps::testUpdateInputsAllowUnknownPassesThrough()
 
 void TestStatusOps::testUpdateInputsAllowUnknownBlocksNullPredecessor()
 {
-    And gate; InputVcc in0;
+    Element gate{ElementType::And}; Element in0{ElementType::InputVcc};
     initElm(gate); initSrc(in0);
     gate.connectPredecessor(0, &in0, 0);
     // Input 1 left unconnected (null predecessor)

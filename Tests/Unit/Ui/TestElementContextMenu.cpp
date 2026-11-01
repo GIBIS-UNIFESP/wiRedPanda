@@ -10,7 +10,6 @@
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
@@ -19,7 +18,6 @@
 #include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
-#include "App/Element/GraphicElements/Not.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
@@ -123,7 +121,7 @@ void TestElementContextMenu::testRotateRightAction()
     // covered by testRotateLeftAndRightActionsPushCommands() below.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
     const int initialRotation = static_cast<int>(andGate->rotation());
 
@@ -140,7 +138,7 @@ void TestElementContextMenu::testRotateRightAction()
 void TestElementContextMenu::testMorphMenuAction()
 {
     WorkSpace workspace;
-    And andGate;
+    Element andGate{ElementType::And};
     workspace.scene()->addItem(&andGate);
 
     SelectionCapabilities caps = computeCapabilities({&andGate});
@@ -156,7 +154,7 @@ void TestElementContextMenu::testICSubcircuitAction()
     QVERIFY(!computeCapabilities({}).hasElements);
 
     WorkSpace workspace;
-    And andGate;
+    Element andGate{ElementType::And};
     workspace.scene()->addItem(&andGate);
     const SelectionCapabilities nonIcCaps = computeCapabilities({&andGate});
     QVERIFY(!nonIcCaps.isEmbedded);
@@ -180,7 +178,7 @@ void TestElementContextMenu::testDismissWithoutChoosingIsNoOp()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     andGate->setSelected(true);
 
@@ -208,7 +206,7 @@ void TestElementContextMenu::testRotateLeftAndRightActionsPushCommands()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     andGate->setSelected(true);
     const int initialRotation = static_cast<int>(andGate->rotation());
@@ -238,7 +236,7 @@ void TestElementContextMenu::testFlipHorizontalAndVerticalActionsPushCommands()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     andGate->setSelected(true);
 
@@ -303,7 +301,7 @@ void TestElementContextMenu::testCopyCutDeleteActionsDelegateToScene()
     auto *colorCombo = makeColorCombo(&parent);
 
     // Copy: the scene's selection is serialized onto the real clipboard.
-    auto *copySubject = new And();
+    auto *copySubject = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({copySubject}, scene));
     copySubject->setSelected(true);
     {
@@ -318,7 +316,7 @@ void TestElementContextMenu::testCopyCutDeleteActionsDelegateToScene()
 
     // Cut: the element leaves the scene (undoable removal).
     scene->clearSelection();
-    auto *cutSubject = new And();
+    auto *cutSubject = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({cutSubject}, scene));
     scene->clearSelection();
     cutSubject->setSelected(true);
@@ -335,7 +333,7 @@ void TestElementContextMenu::testCopyCutDeleteActionsDelegateToScene()
 
     // Delete: same real removal, via the dedicated Delete action.
     scene->clearSelection();
-    auto *deleteSubject = new And();
+    auto *deleteSubject = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({deleteSubject}, scene));
     scene->clearSelection();
     deleteSubject->setSelected(true);
@@ -387,7 +385,7 @@ void TestElementContextMenu::testMorphSubmenuGateSingleInput()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *notGate = new Not();
+    auto *notGate = ElementFactory::buildElement(ElementType::Not);
     scene->receiveCommand(new AddItemsCommand({notGate}, scene));
     notGate->setSelected(true);
 
@@ -403,7 +401,7 @@ void TestElementContextMenu::testMorphSubmenuGateMultiInputExcludesSameType()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     andGate->setSelected(true);
 
@@ -552,7 +550,7 @@ void TestElementContextMenu::testMorphActionDispatchesMorphCommand()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     andGate->setSelected(true);
 
@@ -578,7 +576,7 @@ void TestElementContextMenu::testUnknownMenuOptionChangesNothing()
 #endif
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *andGate = new And();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->receiveCommand(new AddItemsCommand({andGate}, scene));
     andGate->setSelected(true);
 

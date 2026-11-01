@@ -6,16 +6,11 @@
 #include <QFile>
 #include <QFileInfo>
 
-#include "App/Element/GraphicElements/And.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
-#include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
-#include "App/Element/GraphicElements/Not.h"
-#include "App/Element/GraphicElements/Or.h"
-#include "App/Element/GraphicElements/Xor.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
@@ -252,17 +247,17 @@ inline std::unique_ptr<WorkSpace> buildBranchCondition(InputSwitch* decoderJMP,
     CircuitBuilder builder(workspace->scene());
 
     // Flag inversion
-    Not *notZero = new Not();
-    Not *notNegative = new Not();
+    Element *notZero = ElementFactory::buildElement(ElementType::Not);
+    Element *notNegative = ElementFactory::buildElement(ElementType::Not);
 
     // Branch enable ANDs (condition evaluation)
-    And *beqEnable = new And();   // BEQ: decoder[9] AND zeroFlag
-    And *bneEnable = new And();   // BNE: decoder[10] AND NOT zeroFlag
-    And *bltEnable = new And();   // BLT: decoder[11] AND negativeFlag
-    And *bgeEnable = new And();   // BGE: decoder[12] AND NOT negativeFlag
+    Element *beqEnable = ElementFactory::buildElement(ElementType::And);   // BEQ: decoder[9] AND zeroFlag
+    Element *bneEnable = ElementFactory::buildElement(ElementType::And);   // BNE: decoder[10] AND NOT zeroFlag
+    Element *bltEnable = ElementFactory::buildElement(ElementType::And);   // BLT: decoder[11] AND negativeFlag
+    Element *bgeEnable = ElementFactory::buildElement(ElementType::And);   // BGE: decoder[12] AND NOT negativeFlag
 
     // Final OR to combine all branch enables
-    Or *branchOR = new Or();
+    Element *branchOR = ElementFactory::buildElement(ElementType::Or);
     branchOR->setInputSize(5);    // JMP + BEQ + BNE + BLT + BGE
 
     // Add all elements
@@ -326,14 +321,14 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
     CircuitBuilder builder(workspace->scene());
 
     // Create operation circuits for each bit
-    QVector<And *> andGates;
-    QVector<Or *> orGates;
-    QVector<Xor *> xorGates;
+    QVector<Element *> andGates;
+    QVector<Element *> orGates;
+    QVector<Element *> xorGates;
     QVector<Mux *> resultMuxes;
     for (int i = 0; i < 8; i++) {
-        andGates.append(new And());
-        orGates.append(new Or());
-        xorGates.append(new Xor());
+        andGates.append(ElementFactory::buildElement(ElementType::And));
+        orGates.append(ElementFactory::buildElement(ElementType::Or));
+        xorGates.append(ElementFactory::buildElement(ElementType::Xor));
         resultMuxes.append(new Mux());
     }
 
@@ -342,26 +337,26 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
     //              carry_out = (A AND B) OR ((A XOR B) AND carry_in)
     // Support for subtraction: SUB = ADD with inverted B (2's complement)
 
-    QVector<Not *> notB;          // NOT(B) for subtraction
+    QVector<Element *> notB;          // NOT(B) for subtraction
     QVector<Mux *> bMux;          // Select between B and NOT(B)
-    QVector<Xor *> adderXor;      // A XOR (B or NOT B) for sum generation
-    QVector<And *> adderAnd1;     // A AND (B or NOT B) for carry generation
-    QVector<Xor *> adderXor2;     // (A XOR B) for carry with cin
-    QVector<And *> adderAnd2;     // (A XOR B) AND carry_in
-    QVector<Or *> adderCarryOr;   // Carry output: (A AND B) OR ((A XOR B) AND carry_in)
-    QVector<Xor *> adderSum;      // Final sum: (A XOR B) XOR carry_in
-    QVector<Or *> carryChain;     // Carry propagation
+    QVector<Element *> adderXor;      // A XOR (B or NOT B) for sum generation
+    QVector<Element *> adderAnd1;     // A AND (B or NOT B) for carry generation
+    QVector<Element *> adderXor2;     // (A XOR B) for carry with cin
+    QVector<Element *> adderAnd2;     // (A XOR B) AND carry_in
+    QVector<Element *> adderCarryOr;   // Carry output: (A AND B) OR ((A XOR B) AND carry_in)
+    QVector<Element *> adderSum;      // Final sum: (A XOR B) XOR carry_in
+    QVector<Element *> carryChain;     // Carry propagation
 
     for (int i = 0; i < 8; i++) {
-        notB.append(new Not());
+        notB.append(ElementFactory::buildElement(ElementType::Not));
         bMux.append(new Mux());
-        adderXor.append(new Xor());
-        adderAnd1.append(new And());
-        adderXor2.append(new Xor());
-        adderAnd2.append(new And());
-        adderCarryOr.append(new Or());
-        adderSum.append(new Xor());
-        carryChain.append(new Or());  // For multi-bit carries
+        adderXor.append(ElementFactory::buildElement(ElementType::Xor));
+        adderAnd1.append(ElementFactory::buildElement(ElementType::And));
+        adderXor2.append(ElementFactory::buildElement(ElementType::Xor));
+        adderAnd2.append(ElementFactory::buildElement(ElementType::And));
+        adderCarryOr.append(ElementFactory::buildElement(ElementType::Or));
+        adderSum.append(ElementFactory::buildElement(ElementType::Xor));
+        carryChain.append(ElementFactory::buildElement(ElementType::Or));  // For multi-bit carries
     }
 
     // Add all elements to workspace
@@ -538,9 +533,14 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
     // Overflow flag: carry-out XOR carry into MSB (simplified to carry-out)
 
     // Zero flag: OR tree (4 → 2 → 1) then NOT
-    Or *zOr0 = new Or(); Or *zOr1 = new Or(); Or *zOr2 = new Or(); Or *zOr3 = new Or();
-    Or *zOr4 = new Or(); Or *zOr5 = new Or(); Or *zOr6 = new Or();
-    Not *zNot = new Not();
+    Element *zOr0 = ElementFactory::buildElement(ElementType::Or);
+    Element *zOr1 = ElementFactory::buildElement(ElementType::Or);
+    Element *zOr2 = ElementFactory::buildElement(ElementType::Or);
+    Element *zOr3 = ElementFactory::buildElement(ElementType::Or);
+    Element *zOr4 = ElementFactory::buildElement(ElementType::Or);
+    Element *zOr5 = ElementFactory::buildElement(ElementType::Or);
+    Element *zOr6 = ElementFactory::buildElement(ElementType::Or);
+    Element *zNot = ElementFactory::buildElement(ElementType::Not);
     builder.add(zOr0, zOr1, zOr2, zOr3, zOr4, zOr5, zOr6, zNot);
 
     // Level 1: pair up bits 0-7
@@ -575,7 +575,7 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
     builder.connect(adderCarryOr[7], 0, carryFlag, 0);
 
     // Overflow flag: signed overflow = carry_into_MSB XOR carry_out_of_MSB
-    Xor *overflowXor = new Xor();
+    Element *overflowXor = ElementFactory::buildElement(ElementType::Xor);
     builder.add(overflowXor);
     builder.connect(adderCarryOr[6], 0, overflowXor, 0);  // carry into bit 7
     builder.connect(adderCarryOr[7], 0, overflowXor, 1);  // carry out of bit 7
@@ -610,14 +610,14 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
 
     // State increment logic: need XOR/AND gates for ripple-carry increment
     // State goes 0→1→2→3→4→0 (wraps after 4 transitions)
-    QVector<Xor *> incrementXor;  // For next state computation
-    QVector<And *> carryAnd;
+    QVector<Element *> incrementXor;  // For next state computation
+    QVector<Element *> carryAnd;
 
     for (int i = 0; i < 3; i++) {
         stateReg.append(new DFlipFlop());
         stateMuxes.append(new Mux());
-        incrementXor.append(new Xor());
-        carryAnd.append(new And());
+        incrementXor.append(ElementFactory::buildElement(ElementType::Xor));
+        carryAnd.append(ElementFactory::buildElement(ElementType::And));
     }
 
     // Add all elements
@@ -638,7 +638,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     // Implementation: Use NOT gate for bit 0 (always toggle), then ripple XOR for other bits
 
     // Create NOT gate for bit 0 inversion
-    Not *bitNotZero = new Not();
+    Element *bitNotZero = ElementFactory::buildElement(ElementType::Not);
     builder.add(bitNotZero);
     builder.connect(stateReg[0], 0, bitNotZero, 0);
 
@@ -654,10 +654,11 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
 
     // WRAP-AROUND DETECTION: State should wrap from 4→0, not continue to 5
     // Detect state == 4 (binary 100): bit2=1, bit1=0, bit0=0
-    Not *notBit1 = new Not();
-    Not *notBit0 = new Not();
-    And *detectState4 = new And();  // AND(bit2, NOT(bit1), NOT(bit0))
-    And *gateCarry02 = new And();   // Second stage: AND(bit2_AND_notBit1, notBit0)
+    Element *notBit1 = ElementFactory::buildElement(ElementType::Not);
+    Element *notBit0 = ElementFactory::buildElement(ElementType::Not);
+    Element *detectState4 = ElementFactory::buildElement(ElementType::And);  // AND(bit2, NOT(bit1), NOT(bit0))
+    // Second stage: AND(bit2_AND_notBit1, notBit0)
+    Element *gateCarry02 = ElementFactory::buildElement(ElementType::And);
 
     builder.add(notBit1, notBit0, detectState4, gateCarry02);
     builder.connect(stateReg[1], 0, notBit1, 0);     // NOT(bit1)
@@ -672,10 +673,10 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
 
     // When state==4, force next state to 000 instead of incrementing
     // Create AND gates to gate the incremented values
-    And *gateIncBit0 = new And();  // bit0_inc AND NOT(wrap_enable)
-    And *gateIncBit1 = new And();  // bit1_inc AND NOT(wrap_enable)
-    And *gateIncBit2 = new And();  // bit2_inc AND NOT(wrap_enable)
-    Not *notWrap = new Not();
+    Element *gateIncBit0 = ElementFactory::buildElement(ElementType::And);  // bit0_inc AND NOT(wrap_enable)
+    Element *gateIncBit1 = ElementFactory::buildElement(ElementType::And);  // bit1_inc AND NOT(wrap_enable)
+    Element *gateIncBit2 = ElementFactory::buildElement(ElementType::And);  // bit2_inc AND NOT(wrap_enable)
+    Element *notWrap = ElementFactory::buildElement(ElementType::Not);
 
     builder.add(gateIncBit0, gateIncBit1, gateIncBit2, notWrap);
     builder.connect(gateCarry02, 0, notWrap, 0);   // NOT(wrap_enable)
@@ -695,7 +696,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     //   When reset=0: select port 1 (increment or wrap)
     //   When reset=1: select port 0 (hold Q, which gets overridden by reset D logic)
 
-    Not *resetNot = new Not();
+    Element *resetNot = ElementFactory::buildElement(ElementType::Not);
     builder.add(resetNot);
     builder.connect(reset, 0, resetNot, 0);
 
@@ -704,7 +705,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     // Tie port 0 to GND so reset forces 0 — previously port 0 was the current Q,
     // so reset merely *held* the state and only appeared to work because the
     // register powers up at 0 (it would not clear a non-zero state).
-    InputGnd *stateGnd = new InputGnd();
+    Element *stateGnd = ElementFactory::buildElement(ElementType::InputGnd);
     builder.add(stateGnd);
 
     // Set up muxes
@@ -728,12 +729,12 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     // EXECUTE=010, WRITEBACK=011, HALT=100). The previous version wired each
     // signal to a raw state *bit*, e.g. aluEnable to bit 2 — which is set in HALT
     // (100), not EXECUTE (010) — and pcInc/irLoad/regWrite were likewise wrong.
-    Not *notBit2cs = new Not();
+    Element *notBit2cs = ElementFactory::buildElement(ElementType::Not);
     builder.add(notBit2cs);
     builder.connect(stateReg[2], 0, notBit2cs, 0);
 
     // pcInc and irLoad assert in FETCH (000): NOT(b2) AND NOT(b1) AND NOT(b0).
-    And *detectFetch = new And();
+    Element *detectFetch = ElementFactory::buildElement(ElementType::And);
     detectFetch->setInputSize(3);
     builder.add(detectFetch);
     builder.connect(notBit2cs, 0, detectFetch, 0);
@@ -743,7 +744,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     builder.connect(detectFetch, 0, irLoad, 0);
 
     // aluEnable asserts in EXECUTE (010): NOT(b2) AND b1 AND NOT(b0).
-    And *detectExecuteCs = new And();
+    Element *detectExecuteCs = ElementFactory::buildElement(ElementType::And);
     detectExecuteCs->setInputSize(3);
     builder.add(detectExecuteCs);
     builder.connect(notBit2cs, 0, detectExecuteCs, 0);
@@ -752,7 +753,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     builder.connect(detectExecuteCs, 0, aluEnable, 0);
 
     // regWrite asserts in WRITEBACK (011): NOT(b2) AND b1 AND b0.
-    And *detectWriteback = new And();
+    Element *detectWriteback = ElementFactory::buildElement(ElementType::And);
     detectWriteback->setInputSize(3);
     builder.add(detectWriteback);
     builder.connect(notBit2cs, 0, detectWriteback, 0);
@@ -763,8 +764,8 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     // FlagWrite signal: assert during EXECUTE state (state 2 = 010)
     // EXECUTE = NOT(bit2) AND bit1 AND NOT(bit0)
     if (flagWrite) {
-        Not *notBit2 = new Not();
-        And *detectExecute = new And();
+        Element *notBit2 = ElementFactory::buildElement(ElementType::Not);
+        Element *detectExecute = ElementFactory::buildElement(ElementType::And);
         detectExecute->setInputSize(3);  // 3-input AND gate
 
         builder.add(notBit2, detectExecute);
@@ -871,8 +872,8 @@ inline std::unique_ptr<WorkSpace> buildSingleGatedRegister(InputSwitch* writeDat
     }
 
     // Add gating logic: AND(decoderOut, writeEnable, clock) -> gatedClock
-    And *andGate1 = new And();  // AND(decoderOut, writeEnable)
-    And *andGate2 = new And();  // AND(result, clock)
+    Element *andGate1 = ElementFactory::buildElement(ElementType::And);  // AND(decoderOut, writeEnable)
+    Element *andGate2 = ElementFactory::buildElement(ElementType::And);  // AND(result, clock)
     builder.add(decoderOut, writeEnable, clock, andGate1, andGate2);
 
     // First AND: decoderOut AND writeEnable
@@ -921,7 +922,7 @@ inline std::unique_ptr<WorkSpace> buildFlagRegister(InputSwitch* zeroIn,
     DFlipFlop *negativeFF = new DFlipFlop();
 
     // Clock gating: AND(flagWrite, clock)
-    And *clockGate = new And();
+    Element *clockGate = ElementFactory::buildElement(ElementType::And);
 
     // Add all elements
     builder.add(zeroIn, negativeIn, flagWrite, clock);
@@ -1043,7 +1044,7 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
     }
 
     // Create Vcc and Reset elements for control signals
-    InputVcc *vcc = new InputVcc();
+    Element *vcc = ElementFactory::buildElement(ElementType::InputVcc);
     InputSwitch *reset = new InputSwitch();
     reset->setLabel("Reset");
     builder.add(vcc, reset);
@@ -1159,18 +1160,18 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
 
     // 6-bit address decoder: 64 AND gates with 7 inputs each
     // Input pattern: 6 address bits (direct or inverted) + memWrite
-    QVector<And *> addressDecoders;      // 64 decoder outputs
-    QVector<And *> writeClockGates;      // Clock gating for each address
-    QVector<Not *> notGatesAddr;         // 6 inverted address bits
+    QVector<Element *> addressDecoders;      // 64 decoder outputs
+    QVector<Element *> writeClockGates;      // Clock gating for each address
+    QVector<Element *> notGatesAddr;         // 6 inverted address bits
 
     for (int i = 0; i < 64; i++) {
-        And *decoder = new And();
+        Element *decoder = ElementFactory::buildElement(ElementType::And);
         decoder->setInputSize(7);       // 6 address bits + memWrite
         addressDecoders.append(decoder);
-        writeClockGates.append(new And());
+        writeClockGates.append(ElementFactory::buildElement(ElementType::And));
     }
     for (int i = 0; i < 6; i++) {
-        notGatesAddr.append(new Not());
+        notGatesAddr.append(ElementFactory::buildElement(ElementType::Not));
     }
 
     // Read muxes: 3-level cascade of 8:1 multiplexers for 64:1 selection
@@ -1247,7 +1248,7 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
     //   inputs 0-5: address bits (direct if bit set, inverted if clear)
     //   input 6: memWrite
     for (int a = 0; a < 64; a++) {
-        And *decoder = addressDecoders[a];
+        Element *decoder = addressDecoders[a];
 
         // Connect 6 address bits based on binary pattern of 'a'
         for (int bit = 0; bit < 6; bit++) {
