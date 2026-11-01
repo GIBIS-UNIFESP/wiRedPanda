@@ -97,12 +97,26 @@ ElementGroup Element::elementGroup() const
 
 QStringList Element::externalFiles() const
 {
-    return m_appearance.externalFiles();
+    // The pictures, then every parameter that is a file's path (the audio box's sound), but a resource's
+    QStringList files = m_appearance.externalFiles();
+    for (const ParamSpec &spec : m_descriptor.parameters) {
+        if (!spec.fileReference) {
+            continue;
+        }
+        const QString path = param<QString>(spec.id);
+        if (!path.isEmpty() && !path.startsWith(":/")) {
+            files.append(path);
+        }
+    }
+    return files;
 }
 
 void Element::reportFailedFiles() const
 {
     m_appearance.reportFailedPicture();
+    if (m_descriptor.reportFailedFiles) {
+        m_descriptor.reportFailedFiles(*this);
+    }
 }
 
 const QVector<OutputPort *> &Element::outputs() const

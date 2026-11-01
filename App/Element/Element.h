@@ -82,8 +82,9 @@ public:
 
     // --- External file dependencies ---
 
-    /// Returns the list of external (non-resource) file paths this element depends on.
-    /// Used by the save infrastructure to copy files into the project directory.
+    /// Returns the list of external (non-resource) file paths this element depends on: its pictures and its parameters
+    /// that are files' paths (ParamSpec::fileReference); an IC's override names its definition's file instead. Used by
+    /// the save infrastructure to copy files into the project directory.
     virtual QStringList externalFiles() const;
 
     // --- Serialization ---
@@ -359,8 +360,9 @@ public:
     virtual QList<std::pair<int, QString>> appearanceStates() const;
 
     /// Throws a Pandaception naming an external file the element uses in a fallback's place: the picture shown last
-    /// that did not load (see ElementAppearance::reportFailedPicture()), and in an override the element's own files.
-    virtual void reportFailedFiles() const;
+    /// that did not load (see ElementAppearance::reportFailedPicture()), then the descriptor's own (the audio box's
+    /// sound).
+    void reportFailedFiles() const;
 
     // --- Truth Table ---
 

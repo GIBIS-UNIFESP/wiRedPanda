@@ -10,8 +10,9 @@
 #include <QFile>
 #include <QTest>
 
+#include "App/Element/AudioOutput.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
@@ -26,7 +27,7 @@
 
 void TestBuzzer::testConstructorInitialization()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
 
     QCOMPARE(buzzer.elementType(), ElementType::Buzzer);
     QCOMPARE(buzzer.elementGroup(), ElementGroup::Output);
@@ -39,27 +40,19 @@ void TestBuzzer::testConstructorInitialization()
     QVERIFY(buzzer.canChangeAppearance());
 }
 
-void TestBuzzer::testCopyConstructor()
-{
-    Buzzer original;
-    original.setFrequency(440.0);
-    Buzzer copy(original);
-    AudioElementTestHelpers::testCopyConstructor(original, copy);
-}
-
 // ============================================================================
 // Frequency Tests
 // ============================================================================
 
 void TestBuzzer::testDefaultFrequency()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     QCOMPARE(buzzer.frequency(), 1047.0);
 }
 
 void TestBuzzer::testFrequency()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
 
     buzzer.setFrequency(440.0);
     QCOMPARE(buzzer.frequency(), 440.0);
@@ -67,7 +60,7 @@ void TestBuzzer::testFrequency()
 
 void TestBuzzer::testSetFrequency()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
 
     buzzer.setFrequency(880.0);
     QCOMPARE(buzzer.frequency(), 880.0);
@@ -78,7 +71,7 @@ void TestBuzzer::testSetFrequency()
 
 void TestBuzzer::testSetFrequencyRejectsNaN()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     buzzer.setFrequency(880.0);
     QCOMPARE(buzzer.frequency(), 880.0);
 
@@ -90,7 +83,7 @@ void TestBuzzer::testSetFrequencyRejectsNaN()
 
 void TestBuzzer::testSetFrequencyRejectsInfinity()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     buzzer.setFrequency(880.0);
     QCOMPARE(buzzer.frequency(), 880.0);
 
@@ -103,7 +96,7 @@ void TestBuzzer::testSetFrequencyRejectsInfinity()
 
 void TestBuzzer::testSetFrequencyRejectsZeroAndNegative()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     buzzer.setFrequency(880.0);
     QCOMPARE(buzzer.frequency(), 880.0);
 
@@ -116,14 +109,14 @@ void TestBuzzer::testSetFrequencyRejectsZeroAndNegative()
 
 void TestBuzzer::testSetNote()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
 
     // setNote("C6") should set frequency to 1047
-    buzzer.setNote("C6");
+    AudioOutput::setNote(buzzer, "C6");
     QCOMPARE(buzzer.frequency(), 1047.0);
 
     // setNote("A7") should set frequency to 3520
-    buzzer.setNote("A7");
+    AudioOutput::setNote(buzzer, "A7");
     QCOMPARE(buzzer.frequency(), 3520.0);
 }
 
@@ -134,7 +127,7 @@ void TestBuzzer::testToneScaleIsMonotonic()
     const QStringList scale = {"C6", "D6", "E6", "F6", "G6", "A6", "B6", "C7"};
     int previous = 0;
     for (const QString &note : scale) {
-        const int freq = Buzzer::noteToFrequency(note);
+        const int freq = AudioOutput::noteToFrequency(note);
         QVERIFY2(freq > previous,
                  qPrintable(QString("Note %1 (%2 Hz) does not ascend above the previous note (%3 Hz)")
                             .arg(note).arg(freq).arg(previous)));
@@ -142,21 +135,31 @@ void TestBuzzer::testToneScaleIsMonotonic()
     }
 
     // The corrected sixth/seventh degrees sit in the same octave as their neighbours.
-    QCOMPARE(Buzzer::noteToFrequency("A6"), 1760);
-    QCOMPARE(Buzzer::noteToFrequency("B6"), 1976);
+    QCOMPARE(AudioOutput::noteToFrequency("A6"), 1760);
+    QCOMPARE(AudioOutput::noteToFrequency("B6"), 1976);
 
     // Legacy note names remain resolvable to their true (higher-octave) pitches.
-    QCOMPARE(Buzzer::noteToFrequency("A7"), 3520);
-    QCOMPARE(Buzzer::noteToFrequency("B7"), 3951);
+    QCOMPARE(AudioOutput::noteToFrequency("A7"), 3520);
+    QCOMPARE(AudioOutput::noteToFrequency("B7"), 3951);
 }
 
 void TestBuzzer::testSetNoteWithEmptyNoteIsNoOp()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     buzzer.setFrequency(880.0);
 
-    buzzer.setNote("");
+    AudioOutput::setNote(buzzer, "");
     QCOMPARE(buzzer.frequency(), 880.0);
+}
+
+void TestBuzzer::testSetNoteOffTheScaleIsC6()
+{
+    // A name not on the scale, which an older file can hold, is C6's tone
+    Element buzzer{ElementType::Buzzer};
+    buzzer.setFrequency(880.0);
+
+    AudioOutput::setNote(buzzer, "A4");
+    QCOMPARE(buzzer.frequency(), 1047.0);
 }
 
 // ============================================================================
@@ -165,7 +168,7 @@ void TestBuzzer::testSetNoteWithEmptyNoteIsNoOp()
 
 void TestBuzzer::testSaveFrequency()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     buzzer.setFrequency(440.0);
 
     QByteArray data;
@@ -199,13 +202,9 @@ void TestBuzzer::testLoadVersionOld()
 
         for (Element *elem : elements) {
             if (elem->elementType() == ElementType::Buzzer) {
-                auto *buzzer = dynamic_cast<Buzzer *>(elem);
-                if (buzzer) {
-                    foundBuzzer = true;
-                    QVERIFY(buzzer->elementType() == ElementType::Buzzer);
-                    // Old files stored note names — verify they converted to valid frequencies
-                    QVERIFY(buzzer->frequency() > 0.0);
-                }
+                foundBuzzer = true;
+                // Old files stored note names — verify they converted to valid frequencies
+                QVERIFY(elem->frequency() > 0.0);
             }
         }
 
@@ -220,7 +219,7 @@ void TestBuzzer::testLoadVersionOld()
 void TestBuzzer::testLoadVersionNew()
 {
     // Create buzzer and save it with a custom frequency
-    auto buzzer1 = std::make_unique<Buzzer>();
+    auto buzzer1 = std::make_unique<Element>(ElementType::Buzzer);
     buzzer1->setFrequency(440.0);
 
     QByteArray data;
@@ -228,7 +227,7 @@ void TestBuzzer::testLoadVersionNew()
     buzzer1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Create new buzzer and load with current version
-    auto buzzer2 = std::make_unique<Buzzer>();
+    auto buzzer2 = std::make_unique<Element>(ElementType::Buzzer);
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -243,7 +242,7 @@ void TestBuzzer::testLoadBeforeAudioExisted()
 {
     // Buzzer was introduced at V_2_4 (see VersionInfo::hasAudio) -- no real pre-2.4 .panda
     // file can ever contain one, so this guard clause is otherwise unreachable by any fixture.
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     buzzer.setFrequency(1234.0);
 
     AudioElementTestHelpers::testLoadBeforeAudioExisted(buzzer);

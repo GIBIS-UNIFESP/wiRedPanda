@@ -14,7 +14,6 @@
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -565,7 +564,7 @@ void TestArduinoCodeGenUnit::testBuzzerToneFollowsItsFrequency()
     CircuitBuilder builder(workspace.scene());
 
     auto *sw = new InputSwitch;
-    auto *buzzer = new Buzzer;
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     builder.add(sw, buzzer);
     builder.connect(sw, 0, buzzer, 0);
     buzzer->setFrequency(880.0); // not the default, which the sketch would show all the same

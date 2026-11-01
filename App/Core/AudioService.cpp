@@ -14,8 +14,8 @@
 #include <QUrl>
 
 #include "App/Core/ToneGenerator.h"
+#include "App/Element/AudioOutput.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/AudioBox.h"
 
 AudioService &AudioService::instance()
 {
@@ -49,7 +49,7 @@ QString AudioService::soundOf(const Element &element)
         return path;
     }
     const QFileInfo info(path);
-    return (info.exists() && info.isReadable()) ? path : QString::fromLatin1(AudioBox::kDefaultAudioPath);
+    return (info.exists() && info.isReadable()) ? path : QString::fromLatin1(AudioOutput::kBuiltInSound);
 }
 
 void AudioService::sync(Element &element)

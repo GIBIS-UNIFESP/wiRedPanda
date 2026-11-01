@@ -38,7 +38,7 @@ private slots:
 
     // --- The audio outputs ---
     void testAnAudioOutputsFrequencyFileAndVolumeAreItsRules();
-    void testAnAudioBoxReadsItsFileAgainOnEveryLoad();
+    void testAnAudioBoxReportsItsSoundAsItIsWhenAFileOpens();
 
     // --- The truth table ---
     void testATruthTablesBitsAreAlwaysAWholeTable();

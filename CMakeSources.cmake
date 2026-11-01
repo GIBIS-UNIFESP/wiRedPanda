@@ -7,6 +7,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/DragDropPayload.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Enums.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ItemWithId.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/AudioOutput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/DisplaySegments.cpp
@@ -21,7 +22,6 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/And.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Buzzer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Clock.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Demux.cpp
@@ -85,6 +85,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SentryHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/SimulationHost.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StatusOps.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/AudioOutput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/DisplaySegments.h
@@ -99,9 +100,6 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioBox.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/AudioOutputElement.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Buzzer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Clock.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputRotary.h

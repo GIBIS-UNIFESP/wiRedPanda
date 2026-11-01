@@ -16,9 +16,9 @@
 #include "App/Core/AudioService.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Core/ToneGenerator.h"
+#include "App/Element/AudioOutput.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/AudioBox.h"
-#include "App/Element/GraphicElements/Buzzer.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -31,13 +31,13 @@
 
 namespace TestAudioServiceHelpers {
 
-/// A switch wired to an audio element of \a T in \a workspace's scene, the simulation built.
-template<typename T>
+/// A switch wired to an audio element of type \a type in \a workspace's scene, the simulation built.
 struct Wired {
     InputSwitch *input = new InputSwitch;
-    T *audio = new T;
+    Element *audio;
 
-    explicit Wired(WorkSpace &workspace)
+    Wired(WorkSpace &workspace, const ElementType type)
+        : audio(ElementFactory::buildElement(type))
     {
         CircuitBuilder builder(workspace.scene());
         builder.add(input, audio);
@@ -63,7 +63,7 @@ bool sounding(const Element &element)
 void writeSound(const QString &path)
 {
     QFile::remove(path);
-    QVERIFY(QFile::copy(QString::fromLatin1(AudioBox::kDefaultAudioPath), path));
+    QVERIFY(QFile::copy(QString::fromLatin1(AudioOutput::kBuiltInSound), path));
     QVERIFY(QFile::setPermissions(path, QFile::ReadOwner | QFile::WriteOwner));
 }
 
@@ -76,14 +76,14 @@ void TestAudioService::testThePushPlaysAndStopsABuzzer()
 {
     // The visual push plays an audio element while its input is Active, and stops it otherwise
     WorkSpace workspace;
-    const Wired<Buzzer> wired(workspace);
+    const Wired wired(workspace, ElementType::Buzzer);
 
     wired.set(workspace, true);
-    QVERIFY(wired.audio->isPlaying());
+    QVERIFY(wired.audio->param<bool>(ParamId::Playing));
     QVERIFY(sounding(*wired.audio));
 
     wired.set(workspace, false);
-    QVERIFY(!wired.audio->isPlaying());
+    QVERIFY(!wired.audio->param<bool>(ParamId::Playing));
     QVERIFY(!sounding(*wired.audio));
 
     wired.set(workspace, true);
@@ -105,7 +105,7 @@ void TestAudioService::testThePushTellsTheHostWhatItStartedAndStopped()
     };
 
     InputSwitch input;
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     Element led{ElementType::Led};
     auto connection = std::make_unique<Connection>();
     connection->setStartPort(input.outputPort());
@@ -125,13 +125,13 @@ void TestAudioService::testThePushTellsTheHostWhatItStartedAndStopped()
     simulation.update();
     QCOMPARE(host.heard.size(), 1);
     QCOMPARE(host.heard.constFirst(), QList<Element *>{&buzzer});
-    QVERIFY(buzzer.isPlaying());
+    QVERIFY(buzzer.param<bool>(ParamId::Playing));
 
     input.setOn(false);
     simulation.update();
     QCOMPARE(host.heard.size(), 2);
     QCOMPARE(host.heard.constLast(), QList<Element *>{&buzzer});
-    QVERIFY(!buzzer.isPlaying());
+    QVERIFY(!buzzer.param<bool>(ParamId::Playing));
 }
 
 void TestAudioService::testALoadLeavesAPlayingVoiceAsItIs()
@@ -139,7 +139,7 @@ void TestAudioService::testALoadLeavesAPlayingVoiceAsItIs()
     // A snapshot's restore, as an undo of a property runs, loads the element where it is: it plays on while its input
     // stays Active, and stops on the push that finds it Inactive
     WorkSpace workspace;
-    const Wired<Buzzer> wired(workspace);
+    const Wired wired(workspace, ElementType::Buzzer);
     wired.set(workspace, true);
     QVERIFY(sounding(*wired.audio));
 
@@ -155,7 +155,7 @@ void TestAudioService::testALoadLeavesAPlayingVoiceAsItIs()
     auto context = workspace.scene()->deserializationContext(portMap, version, SerializationPurpose::InMemorySnapshot);
     wired.audio->load(in, context);
     workspace.scene()->simulation()->update();
-    QVERIFY(wired.audio->isPlaying());
+    QVERIFY(wired.audio->param<bool>(ParamId::Playing));
     QVERIFY(sounding(*wired.audio));
 
     wired.set(workspace, false);
@@ -172,7 +172,7 @@ void TestAudioService::testAnAudioBoxPlaysItsFileOrTheBuiltInSound()
     TestAudioServiceHelpers::writeSound(path);
 
     WorkSpace workspace;
-    const Wired<AudioBox> wired(workspace);
+    const Wired wired(workspace, ElementType::AudioBox);
     wired.audio->setAudio(path);
     wired.set(workspace, true);
     QCOMPARE(AudioService::instance().playback(*wired.audio)->source, path);
@@ -181,7 +181,7 @@ void TestAudioService::testAnAudioBoxPlaysItsFileOrTheBuiltInSound()
     QVERIFY(QFile::remove(path));
     wired.set(workspace, true);
     QCOMPARE(wired.audio->audio(), path);
-    QCOMPARE(AudioService::instance().playback(*wired.audio)->source, QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    QCOMPARE(AudioService::instance().playback(*wired.audio)->source, QString::fromLatin1(AudioOutput::kBuiltInSound));
 
     wired.set(workspace, false);
     TestAudioServiceHelpers::writeSound(path);
@@ -194,9 +194,9 @@ void TestAudioService::testMuteIsPerDocument()
     // Each document has its own mute, which reaches every audio element of it, a buzzer and an audio box alike
     WorkSpace first;
     WorkSpace second;
-    const Wired<Buzzer> buzzer(first);
-    const Wired<AudioBox> box(first);
-    const Wired<Buzzer> other(second);
+    const Wired buzzer(first, ElementType::Buzzer);
+    const Wired box(first, ElementType::AudioBox);
+    const Wired other(second, ElementType::Buzzer);
     buzzer.set(first, true);
     box.set(first, true);
     other.set(second, true);
@@ -219,11 +219,11 @@ void TestAudioService::testAnElementAddedToAMutedDocumentStartsMuted()
     // An element that starts playing in a muted document, or comes into one playing, is muted from the start
     WorkSpace workspace;
     workspace.scene()->mute(true);
-    const Wired<Buzzer> wired(workspace);
+    const Wired wired(workspace, ElementType::Buzzer);
     wired.set(workspace, true);
     QVERIFY(AudioService::instance().playback(*wired.audio)->muted);
 
-    auto *added = new Buzzer;
+    auto *added = ElementFactory::buildElement(ElementType::Buzzer);
     added->setParam(ParamId::Playing, true);
     workspace.scene()->addItem(added);
     QVERIFY(sounding(*added));
@@ -234,7 +234,7 @@ void TestAudioService::testAPauseMutesAndAResumeTakesTheUsersMute()
 {
     // Pausing the simulation mutes its document; resuming takes the user's mute back
     WorkSpace workspace;
-    const Wired<Buzzer> wired(workspace);
+    const Wired wired(workspace, ElementType::Buzzer);
     auto *simulation = workspace.scene()->simulation();
     simulation->start();
     wired.set(workspace, true);
@@ -256,7 +256,7 @@ void TestAudioService::testAParameterChangedReachesTheVoice()
 {
     // A new volume, tone or sound file reaches the voice while it plays
     WorkSpace workspace;
-    const Wired<Buzzer> buzzer(workspace);
+    const Wired buzzer(workspace, ElementType::Buzzer);
     buzzer.set(workspace, true);
     buzzer.audio->setVolume(0.2);
     buzzer.audio->setFrequency(880.0);
@@ -268,7 +268,7 @@ void TestAudioService::testAParameterChangedReachesTheVoice()
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("sound.wav");
     TestAudioServiceHelpers::writeSound(path);
-    const Wired<AudioBox> box(workspace);
+    const Wired box(workspace, ElementType::AudioBox);
     box.set(workspace, true);
     box.audio->setAudio(path);
     box.audio->setVolume(0.7);
@@ -280,7 +280,7 @@ void TestAudioService::testAnElementRemovedStopsAndOneBackPlays()
 {
     // An element that leaves its document plays nothing; one that comes back playing, as a deletion undone does, plays
     WorkSpace workspace;
-    const Wired<Buzzer> wired(workspace);
+    const Wired wired(workspace, ElementType::Buzzer);
     wired.set(workspace, true);
 
     workspace.scene()->removeItem(wired.audio);
@@ -294,7 +294,7 @@ void TestAudioService::testADestroyedElementDropsItsVoice()
 {
     // An element deleted while it plays takes its voice with it
     WorkSpace workspace;
-    auto *buzzer = new Buzzer;
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     workspace.scene()->addItem(buzzer);
     buzzer->setParam(ParamId::Playing, true);
     AudioService::instance().sync(*buzzer);
@@ -309,7 +309,7 @@ void TestAudioService::testOnlyAnAudioElementThatPlayedGetsAVoice()
 {
     // An audio element that never played has no voice, and no other element ever gets one
     WorkSpace workspace;
-    const Wired<Buzzer> wired(workspace);
+    const Wired wired(workspace, ElementType::Buzzer);
     wired.set(workspace, false);
     QVERIFY(!AudioService::instance().playback(*wired.audio));
 
@@ -329,7 +329,7 @@ void TestAudioService::testTheHardwareFollowsTheVoice()
     }
 
     WorkSpace workspace;
-    const Wired<Buzzer> buzzer(workspace);
+    const Wired buzzer(workspace, ElementType::Buzzer);
     buzzer.set(workspace, true);
     buzzer.audio->setFrequency(880.0);
     buzzer.audio->setVolume(0.2);
@@ -344,12 +344,12 @@ void TestAudioService::testTheHardwareFollowsTheVoice()
     buzzer.set(workspace, false);
     QVERIFY(!tone.generator->isOpen());
 
-    const Wired<AudioBox> box(workspace);
+    const Wired box(workspace, ElementType::AudioBox);
     box.set(workspace, true);
     box.audio->setVolume(0.3);
     const auto &sound = *AudioService::instance().m_voices.at(box.audio);
     QCOMPARE(sound.output->volume(), 0.3F);
-    QCOMPARE(sound.player->source(), QUrl("qrc" + QString::fromLatin1(AudioBox::kDefaultAudioPath)));
+    QCOMPARE(sound.player->source(), QUrl("qrc" + QString::fromLatin1(AudioOutput::kBuiltInSound)));
     workspace.scene()->mute(true);
     QVERIFY(sound.output->isMuted());
     workspace.scene()->mute(false);

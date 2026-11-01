@@ -1,17 +1,19 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/AudioOutputElement.h"
+#include "App/Element/AudioOutput.h"
 
 #include <cmath>
 
-#include <QString>
+#include <QHash>
 
-double AudioOutputElement::volumeTaken(const double volume)
+#include "App/Element/Element.h"
+
+double AudioOutput::volumeTaken(const double volume)
 {
     // Every version before kept the volume as a float, which a file holds widened (0.35 as 0.3499999940395355): such a
     // value is the float's shortest decimal, the volume the user set. A volume that is no float is kept as it is.
-    Q_ASSERT_X(std::isfinite(volume), "AudioOutputElement::volumeTaken()", "the spec refuses a volume that is not finite");
+    Q_ASSERT_X(std::isfinite(volume), "AudioOutput::volumeTaken()", "the spec refuses a volume that is not finite");
     const auto single = static_cast<float>(volume);
     if (static_cast<double>(single) != volume) {
         return volume;
@@ -25,7 +27,7 @@ double AudioOutputElement::volumeTaken(const double volume)
     return volume; // LCOV_EXCL_LINE — nine significant digits name every finite float
 }
 
-ParamSpec AudioOutputElement::volumeSpec(const double defaultVolume)
+ParamSpec AudioOutput::volumeSpec(const double defaultVolume)
 {
     return {
         .id = ParamId::Volume,
@@ -40,25 +42,27 @@ ParamSpec AudioOutputElement::volumeSpec(const double defaultVolume)
     };
 }
 
-ParamSpec AudioOutputElement::playingSpec()
+ParamSpec AudioOutput::playingSpec()
 {
-    return {.id = ParamId::Playing, .defaultValue = false};
+    return {.id = ParamId::Playing, .defaultValue = false, .showsPicture = true};
 }
 
-AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent)
-    : Element(type, parent)
+int AudioOutput::noteToFrequency(const QString &note)
 {
+    // Backward-compatible aliases: the scale historically listed A7/B7 (an octave above
+    // their neighbours); pre-4.x files persist the note *name*, so keep resolving these
+    // to their true pitches. Kept on one physical line: gcov misattributes per-entry hit
+    // counts across a multi-line brace-init list (see CodeGen's chained-.arg() precedent).
+    static const QHash<QString, int> map = {{"C6", 1047}, {"D6", 1175}, {"E6", 1319}, {"F6", 1397}, {"G6", 1568}, {"A6", 1760}, {"B6", 1976}, {"C7", 2093}, {"A7", 3520}, {"B7", 3951}};
+
+    return map.value(note, 1047);
 }
 
-bool AudioOutputElement::isPlaying() const
+void AudioOutput::setNote(Element &buzzer, const QString &note)
 {
-    return param<bool>(ParamId::Playing);
-}
-
-void AudioOutputElement::parameterChanged(const ParamId id, const ParamValue &previous)
-{
-    Element::parameterChanged(id, previous);
-    if (id == ParamId::Playing) {
-        pictureReplaced();
+    if (note.isEmpty()) {
+        return;
     }
+
+    buzzer.setFrequency(noteToFrequency(note));
 }

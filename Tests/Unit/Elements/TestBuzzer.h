@@ -12,7 +12,6 @@ class TestBuzzer : public QObject
 private slots:
     // Constructor tests
     void testConstructorInitialization();
-    void testCopyConstructor();
 
     // Frequency tests
     void testFrequency();
@@ -32,6 +31,7 @@ private slots:
     void testSetFrequencyRejectsZeroAndNegative();
 
     void testSetNoteWithEmptyNoteIsNoOp();
+    void testSetNoteOffTheScaleIsC6();
 
     // Serialization tests
     void testSaveFrequency();

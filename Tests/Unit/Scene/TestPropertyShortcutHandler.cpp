@@ -5,8 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/AudioBox.h"
-#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Scene/PropertyShortcutHandler.h"
@@ -79,7 +77,7 @@ void TestPropertyShortcutHandler::testClockFrequencyPrev()
 void TestPropertyShortcutHandler::testBuzzerFrequency()
 {
     WorkSpace workspace;
-    auto *buzzer = new Buzzer;
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     workspace.scene()->addItem(buzzer);
     double originalFreq = buzzer->frequency();
 
@@ -265,7 +263,7 @@ void TestPropertyShortcutHandler::testAudioBoxMainPropertyIsNoOp()
     // AudioBox has no main-property cycling behavior defined -- confirm the shortcut is a
     // genuine no-op (no undo command pushed), not silently doing something unexpected.
     WorkSpace workspace;
-    auto *audioBox = new AudioBox;
+    auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audioBox);
 
     PropertyShortcutHandler handler(workspace.scene());

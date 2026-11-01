@@ -27,8 +27,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/AudioBox.h"
-#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -970,7 +968,7 @@ void TestElementEditor::testApplyCapabilitiesMixedLockStateShowsPartiallyChecked
 void TestElementEditor::testApplyVolumeProperty()
 {
     WorkSpace workspace;
-    auto *audiobox = new AudioBox();
+    auto *audiobox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audiobox);
 
     ElementEditor editor(&workspace);
@@ -991,7 +989,7 @@ void TestElementEditor::testApplyVolumeProperty()
 void TestElementEditor::testVolumeShownAsNearestPercent()
 {
     WorkSpace workspace;
-    auto *audiobox = new AudioBox();
+    auto *audiobox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audiobox);
 
     ElementEditor editor(&workspace);
@@ -1541,11 +1539,11 @@ void TestElementEditor::testAudioBoxGuardsNonAudioBoxSelection()
 
     ScopedFileDialogStub dialogStub;
 
-    // Empty selection: m_elements.isEmpty() guard returns before the qobject_cast check.
+    // Empty selection: m_elements.isEmpty() guard returns before the type check.
     editor.audioBox();
     QCOMPARE(dialogStub.stub.openCallCount, 0);
 
-    // Non-AudioBox selection: qobject_cast<AudioBox*> fails.
+    // Non-AudioBox selection: the type check fails.
     workspace.scene()->clearSelection();
     andGate->setSelected(true);
     editor.audioBox();
@@ -1555,7 +1553,7 @@ void TestElementEditor::testAudioBoxGuardsNonAudioBoxSelection()
 void TestElementEditor::testAudioBoxCancelledDialogIsNoOp()
 {
     WorkSpace workspace;
-    auto *audiobox = new AudioBox();
+    auto *audiobox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audiobox);
 
     ElementEditor editor(&workspace);
@@ -1580,7 +1578,7 @@ void TestElementEditor::testPickingASoundThatCannotBeReadChangesNothing()
     QVERIFY(dir.isValid());
 
     WorkSpace workspace;
-    auto *audiobox = new AudioBox();
+    auto *audiobox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audiobox);
 
     ElementEditor editor(&workspace);
@@ -1605,7 +1603,7 @@ void TestElementEditor::testPickingASoundThatCannotBeReadChangesNothing()
 void TestElementEditor::testAudioBoxSetsAudioAndUpdatesLabel()
 {
     WorkSpace workspace;
-    auto *audiobox = new AudioBox();
+    auto *audiobox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audiobox);
 
     ElementEditor editor(&workspace);
@@ -1635,7 +1633,7 @@ void TestElementEditor::testAudioBoxChangeIsUndoable()
 {
     // The audio file chosen in the editor is one undo step, which undo and redo restore
     WorkSpace workspace;
-    auto *audiobox = new AudioBox();
+    auto *audiobox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audiobox);
 
     ElementEditor editor(&workspace);
@@ -1899,7 +1897,7 @@ void TestElementEditor::testSliderKeyStepsAreStepsOfTheirOwn()
     // A slider moved with the handle not held (a key, the wheel, a click on the groove) takes an undo step per move,
     // and a later drag merges with none of them
     WorkSpace workspace;
-    auto *buzzer = new Buzzer();
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     workspace.scene()->addItem(buzzer);
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
@@ -2058,8 +2056,8 @@ void TestElementEditor::testEditingAFieldLeavesTheOthers()
     auto *late = new Clock();
     early->setDelay(-0.25);
     late->setDelay(0.25);
-    auto *quiet = new Buzzer();
-    auto *loud = new Buzzer();
+    auto *quiet = ElementFactory::buildElement(ElementType::Buzzer);
+    auto *loud = ElementFactory::buildElement(ElementType::Buzzer);
     quiet->setVolume(0.2);
     loud->setVolume(0.8);
     for (auto *element : QList<Element *>{early, late, quiet, loud}) {

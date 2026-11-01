@@ -1,10 +1,10 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Buzzer.h"
-
 #include <cmath>
 
+#include "App/Element/AudioOutput.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -41,7 +41,7 @@ struct ElementInfo<ElementType::Buzzer> {
                 // sample to qint16, which is undefined behaviour, and a non-positive frequency has no physical meaning
                 // for a buzzer
                 .id = ParamId::Frequency,
-                .defaultValue = Buzzer::kDefaultFrequency,
+                .defaultValue = AudioOutput::kBuzzerFrequency,
                 .key = "frequency",
                 .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
                     const double frequency = std::get<double>(value);
@@ -49,19 +49,19 @@ struct ElementInfo<ElementType::Buzzer> {
                                                                            : std::nullopt;
                 },
             },
-            AudioOutputElement::volumeSpec(Buzzer::kDefaultVolume),
-            AudioOutputElement::playingSpec(),
+            AudioOutput::volumeSpec(AudioOutput::kBuzzerVolume),
+            AudioOutput::playingSpec(),
         };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 2.4 to 4.0 the tone was a bare note name
             if (VersionInfo::hasAudio(context.version)) {
-                static_cast<Buzzer &>(element).setNote(Serialization::readBoundedString(stream));
+                AudioOutput::setNote(element, Serialization::readBoundedString(stream));
             }
         };
         // A map without a frequency can hold the note name the bare format had
         descriptor.readOlderKeys = [](Element &element, const QMap<QString, QVariant> &map) {
             if (!map.contains("frequency") && map.contains("note")) {
-                static_cast<Buzzer &>(element).setNote(map.value("note").toString());
+                AudioOutput::setNote(element, map.value("note").toString());
             }
         };
         return descriptor;
@@ -69,32 +69,7 @@ struct ElementInfo<ElementType::Buzzer> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Buzzer(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Buzzer::Buzzer(QGraphicsItem *parent)
-    : AudioOutputElement(ElementType::Buzzer, parent)
-{
-}
-
-void Buzzer::setNote(const QString &note)
-{
-    if (note.isEmpty()) {
-        return;
-    }
-
-    setFrequency(noteToFrequency(note));
-}
-
-int Buzzer::noteToFrequency(const QString &note)
-{
-    // Backward-compatible aliases: the scale historically listed A7/B7 (an octave above
-    // their neighbours); pre-4.x files persist the note *name*, so keep resolving these
-    // to their true pitches. Kept on one physical line: gcov misattributes per-entry hit
-    // counts across a multi-line brace-init list (see CodeGen's chained-.arg() precedent).
-    static const QHash<QString, int> map = {{"C6", 1047}, {"D6", 1175}, {"E6", 1319}, {"F6", 1397}, {"G6", 1568}, {"A6", 1760}, {"B6", 1976}, {"C7", 2093}, {"A7", 3520}, {"B7", 3951}};
-
-    return map.value(note, 1047);
-}

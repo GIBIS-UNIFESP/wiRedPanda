@@ -8,20 +8,13 @@
 #include <QPointF>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Versions.h"
 #include "App/Wiring/Port.h"
 
-// Shared test implementations for AudioBox and Buzzer, as templates over the element's type.
+// Shared test implementations for the audio box and the buzzer.
 namespace AudioElementTestHelpers {
-
-template<typename T>
-inline void testCopyConstructor(const T &original, const T &copy)
-{
-    QCOMPARE(copy.elementType(), original.elementType());
-    QCOMPARE(copy.inputSize(), original.inputSize());
-    QCOMPARE(copy.outputSize(), original.outputSize());
-}
 
 /// Hand-builds a pre-2.4 (audio-not-yet-invented) old-format element stream and loads it into
 /// \a element, exercising the "!hasAudio(version)" early return that no real fixture can reach:
@@ -31,8 +24,7 @@ inline void testCopyConstructor(const T &original, const T &copy)
 /// with 0 ports/appearances to sidestep needing valid port-name/appearance-index bookkeeping.
 /// The caller is left to assert its own type-specific post-condition (audio()/frequency()
 /// staying at whatever it was before, since load() must return before touching it).
-template<typename T>
-inline void testLoadBeforeAudioExisted(T &element)
+inline void testLoadBeforeAudioExisted(Element &element)
 {
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);

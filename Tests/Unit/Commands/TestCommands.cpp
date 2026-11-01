@@ -15,10 +15,9 @@
 #include <QTemporaryDir>
 
 #include "App/Core/Enums.h"
+#include "App/Element/AudioOutput.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/AudioBox.h"
-#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
@@ -791,7 +790,7 @@ void TestCommands::testMorphPreservesVolume()
 
     // Use a non-default volume (the default is 0.5) so this genuinely proves the carry-over rather
     // than both elements coincidentally sharing the default.
-    auto *buzzer = new Buzzer();
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
     QVERIFY(buzzer->hasVolume());
     buzzer->setVolume(0.25);
@@ -1230,7 +1229,7 @@ void TestCommands::testMorphPreservesFrequency()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *buzzer = new Buzzer();
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
     QVERIFY(buzzer->hasFrequency());
     buzzer->setFrequency(123);
@@ -1735,7 +1734,7 @@ void TestCommands::testUndoWithASoundThatIsGoneKeepsItsPath()
 
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *audioBox = new AudioBox();
+    auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{audioBox}, scene));
     audioBox->setAudio(wav);
 
@@ -1743,7 +1742,7 @@ void TestCommands::testUndoWithASoundThatIsGoneKeepsItsPath()
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
     audioBox->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-    audioBox->setAudio(QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    audioBox->setAudio(QString::fromLatin1(AudioOutput::kBuiltInSound));
     scene->receiveCommand(new UpdateCommand({audioBox}, oldData, scene));
     QVERIFY(QFile::remove(wav));
 
@@ -1753,7 +1752,7 @@ void TestCommands::testUndoWithASoundThatIsGoneKeepsItsPath()
 
     scene->undoStack()->redo();
     QCOMPARE(scene->undoStack()->index(), 2);
-    QCOMPARE(audioBox->audio(), QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    QCOMPARE(audioBox->audio(), QString::fromLatin1(AudioOutput::kBuiltInSound));
 }
 
 void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
@@ -2200,7 +2199,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
     // An element of the file's kind on the scene, whose file is set by setFile()
     const auto addElement = [&] {
         Element *element = (file == "picture") ? ElementFactory::buildElement(ElementType::And)
-                         : (file == "sound")   ? static_cast<Element *>(new AudioBox())
+                         : (file == "sound")   ? ElementFactory::buildElement(ElementType::AudioBox)
                                                : static_cast<Element *>(new IC());
         scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{element}, scene));
         id = element->id();
@@ -2210,7 +2209,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         if (file == "picture") {
             element->setAppearance(false, path);
         } else if (file == "sound") {
-            static_cast<AudioBox *>(element)->setAudio(path);
+            element->setAudio(path);
         } else {
             static_cast<IC *>(element)->loadFile(path, dir.path());
         }
@@ -2220,7 +2219,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         if (file == "picture") {
             element->setAppearance(true, {});
         } else if (file == "sound") {
-            static_cast<AudioBox *>(element)->setAudio(QString::fromLatin1(AudioBox::kDefaultAudioPath));
+            element->setAudio(QString::fromLatin1(AudioOutput::kBuiltInSound));
         } else {
             element->setLabel("changed");
         }
@@ -2237,13 +2236,13 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         WorkSpace source;
         source.scene()->setContextDir(dir.path());
         Element *element = (file == "picture") ? ElementFactory::buildElement(ElementType::And)
-                         : (file == "sound")   ? static_cast<Element *>(new AudioBox())
+                         : (file == "sound")   ? ElementFactory::buildElement(ElementType::AudioBox)
                                                : static_cast<Element *>(new IC());
         source.scene()->addItem(element);
         if (file == "picture") {
             element->setAppearance(false, path);
         } else if (file == "sound") {
-            static_cast<AudioBox *>(element)->setAudio(path);
+            element->setAudio(path);
         } else {
             static_cast<IC *>(element)->loadFile(path, dir.path());
         }

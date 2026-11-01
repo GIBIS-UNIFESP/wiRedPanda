@@ -12,7 +12,6 @@ class TestAudioBox : public QObject
 private slots:
     // Constructor tests
     void testConstructorInitialization();
-    void testCopyConstructor();
 
     // Audio accessor tests
     void testAudioPath();
@@ -20,6 +19,7 @@ private slots:
 
     // Audio configuration tests
     void testSetAudioWithQRCPath();
+    void testAResourcePathIsNeverReportedAsAFileThatFailed();
     void testSetAudioWithEmptyPath();
     void testSetAudioWithValidPath();
     void testAudioPathPreservedAfterMultipleSets();

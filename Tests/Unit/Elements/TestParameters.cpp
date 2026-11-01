@@ -14,13 +14,11 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
+#include "App/Element/AudioOutput.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
-#include "App/Element/GraphicElements/AudioBox.h"
-#include "App/Element/GraphicElements/AudioOutputElement.h"
-#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
@@ -469,7 +467,7 @@ void TestParameters::testAColourIsAnyNameAndTheLedOffersItWithOneInput()
 
 void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
 {
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
 
     // A frequency is finite and positive; one it does not take leaves the frequency as it was
     QVERIFY(buzzer.setParam(ParamId::Frequency, 440.0));
@@ -492,12 +490,12 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
     QVERIFY(!buzzer.setParam(ParamId::Volume, 0.1));
     QVERIFY(buzzer.setParam(ParamId::Volume, 0.5));
     QCOMPARE(buzzer.volume(), 0.5);
-    QCOMPARE(AudioOutputElement::volumeTaken(0.1 + 1e-12), 0.1 + 1e-12);
+    QCOMPARE(AudioOutput::volumeTaken(0.1 + 1e-12), 0.1 + 1e-12);
 
     // A sound file's path is kept whether or not its file is there; an empty one changes nothing
-    AudioBox box;
+    Element box{ElementType::AudioBox};
     box.setAudio(QString());
-    QCOMPARE(box.audio(), QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    QCOMPARE(box.audio(), QString::fromLatin1(AudioOutput::kBuiltInSound));
     const QString gone = QStringLiteral("/nonexistent/wiredpanda/gone.wav");
     box.setAudio(gone);
     QCOMPARE(box.param<QString>(ParamId::AudioFile), gone);
@@ -513,40 +511,38 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
     QCOMPARE(gate->volume(), 0.0);
 }
 
-void TestParameters::testAnAudioBoxReadsItsFileAgainOnEveryLoad()
+void TestParameters::testAnAudioBoxReportsItsSoundAsItIsWhenAFileOpens()
 {
-    // A snapshot restored with the path the box has reads its file again: a sound whose file has gone since is
-    // reported, not taken as loaded
+    // The sound is checked when a file reports it, whatever it was when it was set: one gone since is reported, and
+    // one gone then but back since is not
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = dir.filePath(QStringLiteral("sound.wav"));
-    QFile file(path);
-    QVERIFY(file.open(QIODevice::WriteOnly));
-    file.write("DUMMY AUDIO DATA");
-    file.close();
+    const auto writeSound = [&path] {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write("DUMMY AUDIO DATA");
+    };
+    const auto report = [](const Element &box) {
+        try {
+            box.reportFailedFiles();
+        } catch (const Pandaception &e) {
+            return QString::fromUtf8(e.what());
+        }
+        return QString();
+    };
 
-    AudioBox box;
+    writeSound();
+    Element box{ElementType::AudioBox};
     box.setAudio(path);
-    box.reportFailedFiles();
-
-    QByteArray snapshot;
-    QDataStream out(&snapshot, QIODevice::WriteOnly);
-    box.save(out, {.purpose = SerializationPurpose::InMemorySnapshot});
+    QCOMPARE(report(box), QString());
     QVERIFY(QFile::remove(path));
+    QVERIFY2(report(box).contains(QStringLiteral("sound.wav")), "a sound gone since it was set is not reported");
 
-    QDataStream in(snapshot);
-    QHash<quint64, Port *> portMap;
-    SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::InMemorySnapshot, {}};
-    box.load(in, context);
-    QCOMPARE(box.audio(), path);
-
-    QString message;
-    try {
-        box.reportFailedFiles();
-    } catch (const Pandaception &e) {
-        message = QString::fromUtf8(e.what());
-    }
-    QVERIFY2(message.contains(QStringLiteral("sound.wav")), qPrintable(message));
+    Element other{ElementType::AudioBox};
+    other.setAudio(path);
+    writeSound();
+    QCOMPARE(report(other), QString());
 }
 
 // --- The truth table ---
@@ -587,10 +583,10 @@ void TestParameters::testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey()
     Element table{ElementType::TruthTable};
     QCOMPARE(savedMap(table, SerializationPurpose::PortableFile).keys(), QStringList{"key"});
 
-    AudioBox box;
+    Element box{ElementType::AudioBox};
     QCOMPARE(savedMap(box, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{}));
     const QMap<QString, QVariant> snapshot = savedMap(box, SerializationPurpose::InMemorySnapshot);
-    QCOMPARE(snapshot.value("audiobox").toString(), QString::fromLatin1(AudioBox::kDefaultAudioPath));
+    QCOMPARE(snapshot.value("audiobox").toString(), QString::fromLatin1(AudioOutput::kBuiltInSound));
     QCOMPARE(snapshot.value("volume").toDouble(), 0.5);
 
     // A type without keyed parameters writes nothing, not even an empty map
@@ -612,9 +608,9 @@ void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
     QCOMPARE(clock.delay(), 0.5);
 
     // A buzzer's map without a frequency can hold the old note name
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     loadMap(buzzer, {{"note", "A4"}}, QVersionNumber(4, 1));
-    QCOMPARE(buzzer.frequency(), static_cast<double>(Buzzer::noteToFrequency("A4")));
+    QCOMPARE(buzzer.frequency(), static_cast<double>(AudioOutput::noteToFrequency("A4")));
     loadMap(buzzer, {{"frequency", 300.0}, {"note", "C6"}}, QVersionNumber(4, 1));
     QCOMPARE(buzzer.frequency(), 300.0);
 
@@ -637,20 +633,20 @@ void TestParameters::testAnOlderFilesVolumeIsTheValueItsFloatNamed()
     // Every earlier version kept the volume as a float, which its files hold widened: each such value reads as the
     // float's shortest decimal, the volume the user set, the default included; a volume that is no float, as this
     // version writes 0.1, reads as written
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     loadMap(buzzer, {{"volume", kNearestFloatToATenth}}, QVersionNumber(4, 1));
     QCOMPARE(buzzer.volume(), 0.1);
     loadMap(buzzer, {{"volume", kNearestFloatToTheBuzzersVolume}}, FormatRev::current);
-    QCOMPARE(buzzer.volume(), Buzzer::kDefaultVolume);
+    QCOMPARE(buzzer.volume(), AudioOutput::kBuzzerVolume);
     loadMap(buzzer, {{"volume", 0.3}}, FormatRev::current);
     QCOMPARE(buzzer.volume(), 0.3);
 
     // A volume that is not finite is refused: a file's loads as the default, and is saved as none
     for (const double refused : {std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
                                  std::numeric_limits<double>::quiet_NaN()}) {
-        Buzzer fresh;
+        Element fresh{ElementType::Buzzer};
         loadMap(fresh, {{"volume", refused}}, FormatRev::current);
-        QCOMPARE(fresh.volume(), Buzzer::kDefaultVolume);
+        QCOMPARE(fresh.volume(), AudioOutput::kBuzzerVolume);
         QVERIFY(!savedMap(fresh, SerializationPurpose::PortableFile).contains("volume"));
         QVERIFY(!fresh.setParam(ParamId::Volume, refused));
     }
@@ -663,34 +659,34 @@ void TestParameters::testTheVolumesRuleTakesEachFloatOnce()
     // quotient wider than a float.
     for (int percent = 0; percent <= 100; ++percent) {
         const float single = static_cast<float>(percent) / 100.0f;
-        const double once = AudioOutputElement::volumeTaken(static_cast<double>(single));
+        const double once = AudioOutput::volumeTaken(static_cast<double>(single));
         QCOMPARE(once, percent / 100.0);
-        QCOMPARE(AudioOutputElement::volumeTaken(once), once);
-        QCOMPARE(AudioOutputElement::volumeTaken(percent / 100.0), percent / 100.0);
+        QCOMPARE(AudioOutput::volumeTaken(once), once);
+        QCOMPARE(AudioOutput::volumeTaken(percent / 100.0), percent / 100.0);
     }
-    for (const double volume : {Buzzer::kDefaultVolume, AudioOutputElement::kDefaultVolume}) {
-        QCOMPARE(AudioOutputElement::volumeTaken(volume), volume);
+    for (const double volume : {AudioOutput::kBuzzerVolume, AudioOutput::kBoxVolume}) {
+        QCOMPARE(AudioOutput::volumeTaken(volume), volume);
     }
-    QCOMPARE(AudioOutputElement::volumeTaken(kNearestFloatToTheBuzzersVolume), Buzzer::kDefaultVolume);
+    QCOMPARE(AudioOutput::volumeTaken(kNearestFloatToTheBuzzersVolume), AudioOutput::kBuzzerVolume);
 
     // Kept: a double that is no float (0.8), and one exact both as a float and as its decimal (0.5, 0.375). Moved: only
     // a float whose decimal is no float, which a writer meaning that float's digits gets as the decimal
     for (const double kept : {0.8, 0.5, 0.375}) {
-        QCOMPARE(AudioOutputElement::volumeTaken(kept), kept);
+        QCOMPARE(AudioOutput::volumeTaken(kept), kept);
     }
-    QCOMPARE(AudioOutputElement::volumeTaken(kNearestFloatToThreeTenths), 0.3);
+    QCOMPARE(AudioOutput::volumeTaken(kNearestFloatToThreeTenths), 0.3);
 }
 
 void TestParameters::testAnOlderFilesVolumeSavesAsItsDecimal()
 {
     // An older file's volume, a float widened, reads as its decimal and is saved so; that file read and saved again,
     // as a newer file's volume is, is byte for byte what it saved
-    Buzzer buzzer;
+    Element buzzer{ElementType::Buzzer};
     loadMap(buzzer, {{"volume", kNearestFloatToThreeTenths}}, QVersionNumber(4, 1));
     const QMap<QString, QVariant> saved = savedMap(buzzer, SerializationPurpose::PortableFile);
     QCOMPARE(saved.value("volume").toDouble(), 0.3);
 
-    Buzzer again;
+    Element again{ElementType::Buzzer};
     loadMap(again, saved, FormatRev::current);
     QCOMPARE(savedMap(again, SerializationPurpose::PortableFile), saved);
 }

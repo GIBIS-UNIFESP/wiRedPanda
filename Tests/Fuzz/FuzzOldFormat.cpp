@@ -227,8 +227,7 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
     }
     if ((etype == ET::Buzzer || etype == ET::AudioBox) && !VI::hasQMapFormat(ver)) {
         // v2.4–4.0 stored audio as a bare QString (note name or file path).
-        // Buzzer::loadOldFormat reads: const QString note = readBoundedString(stream)
-        // AudioBox::loadOldFormat reads: const QString audio = readBoundedString(stream)
+        // The buzzer's readBeforeMap reads a bare note name, the audio box's a bare path (readBoundedString())
         if (VI::hasAudio(ver)) {
             s << QString(); // empty string — valid (silence / no file)
         }

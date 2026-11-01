@@ -126,6 +126,9 @@ struct ElementTypeDescriptor {
     /// Run at the end of every load of an element of the type, its ports and parameters read: throws a Pandaception for
     /// a state the type cannot hold (a Demux's inputs that disagree with its outputs).
     std::function<void(const Element &element)> checkLoad{};
+    /// Throws a Pandaception naming a file of the element's own that it plays or shows a fallback in place of (the audio
+    /// box's sound), after its pictures (Element::reportFailedFiles()); none, the pictures alone.
+    std::function<void(const Element &element)> reportFailedFiles{};
 
     /// Applied at the end of every load of the type's parameters, whatever the file held (a switch drives the level it
     /// has, a rotary its selection).

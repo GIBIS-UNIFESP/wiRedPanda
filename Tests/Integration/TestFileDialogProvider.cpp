@@ -14,7 +14,6 @@
 #include "App/Core/Settings.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
@@ -486,7 +485,7 @@ void TestFileDialogProvider::testAudioFileSelectionUsesProvider()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *audioBox = new AudioBox();
+    auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
     workspace.scene()->addItem(audioBox);
     audioBox->setSelected(true);
     QCoreApplication::processEvents();
