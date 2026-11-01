@@ -612,11 +612,12 @@ public:
     virtual QString helpText() const;
 
     /**
-     * \brief Measures again what the element draws in the interface language, after a language change.
+     * \brief Measures the body again and repaints it, after a language change.
      * \details Scene::retranslateUi() calls it on each of its elements. Names and help text need nothing, being looked
-     * up when asked; an element that draws translated text of its own, which can change its bounds, overrides it.
+     * up when asked, but a body can hold translated text (an empty Text's hint), which only its presenter knows, so
+     * every element measures its body again in the new language.
      */
-    virtual void languageChanged();
+    void languageChanged();
 
     // --- Setters (Port & Logic Configuration) ---
 

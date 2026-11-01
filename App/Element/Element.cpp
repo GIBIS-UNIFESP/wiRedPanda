@@ -1039,6 +1039,7 @@ QString Element::helpText() const
 
 void Element::languageChanged()
 {
+    pictureChanged();
 }
 
 void Element::loadFromDrop(const QString &fileName, const QString &contextDir)

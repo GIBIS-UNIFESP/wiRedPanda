@@ -22,7 +22,4 @@ class Text : public Element
 public:
     /// Constructs a Text element.
     explicit Text(QGraphicsItem *parent = nullptr);
-
-    /// Measures the body again, which holds the empty-state hint in the new language.
-    void languageChanged() override;
 };

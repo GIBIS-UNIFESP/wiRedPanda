@@ -46,9 +46,3 @@ Text::Text(QGraphicsItem *parent)
     : Element(ElementType::Text, parent)
 {
 }
-
-void Text::languageChanged()
-{
-    // The hint TextPresenter draws while the label is empty is part of the body, its width the language's
-    pictureChanged();
-}
