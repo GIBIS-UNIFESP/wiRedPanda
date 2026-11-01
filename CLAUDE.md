@@ -107,10 +107,9 @@ What no single change owns: the pitfalls of building and testing this code base,
 - Unity builds put 8 sources in one translation unit, so names in anonymous namespaces and file-scope statics collide
   across neighbours: scan each batch, or put helpers in named namespaces. Adding a source shifts later batches, which
   can hide or reveal a missing include, and each target's precompiled header also supplies includes a source lacks.
-  So a changed source is compiled alone: its flags from `compile_commands.json`, minus the unity batch and the
-  `-include …/cmake_pch.hxx`, with `-fsyntax-only`. The check's negative controls, a source missing a project include
-  and one using a Qt class only the precompiled header includes, must both fail. CI also builds without unity (the
-  sanitizer presets) and with one large unity batch.
+  CI's Build workflow compiles each source alone on every C++ change, in its Ubuntu job without either ("(no
+  unity/PCH)"), so a missing include fails there; the Sanitizers workflow's presets turn both off too, but it skips
+  changes to `MCP/` and `Scripts/` alone. CI also builds with one large unity batch.
 - GCC passes test code that clang rejects under `-Werror`: `QWARN` (`QTest::qWarn`, deprecated since Qt 6.3; GCC does
   not warn inside a system header's macro expansion), a `float` passed as a `qreal` argument (clang's
   `-Wdouble-promotion`), and a lambda init-capture named after the structured binding it copies (`[inputs = inputs]`,

@@ -121,14 +121,17 @@ was ever finished.
   a commit of its own, and every later branch is rebased onto it, its tree checked and its ledgers' hashes re-mapped
   (the user's words of 2026-10-30, "whats wrong with making that fix in plan 2? just rebase the branches that come
   after", and 2026-10-31).
-- **Checked before it lands.** Before a slice is finished, after its last fold, its tip is built on the relwithdebinfo
-  preset with the whole suite run, and the sources the slice changed are compiled alone, outside their unity batch and
-  without the precompiled header (`CLAUDE.md`, "Building and testing"). The commits before the tip are not checked one
-  by one (the user's word of 2026-10-23). The push then runs CI, which
-  covers Qt 6.8 and 6.9, the sanitizers and Apple clang, and a plan lands only on a green run. On `gpu-canvas` each
-  phase was written without building it and built at its gate, which then found what the writing had missed: a debug
-  gate passed a null dereference that GCC reports only at `-O2`, Qt 6.7.3's defects showed only once a gate ran it, and
-  includes that a unity batch or the precompiled header supplied stayed hidden until a change shifted the batches.
+- **Checked before it lands.** Locally a change is built as far as its mutation runs need (each new check broken
+  once); the whole suite and the rest are CI's, since a failure there costs only a fold and a push (the user's words
+  of 2026-11-01, "why not leave tip check to ci?" and "restacking every branch isnt an issue at all"). That includes
+  compiling each source alone, outside a unity batch and without the precompiled header, which CI's Build workflow
+  does on every C++ change in its no-unity/PCH job, as do the sanitizer builds when they run (`CLAUDE.md`, "Building
+  and testing"; the user's words of 2026-11-01, "doesnt ci already handles that too?"). The commits before the tip
+  are not checked one by one (the user's word of 2026-10-23). The push runs CI, which covers Qt 6.8 and 6.9, the
+  sanitizers and Apple clang, and a plan lands only on a green run. On `gpu-canvas` each phase was written without
+  building it and built at its gate, which then found what the writing had missed: a debug gate passed a null
+  dereference that GCC reports only at `-O2`, Qt 6.7.3's defects showed only once a gate ran it, and includes that a
+  unity batch or the precompiled header supplied stayed hidden until a change shifted the batches.
 - **The user's standing rulings.** No clang checking at all: ASan, UBSan and clang are left to CI (its Sanitizers
   workflow and its macOS jobs' Apple clang build). Validation runs on the relwithdebinfo preset. Callgrind and
   performance baselines stay out of the checks before a slice is finished; performance is measured on the named
