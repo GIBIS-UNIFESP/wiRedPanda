@@ -799,19 +799,19 @@ void TestCommands::testMorphPreservesVolume()
     auto *buzzer = new Buzzer();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
     QVERIFY(buzzer->hasVolume());
-    buzzer->setVolume(0.25F);
+    buzzer->setVolume(0.25);
 
     scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::AudioBox, scene));
     auto *morphed = scene->elements().first();
     QCOMPARE(morphed->elementType(), ElementType::AudioBox);
     QVERIFY(morphed->hasVolume());
-    QCOMPARE(morphed->volume(), 0.25F);
+    QCOMPARE(morphed->volume(), 0.25);
 
     // Undo restores the Buzzer with its volume intact.
     undoStack->undo();
     auto *restored = scene->elements().first();
     QCOMPARE(restored->elementType(), ElementType::Buzzer);
-    QCOMPARE(restored->volume(), 0.25F);
+    QCOMPARE(restored->volume(), 0.25);
 }
 
 void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()

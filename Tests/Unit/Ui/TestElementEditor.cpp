@@ -128,7 +128,7 @@ QString editedValue(const Element *element, const PropertyDescriptor::Type type)
     case PropertyDescriptor::Type::Appearance:
         return SnapshotAccess::pixmapIdentity(element);
     case PropertyDescriptor::Type::Volume:
-        return TestUtils::snapshotNumber(static_cast<qreal>(element->volume()));
+        return TestUtils::snapshotNumber(element->volume());
     case PropertyDescriptor::Type::WirelessModeSelector:
         return QVariant::fromValue(element->wirelessMode()).toString();
     }
@@ -987,9 +987,8 @@ void TestElementEditor::testApplyVolumeProperty()
 
     slider->setValue(80);
 
-    QCOMPARE(audiobox->volume(), 0.8f);
-    // The volume's spec takes a float, widened (AudioOutputElement::volumeSpec())
-    QCOMPARE(audiobox->param<double>(ParamId::Volume), static_cast<double>(0.8f));
+    // The slider's percentage, exactly
+    QCOMPARE(audiobox->param<double>(ParamId::Volume), 0.8);
 }
 
 void TestElementEditor::testVolumeShownAsNearestPercent()
@@ -1004,10 +1003,15 @@ void TestElementEditor::testVolumeShownAsNearestPercent()
     QVERIFY(slider);
 
     // A volume of k / 100 times 100 lands just below k for some k (0.53 and 0.59 in float arithmetic, 0.35 among many
-    // more in x87's extended precision), which truncation would show as k - 1.
+    // more in x87's extended precision), which truncation would show as k - 1: as a double, and as the float an older
+    // file holds
     for (int percent = 0; percent <= 100; ++percent) {
         workspace.scene()->clearSelection();
-        audiobox->setVolume(static_cast<float>(percent) / 100.0f);
+        audiobox->setVolume(percent / 100.0);
+        audiobox->setSelected(true);
+        QCOMPARE(slider->value(), percent);
+        workspace.scene()->clearSelection();
+        audiobox->setVolume(static_cast<double>(static_cast<float>(percent) / 100.0f));
         audiobox->setSelected(true);
         QCOMPARE(slider->value(), percent);
     }
@@ -1923,9 +1927,9 @@ void TestElementEditor::testSliderKeyStepsAreStepsOfTheirOwn()
     QCOMPARE(undoStack->count(), commands + 3);
 
     undoStack->undo();
-    QCOMPARE(buzzer->volume(), static_cast<float>(start - 2 * step) / 100.0f);
+    QCOMPARE(buzzer->volume(), (start - 2 * step) / 100.0);
     undoStack->undo();
-    QCOMPARE(buzzer->volume(), static_cast<float>(start - step) / 100.0f);
+    QCOMPARE(buzzer->volume(), (start - step) / 100.0);
 }
 
 void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
@@ -2059,8 +2063,8 @@ void TestElementEditor::testEditingAFieldLeavesTheOthers()
     late->setDelay(0.25);
     auto *quiet = new Buzzer();
     auto *loud = new Buzzer();
-    quiet->setVolume(0.2f);
-    loud->setVolume(0.8f);
+    quiet->setVolume(0.2);
+    loud->setVolume(0.8);
     for (auto *element : QList<Element *>{early, late, quiet, loud}) {
         workspace.scene()->addItem(element);
     }
@@ -2080,8 +2084,8 @@ void TestElementEditor::testEditingAFieldLeavesTheOthers()
     loud->setSelected(true);
     editor.findChild<QLineEdit *>("lineEditElementLabel")->setText("buzzers");
     QCOMPARE(quiet->label(), QString("buzzers"));
-    QCOMPARE(quiet->volume(), 0.2f);
-    QCOMPARE(loud->volume(), 0.8f);
+    QCOMPARE(quiet->volume(), 0.2);
+    QCOMPARE(loud->volume(), 0.8);
 }
 
 void TestElementEditor::testMixedDelaysDragIsOneStep()

@@ -27,7 +27,7 @@ public:
     /// Default volume; deliberately lower than AudioOutputElement's 0.5 base
     /// default to avoid harsh tones. Single source of truth: used by the
     /// volume's spec and serialization's default-elision check.
-    static constexpr float kDefaultVolume = 0.35f;
+    static constexpr double kDefaultVolume = 0.35;
 
     /// Constructs a Buzzer element (default: 1047 Hz / C6).
     explicit Buzzer(QGraphicsItem *parent = nullptr);

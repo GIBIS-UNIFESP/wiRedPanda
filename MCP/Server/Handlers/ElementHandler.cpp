@@ -358,7 +358,7 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
             elementObj["trigger"] = element->trigger().toString();
         }
         if (element->hasVolume()) {
-            elementObj["volume"] = static_cast<double>(element->volume());
+            elementObj["volume"] = element->volume();
         }
         if (const auto *inputElm = qobject_cast<const ElementInput *>(element)) {
             elementObj["locked"] = inputElm->isLocked();
@@ -535,9 +535,9 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     if (params.contains("volume")) {
-        oldProperties["volume"] = static_cast<double>(element->volume());
-        element->setVolume(static_cast<float>(params.value("volume").toDouble()));
-        newProperties["volume"] = static_cast<double>(element->volume());
+        oldProperties["volume"] = element->volume();
+        element->setVolume(params.value("volume").toDouble());
+        newProperties["volume"] = element->volume();
     }
 
     // The appearance has no old value in the response: whether it changed is whether the element's state did

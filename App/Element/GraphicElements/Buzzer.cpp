@@ -84,7 +84,7 @@ Buzzer::Buzzer(QGraphicsItem *parent)
         m_generator = new ToneGenerator(this);
         m_generator->setFrequency(frequency());
         m_sink = new QAudioSink(ToneGenerator::format(), this);
-        m_sink->setVolume(static_cast<qreal>(volume()));
+        m_sink->setVolume(volume());
     }
 }
 
@@ -136,13 +136,13 @@ void Buzzer::stopAudio()
 void Buzzer::applyVolume()
 {
     if (!m_muted) {
-        m_sink->setVolume(static_cast<qreal>(volume()));
+        m_sink->setVolume(volume());
     }
 }
 
 void Buzzer::applyMute()
 {
-    m_sink->setVolume(m_muted ? 0.0 : static_cast<qreal>(volume()));
+    m_sink->setVolume(m_muted ? 0.0 : volume());
 }
 
 int Buzzer::noteToFrequency(const QString &note)

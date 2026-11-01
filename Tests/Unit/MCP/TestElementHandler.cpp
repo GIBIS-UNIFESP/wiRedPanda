@@ -639,7 +639,7 @@ void TestElementHandler::testHandleSetElementPropertiesChangesVolumeWhenSupporte
 
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"volume", 0.5}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(static_cast<double>(elementById(window, id)->volume()), 0.5);
+    QCOMPARE(elementById(window, id)->volume(), 0.5);
 }
 
 void TestElementHandler::testHandleSetElementPropertiesRejectsInvalidVolume()
@@ -952,7 +952,7 @@ void TestElementHandler::testSetElementPropertiesIsOneUndoStep()
 
 void TestElementHandler::testSetElementPropertiesReadsBackWhatTheElementTook()
 {
-    // The volume is a float: the response says the value the element holds
+    // The response says the value the element holds, here the volume as given
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "Buzzer");
@@ -960,8 +960,8 @@ void TestElementHandler::testSetElementPropertiesReadsBackWhatTheElementTook()
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"volume", 0.3}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["result"].toObject()["new_properties"].toObject()["volume"].toDouble(),
-             static_cast<double>(elementById(window, id)->volume()));
-    QVERIFY(response["result"].toObject()["new_properties"].toObject()["volume"].toDouble() != 0.3);
+             elementById(window, id)->volume());
+    QCOMPARE(elementById(window, id)->volume(), 0.3);
 }
 
 // ============================================================================

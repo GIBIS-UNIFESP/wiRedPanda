@@ -34,11 +34,15 @@ public:
     /// Default playback volume. Single source of truth: used by the audio box's
     /// volume spec and serialization's default-elision checks. Buzzer has its own
     /// lower kDefaultVolume instead.
-    static constexpr float kDefaultVolume = 0.5f;
+    static constexpr double kDefaultVolume = 0.5;
 
-    /// Returns the volume's spec (ParamId::Volume, "volume") with default \a defaultVolume: any value is taken at a
-    /// float's precision.
-    static ParamSpec volumeSpec(float defaultVolume);
+    /// Returns the volume's spec (ParamId::Volume, "volume") with default \a defaultVolume; a finite value is taken as
+    /// volumeTaken() has it, one that is not finite refused.
+    static ParamSpec volumeSpec(double defaultVolume);
+
+    /// Returns \a volume, finite, as the spec takes it: a value that is exactly a float, as every earlier version kept
+    /// the volume, is that float's shortest decimal; any other value is itself.
+    static double volumeTaken(double volume);
 
     /// Returns the spec of whether the element plays (ParamId::Playing), transient: its picture's slot (0 = silent,
     /// 1 = playing), which the presenter picks by it.

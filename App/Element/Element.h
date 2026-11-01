@@ -293,10 +293,10 @@ public:
     bool hasVolume() const;
 
     /// Returns the audio playback volume (ParamId::Volume, 0.0–1.0); 0 for a type without one.
-    float volume() const;
+    double volume() const;
 
     /// Sets the audio playback volume to \a vol (ParamId::Volume, 0.0–1.0).
-    void setVolume(float vol);
+    void setVolume(double vol);
 
     // --- Color Properties ---
 

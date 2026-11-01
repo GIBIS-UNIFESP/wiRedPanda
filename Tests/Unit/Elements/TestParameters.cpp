@@ -20,6 +20,7 @@
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/AudioBox.h"
+#include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Display7.h"
@@ -39,6 +40,10 @@ namespace ParametersTestDetail {
 
 /// The float nearest to 0.1, as a double.
 constexpr double kNearestFloatToATenth = 0.100000001490116119384765625;
+/// The nearest float to 0.35, the buzzer's default volume as every earlier version kept it.
+constexpr double kNearestFloatToTheBuzzersVolume = 0.3499999940395355224609375;
+/// The nearest float to 0.3.
+constexpr double kNearestFloatToThreeTenths = 0.300000011920928955078125;
 
 /// Returns \a value as text: a string quoted, a bit array by its size and the bits set.
 QString text(const ParamValue &value)
@@ -157,7 +162,7 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::Display7, {"Colour \"Red\" color"}},
         {ElementType::Display14, {"Colour \"Red\" color"}},
         {ElementType::Display16, {"Colour \"Red\" color"}},
-        {ElementType::Buzzer, {"Frequency 1047 frequency", "Volume 0.34999999403953552 volume", "Playing false -"}},
+        {ElementType::Buzzer, {"Frequency 1047 frequency", "Volume 0.34999999999999998 volume", "Playing false -"}},
         {ElementType::AudioBox,
          {"AudioFile \":/Components/Output/Audio/wiredpanda.wav\" audiobox", "Volume 0.5 volume", "Playing false -"}},
         {ElementType::TruthTable, {"Table bits 0/2048 key"}},
@@ -478,11 +483,17 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
     }
     QVERIFY(buzzer.acceptsFrequency(1.0e9));
 
-    // A volume is any value, at a float's precision: the nearest float to 0.1, written out, since i386's x87 can fold
+    // A volume is any value as it is, but one that is exactly a float, as every earlier version kept the volume, is that
+    // float's shortest decimal: the nearest float to 0.1 is written out, since i386's x87 can fold
     // static_cast<double>(0.1F) at a wider precision to 0.1 itself
-    QVERIFY(buzzer.setParam(ParamId::Volume, 0.1));
-    QCOMPARE(buzzer.param<double>(ParamId::Volume), kNearestFloatToATenth);
-    QCOMPARE(buzzer.volume(), 0.1F);
+    QVERIFY(buzzer.setParam(ParamId::Volume, 0.3));
+    QCOMPARE(buzzer.volume(), 0.3);
+    QVERIFY(buzzer.setParam(ParamId::Volume, kNearestFloatToATenth));
+    QCOMPARE(buzzer.volume(), 0.1);
+    QVERIFY(!buzzer.setParam(ParamId::Volume, 0.1));
+    QVERIFY(buzzer.setParam(ParamId::Volume, 0.5));
+    QCOMPARE(buzzer.volume(), 0.5);
+    QCOMPARE(AudioOutputElement::volumeTaken(0.1 + 1e-12), 0.1 + 1e-12);
 
     // A sound file's path is kept whether or not its file is there; an empty one changes nothing
     AudioBox box;
@@ -492,27 +503,28 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
     box.setAudio(gone);
     QCOMPARE(box.param<QString>(ParamId::AudioFile), gone);
     QCOMPARE(box.externalFiles(), QStringList{gone});
-    box.setVolume(0.75F);
-    QCOMPARE(box.volume(), 0.75F);
+    box.setVolume(0.75);
+    QCOMPARE(box.volume(), 0.75);
 
     // With an output device, a new frequency and volume reach it
     if (auto *tone = buzzer.findChild<ToneGenerator *>()) {
         buzzer.setFrequency(880.0);
         QCOMPARE(tone->frequency(), 880.0);
-        buzzer.setVolume(0.2F);
-        QCOMPARE(buzzer.findChild<QAudioSink *>()->volume(), static_cast<qreal>(buzzer.volume()));
+        buzzer.setVolume(0.2);
+        // The sink keeps a float
+        QCOMPARE(static_cast<float>(buzzer.findChild<QAudioSink *>()->volume()), static_cast<float>(buzzer.volume()));
     }
     if (auto *output = box.findChild<QAudioOutput *>()) {
-        box.setVolume(0.3F);
+        box.setVolume(0.3);
         QCOMPARE(output->volume(), 0.3F);
     }
 
     // A type without them has none and takes none
     const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
     gate->setAudio(gone);
-    gate->setVolume(0.5F);
+    gate->setVolume(0.5);
     QCOMPARE(gate->audio(), QString());
-    QCOMPARE(gate->volume(), 0.0F);
+    QCOMPARE(gate->volume(), 0.0);
 }
 
 void TestParameters::testAnAudioBoxReadsItsFileAgainOnEveryLoad()
@@ -634,11 +646,67 @@ void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
     QCOMPARE(rotary.outputValue(), 1);
 }
 
-void TestParameters::testAFilesVolumeIsTheNearestFloat()
+void TestParameters::testAnOlderFilesVolumeIsTheValueItsFloatNamed()
 {
+    // Every earlier version kept the volume as a float, which its files hold widened: each such value reads as the
+    // float's shortest decimal, the volume the user set, the default included; a volume that is no float, as this
+    // version writes 0.1, reads as written
     Buzzer buzzer;
-    loadMap(buzzer, {{"volume", 0.1}}, QVersionNumber(4, 1));
-    QCOMPARE(buzzer.param<double>(ParamId::Volume), kNearestFloatToATenth);
+    loadMap(buzzer, {{"volume", kNearestFloatToATenth}}, QVersionNumber(4, 1));
+    QCOMPARE(buzzer.volume(), 0.1);
+    loadMap(buzzer, {{"volume", kNearestFloatToTheBuzzersVolume}}, FormatRev::current);
+    QCOMPARE(buzzer.volume(), Buzzer::kDefaultVolume);
+    loadMap(buzzer, {{"volume", 0.3}}, FormatRev::current);
+    QCOMPARE(buzzer.volume(), 0.3);
+
+    // A volume that is not finite is refused: a file's loads as the default, and is saved as none
+    for (const double refused : {std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                                 std::numeric_limits<double>::quiet_NaN()}) {
+        Buzzer fresh;
+        loadMap(fresh, {{"volume", refused}}, FormatRev::current);
+        QCOMPARE(fresh.volume(), Buzzer::kDefaultVolume);
+        QVERIFY(!savedMap(fresh, SerializationPurpose::PortableFile).contains("volume"));
+        QVERIFY(!fresh.setParam(ParamId::Volume, refused));
+    }
+}
+
+void TestParameters::testTheVolumesRuleTakesEachFloatOnce()
+{
+    // Every volume the slider gave as a float, k / 100, becomes the decimal k / 100 the float names, and stays so;
+    // a double the slider gives now is that decimal already. The float is assigned first, as i386's x87 would keep the
+    // quotient wider than a float.
+    for (int percent = 0; percent <= 100; ++percent) {
+        const float single = static_cast<float>(percent) / 100.0f;
+        const double once = AudioOutputElement::volumeTaken(static_cast<double>(single));
+        QCOMPARE(once, percent / 100.0);
+        QCOMPARE(AudioOutputElement::volumeTaken(once), once);
+        QCOMPARE(AudioOutputElement::volumeTaken(percent / 100.0), percent / 100.0);
+    }
+    for (const double volume : {Buzzer::kDefaultVolume, AudioOutputElement::kDefaultVolume}) {
+        QCOMPARE(AudioOutputElement::volumeTaken(volume), volume);
+    }
+    QCOMPARE(AudioOutputElement::volumeTaken(kNearestFloatToTheBuzzersVolume), Buzzer::kDefaultVolume);
+
+    // Kept: a double that is no float (0.8), and one exact both as a float and as its decimal (0.5, 0.375). Moved: only
+    // a float whose decimal is no float, which a writer meaning that float's digits gets as the decimal
+    for (const double kept : {0.8, 0.5, 0.375}) {
+        QCOMPARE(AudioOutputElement::volumeTaken(kept), kept);
+    }
+    QCOMPARE(AudioOutputElement::volumeTaken(kNearestFloatToThreeTenths), 0.3);
+}
+
+void TestParameters::testAnOlderFilesVolumeSavesAsItsDecimal()
+{
+    // An older file's volume, a float widened, reads as its decimal and is saved so; that file read and saved again,
+    // as a newer file's volume is, is byte for byte what it saved
+    Buzzer buzzer;
+    loadMap(buzzer, {{"volume", kNearestFloatToThreeTenths}}, QVersionNumber(4, 1));
+    const QMap<QString, QVariant> saved = savedMap(buzzer, SerializationPurpose::PortableFile);
+    QCOMPARE(saved.value("volume").toDouble(), 0.3);
+
+    Buzzer again;
+    loadMap(again, saved, FormatRev::current);
+    QCOMPARE(savedMap(again, SerializationPurpose::PortableFile), saved);
 }
 
 void TestParameters::testEveryLoadDrivesASwitchsLevelAndARotarysSelection()

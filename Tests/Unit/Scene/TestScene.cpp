@@ -1131,7 +1131,7 @@ void TestScene::testPropertyCycleAudio()
 
     auto *audioElm = dynamic_cast<AudioOutputElement *>(buzzer);
     QVERIFY(audioElm);
-    const float initialVolume = audioElm->volume();
+    const double initialVolume = audioElm->volume();
     const bool initialMuted = audioElm->isMuted();
 
     // Cycle audio property -- PropertyShortcutHandler::adjustSecondaryProperty() has no case

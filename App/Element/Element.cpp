@@ -831,15 +831,15 @@ bool Element::hasVolume() const
     return offersParam(ParamId::Volume);
 }
 
-float Element::volume() const
+double Element::volume() const
 {
     // The spec keeps a float's precision, so narrowing it back is exact
-    return hasParam(ParamId::Volume) ? static_cast<float>(param<double>(ParamId::Volume)) : 0.0f;
+    return hasParam(ParamId::Volume) ? param<double>(ParamId::Volume) : 0.0;
 }
 
-void Element::setVolume(const float vol)
+void Element::setVolume(const double vol)
 {
-    setParam(ParamId::Volume, static_cast<double>(vol));
+    setParam(ParamId::Volume, vol);
 }
 
 QList<PropertyDescriptor> Element::editableProperties() const

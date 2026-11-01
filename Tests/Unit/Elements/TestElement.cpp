@@ -452,8 +452,8 @@ void TestElement::testBaseSettersAreNoOpsForUnsupportedProperties()
     gate.setAudio("some/path.wav");
     QCOMPARE(gate.audio(), QString());
 
-    gate.setVolume(0.5f);
-    QCOMPARE(gate.volume(), 0.0f);
+    gate.setVolume(0.5);
+    QCOMPARE(gate.volume(), 0.0);
 
     gate.setFrequency(42.0);
     QCOMPARE(gate.frequency(), 0.0);

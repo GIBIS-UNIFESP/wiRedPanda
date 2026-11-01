@@ -125,7 +125,7 @@ void AudioBox::loadAudio()
         ? QUrl("qrc" + path)
         : QUrl::fromLocalFile(path);
 
-    m_audioOutput->setVolume(volume());
+    m_audioOutput->setVolume(static_cast<float>(volume()));
     m_player->setAudioOutput(m_audioOutput);
     m_player->setSource(mediaUrl);
     m_player->setLoops(QMediaPlayer::Infinite);
@@ -160,7 +160,7 @@ void AudioBox::stopAudio()
 
 void AudioBox::applyVolume()
 {
-    m_audioOutput->setVolume(volume());
+    m_audioOutput->setVolume(static_cast<float>(volume()));
 }
 
 void AudioBox::applyMute()

@@ -223,7 +223,7 @@ QList<Operation> operations(const QString &image, const QString &audio)
              if (!element.hasVolume()) {
                  return false;
              }
-             element.setVolume(0.25F);
+             element.setVolume(0.25);
              return true;
          }},
         {"appearance", Change::Parameter, [image](Element &element, Scene &) {

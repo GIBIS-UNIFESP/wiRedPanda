@@ -46,6 +46,8 @@ private slots:
     // --- Files ---
     void testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey();
     void testALoadReadsEachValueFromTheVersionItMeansSomething();
-    void testAFilesVolumeIsTheNearestFloat();
+    void testAnOlderFilesVolumeIsTheValueItsFloatNamed();
+    void testTheVolumesRuleTakesEachFloatOnce();
+    void testAnOlderFilesVolumeSavesAsItsDecimal();
     void testEveryLoadDrivesASwitchsLevelAndARotarysSelection();
 };
