@@ -43,3 +43,9 @@ A relwithdebinfo build.
 ## Plan 02c
 
 - Within 0.4% of the ceiling but `combinational_1000` zoomed to fit, 1.2% more.
+
+## Plan 3 (in progress)
+
+- Taken mid-plan, at the user's audit fixes (P3.9j, P3.12b): zoomed to fit, 2.2% less on `clocked_2000`, 7.0% less on
+  `combinational_1000` and 0.7% less on `ic_heavy` than plan 2c; at 1:1, 2.2% less on `combinational_1000`. The row at
+  plan 3's end replaces it.
