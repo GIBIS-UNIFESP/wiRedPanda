@@ -23,7 +23,10 @@ void save(const SignalModel &model, const QString &fileName, const int inputPort
     QSaveFile file(fileName);
 
     if (!file.open(QIODevice::WriteOnly)) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Error opening file: %1", file.errorString());
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Error opening file: %1"),
+            file.errorString());
     }
 
     if (fileName.endsWith(".dolphin")) {
@@ -40,7 +43,10 @@ void save(const SignalModel &model, const QString &fileName, const int inputPort
         // Covered: TestDolphinFile::testSaveCommitFailureThrows() forces this via
         // RLIMIT_FSIZE (ScopedTinyFsizeLimit) -- Qt defers write() errors, so a failed
         // write during saveBinary()/saveCSV() above only surfaces here, at the flush before the commit.
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Error saving file: %1", file.errorString());
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Error saving file: %1"),
+            file.errorString());
     }
 }
 
@@ -49,12 +55,18 @@ DolphinSerializer::WaveformData load(const QString &fileName, const int maxInput
     QFile file(fileName);
 
     if (!file.exists()) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "File \"%1\" does not exist!", fileName);
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "File \"%1\" does not exist!"),
+            fileName);
     }
 
     if (!file.open(QIODevice::ReadOnly)) {
         qCDebug(zero) << "Could not open file in ReadOnly mode: " << file.errorString();
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Could not open file for reading: %1", file.errorString());
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Could not open file for reading: %1"),
+            file.errorString());
     }
 
     DolphinSerializer::WaveformData data;
@@ -69,7 +81,10 @@ DolphinSerializer::WaveformData load(const QString &fileName, const int maxInput
         data = DolphinSerializer::loadCSV(file, maxInputPorts);
     } else {
         qCDebug(zero) << "Format not supported. Could not open file: " << fileName;
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Format not supported. Could not open file: %1", fileName);
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Format not supported. Could not open file: %1"),
+            fileName);
     }
 
     file.close();
@@ -84,14 +99,19 @@ DolphinSerializer::WaveformData parseTerminal(QTextStream &in, const int maxInpu
     const auto wordList(str.split(','));
 
     if (wordList.size() < 2) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Invalid header: expected 'rows,cols' on the first line.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid header: expected 'rows,cols' on the first line."));
     }
 
     int rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
 
     if (rows <= 0) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Invalid row count %1: must be positive.", QString::number(rows));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid row count %1: must be positive."),
+            QString::number(rows));
     }
 
     // Clamp rows to the number of actual input ports to avoid out-of-bounds writes
@@ -100,7 +120,11 @@ DolphinSerializer::WaveformData parseTerminal(QTextStream &in, const int maxInpu
     }
 
     if ((cols < 1) || (cols > SignalModel::kMaxColumns)) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Invalid column count %1: must be between 1 and %2.", QString::number(cols), QString::number(SignalModel::kMaxColumns));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid column count %1: must be between 1 and %2."),
+            QString::number(cols),
+            QString::number(SignalModel::kMaxColumns));
     }
 
     DolphinSerializer::WaveformData data;
@@ -113,7 +137,12 @@ DolphinSerializer::WaveformData parseTerminal(QTextStream &in, const int maxInpu
         const auto wordList2(str.split(','));
 
         if (wordList2.size() < cols) {
-            throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Row %1 has %2 value(s) but %3 are required.", QString::number(row), QString::number(wordList2.size()), QString::number(cols));
+            throw PANDACEPTION_WITH_CONTEXT(
+                "BewavedDolphin",
+                QT_TRANSLATE_NOOP("BewavedDolphin", "Row %1 has %2 value(s) but %3 are required."),
+                QString::number(row),
+                QString::number(wordList2.size()),
+                QString::number(cols));
         }
 
         for (int col = 0; col < cols; ++col) {

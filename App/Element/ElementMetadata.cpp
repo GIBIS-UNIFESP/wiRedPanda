@@ -27,7 +27,10 @@ const ElementMetadata &ElementMetadataRegistry::metadata(ElementType type)
     auto &reg = registry();
 
     if (!reg.contains(type)) {
-        throw PANDACEPTION_WITH_CONTEXT("ElementMetadataRegistry", "No metadata registered for element type: %1", static_cast<int>(type));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "ElementMetadataRegistry",
+            QT_TRANSLATE_NOOP("ElementMetadataRegistry", "No metadata registered for element type: %1"),
+            static_cast<int>(type));
     }
 
     return reg[type];

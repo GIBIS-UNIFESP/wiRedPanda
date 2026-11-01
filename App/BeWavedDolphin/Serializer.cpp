@@ -33,7 +33,9 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
     qint64 cols; stream >> cols;
 
     if (rows < 0) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Invalid number of rows.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid number of rows."));
     }
     if (rows > maxInputPorts) {
         qCWarning(zero) << "DolphinSerializer: truncating waveform from" << rows << "rows to maximum" << maxInputPorts;
@@ -42,7 +44,7 @@ WaveformData loadBinary(QDataStream &stream, const int maxInputPorts)
 
     if ((cols < 2) || (cols > SignalModel::kMaxColumns)) {
         throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin",
-            "Invalid number of columns: got %1, expected between 2 and %2.",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid number of columns: got %1, expected between 2 and %2."),
             QString::number(cols), QString::number(SignalModel::kMaxColumns));
     }
 
@@ -89,14 +91,18 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
     const auto wordList = content.split(',');
 
     if (wordList.size() < 2) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Invalid CSV format: insufficient data.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid CSV format: insufficient data."));
     }
 
     int       rows = wordList.at(0).toInt();
     const int cols = wordList.at(1).toInt();
 
     if (rows < 0) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Invalid number of rows.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid number of rows."));
     }
     if (rows > maxInputPorts) {
         qCWarning(zero) << "DolphinSerializer: truncating waveform from" << rows << "rows to maximum" << maxInputPorts;
@@ -105,7 +111,7 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
 
     if ((cols < 2) || (cols > SignalModel::kMaxColumns)) {
         throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin",
-            "Invalid number of columns: got %1, expected between 2 and %2.",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid number of columns: got %1, expected between 2 and %2."),
             QString::number(cols), QString::number(SignalModel::kMaxColumns));
     }
 
@@ -115,7 +121,7 @@ WaveformData loadCSV(QFile &file, const int maxInputPorts)
         // Pass QString so .arg() selects the variadic-string overload and avoids
         // QString::arg(qlonglong, int)'s narrowing of the second qsizetype to int.
         throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin",
-            "Invalid CSV format: expected %1 elements, got %2.",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Invalid CSV format: expected %1 elements, got %2."),
             QString::number(expectedSize), QString::number(wordList.size()));
     }
 

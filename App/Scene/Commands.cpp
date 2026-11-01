@@ -142,7 +142,9 @@ const QList<QGraphicsItem *> findItems(Scene *scene, const QList<int> &ids)
     }
 
     if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more items was not found on the scene.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "commands",
+            QT_TRANSLATE_NOOP("commands", "One or more items was not found on the scene."));
     }
 
     return items;
@@ -160,7 +162,9 @@ const QList<GraphicElement *> findElements(Scene *scene, const QList<int> &ids)
     }
 
     if (items.size() != ids.size()) {
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements was not found on the scene.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "commands",
+            QT_TRANSLATE_NOOP("commands", "One or more elements was not found on the scene."));
     }
 
     return items;
@@ -227,7 +231,11 @@ const QList<QGraphicsItem *> loadItems(Scene *scene, QByteArray &itemData, const
     if (items.size() != ids.size()) {
         // None of these items were added to the scene yet, so they'd otherwise leak.
         qDeleteAll(items);
-        throw PANDACEPTION_WITH_CONTEXT("commands", "One or more elements were not found on scene. Expected %1, found %2.", static_cast<int>(ids.size()), static_cast<int>(items.size()));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "commands",
+            QT_TRANSLATE_NOOP("commands", "One or more elements were not found on scene. Expected %1, found %2."),
+            static_cast<int>(ids.size()),
+            static_cast<int>(items.size()));
     }
 
     // Re-assign the original IDs so undo/redo chains that store IDs remain valid

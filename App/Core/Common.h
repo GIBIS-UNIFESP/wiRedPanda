@@ -98,7 +98,8 @@ private:
 #define PANDACEPTION(msg, ...) \
     Pandaception(tr(msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
 
-// Special macro for non-class contexts - uses __VA_OPT__ for optional arguments
+// Special macro for non-class contexts - uses __VA_OPT__ for optional arguments. lupdate does not read the macro, so
+// the message is marked for it at each site: PANDACEPTION_WITH_CONTEXT("Ctx", QT_TRANSLATE_NOOP("Ctx", "..."), ...)
 #define PANDACEPTION_WITH_CONTEXT(context, msg, ...) \
     Pandaception(QCoreApplication::translate(context, msg) __VA_OPT__(.arg(__VA_ARGS__)), QString(msg) __VA_OPT__(.arg(__VA_ARGS__)), __FILE__, __LINE__)
 

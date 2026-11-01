@@ -67,7 +67,9 @@ void exportToPdf(const SignalModel *model, const PlotType plotType, const QStrin
     QPainter painter;
 
     if (!painter.begin(&printer)) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "Could not print this circuit to PDF.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin", "Could not print this circuit to PDF."));
     }
 
     // Render the waveform offscreen, then scale it to fit the page preserving aspect.

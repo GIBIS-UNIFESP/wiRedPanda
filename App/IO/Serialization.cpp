@@ -39,9 +39,10 @@ QVersionNumber readVersionNumber(QDataStream &stream)
     quint32 count;
     stream >> count;
     if (count > 8) {
-        throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                        "Implausible version segment count %1 — stream may be corrupt",
-                                        QString::number(count));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "Serialization",
+            QT_TRANSLATE_NOOP("Serialization", "Implausible version segment count %1 — stream may be corrupt"),
+            QString::number(count));
     }
     QList<int> segs;
     segs.reserve(static_cast<int>(count));
@@ -85,9 +86,10 @@ QString readBoundedString(QDataStream &stream)
         if (byteLen != 0xFFFFFFFFu && byteLen != 0) {
             // byteLen bytes of data plus 4 bytes for the length field itself
             if (static_cast<qint64>(byteLen) + 4 > bytesAvailable(stream))
-                throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                                "QString byte count %1 exceeds remaining stream bytes",
-                                                QString::number(byteLen));
+                throw PANDACEPTION_WITH_CONTEXT(
+                    "Serialization",
+                    QT_TRANSLATE_NOOP("Serialization", "QString byte count %1 exceeds remaining stream bytes"),
+                    QString::number(byteLen));
         }
     }
     QString result;
@@ -103,9 +105,10 @@ QByteArray readBoundedByteArray(QDataStream &stream)
     if (peekU32(stream, len)) {
         if (len != 0xFFFFFFFFu && len != 0) {
             if (static_cast<qint64>(len) + 4 > bytesAvailable(stream))
-                throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                                "QByteArray length %1 exceeds remaining stream bytes",
-                                                QString::number(len));
+                throw PANDACEPTION_WITH_CONTEXT(
+                    "Serialization",
+                    QT_TRANSLATE_NOOP("Serialization", "QByteArray length %1 exceeds remaining stream bytes"),
+                    QString::number(len));
         }
     }
     QByteArray result;
@@ -122,9 +125,10 @@ QStringList readBoundedStringList(QDataStream &stream)
         // Each serialised entry is at least 4 bytes (the empty-string quint32 header);
         // subtract 4 for the count field itself which is still in the stream.
         if (static_cast<qint64>(count) > (bytesAvailable(stream) - 4) / 4)
-            throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                            "QStringList count %1 implausible given remaining stream bytes",
-                                            QString::number(count));
+            throw PANDACEPTION_WITH_CONTEXT(
+                "Serialization",
+                QT_TRANSLATE_NOOP("Serialization", "QStringList count %1 implausible given remaining stream bytes"),
+                QString::number(count));
     }
     QStringList result;
     stream >> result;
@@ -138,9 +142,10 @@ QKeySequence readBoundedKeySequence(QDataStream &stream)
     quint32 count = 0;
     if (peekU32(stream, count)) {
         if (count > 4 || static_cast<qint64>(count) * 4 > bytesAvailable(stream))
-            throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                            "QKeySequence count %1 out of range — stream may be corrupt",
-                                            QString::number(count));
+            throw PANDACEPTION_WITH_CONTEXT(
+                "Serialization",
+                QT_TRANSLATE_NOOP("Serialization", "QKeySequence count %1 out of range — stream may be corrupt"),
+                QString::number(count));
     }
     QKeySequence ks; stream >> ks; return ks;
 } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QKeySequence, never reached after the return above.
@@ -152,9 +157,10 @@ QBitArray readBoundedBitArray(QDataStream &stream)
     if (peekU32(stream, numBits) && numBits > 0) {
         const qint64 numBytes = (static_cast<qint64>(numBits) + 7) / 8;
         if (numBytes > bytesAvailable(stream))
-            throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                            "QBitArray numBits %1 exceeds stream size — stream may be corrupt",
-                                            QString::number(numBits));
+            throw PANDACEPTION_WITH_CONTEXT(
+                "Serialization",
+                QT_TRANSLATE_NOOP("Serialization", "QBitArray numBits %1 exceeds stream size — stream may be corrupt"),
+                QString::number(numBits));
     }
     QBitArray ba; stream >> ba; return ba;
 } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QBitArray, never reached after the return above.
@@ -222,9 +228,10 @@ QVariant readBoundedVariant(QDataStream &stream)
             return QVariant::fromValue(readBoundedStringList(stream));
         // QVariantList and QVariantMap are not used in metadata; reject to
         // avoid nested-container OOM (inner QVariants bypass this reader).
-        throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                        "Unsupported container type %1 in metadata — stream may be corrupt",
-                                        QString::number(typeId));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "Serialization",
+            QT_TRANSLATE_NOOP("Serialization", "Unsupported container type %1 in metadata — stream may be corrupt"),
+            QString::number(typeId));
     }
 
     if (typeId == quint32(QMetaType::QByteArray)) {
@@ -253,9 +260,10 @@ QVariant readBoundedVariant(QDataStream &stream)
     // data even for null-marked variants, so unknown types with isNull != 0 are
     // still vulnerable to fuzz-controlled allocation via QArrayData::allocate.
     if (!isFixedSize)
-        throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                        "Unsupported metadata value type %1 — stream may be corrupt",
-                                        QString::number(typeId));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "Serialization",
+            QT_TRANSLATE_NOOP("Serialization", "Unsupported metadata value type %1 — stream may be corrupt"),
+            QString::number(typeId));
 
     QVariant result;
     stream >> result;
@@ -342,9 +350,10 @@ QByteArray Serialization::readPayload(QDataStream &stream, const QVersionNumber 
     // mirroring this file's peekU32()-then-validate idiom (see readBoundedString()
     // and friends above) rather than trusting qUncompress() to fail cheaply.
     if (raw.size() < 4) {
-        throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                        "Compressed payload too short (%1 bytes) to contain a size header",
-                                        QString::number(raw.size()));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "Serialization",
+            QT_TRANSLATE_NOOP("Serialization", "Compressed payload too short (%1 bytes) to contain a size header"),
+            QString::number(raw.size()));
     }
 
     const quint32 expectedSize = qFromBigEndian<quint32>(reinterpret_cast<const uchar *>(raw.constData()));
@@ -353,15 +362,17 @@ QByteArray Serialization::readPayload(QDataStream &stream, const QVersionNumber 
     const quint32 compressedBytes = static_cast<quint32>(raw.size() - 4);
     if (expectedSize > kMaxUncompressedPayload ||
         (compressedBytes > 0 && expectedSize / compressedBytes > kMaxExpansionRatio)) {
-        throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                        "Implausible decompressed payload size %1 -- stream may be corrupt",
-                                        QString::number(expectedSize));
+        throw PANDACEPTION_WITH_CONTEXT(
+            "Serialization",
+            QT_TRANSLATE_NOOP("Serialization", "Implausible decompressed payload size %1 -- stream may be corrupt"),
+            QString::number(expectedSize));
     }
 
     const QByteArray decompressed = qUncompress(raw);
     if (decompressed.isNull() && expectedSize != 0) {
-        throw PANDACEPTION_WITH_CONTEXT("Serialization",
-                                        "Failed to decompress circuit payload -- stream may be corrupt");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "Serialization",
+            QT_TRANSLATE_NOOP("Serialization", "Failed to decompress circuit payload -- stream may be corrupt"));
     }
     return decompressed;
 }

@@ -135,8 +135,9 @@ What no single change owns: the pitfalls of building and testing this code base,
 The translatable-strings golden compares `build/translatable_strings.ts`, which only its own target refreshes, so a
 change that adds or removes `tr()` strings builds that target and updates the golden in the same commit; a build that
 skips it compares a stale catalog and passes. A class that moves or is renamed keeps its strings' translation context,
-or every language silently falls back to English. The `.ts` catalogs themselves are refreshed at release, not
-mid-branch.
+or every language silently falls back to English. lupdate reads `PANDACEPTION()` as `tr()` but cannot read
+`PANDACEPTION_WITH_CONTEXT()`, so that macro's message is marked at each site with `QT_TRANSLATE_NOOP()` in the same
+context, or it never reaches the catalogs. The `.ts` catalogs themselves are refreshed at release, not mid-branch.
 
 ### Tests
 

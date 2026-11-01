@@ -36,7 +36,9 @@ void renderToPdf(Scene *scene, const QString &filePath)
     QPainter painter;
 
     if (!painter.begin(&printer)) {
-        throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not print this circuit to PDF.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "CircuitExporter",
+            QT_TRANSLATE_NOOP("CircuitExporter", "Could not print this circuit to PDF."));
     }
 
     scene->render(&painter, QRectF(), paddedBoundingRect(scene));
@@ -72,7 +74,9 @@ QImage renderScaledImage(Scene *scene, const QRectF &paddedRect)
 
     QPainter painter;
     if (!painter.begin(&image)) {
-        throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not begin painting circuit image.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "CircuitExporter",
+            QT_TRANSLATE_NOOP("CircuitExporter", "Could not begin painting circuit image."));
     }
     // Antialiasing enabled here; the PDF path relies on the printer's high DPI instead.
     painter.setRenderHint(QPainter::Antialiasing);
@@ -87,7 +91,10 @@ void renderToImage(Scene *scene, const QString &filePath)
     const QImage image = renderScaledImage(scene, paddedBoundingRect(scene));
 
     if (!image.save(filePath)) {
-        throw PANDACEPTION_WITH_CONTEXT("CircuitExporter", "Could not save image to %1.", filePath);
+        throw PANDACEPTION_WITH_CONTEXT(
+            "CircuitExporter",
+            QT_TRANSLATE_NOOP("CircuitExporter", "Could not save image to %1."),
+            filePath);
     }
 }
 

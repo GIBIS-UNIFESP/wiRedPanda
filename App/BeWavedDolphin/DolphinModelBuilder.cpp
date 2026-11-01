@@ -62,7 +62,10 @@ Signals collect(Scene *scene)
     const auto elements = scene->elements();
 
     if (elements.isEmpty()) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "The circuit is empty. Add input and output elements to generate a waveform.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin",
+                              "The circuit is empty. Add input and output elements to generate a waveform."));
     }
 
     for (auto *elm : elements) {
@@ -94,15 +97,27 @@ Signals collect(Scene *scene)
     });
 
     if (result.inputs.isEmpty() && result.outputs.isEmpty()) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin",
+                              "The circuit has no input or output elements. Add at least one input (e.g. Switch) and "
+                              "one output (e.g. LED) to generate a waveform."));
     }
 
     if (result.inputs.isEmpty()) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin",
+                              "The circuit has no input elements. Add at least one input (e.g. Switch, Button, or "
+                              "Clock) to generate a waveform."));
     }
 
     if (result.outputs.isEmpty()) {
-        throw PANDACEPTION_WITH_CONTEXT("BewavedDolphin", "The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.");
+        throw PANDACEPTION_WITH_CONTEXT(
+            "BewavedDolphin",
+            QT_TRANSLATE_NOOP("BewavedDolphin",
+                              "The circuit has no output elements. Add at least one output (e.g. LED or Display) to "
+                              "generate a waveform."));
     }
 
     // Rows first -- they are the source of truth; the label lists are projections of them.

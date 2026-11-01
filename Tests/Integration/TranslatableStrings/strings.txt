@@ -21,10 +21,14 @@ BewavedDolphin	Cannot export: the circuit this waveform was built from has chang
 BewavedDolphin	Clear
 BewavedDolphin	Combinational
 BewavedDolphin	Copy
+BewavedDolphin	Could not open file for reading: %1
+BewavedDolphin	Could not print this circuit to PDF.
 BewavedDolphin	Cut
 BewavedDolphin	Do you want to link this beWavedDolphin file to your current wiRedPanda file and save it?
 BewavedDolphin	Dolphin files
 BewavedDolphin	Edit
+BewavedDolphin	Error opening file: %1
+BewavedDolphin	Error saving file: %1
 BewavedDolphin	Exit
 BewavedDolphin	Export to Image
 BewavedDolphin	Export to PDF
@@ -33,7 +37,15 @@ BewavedDolphin	File
 BewavedDolphin	File "%1" does not exist!
 BewavedDolphin	File loaded successfully.
 BewavedDolphin	Fit to screen
+BewavedDolphin	Format not supported. Could not open file: %1
 BewavedDolphin	Help
+BewavedDolphin	Invalid CSV format: expected %1 elements, got %2.
+BewavedDolphin	Invalid CSV format: insufficient data.
+BewavedDolphin	Invalid column count %1: must be between 1 and %2.
+BewavedDolphin	Invalid header: expected 'rows,cols' on the first line.
+BewavedDolphin	Invalid number of columns: got %1, expected between 2 and %2.
+BewavedDolphin	Invalid number of rows.
+BewavedDolphin	Invalid row count %1: must be positive.
 BewavedDolphin	Invert
 BewavedDolphin	Load
 BewavedDolphin	Merge
@@ -44,6 +56,7 @@ BewavedDolphin	PNG files
 BewavedDolphin	Paste
 BewavedDolphin	Redo
 BewavedDolphin	Reset Zoom
+BewavedDolphin	Row %1 has %2 value(s) but %3 are required.
 BewavedDolphin	Save
 BewavedDolphin	Save As...
 BewavedDolphin	Save File as...
@@ -56,6 +69,10 @@ BewavedDolphin	Set to 1
 BewavedDolphin	Show Numbers
 BewavedDolphin	Show Waveforms
 BewavedDolphin	Split
+BewavedDolphin	The circuit has no input elements. Add at least one input (e.g. Switch, Button, or Clock) to generate a waveform.
+BewavedDolphin	The circuit has no input or output elements. Add at least one input (e.g. Switch) and one output (e.g. LED) to generate a waveform.
+BewavedDolphin	The circuit has no output elements. Add at least one output (e.g. LED or Display) to generate a waveform.
+BewavedDolphin	The circuit is empty. Add input and output elements to generate a waveform.
 BewavedDolphin	Undo
 BewavedDolphin	View
 BewavedDolphin	Zoom In
@@ -67,6 +84,9 @@ Buzzer	BUZZER
 Buzzer	Buzzer
 ChangePortSizeCommand	Change input size to %1
 ChangePortSizeCommand	Change output size to %1
+CircuitExporter	Could not begin painting circuit image.
+CircuitExporter	Could not print this circuit to PDF.
+CircuitExporter	Could not save image to %1.
 ClipboardManager	Paste
 Clock	CLOCK SIGNAL
 Clock	Clock
@@ -140,6 +160,7 @@ ElementAppearance	Couldn't load pixmap: %1 (%2)
 ElementAppearance	File does not exist
 ElementAppearance	File is not readable
 ElementAppearance	Unknown reason
+ElementContextMenu	Unknown context menu option.
 ElementEditor	 Hz
 ElementEditor	"%1" could not be loaded as a picture.
 ElementEditor	<Many colors>
@@ -244,6 +265,7 @@ ElementFactory	XOR gate: HIGH when an odd number of inputs are HIGH.
 ElementLabel	Drag or double-click to add.
 ElementLabel	Embedded IC: %1
 ElementLabel	IC from file: %1
+ElementMetadataRegistry	No metadata registered for element type: %1
 ElementPalette	Element palette
 ElementPalette	Elements grouped by category. Drag one onto the canvas, or double-click to add it to the active circuit.
 ElementPalette	Search elements
@@ -271,6 +293,7 @@ ExportController	PNG files
 ExportController	SystemVerilog code successfully generated.
 ExportController	SystemVerilog file
 ExportController	The .panda file is empty.
+FileUtils	Could not copy %1 to %2: %3
 FlipCommand	Flip %1 elements in axis %2
 GraphicElement	Default
 GraphicElementSerializer	%1 with %2 input ports, above its maximum of %3 — stream may be corrupt
@@ -520,13 +543,22 @@ SceneUiBinder	Mute
 SceneUiBinder	Unmute
 SceneUiBinder	Zoom: %1%    Selected: %2 / %3
 Serialization	Blob map count %1 implausible given remaining stream bytes
+Serialization	Compressed payload too short (%1 bytes) to contain a size header
 Serialization	Error copying file: %1
 Serialization	Failed to create versioned backup: %1
+Serialization	Failed to decompress circuit payload -- stream may be corrupt
+Serialization	Implausible decompressed payload size %1 -- stream may be corrupt
+Serialization	Implausible version segment count %1 — stream may be corrupt
 Serialization	Invalid file format.
 Serialization	Invalid legacy file header: %1
 Serialization	Invalid type. Data is possibly corrupted.
 Serialization	Metadata map count %1 implausible given remaining stream bytes
 Serialization	Panda file dependency chain exceeds the maximum nesting depth (%1) while copying '%2'
+Serialization	QBitArray numBits %1 exceeds stream size — stream may be corrupt
+Serialization	QByteArray length %1 exceeds remaining stream bytes
+Serialization	QKeySequence count %1 out of range — stream may be corrupt
+Serialization	QString byte count %1 exceeds remaining stream bytes
+Serialization	QStringList count %1 implausible given remaining stream bytes
 Serialization	Stream error loading connection at position %1: status %2
 Serialization	Stream error loading element at position %1: status %2
 Serialization	Stream error reading blob map count
@@ -534,6 +566,8 @@ Serialization	Stream error reading element type at position %1: status %2
 Serialization	Stream error reading metadata map count
 Serialization	Stream error reading preamble: status %1
 Serialization	Stream error reading type tag at position %1: status %2
+Serialization	Unsupported container type %1 in metadata — stream may be corrupt
+Serialization	Unsupported metadata value type %1 — stream may be corrupt
 Simulation	Warning: feedback circuit did not converge — the circuit may be oscillating.
 SplitCommand	Error trying to redo %1
 SplitCommand	Error trying to undo %1
@@ -613,6 +647,9 @@ Xnor	XNOR
 Xnor	Xnor
 Xor	XOR
 Xor	Xor
+commands	One or more elements was not found on the scene.
+commands	One or more elements were not found on scene. Expected %1, found %2.
+commands	One or more items was not found on the scene.
 main	Circuit file to open.
 main	Error: 
 main	Error: Circuit contains Truth Table elements.

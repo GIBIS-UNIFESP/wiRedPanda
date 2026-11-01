@@ -34,7 +34,7 @@ inline void copyToDir(const QString &srcPath, const QString &destDir)
     if (!QFile::exists(dest)) {
         QFile srcFile(srcPath);
         if (!srcFile.copy(dest)) {
-            throw PANDACEPTION_WITH_CONTEXT("FileUtils", "Could not copy %1 to %2: %3",
+            throw PANDACEPTION_WITH_CONTEXT("FileUtils", QT_TRANSLATE_NOOP("FileUtils", "Could not copy %1 to %2: %3"),
                                             srcPath, dest, srcFile.errorString());
         }
     }
