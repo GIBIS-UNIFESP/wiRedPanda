@@ -66,7 +66,7 @@ constexpr bool validate(const ElementConstraints &c)
  *
  * \details Specializations of ElementInfo<T>::describe() call this first, then fill in
  * the remaining display fields: \c pixmapPath, \c titleText, \c translatedName,
- * \c trContext, \c defaultAppearances, and \c alternativeAppearances.
+ * \c trContext and \c defaultAppearances.
  * \param c Source constraints.
  * \return Partially populated ElementTypeDescriptor.
  */

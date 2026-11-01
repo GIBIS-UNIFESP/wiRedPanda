@@ -115,8 +115,8 @@ struct ElementTypeDescriptor {
 
     // --- Appearance configuration ---
 
-    QStringList defaultAppearances;     ///< Built-in appearance resource paths.
-    QStringList alternativeAppearances; ///< User-selectable alternative appearance paths.
+    /// Built-in appearance resource paths, one per slot; an element's active list starts as them.
+    QStringList defaultAppearances;
 
     // --- Feature flags ---
 

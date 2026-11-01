@@ -533,7 +533,7 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `hasVolume`           | Has volume control (e.g., Buzzer, AudioBox)                                     |
 | `rotatesGraphic`      | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
 
-`ElementTypeDescriptor` extends this with visual information: pixmap paths, translated names, and `defaultAppearances`/`alternativeAppearances` lists.
+`ElementTypeDescriptor` extends this with visual information: pixmap paths, translated names, and its `defaultAppearances` list, which an element's appearance list starts as.
 
 ### Element Catalog
 

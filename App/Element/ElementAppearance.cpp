@@ -66,10 +66,10 @@ ElementAppearance::~ElementAppearance()
     ElementAppearanceDetail::leave(this, m_loadedPaths);
 }
 
-void ElementAppearance::seed(const QStringList &defaultAppearances, const QStringList &alternativeAppearances)
+void ElementAppearance::seed(const QStringList &defaultAppearances)
 {
     m_defaultAppearances = defaultAppearances;
-    m_alternativeAppearances = alternativeAppearances.isEmpty() ? m_defaultAppearances : alternativeAppearances;
+    m_alternativeAppearances = m_defaultAppearances;
 }
 
 void ElementAppearance::appearanceChanged()

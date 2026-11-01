@@ -38,8 +38,8 @@ public:
 
     Q_DISABLE_COPY_MOVE(ElementAppearance)
 
-    /// Seeds the appearance lists from the type's descriptor (alternatives default to the defaults).
-    void seed(const QStringList &defaultAppearances, const QStringList &alternativeAppearances);
+    /// Seeds the appearance lists from the type's \a defaultAppearances: the active list starts as them.
+    void seed(const QStringList &defaultAppearances);
 
     // --- The picture shown ---
 
