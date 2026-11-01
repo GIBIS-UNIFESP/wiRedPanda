@@ -83,6 +83,30 @@ QJsonValue maskFontSizes(const QJsonValue &value)
     return object;
 }
 
+/// Builds a file-backed IC on \a scene whose file then changes to bytes that do not read, its cache dropped, so a
+/// snapshot of it no longer reads.
+IC *icWithABrokenFile(Scene *scene, const QTemporaryDir &dir)
+{
+    const QString path = dir.filePath("sub.panda");
+    {
+        WorkSpace sub;
+        sub.scene()->addItem(new InputSwitch());
+        sub.scene()->addItem(new Led());
+        sub.save(path);
+    }
+    auto *ic = new IC();
+    scene->addItem(ic);
+    ic->loadFile(path, dir.path());
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        return nullptr;
+    }
+    file.write("not a circuit");
+    file.close();
+    scene->icRegistry()->invalidate(path);
+    return ic;
+}
+
 } // namespace
 
 namespace TestElementHandlerHelpers {
@@ -140,33 +164,42 @@ void TestElementHandler::testSetElementPropertiesAcceptsNegativeClockDelay()
 
 void TestElementHandler::testSetElementPropertiesAnswersAPushThatDropsWithAnError()
 {
-    // A file-backed IC whose file changed to bytes that do not read, its cache dropped: the label's push drops and the
-    // handler throws, which the processor answers as an error (MCPProcessor::processCommand()), the undo stack as it was
+    // A rotation is a snapshot of the element, which a file-backed IC whose file no longer reads cannot load: the push
+    // drops and the handler throws, which the processor answers as an error (MCPProcessor::processCommand()), the undo
+    // stack as it was, the label sent with it included
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
-    const QString path = dir.filePath("sub.panda");
-    {
-        WorkSpace sub;
-        sub.scene()->addItem(new InputSwitch());
-        sub.scene()->addItem(new Led());
-        sub.save(path);
-    }
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     auto *scene = window.currentTab()->scene();
-    auto *ic = new IC();
-    scene->addItem(ic);
-    ic->loadFile(path, dir.path());
-    QFile file(path);
-    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
-    file.write("not a circuit");
-    file.close();
-    scene->icRegistry()->invalidate(path);
+    const IC *ic = icWithABrokenFile(scene, dir);
+    QVERIFY(ic);
     const int commands = scene->undoStack()->count();
 
-    const QJsonObject params{{"element_id", ic->id()}, {"label", "renamed"}};
+    const QJsonObject params{{"element_id", ic->id()}, {"label", "renamed"}, {"rotation", 90}};
     QVERIFY_THROWS_EXCEPTION(std::exception, handler.handleCommand("set_element_properties", params, {}));
     QCOMPARE(scene->undoStack()->count(), commands);
+}
+
+void TestElementHandler::testSetElementPropertiesRelabelsAnICWithoutReadingItsFile()
+{
+    // A label alone is the property command's, which holds the values, not a snapshot: no file is read
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    auto *scene = window.currentTab()->scene();
+    const IC *ic = icWithABrokenFile(scene, dir);
+    QVERIFY(ic);
+    const int commands = scene->undoStack()->count();
+    const QString label = ic->label();
+
+    const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", ic->id()}, {"label", "renamed"}}, 1);
+    QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
+    QCOMPARE(scene->undoStack()->count(), commands + 1);
+    QCOMPARE(ic->label(), QString("renamed"));
+    scene->undoStack()->undo();
+    QCOMPARE(ic->label(), label);
 }
 
 void TestElementHandler::testSetElementPropertiesRejectsClockDelayOutOfRange()
@@ -610,7 +643,7 @@ void TestElementHandler::testHandleSetElementPropertiesChangesTriggerWhenSupport
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch"); // hasTrigger
 
-    // A key the editor's field takes, stored uppercased as the field stores it
+    // A key the editor's field takes, stored as the field stores it: a key sequence names a letter's key uppercased
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"trigger", "k"}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(elementById(window, id)->trigger(), QKeySequence("K"));
@@ -704,6 +737,11 @@ void TestElementHandler::testHandleSetElementPropertiesChangesWirelessModeAndSev
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
     QCOMPARE(node->outputPort()->connections().size(), 0);
+
+    // The mode and the wire it severed are one undo step
+    scene->undoStack()->undo();
+    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    QCOMPARE(node->outputPort()->connections().size(), 1);
 }
 
 void TestElementHandler::testHandleSetElementPropertiesRxModeSeversInputConnection()
@@ -919,6 +957,11 @@ void TestElementHandler::testSetElementPropertiesRefusesASecondTxOnALabel()
     QVERIFY(handler.handleCommand("set_element_properties", {{"element_id", second}, {"wireless_mode", 0}}, 1).contains("result"));
     QVERIFY(handler.handleCommand("set_element_properties", {{"element_id", second}, {"label", "x"}}, 1).contains("result"));
     QVERIFY(refuses(window, handler, {{"element_id", second}, {"wireless_mode", 1}}));
+
+    // The property command refuses the channel: a label and a mode that make the second Tx, with a rotation the same
+    // request sets after them, leave all three as they were
+    QVERIFY(refuses(window, handler, {{"element_id", second}, {"label", "x"}, {"wireless_mode", 1}, {"rotation", 90}}));
+    QCOMPARE(elementById(window, second)->rotation(), 0.0);
 }
 
 void TestElementHandler::testSetElementPropertiesPushesNothingWhenNothingChanges()
@@ -932,6 +975,10 @@ void TestElementHandler::testSetElementPropertiesPushesNothingWhenNothingChanges
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"label", ""}, {"locked", false}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(stack->count(), commands);
+
+    // Nor does a rotation the element has, through the snapshot
+    QVERIFY(handler.handleCommand("set_element_properties", {{"element_id", id}, {"label", ""}, {"rotation", 0}}, 1).contains("result"));
+    QCOMPARE(stack->count(), commands);
 }
 
 void TestElementHandler::testSetElementPropertiesIsOneUndoStep()
@@ -943,13 +990,17 @@ void TestElementHandler::testSetElementPropertiesIsOneUndoStep()
     const int commands = stack->count();
     const QByteArray before = snapshot(elementById(window, id));
 
+    // The properties go through the property command and the rotation through a snapshot: still one step
     const QJsonObject response = handler.handleCommand("set_element_properties",
-        {{"element_id", id}, {"label", "L"}, {"frequency", 4}, {"delay", 0.25}, {"locked", true}}, 1);
+        {{"element_id", id}, {"label", "L"}, {"frequency", 4}, {"delay", 0.25}, {"locked", true}, {"rotation", 90}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(stack->count(), commands + 1);
+    const QByteArray after = snapshot(elementById(window, id));
 
     stack->undo();
     QCOMPARE(snapshot(elementById(window, id)), before);
+    stack->redo();
+    QCOMPARE(snapshot(elementById(window, id)), after);
 }
 
 void TestElementHandler::testSetElementPropertiesReadsBackWhatTheElementTook()

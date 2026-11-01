@@ -8,6 +8,7 @@
 #include <limits>
 #include <optional>
 #include <type_traits>
+#include <utility>
 #include <variant>
 
 #include <QIODevice>
@@ -21,7 +22,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -145,9 +145,9 @@ QString rangeText(const ParamRange &range)
 /// Returns the first reason set_element_properties refuses \a params for \a element, or an empty string when every
 /// value passes: each keyed property applies to the element, its value has the property's kind and is one its spec
 /// takes (within the range, among the choices, one \c accept takes); a trigger is one key, as the editor's field
-/// takes it; an appearance index comes with an appearance and names one of the element's states, a picture loads,
-/// and no second Tx would share a label.
-QString refusal(const Element &element, const QJsonObject &params, const Scene *scene)
+/// takes it; an appearance index comes with an appearance and names one of the element's states, and a picture loads.
+/// The rule that a wireless channel has one Tx is the property command's (SetPropertyCommand::apply()).
+QString refusal(const Element &element, const QJsonObject &params)
 {
     const auto lacks = [&element](const QString &property) {
         return QString("Element %1 (%2) has no property '%3'")
@@ -225,15 +225,6 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         }
     }
 
-    // A Tx node's label is its channel, and a channel has one Tx
-    if (element.hasWirelessMode() && scene && (params.contains("label") || params.contains("wireless_mode"))) {
-        const QString label = params.contains("label") ? params.value("label").toString() : element.label();
-        const auto mode = params.contains("wireless_mode") ? static_cast<WirelessMode>(params.value("wireless_mode").toInt())
-                                                           : element.wirelessMode();
-        if (const QString duplicate = scene->duplicateTxLabel({{&element, label, mode}}); !duplicate.isEmpty()) {
-            return QString("A Tx node with label \"%1\" already exists: each wireless channel has one").arg(duplicate);
-        }
-    }
     return {};
 }
 
@@ -533,10 +524,46 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     }
 
     // Every value is checked before any is set, so a refused request changes nothing
-    if (const QString refused = ElementHandlerProperties::refusal(*element, params, currentScene()); !refused.isEmpty()) {
+    if (const QString refused = ElementHandlerProperties::refusal(*element, params); !refused.isEmpty()) {
         return createErrorResponse(refused, requestId, JsonRpcError::ValidationError);
     }
+    Scene *scene = currentScene();
 
+    // The keyed properties, through the property command, which holds the rule that a wireless channel has one Tx
+    QJsonObject oldProperties;
+    QJsonObject newProperties;
+    QList<PropertyEdit> edits;
+    QList<const char *> keys; ///< The key of each edit.
+    for (const auto &keyed : ElementHandlerProperties::keyedProperties()) {
+        if (!params.contains(QLatin1String(keyed.key))) {
+            continue;
+        }
+        const ParamValue current = SetPropertyCommand::read(*element, keyed.property);
+        oldProperties[keyed.key] = ElementHandlerProperties::toJson(current);
+        // refusal() took the value as of the property's kind; a trigger's text is set as the editor's field sets it
+        edits.append({element, keyed.property,
+                      *ElementHandlerProperties::fromJson(params.value(QLatin1String(keyed.key)), current)});
+        keys.append(keyed.key);
+    }
+
+    // A Tx takes no wire on its output and an Rx none on its input: setting the mode hides the port, and a
+    // DeleteItemsCommand deletes its wires, so undo restores them
+    QList<QGraphicsItem *> severed;
+    if (params.contains("wireless_mode")) {
+        const auto newMode = static_cast<WirelessMode>(params.value("wireless_mode").toInt());
+        Port *port = (newMode == WirelessMode::Rx)   ? static_cast<Port *>(element->inputPort())
+                     : (newMode == WirelessMode::Tx) ? static_cast<Port *>(element->outputPort())
+                                                     : nullptr;
+        if (port) {
+            for (auto *conn : port->connections()) {
+                severed.append(conn);
+            }
+        }
+    }
+
+    // A request with a rotation or an appearance, which are no properties of the command, is one snapshot of the
+    // element, taken before anything is set: its one command, which drops whole when the element's snapshot no longer
+    // reads (a file-backed IC whose file changed)
     const auto snapshot = [element] {
         QByteArray data;
         QDataStream stream(&data, QIODevice::WriteOnly);
@@ -544,31 +571,19 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
         return data;
     };
+    const bool snapshotted = params.contains("rotation") || params.contains("appearance");
+    const QByteArray oldData = snapshotted ? snapshot() : QByteArray();
 
-    // Snapshot current state before any mutation so UpdateCommand can restore it on undo.
-    const QByteArray oldData = snapshot();
-
-    QJsonObject result;
-    QJsonObject oldProperties;
-    QJsonObject newProperties;
-
+    auto [propertyCommand, duplicate] = SetPropertyCommand::apply(edits, scene);
+    if (!duplicate.isEmpty()) {
+        return createErrorResponse(
+            QString("A Tx node with label \"%1\" already exists: each wireless channel has one").arg(duplicate),
+            requestId, JsonRpcError::ValidationError);
+    }
     // Each new value is read back from the element: the value it took
-    if (params.contains("label")) {
-        oldProperties["label"] = element->label();
-        element->setLabel(params.value("label").toString());
-        newProperties["label"] = element->label();
-    }
-
-    if (params.contains("color")) {
-        oldProperties["color"] = element->color();
-        element->setColor(params.value("color").toString());
-        newProperties["color"] = element->color();
-    }
-
-    if (params.contains("frequency")) {
-        oldProperties["frequency"] = element->frequency();
-        element->setFrequency(params.value("frequency").toDouble());
-        newProperties["frequency"] = element->frequency();
+    for (qsizetype i = 0; i < edits.size(); ++i) {
+        newProperties[keys.at(i)] =
+            ElementHandlerProperties::toJson(SetPropertyCommand::read(*element, edits.at(i).property));
     }
 
     if (params.contains("rotation")) {
@@ -576,105 +591,50 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
         element->setRotation(params.value("rotation").toDouble());
         newProperties["rotation"] = element->rotation();
     }
-
-    if (params.contains("delay")) {
-        oldProperties["delay"] = element->delay();
-        element->setDelay(params.value("delay").toDouble());
-        newProperties["delay"] = element->delay();
-    }
-
-    if (params.contains("trigger")) {
-        // Stored uppercased, as the editor's field stores it
-        oldProperties["trigger"] = element->trigger().toString();
-        element->setTrigger(QKeySequence(params.value("trigger").toString().toUpper()));
-        newProperties["trigger"] = element->trigger().toString();
-    }
-
-    if (params.contains("locked")) {
-        if (auto *inputElm = qobject_cast<ElementInput *>(element)) {
-            oldProperties["locked"] = inputElm->isLocked();
-            inputElm->setLocked(params.value("locked").toBool());
-            newProperties["locked"] = inputElm->isLocked();
-        }
-    }
-
-    if (params.contains("volume")) {
-        oldProperties["volume"] = element->volume();
-        element->setVolume(params.value("volume").toDouble());
-        newProperties["volume"] = element->volume();
-    }
-
     // The appearance has no old value in the response: whether it changed is whether the element's state did
-    bool appearanceChanged = false;
     if (params.contains("appearance")) {
-        QString appearancePath = params.value("appearance").toString();
-        bool useDefault = appearancePath.isEmpty();
-        int appearanceIndex = params.contains("appearance_index") ? params.value("appearance_index").toInt() : -1;
-
+        const QString appearancePath = params.value("appearance").toString();
         newProperties["appearance"] = appearancePath;
-        newProperties["appearance_default"] = useDefault;
-
-        const QByteArray beforeAppearance = snapshot();
-        if (appearanceIndex >= 0) {
+        newProperties["appearance_default"] = appearancePath.isEmpty();
+        if (params.contains("appearance_index")) {
             // Set appearance for a specific index directly (e.g., LED state)
+            const int appearanceIndex = params.value("appearance_index").toInt();
             element->setAppearanceAt(appearanceIndex, appearancePath);
             newProperties["appearance_index"] = appearanceIndex;
         } else {
-            element->setAppearance(useDefault, appearancePath);
-        }
-        appearanceChanged = (snapshot() != beforeAppearance);
-    }
-
-    // Wireless mode is only meaningful for Node elements, which refusal() checked.
-    QList<QGraphicsItem *> wirelessConnsToDelete;
-    if (params.contains("wireless_mode")) {
-        if (auto *node = qobject_cast<Node *>(element)) {
-            const auto newMode = static_cast<WirelessMode>(params.value("wireless_mode").toInt());
-            oldProperties["wireless_mode"] = static_cast<int>(node->wirelessMode());
-
-            // Collect connections on the port that will be hidden, so they can
-            // be deleted in an undo macro (same pattern as ElementEditor::apply).
-            Port *port = (newMode == WirelessMode::Rx) ? static_cast<Port *>(node->inputPort())
-                          : (newMode == WirelessMode::Tx) ? static_cast<Port *>(node->outputPort())
-                          : nullptr;
-            if (port) {
-                for (auto *conn : port->connections()) {
-                    wirelessConnsToDelete.append(static_cast<QGraphicsItem *>(conn));
-                }
-            }
-
-            node->setWirelessMode(newMode);
-            newProperties["wireless_mode"] = static_cast<int>(node->wirelessMode());
+            element->setAppearance(appearancePath.isEmpty(), appearancePath);
         }
     }
 
-    // Push an undo command so Ctrl+Z in the GUI can revert MCP-applied property changes, unless no value changed (an
-    // empty label set over a null one changes the saved bytes, not the label). When wireless mode changes sever
-    // connections, group the property update and the delete into a single undo macro so both are undone together.
-    QJsonObject compared = newProperties;
-    compared.remove("appearance");
-    compared.remove("appearance_default");
-    compared.remove("appearance_index");
-    if ((compared != oldProperties) || appearanceChanged || !wirelessConnsToDelete.isEmpty()) {
-        const bool needsMacro = !wirelessConnsToDelete.isEmpty();
-        auto *scene = currentScene();
-        if (scene) {
-            if (needsMacro) {
-                scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
-            }
-            // A push that drops throws: the macro is closed all the same, or every later edit would join it
-            const auto closeMacro = qScopeGuard([scene, needsMacro] {
-                if (needsMacro) {
-                    scene->undoStack()->endMacro();
-                }
-            });
-            scene->pushCommand(new UpdateCommand({element}, oldData, scene));
-            if (needsMacro) {
-                scene->pushCommand(new DeleteItemsCommand(wirelessConnsToDelete, scene));
-            }
+    // One undo step: the properties' command, or the snapshot's, and the wires a mode severs. An unchanged snapshot
+    // (an empty label set over a null one changes its bytes, not the label) pushes nothing
+    QUndoCommand *change = propertyCommand;
+    if (snapshotted) {
+        delete std::exchange(propertyCommand, nullptr);
+        change = (snapshot() != oldData) ? new UpdateCommand({element}, oldData, scene) : nullptr;
+    }
+    QUndoCommand *deletion = severed.isEmpty() ? nullptr : new DeleteItemsCommand(severed, scene);
+    const bool needsMacro = change && deletion;
+    if (needsMacro) {
+        scene->undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
+    }
+    // A push that drops throws: the macro is closed all the same, or every later edit would join it, and the deletion
+    // not pushed is deleted
+    const auto closeMacro = qScopeGuard([scene, needsMacro] {
+        if (needsMacro) {
+            scene->undoStack()->endMacro();
         }
+    });
+    if (change) {
+        auto dropDeletion = qScopeGuard([deletion] { delete deletion; });
+        scene->pushCommand(change);
+        dropDeletion.dismiss();
+    }
+    if (deletion) {
+        scene->pushCommand(deletion);
     }
 
+    QJsonObject result;
     result["old_properties"] = oldProperties;
     result["new_properties"] = newProperties;
 
