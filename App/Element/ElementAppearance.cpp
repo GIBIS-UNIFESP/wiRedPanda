@@ -6,13 +6,64 @@
 #include <algorithm>
 
 #include <QFileInfo>
+#include <QHash>
+#include <QSet>
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 
+namespace ElementAppearanceDetail {
+
+/// The appearances whose active list has each file path in a slot, as their last loads left them; GUI-thread only.
+QHash<QString, QSet<ElementAppearance *>> &showing()
+{
+    static QHash<QString, QSet<ElementAppearance *>> appearances;
+    return appearances;
+}
+
+/// The version each file path's last load gave, nothing for one that did not load; GUI-thread only.
+QHash<QString, std::optional<PictureId>> &versions()
+{
+    static QHash<QString, std::optional<PictureId>> loaded;
+    return loaded;
+}
+
+/// Whether \a path names a file, which can change on disk: a resource's picture is the one it was built with, so a
+/// load of it never gives another version and the registry leaves it out.
+bool isFile(const QString &path)
+{
+    return !path.isEmpty() && !path.startsWith(":/");
+}
+
+/// Takes \a appearance out of the registry of each file path in \a paths.
+void leave(ElementAppearance *appearance, const QStringList &paths)
+{
+    auto &appearances = showing();
+    for (const QString &path : paths) {
+        if (!isFile(path)) {
+            continue;
+        }
+        const auto entry = appearances.find(path);
+        if (entry == appearances.end()) {
+            continue;
+        }
+        entry->remove(appearance);
+        if (entry->isEmpty()) {
+            appearances.erase(entry);
+        }
+    }
+}
+
+} // namespace ElementAppearanceDetail
+
 ElementAppearance::ElementAppearance(Element *owner)
     : m_owner(owner)
 {
+}
+
+ElementAppearance::~ElementAppearance()
+{
+    ElementAppearanceDetail::leave(this, m_loadedPaths);
 }
 
 void ElementAppearance::seed(const QStringList &defaultAppearances, const QStringList &alternativeAppearances)
@@ -30,6 +81,9 @@ void ElementAppearance::appearanceChanged()
 
     // The new pictures, the body they give and the pivot it moves are reported as one change.
     const Element::ChangeBatch batch(*m_owner);
+
+    ElementAppearanceDetail::leave(this, m_loadedPaths);
+    QStringList loaded; // The file paths this change loaded, each a version every appearance showing it takes
 
     const qsizetype count = active.size();
     m_pictures.resize(count);
@@ -71,6 +125,16 @@ void ElementAppearance::appearanceChanged()
         m_pictures[slot] = picture;
         m_picturePaths[slot] = path;
         replaced = true;
+        if (ElementAppearanceDetail::isFile(asked)) {
+            loaded.append(asked);
+        }
+    }
+
+    auto &showing = ElementAppearanceDetail::showing();
+    for (const QString &path : std::as_const(m_loadedPaths)) {
+        if (ElementAppearanceDetail::isFile(path)) {
+            showing[path].insert(this);
+        }
     }
 
     if (!replaced) {
@@ -79,6 +143,57 @@ void ElementAppearance::appearanceChanged()
 
     // The rotation pivots on the body's centre, so the pivot follows the picture whenever it changes.
     m_owner->pictureReplaced();
+
+    // A new or failed version of a file is the picture of every element showing its path, which each of them
+    // measures; a load giving the version the path last gave changes nothing
+    auto &versions = ElementAppearanceDetail::versions();
+    for (const QString &path : std::as_const(loaded)) {
+        const qsizetype slot = m_loadedPaths.indexOf(path);
+        const std::optional<PictureId> version = m_failedPaths.at(slot).isEmpty() ? m_pictures.at(slot) : std::nullopt;
+        const auto last = versions.constFind(path);
+        const bool changed = (last != versions.constEnd()) && (last.value() != version);
+        versions.insert(path, version);
+        if (!changed) {
+            continue;
+        }
+        const QSet<ElementAppearance *> others = showing.value(path);
+        for (ElementAppearance *other : others) {
+            if (other != this) {
+                other->showVersion(path, version);
+            }
+        }
+    }
+}
+
+qsizetype ElementAppearance::showingCount(const QString &path)
+{
+    return ElementAppearanceDetail::showing().value(path).size();
+}
+
+void ElementAppearance::showVersion(const QString &path, const std::optional<PictureId> picture)
+{
+    const Element::ChangeBatch batch(*m_owner);
+    bool replaced = false;
+    for (qsizetype slot = 0; slot < m_loadedPaths.size(); ++slot) {
+        if (m_loadedPaths.at(slot) != path) {
+            continue;
+        }
+        // A version that does not load gives the slot its default, as a load of it would
+        const bool fails = !picture.has_value();
+        const QString shownPath = fails ? m_defaultAppearances.value(slot) : path;
+        const std::optional<PictureId> shown = !fails ? picture
+            : (shownPath.isEmpty() ? std::nullopt : PictureLibrary::installed().load(shownPath));
+        if ((m_pictures.at(slot) == shown) && (m_failedPaths.at(slot).isEmpty() != fails)) {
+            continue;
+        }
+        m_pictures[slot] = shown;
+        m_picturePaths[slot] = shownPath;
+        m_failedPaths[slot] = fails ? path : QString();
+        replaced = true;
+    }
+    if (replaced) {
+        m_owner->pictureReplaced();
+    }
 }
 
 void ElementAppearance::reportFailedPicture() const

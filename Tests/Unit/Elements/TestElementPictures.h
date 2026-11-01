@@ -15,6 +15,10 @@ class TestElementPictures : public QObject
 private slots:
     void testElementsShowingOneFileShareItsPicture();
     void testAFileChangedOnDiskIsANewVersion();
+    void testAFileThatStopsLoadingIsEveryElementsDefault();
+    void testADestroyedElementTakesNoNewVersion();
+    void testOnlyAFileIsWatched();
+    void testDestroyingElementsSharingAFileGrowsLinearly();
     void testVariantsAreBuiltFromTheSourceReadAtLoad();
     void testASourceThatIsNotSvgShowsItsRaster();
     void testTheVariantsShownLatelyStayWithinTheBudget();

@@ -34,6 +34,9 @@ class ElementAppearance
 public:
     /// Constructs the appearance bound to its owning \a owner element.
     explicit ElementAppearance(Element *owner);
+    ~ElementAppearance();
+
+    Q_DISABLE_COPY_MOVE(ElementAppearance)
 
     /// Seeds the appearance lists from the type's descriptor (alternatives default to the defaults).
     void seed(const QStringList &defaultAppearances, const QStringList &alternativeAppearances);
@@ -58,7 +61,8 @@ public:
      * \brief Loads the picture of each slot of the active list whose path changed, and reports the pictures replaced.
      * \details Called whenever the lists change. A picture that does not load (its file gone, or not an image) gives
      * its slot the slot's default and the slot keeps its path: a state change or an undo goes on. Opening a file
-     * reports it (reportFailedPicture()).
+     * reports it (reportFailedPicture()). The version a load gives, a new one of a file edited on disk or a failure, is
+     * the picture of every element showing that path, which each of them measures (showVersion()).
      */
     void appearanceChanged();
 
@@ -98,6 +102,16 @@ public:
     QStringList externalFiles() const;
 
 private:
+    friend class TestElementPictures;
+
+    /// Returns how many appearances show \a path in a slot, as the registry of file paths holds them: none for a
+    /// resource, which the registry leaves out.
+    static qsizetype showingCount(const QString &path);
+
+    /// Shows \a picture, the version of \a path another element's load gave (nothing for one that did not load, its
+    /// slot's default in its place), in each slot whose path is \a path, and reports the pictures replaced.
+    void showVersion(const QString &path, std::optional<PictureId> picture);
+
     Element *m_owner = nullptr;
 
     QList<std::optional<PictureId>> m_pictures; ///< Each slot's picture, as the PictureLibrary loaded it.

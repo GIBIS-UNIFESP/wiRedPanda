@@ -3,7 +3,10 @@
 
 #include "Tests/Unit/Elements/TestElementPictures.h"
 
+#include <algorithm>
+#include <limits>
 #include <memory>
+#include <vector>
 
 #include <QDir>
 #include <QDirIterator>
@@ -17,6 +20,8 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Core/Common.h"
+#include "App/Element/ElementAppearance.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
@@ -25,6 +30,7 @@
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/TestUtils.h"
 
 namespace ElementPicturesTestDetail {
 
@@ -80,17 +86,144 @@ void TestElementPictures::testAFileChangedOnDiskIsANewVersion()
 
     InputSwitch before;
     before.setAppearance(false, path);
-    QCOMPARE(ElementPicturesTestDetail::shownSize(before), QSize(64, 64));
+    InputSwitch other;
+    QVERIFY(ElementPicturesTestDetail::shows(before, QSize(64, 64)));
+    const std::optional<PictureId> first = before.appearance().picture(0);
 
-    // The file is edited: an element that loads it now shows the new version, one that loaded it before keeps its own.
+    // The file is edited: an element that loads it now shows the new version, and so does every element showing the
+    // path, each measuring it; an element showing another picture keeps its own
+    QVERIFY(QFile::remove(path));
+    QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
+    const QSize otherSize = ElementPicturesTestDetail::shownSize(other);
+    InputSwitch after;
+    after.setAppearance(false, path);
+
+    QVERIFY(after.appearance().picture(0) != first);
+    QCOMPARE(before.appearance().picture(0), after.appearance().picture(0));
+    QVERIFY(ElementPicturesTestDetail::shows(after, QSize(96, 80)));
+    QVERIFY(ElementPicturesTestDetail::shows(before, QSize(96, 80)));
+    QVERIFY(ElementPicturesTestDetail::shows(other, otherSize));
+}
+
+void TestElementPictures::testADestroyedElementTakesNoNewVersion()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("shared.png");
+    QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(64, 64)));
+    auto gone = std::make_unique<InputSwitch>();
+    gone->setAppearance(false, path);
+    InputSwitch kept;
+    kept.setAppearance(false, path);
+    gone.reset();
+
+    // A new version reaches the element that remains and nothing of the one destroyed (CI's ASan would report a
+    // write to it)
     QVERIFY(QFile::remove(path));
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
     InputSwitch after;
     after.setAppearance(false, path);
+    QVERIFY(ElementPicturesTestDetail::shows(kept, QSize(96, 80)));
+}
 
-    QVERIFY(after.appearance().picture(0) != before.appearance().picture(0));
-    QCOMPARE(ElementPicturesTestDetail::shownSize(after), QSize(96, 80));
-    QCOMPARE(ElementPicturesTestDetail::shownSize(before), QSize(64, 64));
+void TestElementPictures::testOnlyAFileIsWatched()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("watched.png");
+    QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(64, 64)));
+
+    // A resource's picture never has another version, so no element showing one is watched
+    const And gate;
+    const QString resource = gate.appearance().picturePath(0);
+    QVERIFY(resource.startsWith(":/"));
+    QCOMPARE(ElementAppearance::showingCount(resource), 0);
+
+    // An element showing a file is watched once, however many of its slots show it, until it shows another path or
+    // is destroyed
+    auto first = std::make_unique<InputSwitch>();
+    first->setAppearance(false, path);
+    first->setOn(true);
+    first->setAppearance(false, path);
+    QCOMPARE(first->appearance().alternativeAppearances(), QStringList({path, path}));
+    InputSwitch second;
+    second.setAppearance(false, path);
+    QCOMPARE(ElementAppearance::showingCount(path), 2);
+    QCOMPARE(ElementAppearance::showingCount(second.appearance().picturePath(1)), 0);
+    second.setAppearance(true, {});
+    QCOMPARE(ElementAppearance::showingCount(path), 1);
+    first.reset();
+    QCOMPARE(ElementAppearance::showingCount(path), 0);
+}
+
+void TestElementPictures::testDestroyingElementsSharingAFileGrowsLinearly()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("shared.png");
+    QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(64, 64)));
+
+    // The thread's time to destroy each element of a batch all showing one file, the best of five runs, the two batch
+    // sizes destroyed in turn within each run: an element leaving the file's watchers in constant time costs as much in
+    // the large batch as in the small; one walking a chain of every other watcher costs 64 times as much or more.
+    // Measured at 1.18 for the set of watchers, and 189 for a QMultiHash, whose remove(key, value) walks the chain
+    constexpr int few = 250;
+    constexpr int many = 16000;
+    const auto destroy = [&path](const int count) {
+        std::vector<std::unique_ptr<InputSwitch>> elements;
+        elements.reserve(static_cast<std::size_t>(count));
+        for (int i = 0; i < count; ++i) {
+            elements.push_back(std::make_unique<InputSwitch>());
+            elements.back()->setAppearance(false, path);
+        }
+        TestUtils::ThreadCpuTimer timer;
+        timer.start();
+        elements.clear();
+        return timer.elapsed();
+    };
+    qint64 bestFew = std::numeric_limits<qint64>::max();
+    qint64 bestMany = std::numeric_limits<qint64>::max();
+    for (int run = 0; run < 5; ++run) {
+        bestFew = std::min(bestFew, destroy(few));
+        bestMany = std::min(bestMany, destroy(many));
+    }
+    const double perFew = static_cast<double>(std::max<qint64>(bestFew, 1)) / few;
+    const double perMany = static_cast<double>(bestMany) / many;
+    const double growth = perMany / perFew;
+    qInfo().noquote() << QStringLiteral("Destroying %1 elements sharing a file against %2: %3 times the time each")
+                             .arg(many).arg(few).arg(growth, 0, 'f', 2);
+    QVERIFY2(growth < 8.0, qPrintable(QStringLiteral("growth %1").arg(growth)));
+}
+
+void TestElementPictures::testAFileThatStopsLoadingIsEveryElementsDefault()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("gone.png");
+    QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
+    InputSwitch before;
+    before.setAppearance(false, path);
+    QVERIFY(ElementPicturesTestDetail::shows(before, QSize(96, 80)));
+
+    // The file goes: an element that loads it now shows its slot's default, and so does every element showing the
+    // path, which reports it as an element whose own load failed does
+    QVERIFY(QFile::remove(path));
+    InputSwitch after;
+    after.setAppearance(false, path);
+    const QSize fallback = ElementPicturesTestDetail::shownSize(after);
+    QVERIFY(fallback.isValid() && (fallback != QSize(96, 80)));
+    QCOMPARE(before.appearance().picture(0), after.appearance().picture(0));
+    QVERIFY(ElementPicturesTestDetail::shows(before, fallback));
+    QCOMPARE(before.appearance().picturePath(0), before.appearance().defaultAppearances().value(0));
+    QVERIFY_THROWS_EXCEPTION(Pandaception, before.appearance().reportFailedPicture());
+
+    // The file is back: the next load gives every element showing the path its picture again
+    QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
+    InputSwitch again;
+    again.setAppearance(false, path);
+    QVERIFY(ElementPicturesTestDetail::shows(before, QSize(96, 80)));
+    QVERIFY(ElementPicturesTestDetail::shows(after, QSize(96, 80)));
+    before.appearance().reportFailedPicture();
 }
 
 void TestElementPictures::testVariantsAreBuiltFromTheSourceReadAtLoad()
