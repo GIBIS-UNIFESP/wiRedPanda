@@ -577,7 +577,7 @@ bool ElementEditor::editable() const
     return !m_elements.isEmpty() && isEnabled() && m_scene;
 }
 
-void ElementEditor::setProperty(const ElementProperty property, const ParamValue &value, const bool merges)
+QString ElementEditor::setProperty(const ElementProperty property, const ParamValue &value, const bool merges)
 {
     QList<PropertyEdit> edits;
     for (auto *elm : std::as_const(m_elements)) {
@@ -585,37 +585,27 @@ void ElementEditor::setProperty(const ElementProperty property, const ParamValue
             edits.append({elm, property, value});
         }
     }
-    applyEdits(edits, merges);
+    return applyEdits(edits, merges);
 }
 
-void ElementEditor::applyEdits(const QList<PropertyEdit> &edits, const bool merges)
+QString ElementEditor::applyEdits(const QList<PropertyEdit> &edits, const bool merges)
 {
     if (!editable()) {
-        return;
+        return {};
     }
     sentryBreadcrumb("ui", QStringLiteral("Element properties applied"));
     qCDebug(three) << "Apply.";
 
-    if (auto *command = SetPropertyCommand::apply(edits, m_scene, merges ? m_editSession : -1)) {
+    const auto [command, duplicate] = SetPropertyCommand::apply(edits, m_scene, merges ? m_editSession : -1);
+    if (command) {
         m_scene->receiveCommand(command);
     }
+    return duplicate;
 }
 
 void ElementEditor::endEditSession()
 {
     ++m_editSession;
-}
-
-QString ElementEditor::duplicateTxLabel(const std::optional<QString> &label, const std::optional<WirelessMode> mode) const
-{
-    // Every wireless node of the selection, a selection with other elements included, as the edit would leave it
-    QList<Scene::WirelessEdit> edits;
-    for (auto *elm : std::as_const(m_elements)) {
-        if (elm->hasWirelessMode()) {
-            edits.append({elm, label.value_or(elm->label()), mode.value_or(elm->wirelessMode())});
-        }
-    }
-    return m_scene->duplicateTxLabel(edits);
 }
 
 void ElementEditor::warnDuplicateTxLabel(const QString &duplicate)
@@ -632,7 +622,7 @@ void ElementEditor::labelChanged(const QString &label)
 {
     // A label typed one key at a time can pass through another Tx's channel on the way, so a refused one is not set
     // and the warning waits for the field to be left (labelEditingFinished())
-    if (!editable() || (label == m_manyLabels) || !duplicateTxLabel(label, std::nullopt).isEmpty()) {
+    if (!editable() || (label == m_manyLabels)) {
         return;
     }
     setProperty(ElementProperty::label(), label, true);
@@ -640,15 +630,11 @@ void ElementEditor::labelChanged(const QString &label)
 
 void ElementEditor::labelEditingFinished()
 {
-    // editingFinished also comes from leaving the field unedited: a label the elements already have (two Tx nodes may
-    // share one from a file or a paste) is no edit to refuse
-    if (editable()) {
-        const QString label = m_ui->lineEditElementLabel->text();
-        const QString &first = m_elements.constFirst()->label();
-        const bool same = std::all_of(m_elements.cbegin(), m_elements.cend(),
-                                      [&first](const Element *elm) { return elm->label() == first; });
-        const bool kept = same ? (label == first) : (label == m_manyLabels);
-        if (const QString duplicate = kept ? QString() : duplicateTxLabel(label, std::nullopt); !duplicate.isEmpty()) {
+    // The field's text is set again, part of the session: labelChanged() set it, unless it was refused. editingFinished
+    // also comes from leaving the field unedited, and a label the elements already have (two Tx nodes may share one
+    // from a file or a paste) moves no channel, so it is no edit to refuse.
+    if (const QString label = m_ui->lineEditElementLabel->text(); editable() && (label != m_manyLabels)) {
+        if (const QString duplicate = setProperty(ElementProperty::label(), label, true); !duplicate.isEmpty()) {
             warnDuplicateTxLabel(duplicate);
         }
     }
@@ -688,10 +674,6 @@ void ElementEditor::wirelessModeChanged(const int index)
         return;
     }
     const auto mode = static_cast<WirelessMode>(index);
-    if (const QString duplicate = duplicateTxLabel(std::nullopt, mode); !duplicate.isEmpty()) {
-        warnDuplicateTxLabel(duplicate);
-        return;
-    }
 
     // setWirelessMode() hides the replaced port but does not delete connections
     // itself — that is handled here via DeleteItemsCommand so undo can restore them.
@@ -710,14 +692,27 @@ void ElementEditor::wirelessModeChanged(const int index)
         }
     }
 
+    QList<PropertyEdit> edits;
+    for (auto *elm : std::as_const(m_elements)) {
+        if (SetPropertyCommand::appliesTo(*elm, ElementProperty::parameter(ParamId::Wireless))) {
+            edits.append({elm, ElementProperty::parameter(ParamId::Wireless), index});
+        }
+    }
+    sentryBreadcrumb("ui", QStringLiteral("Element properties applied"));
+    const auto [command, duplicate] = SetPropertyCommand::apply(edits, m_scene);
+    if (!duplicate.isEmpty()) {
+        warnDuplicateTxLabel(duplicate);
+        return;
+    }
+
     // When the mode severs connections, the mode and the delete are one undo step.
     const bool needsMacro = !wirelessConnsToDelete.isEmpty();
     if (needsMacro) {
         m_scene->undoStack()->beginMacro(tr("Change wireless mode"));
     }
-
-    setProperty(ElementProperty::parameter(ParamId::Wireless), index, false);
-
+    if (command) {
+        m_scene->receiveCommand(command);
+    }
     if (needsMacro) {
         m_scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, m_scene));
         m_scene->undoStack()->endMacro();

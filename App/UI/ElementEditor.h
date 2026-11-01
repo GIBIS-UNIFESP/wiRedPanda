@@ -110,17 +110,15 @@ private:
     /**
      * \brief Sets \a property of the selection to \a value, as one undo step (SetPropertyCommand).
      * \details When \a merges, later changes of the field are part of the step until the edit session ends
-     * (endEditSession()); otherwise the step stands alone.
+     * (endEditSession()); otherwise the step stands alone. Returns the channel the change would give two Tx nodes,
+     * refused, or an empty string (SetPropertyCommand::apply()).
      */
-    void setProperty(ElementProperty property, const ParamValue &value, bool merges);
+    QString setProperty(ElementProperty property, const ParamValue &value, bool merges);
 
-    /// Sets \a edits as one undo step, which merges as setProperty()'s does when \a merges.
-    void applyEdits(const QList<PropertyEdit> &edits, bool merges);
+    /// Sets \a edits as one undo step, which merges as setProperty()'s does when \a merges; returns as setProperty().
+    QString applyEdits(const QList<PropertyEdit> &edits, bool merges);
     /// Ends the edit session: a field's next change is an undo step of its own.
     void endEditSession();
-    /// Returns the label that giving the selected nodes \a label or \a mode (each when set; otherwise each node's own)
-    /// would give two Tx nodes (Scene::duplicateTxLabel()), or an empty string.
-    QString duplicateTxLabel(const std::optional<QString> &label, std::optional<WirelessMode> mode) const;
     /// Warns that two Tx nodes would share the channel \a duplicate, then shows the values the elements kept.
     void warnDuplicateTxLabel(const QString &duplicate);
     /// Leaving the label field: warns when its edited text is refused, and ends the edit session.

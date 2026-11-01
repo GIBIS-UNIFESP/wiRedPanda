@@ -33,9 +33,9 @@ public:
     /// Starts inline-editing \a element's label, committing any already-in-progress edit first.
     void start(Element *element);
 
-    /// Commits the current edit (if any): pushes an UpdateCommand only if the text actually
+    /// Commits the current edit (if any): pushes a SetPropertyCommand only if the text actually
     /// changed, then closes the editor. Safe to call when nothing is being edited (no-op).
-    /// A label that would give two Tx nodes one channel is refused (Scene::duplicateTxLabel()),
+    /// A label that would give two Tx nodes one channel is refused (SetPropertyCommand::apply()),
     /// with a message in the status bar.
     void commit();
 

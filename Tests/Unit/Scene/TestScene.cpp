@@ -1386,11 +1386,12 @@ void TestScene::testInlineLabelEditorStartWithNullElementIsNoOp()
 
 void TestScene::testInlineLabelEditorStartWhileEditingCommitsPrevious()
 {
+    // Elements that show a label, the only ones an inline edit starts on (Element::mouseDoubleClickEvent())
     WorkSpace workspace;
-    auto *elmA = new And;
+    auto *elmA = new InputSwitch;
     elmA->setLabel("Original A");
     workspace.scene()->addItem(elmA);
-    auto *elmB = new And;
+    auto *elmB = new InputSwitch;
     elmB->setLabel("Original B");
     elmB->setPos(200, 0);
     workspace.scene()->addItem(elmB);
@@ -1497,10 +1498,10 @@ void TestScene::testInlineLabelEditorRefusesADuplicateTxLabel()
     QVERIFY(messages.constFirst().constFirst().toString().contains("\"x\""));
 }
 
-void TestScene::testInlineLabelEditorReportsAPushThatDrops()
+void TestScene::testInlineLabelEditorRelabelsAnICWithoutReadingItsFile()
 {
-    // Return in the inline editor is a slot Qt calls, which pushes the label's change: a file-backed IC whose file
-    // changed to bytes that do not read, its cache dropped, drops the push, reported there and thrown nowhere
+    // Return in the inline editor is a slot Qt calls, which pushes the label's change: the label alone, so a file-backed
+    // IC whose file changed to bytes that do not read, its cache dropped, takes it, its file not read, and nothing throws
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("sub.panda");
@@ -1538,8 +1539,11 @@ void TestScene::testInlineLabelEditorReportsAPushThatDrops()
     } catch (const std::exception &e) {
         QFAIL(qPrintable(QString("the label's edit threw: %1").arg(e.what())));
     }
-    QCOMPARE(scene->undoStack()->count(), undoCount);
+    QCOMPARE(scene->undoStack()->count(), undoCount + 1);
     QVERIFY(scene->elements().contains(ic));
+    QCOMPARE(ic->label(), QString("renamed"));
+    scene->undoStack()->undo();
+    QVERIFY(ic->label() != QString("renamed"));
 }
 
 namespace TestSceneTxHelpers {
@@ -1657,7 +1661,7 @@ void TestScene::testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback()
     // labelSceneBoundingRect() is empty when the label has no text yet; start() must fall
     // back to the element's own sceneBoundingRect() to position the editor.
     WorkSpace workspace;
-    auto *elm = new And;
+    auto *elm = new InputSwitch;
     elm->setPos(100, 50);
     workspace.scene()->addItem(elm);
     QVERIFY(elm->label().isEmpty());

@@ -91,6 +91,7 @@ private slots:
     void testSetPropertyCommandMergesOnlyTheSameChanges();
     void testSetPropertyCommandRxLabelRewiresChannel();
     void testSetPropertyCommandNonWirelessLabelDoesNotRebuild();
+    void testSetPropertyCommandRefusesASecondTxOnAChannel();
 
     // Empty-target no-ops
     void testUpdateCommandWithNoElementsIsNoOp();

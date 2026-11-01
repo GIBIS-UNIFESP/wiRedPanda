@@ -2351,7 +2351,7 @@ void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
     red->setColor("Red");
     green->setColor("Green");
 
-    auto *command = SetPropertyCommand::apply({red, green}, ElementProperty::parameter(ParamId::Colour), QString("Blue"), scene);
+    auto *command = SetPropertyCommand::apply({red, green}, ElementProperty::parameter(ParamId::Colour), QString("Blue"), scene).command;
     QVERIFY(command != nullptr);
     QCOMPARE(red->color(), QString("Blue"));
     QCOMPARE(green->color(), QString("Blue"));
@@ -2378,10 +2378,10 @@ void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, named, other}, scene));
     named->setLabel("x");
 
-    QCOMPARE(SetPropertyCommand::apply({gate, named}, ElementProperty::label(), QString("x"), scene), nullptr);
+    QCOMPARE(SetPropertyCommand::apply({gate, named}, ElementProperty::label(), QString("x"), scene).command, nullptr);
     QCOMPARE(gate->label(), QString());
 
-    auto *command = SetPropertyCommand::apply({gate, named, other}, ElementProperty::label(), QString("x"), scene);
+    auto *command = SetPropertyCommand::apply({gate, named, other}, ElementProperty::label(), QString("x"), scene).command;
     QVERIFY(command != nullptr);
     QCOMPARE(gate->label(), QString());
     QCOMPARE(other->label(), QString("x"));
@@ -2411,10 +2411,10 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
 
     scene->receiveCommand(SetPropertyCommand::apply({{inputSwitch, ElementProperty::parameter(ParamId::On), true},
                                                      {rotary, ElementProperty::parameter(ParamId::Position), 2}},
-                                                    scene));
+                                                    scene).command);
     QVERIFY(inputSwitch->isOn());
     QCOMPARE(rotary->outputValue(), 2);
-    scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::parameter(ParamId::Locked), true, scene));
+    scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::parameter(ParamId::Locked), true, scene).command);
     QVERIFY(inputSwitch->isLocked());
     QVERIFY(rotary->isLocked());
 
@@ -2443,7 +2443,7 @@ void TestCommands::testSetPropertyCommandSetsSeveralPropertiesAsOneStep()
                                                      {clock, ElementProperty::label(), QString("first")},
                                                      {led, ElementProperty::parameter(ParamId::Colour), QString("Red")},
                                                      {clock, ElementProperty::label(), QString("second")}},
-                                                    scene));
+                                                    scene).command);
     QCOMPARE(undoStack->count(), commands + 1);
     QCOMPARE(clock->frequency(), 2.0);
     QCOMPARE(clock->label(), QString("second"));
@@ -2466,7 +2466,7 @@ void TestCommands::testSetPropertyCommandFirstRedoLeavesTheValues()
     auto *input = new InputSwitch();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{input}, scene));
 
-    auto *command = SetPropertyCommand::apply({input}, ElementProperty::label(), QString("a"), scene);
+    auto *command = SetPropertyCommand::apply({input}, ElementProperty::label(), QString("a"), scene).command;
     QVERIFY(command != nullptr);
     input->setLabel("changed meanwhile");
     scene->receiveCommand(command);
@@ -2489,7 +2489,7 @@ void TestCommands::testSetPropertyCommandMergesASession()
     const int commands = undoStack->count();
 
     const auto push = [&](const QString &text, const int session) {
-        scene->receiveCommand(SetPropertyCommand::apply({input}, ElementProperty::label(), text, scene, session));
+        scene->receiveCommand(SetPropertyCommand::apply({input}, ElementProperty::label(), text, scene, session).command);
     };
     push("a", 7);
     push("ab", 7);
@@ -2523,9 +2523,9 @@ void TestCommands::testSetPropertyCommandMergedBackIsNoStep()
     const double frequency = clock->frequency();
     const int commands = undoStack->count();
 
-    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency + 1.0, scene, 3));
+    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency + 1.0, scene, 3).command);
     QCOMPARE(undoStack->count(), commands + 1);
-    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency, scene, 3));
+    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency, scene, 3).command);
     QCOMPARE(undoStack->count(), commands);
     QCOMPARE(clock->frequency(), frequency);
 }
@@ -2541,14 +2541,14 @@ void TestCommands::testSetPropertyCommandMergesOnlyTheSameChanges()
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
     const int commands = undoStack->count();
 
-    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::parameter(ParamId::Frequency), 2.0, scene, 5));
-    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::label(), QString("c"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::parameter(ParamId::Frequency), 2.0, scene, 5).command);
+    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::label(), QString("c"), scene, 5).command);
     QCOMPARE(undoStack->count(), commands + 2);
-    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::label(), QString("s"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::label(), QString("s"), scene, 5).command);
     QCOMPARE(undoStack->count(), commands + 3);
-    scene->receiveCommand(SetPropertyCommand::apply({first, second}, ElementProperty::label(), QString("d"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({first, second}, ElementProperty::label(), QString("d"), scene, 5).command);
     QCOMPARE(undoStack->count(), commands + 4);
-    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::label(), QString("e"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::label(), QString("e"), scene, 5).command);
     QCOMPARE(undoStack->count(), commands + 5);
 
     undoStack->undo();
@@ -2591,7 +2591,7 @@ void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
     sim->update();
     QCOMPARE(rx->outputValue(0), Status::Active);
 
-    scene->receiveCommand(SetPropertyCommand::apply({rx}, ElementProperty::label(), QString("B"), scene));
+    scene->receiveCommand(SetPropertyCommand::apply({rx}, ElementProperty::label(), QString("B"), scene).command);
     sim->update();
     QCOMPARE(rx->outputValue(0), Status::Inactive);
 
@@ -2612,12 +2612,73 @@ void TestCommands::testSetPropertyCommandNonWirelessLabelDoesNotRebuild()
     sim->update(); // the structural edit's rebuild
     QVERIFY(probe.arm());
 
-    scene->receiveCommand(SetPropertyCommand::apply({node}, ElementProperty::label(), QString("junction"), scene));
+    scene->receiveCommand(SetPropertyCommand::apply({node}, ElementProperty::label(), QString("junction"), scene).command);
     sim->update();
     QVERIFY(!probe.rebuilt());
     scene->undoStack()->undo();
     sim->update();
     QVERIFY(!probe.rebuilt());
+}
+
+void TestCommands::testSetPropertyCommandRefusesASecondTxOnAChannel()
+{
+    // A Tx node's label is its channel, and a channel has one Tx: whichever writer applies the edits
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    const auto wirelessNode = [scene](const QString &label, const WirelessMode mode) {
+        auto *node = new Node();
+        node->setLabel(label);
+        node->setWirelessMode(mode);
+        scene->addItem(node);
+        return node;
+    };
+    wirelessNode("a", WirelessMode::Tx);
+    auto *other = wirelessNode("b", WirelessMode::Tx);
+    auto *rx = wirelessNode("a", WirelessMode::Rx);
+    auto *sharing = wirelessNode("dup", WirelessMode::Tx);
+    auto *alsoSharing = wirelessNode("dup", WirelessMode::Tx);
+    auto *clock = new Clock();
+    scene->addItem(clock);
+    const auto label = ElementProperty::label();
+    const auto mode = ElementProperty::parameter(ParamId::Wireless);
+    const double frequencyBefore = clock->frequency();
+
+    // A label that would give a second Tx the channel: every edit undone, the clock's included, the channel named
+    const auto refused = SetPropertyCommand::apply({{clock, ElementProperty::parameter(ParamId::Frequency), 7.0},
+                                                    {other, label, QString("x")},
+                                                    {other, label, QString("a")}}, scene);
+    QCOMPARE(refused.command, nullptr);
+    QCOMPARE(refused.duplicateTxLabel, QString("a"));
+    QCOMPARE(other->label(), QString("b"));
+    QCOMPARE(clock->frequency(), frequencyBefore);
+
+    // A mode that would make a node a second Tx on its channel
+    const auto turned = SetPropertyCommand::apply({rx}, mode, static_cast<int>(WirelessMode::Tx), scene);
+    QCOMPARE(turned.command, nullptr);
+    QCOMPARE(turned.duplicateTxLabel, QString("a"));
+    QCOMPARE(rx->wirelessMode(), WirelessMode::Rx);
+
+    // Tx nodes that already share a channel refuse no edit that leaves it: their label or their mode set as it is
+    const auto kept = SetPropertyCommand::apply({sharing, alsoSharing}, label, QString("dup"), scene);
+    QCOMPARE(kept.command, nullptr);
+    QVERIFY(kept.duplicateTxLabel.isEmpty());
+    const auto sameMode = SetPropertyCommand::apply({sharing}, mode, static_cast<int>(WirelessMode::Tx), scene);
+    QCOMPARE(sameMode.command, nullptr);
+    QVERIFY(sameMode.duplicateTxLabel.isEmpty());
+
+    // A label set away and back in one apply moves no channel; one leaving a shared channel is taken
+    const auto awayAndBack = SetPropertyCommand::apply({{sharing, label, QString("y")}, {sharing, label, QString("dup")}}, scene);
+    QVERIFY(awayAndBack.duplicateTxLabel.isEmpty());
+    delete awayAndBack.command;
+    const auto left = SetPropertyCommand::apply({alsoSharing}, label, QString("free"), scene);
+    QVERIFY(left.command != nullptr);
+    QVERIFY(left.duplicateTxLabel.isEmpty());
+    scene->receiveCommand(left.command);
+    QCOMPARE(alsoSharing->label(), QString("free"));
+
+    // An Rx and a node with no mode take any label
+    scene->receiveCommand(SetPropertyCommand::apply({rx}, label, QString("b"), scene).command);
+    QCOMPARE(rx->label(), QString("b"));
 }
 
 void TestCommands::testLoadListGrowsLinearly()

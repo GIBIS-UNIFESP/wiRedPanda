@@ -296,9 +296,9 @@ void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QS
                 const int edits = fdp.ConsumeIntegralInRange<int>(1, 3);
                 for (int edit = 0; edit < edits; ++edit) {
                     auto *command = (which == std::size(kProperties))
-                        ? SetPropertyCommand::apply(valueEdits(targets, fdp), scene, session)
+                        ? SetPropertyCommand::apply(valueEdits(targets, fdp), scene, session).command
                         : SetPropertyCommand::apply(targets, kProperties[which], propertyValue(kProperties[which], fdp),
-                                                    scene, session);
+                                                    scene, session).command;
                     if (command) {
                         scene->receiveCommand(command);
                     }

@@ -320,22 +320,32 @@ struct PropertyEdit {
  * \details Undo and redo write those values and nothing else of the elements. A command pushed in an edit session
  * merges into the one on top of the stack from the same session when both set the same properties of the same
  * elements, so a field typed into or a slider dragged is one undo step; a merge back to the values before is no step.
+ * Every writer of a property goes through apply(), which holds the rule between elements: a Tx node's label is its
+ * channel, and a channel has one Tx.
  */
 class SetPropertyCommand : public ElementsCommand
 {
 public:
+    /// What apply() did: the command that holds the change, or the reason it undid every edit.
+    struct Applied {
+        SetPropertyCommand *command = nullptr; ///< The change, to push; null when no value changed or the edits were refused.
+        QString duplicateTxLabel;              ///< When the edits were refused: the channel they would give two Tx nodes.
+    };
+
     /**
-     * \brief Sets each of \a edits, as its element takes it, and returns the command that holds the change, to push;
-     * null when no value changed.
-     * \details Every edit stays in the command, one that changed no value included, so the commands of an edit session
-     * name the same elements and properties and merge. \a session is the edit session, a number the caller chooses:
-     * commands of one session merge; -1 is none. Each edit names a property its element has (appliesTo()).
+     * \brief Sets each of \a edits, as its element takes it, and returns the command that holds the change, to push.
+     * \details Edits that leave a node whose channel they moved (its label or its mode) a Tx sharing its label with
+     * another Tx node of \a scene are refused (Scene::duplicateTxLabel()): every edit is undone, and the result names
+     * the channel. Tx nodes that already share one (from a file or a paste) refuse no edit that leaves their channels.
+     * Every edit stays in the command, one that changed no value included, so the commands of an edit session name the
+     * same elements and properties and merge. \a session is the edit session, a number the caller chooses: commands
+     * of one session merge; -1 is none. Each edit names a property its element has (appliesTo()).
      */
-    [[nodiscard]] static SetPropertyCommand *apply(const QList<PropertyEdit> &edits, Scene *scene, int session = -1);
+    [[nodiscard]] static Applied apply(const QList<PropertyEdit> &edits, Scene *scene, int session = -1);
 
     /// Sets \a property of each of \a elements that has it to \a value, as apply() sets edits.
-    [[nodiscard]] static SetPropertyCommand *apply(const QList<Element *> &elements, ElementProperty property,
-                                                   const ParamValue &value, Scene *scene, int session = -1);
+    [[nodiscard]] static Applied apply(const QList<Element *> &elements, ElementProperty property,
+                                       const ParamValue &value, Scene *scene, int session = -1);
 
     /// Returns whether \a element has \a property: a parameter it offers for editing, or a label or a trigger key it
     /// shows.

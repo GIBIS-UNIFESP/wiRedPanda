@@ -782,12 +782,15 @@ void SetPropertyCommand::write(Element &element, const ElementProperty property,
     }
 }
 
-SetPropertyCommand *SetPropertyCommand::apply(const QList<PropertyEdit> &edits, Scene *scene, const int session)
+SetPropertyCommand::Applied SetPropertyCommand::apply(const QList<PropertyEdit> &edits, Scene *scene, const int session)
 {
     QList<Element *> reached;
     QList<ElementProperty> properties;
     QList<ParamValue> before;
     QList<ParamValue> after;
+    // The channel of each node an edit gives a label or a mode, as it was before its first edit, in the edits' order
+    QList<Scene::WirelessEdit> channels;
+    QSet<const Element *> channelled;
     for (const PropertyEdit &edit : edits) {
         // Every caller asks only for a property the element has
         if (!appliesTo(*edit.element, edit.property)) {
@@ -800,6 +803,12 @@ SetPropertyCommand *SetPropertyCommand::apply(const QList<PropertyEdit> &edits, 
             Q_ASSERT_X(false, "SetPropertyCommand::apply()", "an edit's value is not of its property's kind");
             continue;
         }
+        if (edit.element->hasWirelessMode()
+            && ((edit.property == ElementProperty::label()) || (edit.property == ElementProperty::parameter(ParamId::Wireless)))
+            && !channelled.contains(edit.element)) {
+            channelled.insert(edit.element);
+            channels.append({edit.element, edit.element->label(), edit.element->wirelessMode()});
+        }
         reached.append(edit.element);
         properties.append(edit.property);
         before.append(current);
@@ -807,13 +816,28 @@ SetPropertyCommand *SetPropertyCommand::apply(const QList<PropertyEdit> &edits, 
         after.append(read(*edit.element, edit.property));
     }
 
+    // A Tx node's label is its channel, and a channel has one Tx: the nodes whose channel moved, as the edits left them
+    QList<Scene::WirelessEdit> moved;
+    for (const Scene::WirelessEdit &channel : std::as_const(channels)) {
+        if ((channel.node->label() != channel.label) || (channel.node->wirelessMode() != channel.mode)) {
+            moved.append({channel.node, channel.node->label(), channel.node->wirelessMode()});
+        }
+    }
+    if (const QString duplicate = scene->duplicateTxLabel(moved); !duplicate.isEmpty()) {
+        // Undone in the reverse order, so an element edited twice ends at its first value
+        for (qsizetype i = reached.size() - 1; i >= 0; --i) {
+            write(*reached.at(i), properties.at(i), before.at(i));
+        }
+        return {nullptr, duplicate};
+    }
+
     // Every edit stays in the command, one that changed no value included, so each step of an edit session names the
     // same elements and properties and the steps merge. An edit that changed nothing pushes nothing.
-    return (before != after) ? new SetPropertyCommand(reached, properties, before, after, scene, session) : nullptr;
+    return {(before != after) ? new SetPropertyCommand(reached, properties, before, after, scene, session) : nullptr, {}};
 }
 
-SetPropertyCommand *SetPropertyCommand::apply(const QList<Element *> &elements, const ElementProperty property,
-                                              const ParamValue &value, Scene *scene, const int session)
+SetPropertyCommand::Applied SetPropertyCommand::apply(const QList<Element *> &elements, const ElementProperty property,
+                                                     const ParamValue &value, Scene *scene, const int session)
 {
     QList<PropertyEdit> edits;
     for (auto *element : elements) {

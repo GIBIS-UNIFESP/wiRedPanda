@@ -10,8 +10,6 @@
 #include <QLineEdit>
 
 #include "App/Element/Element.h"
-#include "App/IO/Serialization.h"
-#include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 
@@ -97,24 +95,13 @@ void InlineLabelEditor::commit()
     auto *lineEdit = qobject_cast<QLineEdit *>(m_proxy->widget());
     const QString newText = lineEdit ? lineEdit->text() : m_target->label();
 
-    if ((newText != m_target->label()) && m_target->hasWirelessMode()) {
-        if (const QString duplicate = m_scene->duplicateTxLabel({{m_target, newText, m_target->wirelessMode()}});
-            !duplicate.isEmpty()) {
-            m_scene->showStatusMessage(tr("A Tx node with label \"%1\" already exists: each wireless channel has one.")
-                                           .arg(duplicate));
-            close();
-            return;
-        }
-    }
-
-    if (newText != m_target->label()) {
-        QByteArray oldData;
-        QDataStream stream(&oldData, QIODevice::WriteOnly);
-        Serialization::writePandaHeader(stream);
-        m_target->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-
-        m_target->setLabel(newText);
-        m_scene->receiveCommand(new UpdateCommand({m_target}, oldData, m_scene));
+    // Only an element that shows a label starts an inline edit (Element::mouseDoubleClickEvent())
+    const auto [command, duplicate] = SetPropertyCommand::apply({m_target}, ElementProperty::label(), newText, m_scene);
+    if (command) {
+        m_scene->receiveCommand(command);
+    } else if (!duplicate.isEmpty()) {
+        m_scene->showStatusMessage(tr("A Tx node with label \"%1\" already exists: each wireless channel has one.")
+                                       .arg(duplicate));
     }
 
     close();

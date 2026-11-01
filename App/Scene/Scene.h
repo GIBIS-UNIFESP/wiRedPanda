@@ -242,9 +242,10 @@ public:
     /**
      * \brief Returns the label \a edits would give two Tx nodes of the scene, or an empty string when they would
      * give none.
-     * \details A Tx node's label is its channel, and a channel has one Tx: every writer of a label or a mode refuses
-     * an edit that leaves an edited node a Tx sharing its label with another, edited or not. Tx nodes that already
-     * share one (from a file or a paste) refuse no edit of other nodes.
+     * \details A Tx node's label is its channel, and a channel has one Tx: SetPropertyCommand::apply() refuses, for
+     * every writer, edits that leave an edited node a Tx sharing its label with another, edited or not, and MCP checks
+     * a request with it before setting anything. Tx nodes that already share one (from a file or a paste) refuse no
+     * edit of other nodes.
      */
     QString duplicateTxLabel(const QList<WirelessEdit> &edits) const;
     /**
