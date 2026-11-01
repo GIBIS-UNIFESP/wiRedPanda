@@ -170,9 +170,13 @@ void ElementPalette::updateTheme()
         m_ui->tabElements->setTabIcon(memoryTabIndex, QIcon(DFlipFlop::pixmapPath()));
     }
 
-    const auto labels = m_ui->memory->findChildren<ElementLabel *>();
+    // Every label of a type shows the type's picture in the theme, in its tab and in the search tab, which holds a label
+    // of every type; an IC's keeps its own, since an IC has no type picture
+    const auto labels = m_ui->tabElements->findChildren<ElementLabel *>();
     for (auto *label : labels) {
-        label->updateTheme();
+        if (label->elementType() != ElementType::IC) {
+            label->updateTheme();
+        }
     }
 }
 

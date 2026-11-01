@@ -21,4 +21,5 @@ private slots:
     void testSearchFirstPassMatchesByInternalTypeKeyword();
     void testSearchSecondPassMatchesByTranslatedNameOnly();
     void testSearchThirdPassMatchesByIcFullFileName();
+    void testSearchLabelsFollowTheTheme();
 };

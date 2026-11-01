@@ -3,11 +3,16 @@
 
 #include "Tests/Unit/Ui/TestElementPalette.h"
 
+#include <QFile>
+#include <QFileInfo>
+#include <QImage>
 #include <QLabel>
 #include <QMainWindow>
+#include <QScopeGuard>
 #include <QTabWidget>
 #include <QTemporaryDir>
 
+#include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/UI/ElementPalette.h"
@@ -219,4 +224,46 @@ void TestElementPalette::testSearchThirdPassMatchesByIcFullFileName()
     ui.lineEditSearch->setText(QStringLiteral("panda"));
 
     QVERIFY2(!icSearchLabel->isHidden(), "the third-pass file-name match must surface widget.panda");
+}
+
+void TestElementPalette::testSearchLabelsFollowTheTheme()
+{
+    // A latch's label in the search tab shows the theme's picture after a change of theme, as its memory tab label
+    // does; an IC's keeps its own
+    const Theme before = ThemeManager::theme();
+    const auto restore = qScopeGuard([before] { ThemeManager::setTheme(before); });
+    ThemeManager::setTheme(Theme::Light);
+
+    QMainWindow window;
+    MainWindowUi ui;
+    ui.setupUi(&window);
+    ElementPalette palette(&ui);
+    palette.populate();
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    for (const QString &name : {QStringLiteral("current.panda"), QStringLiteral("widget.panda")}) {
+        QFile file(dir.filePath(name));
+        QVERIFY(file.open(QIODevice::WriteOnly));
+    }
+    palette.updateICList(QFileInfo(dir.filePath(QStringLiteral("current.panda"))));
+
+    ElementLabel *latch = ui.scrollAreaWidgetContents_Search->findChild<ElementLabel *>(QStringLiteral("label_dlatch"));
+    ElementLabel *ic = nullptr;
+    for (auto *label : ui.scrollAreaWidgetContents_Search->findChildren<ElementLabel *>()) {
+        if (label->elementType() == ElementType::IC) {
+            ic = label;
+        }
+    }
+    QVERIFY(latch);
+    QVERIFY(ic);
+    const QImage light = latch->pixmap().toImage();
+    const QImage icPicture = ic->pixmap().toImage();
+    QCOMPARE(light, ElementFactory::pixmap(ElementType::DLatch).toImage());
+
+    ThemeManager::setTheme(Theme::Dark);
+    palette.updateTheme();
+    const QImage dark = ElementFactory::pixmap(ElementType::DLatch).toImage();
+    QVERIFY(dark != light);
+    QCOMPARE(latch->pixmap().toImage(), dark);
+    QCOMPARE(ic->pixmap().toImage(), icPicture);
 }
