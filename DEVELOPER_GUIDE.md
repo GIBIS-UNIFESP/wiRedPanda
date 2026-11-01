@@ -499,13 +499,13 @@ The factory does not manage IDs — that is the `Scene`'s responsibility.
 
 ### How Elements Register Themselves
 
-wiRedPanda uses a **self-registering template pattern**. Each element specializes `ElementInfo<T>`, which:
+wiRedPanda uses a **self-registering template pattern**. Each element type specializes `ElementInfo<Type>`, keyed by its `ElementType`, which:
 
 1. Defines compile-time `ElementConstraints` (input/output count, group, features).
 2. Provides a `describe()` function returning its type's descriptor, with display info (icon path, translated name).
 3. Contains a `static inline const bool registered` lambda that runs at program startup to add the type's descriptor (`ElementTypeDescriptor::add()`) and register its creator with `ElementFactory`.
 
-This means: **no manual factory registration calls**. Just defining the `ElementInfo<T>` specialization in the `.cpp` file is enough to make the element available everywhere — in the palette, in serialization, and in tests.
+This means: **no manual factory registration calls**. Just defining the `ElementInfo<Type>` specialization in the `.cpp` file is enough to make the element available everywhere — in the palette, in serialization, and in tests.
 
 The `ElementConstraints` are **validated at compile time** by the `constexpr validate()` function. A misconfigured element will not compile.
 
@@ -621,7 +621,7 @@ public:
 
 // 1. Registration: define constraints and the descriptor
 template<>
-struct ElementInfo<And> {
+struct ElementInfo<ElementType::And> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::And,
         .group = ElementGroup::Gate,
@@ -1427,7 +1427,7 @@ public:
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Buffer> {
+struct ElementInfo<ElementType::Buffer> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Buffer,
         .group = ElementGroup::Gate,
@@ -1625,7 +1625,7 @@ The project uses **Conventional Commits**:
 
 ### Week 2: Read the Code
 
-1. **Read one gate end-to-end**: Start with `And.h` → `And.cpp` → the `ElementInfo<And>` specialization → `StatusOps::statusAndAll()`.
+1. **Read one gate end-to-end**: Start with `And.h` → `And.cpp` → the `ElementInfo<ElementType::And>` specialization → `StatusOps::statusAndAll()`.
 2. **Compare with other gates**: `Not.cpp`, `Or.cpp`, `Xor.cpp` — notice the pattern.
 3. **Read a sequential element**: `DFlipFlop.cpp` — understand edge detection and state storage.
 4. **Read a test**: `TestLogicGates.cpp` — see how `CircuitBuilder` and `TestUtils` work.

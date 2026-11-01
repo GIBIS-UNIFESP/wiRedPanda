@@ -9,7 +9,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<Node> {
+struct ElementInfo<ElementType::Node> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Node,
         .group = ElementGroup::Gate,

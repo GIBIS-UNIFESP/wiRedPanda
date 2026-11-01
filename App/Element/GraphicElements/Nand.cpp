@@ -8,7 +8,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Nand> {
+struct ElementInfo<ElementType::Nand> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Nand,
         .group = ElementGroup::Gate,

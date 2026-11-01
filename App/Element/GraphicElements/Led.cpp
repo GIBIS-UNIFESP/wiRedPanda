@@ -13,7 +13,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<Led> {
+struct ElementInfo<ElementType::Led> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Led,
         .group = ElementGroup::Output,

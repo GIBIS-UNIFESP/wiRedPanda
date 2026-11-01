@@ -15,7 +15,7 @@
 #include "App/IO/VersionInfo.h"
 
 template<>
-struct ElementInfo<AudioBox> {
+struct ElementInfo<ElementType::AudioBox> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::AudioBox,
         .group = ElementGroup::Output,

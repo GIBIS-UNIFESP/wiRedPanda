@@ -9,7 +9,7 @@
 
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 
-template<typename T>
+template<ElementType Type>
 struct ElementInfo;
 
 /**
@@ -22,7 +22,7 @@ class AudioBox : public AudioOutputElement
 {
     Q_OBJECT
 
-    friend struct ElementInfo<AudioBox>; // its descriptor's every-load rule checks the sound file again
+    friend struct ElementInfo<ElementType::AudioBox>; // its descriptor's every-load rule checks the sound file again
 
 public:
     /// Default audio source: the bundled sample resource, NOT an empty path.

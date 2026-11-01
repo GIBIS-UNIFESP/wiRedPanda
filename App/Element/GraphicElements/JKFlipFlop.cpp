@@ -8,7 +8,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<JKFlipFlop> {
+struct ElementInfo<ElementType::JKFlipFlop> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::JKFlipFlop,
         .group = ElementGroup::Memory,

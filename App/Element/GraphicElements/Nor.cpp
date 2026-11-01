@@ -8,7 +8,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Nor> {
+struct ElementInfo<ElementType::Nor> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Nor,
         .group = ElementGroup::Gate,

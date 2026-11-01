@@ -69,7 +69,7 @@ struct AppearanceSlot {
  * \struct ElementTypeDescriptor
  * \brief What one element type is: its group, names, ports, pictures, simulation kernel and capabilities.
  *
- * \details Each element .cpp adds its type's descriptor through its ElementInfo<T>
+ * \details Each element .cpp adds its type's descriptor through its ElementInfo<Type>
  * specialization's describe(); of(), add() and has() are the registry of every
  * type's. All fields are populated at static-initialization time (before
  * QApplication).

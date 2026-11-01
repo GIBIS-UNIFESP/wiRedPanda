@@ -8,7 +8,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<TFlipFlop> {
+struct ElementInfo<ElementType::TFlipFlop> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::TFlipFlop,
         .group = ElementGroup::Memory,

@@ -11,7 +11,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<Display7> {
+struct ElementInfo<ElementType::Display7> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Display7,
         .group = ElementGroup::Output,

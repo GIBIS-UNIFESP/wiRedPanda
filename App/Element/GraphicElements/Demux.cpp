@@ -12,7 +12,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<Demux> {
+struct ElementInfo<ElementType::Demux> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Demux,
         .group = ElementGroup::Mux,

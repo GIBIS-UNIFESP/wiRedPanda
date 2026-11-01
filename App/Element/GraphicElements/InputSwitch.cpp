@@ -9,7 +9,7 @@
 #include "App/IO/VersionInfo.h"
 
 template<>
-struct ElementInfo<InputSwitch> {
+struct ElementInfo<ElementType::InputSwitch> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::InputSwitch,
         .group = ElementGroup::Input,

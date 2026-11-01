@@ -8,7 +8,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Xnor> {
+struct ElementInfo<ElementType::Xnor> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Xnor,
         .group = ElementGroup::Gate,

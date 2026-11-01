@@ -8,7 +8,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Not> {
+struct ElementInfo<ElementType::Not> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Not,
         .group = ElementGroup::Gate,

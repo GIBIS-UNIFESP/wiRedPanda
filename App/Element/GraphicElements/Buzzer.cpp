@@ -12,7 +12,7 @@
 #include "App/IO/VersionInfo.h"
 
 template<>
-struct ElementInfo<Buzzer> {
+struct ElementInfo<ElementType::Buzzer> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Buzzer,
         .group = ElementGroup::Output,

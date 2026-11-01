@@ -15,7 +15,7 @@
 using namespace std::chrono_literals;
 
 template<>
-struct ElementInfo<Clock> {
+struct ElementInfo<ElementType::Clock> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Clock,
         .group = ElementGroup::Input,

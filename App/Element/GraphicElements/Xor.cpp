@@ -8,7 +8,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Xor> {
+struct ElementInfo<ElementType::Xor> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Xor,
         .group = ElementGroup::Gate,

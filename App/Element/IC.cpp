@@ -23,7 +23,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<IC> {
+struct ElementInfo<ElementType::IC> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::IC,
         .group = ElementGroup::IC,

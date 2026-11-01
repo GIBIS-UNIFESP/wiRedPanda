@@ -20,7 +20,7 @@ bool positionLevel(const Element &element, const int port)
 } // namespace InputRotaryDetail
 
 template<>
-struct ElementInfo<InputRotary> {
+struct ElementInfo<ElementType::InputRotary> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::InputRotary,
         .group = ElementGroup::Input,

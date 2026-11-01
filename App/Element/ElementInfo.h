@@ -64,7 +64,7 @@ constexpr bool validate(const ElementConstraints &c)
 /**
  * \brief Converts ElementConstraints to an ElementTypeDescriptor with all constraint-derived fields set.
  *
- * \details Specializations of ElementInfo<T>::describe() call this first, then fill in
+ * \details Specializations of ElementInfo<Type>::describe() call this first, then fill in
  * the remaining display fields: \c pixmapPath, \c titleText, \c translatedName,
  * \c trContext and \c appearanceSlots.
  * \param c Source constraints.
@@ -89,7 +89,7 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
 /**
  * \brief Self-registering element information trait.
  *
- * Specializations must define:
+ * Specialized for each type, by its ElementType, in its .cpp. Specializations must define:
  * - static constexpr ElementConstraints constraints;
  * - static ElementTypeDescriptor describe();
  * - static inline const bool registered = [](){ ... }();
@@ -99,7 +99,7 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
  * Example:
  * \code
  * template<>
- * struct ElementInfo<And> {
+ * struct ElementInfo<ElementType::And> {
  *     static constexpr ElementConstraints constraints{
  *         .type = ElementType::And,
  *         .group = ElementGroup::Gate,
@@ -127,5 +127,5 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
  * };
  * \endcode
  */
-template<typename T>
+template<ElementType Type>
 struct ElementInfo;  // Undefined — must be specialized in each element .cpp

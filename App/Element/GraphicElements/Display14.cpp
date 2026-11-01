@@ -11,7 +11,7 @@
 #include "App/IO/VersionInfo.h"
 
 template<>
-struct ElementInfo<Display14> {
+struct ElementInfo<ElementType::Display14> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Display14,
         .group = ElementGroup::Output,

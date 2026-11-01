@@ -9,7 +9,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<TruthTable> {
+struct ElementInfo<ElementType::TruthTable> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::TruthTable,
         .group = ElementGroup::IC,
@@ -66,12 +66,12 @@ namespace {
 
 /// Rows in a full table: the row index is the inputs read MSB-first, so an element wired to the
 /// maximum number of inputs addresses 2^maxInputSize of them.
-constexpr qsizetype kTruthTableRows = qsizetype{1} << ElementInfo<TruthTable>::constraints.maxInputSize;
+constexpr qsizetype kTruthTableRows = qsizetype{1} << ElementInfo<ElementType::TruthTable>::constraints.maxInputSize;
 
 /// Bits in the table: one per (output column, row). updateLogic() indexes kTruthTableRows * output
 /// + row, so the largest index it can form is exactly this minus one -- the array has ZERO
 /// slack, and derived constants are what keep that true if the port limits ever move.
-constexpr qsizetype kTruthTableKeyBits = ElementInfo<TruthTable>::tableBits;
+constexpr qsizetype kTruthTableKeyBits = ElementInfo<ElementType::TruthTable>::tableBits;
 
 static_assert(kTruthTableKeyBits == 2048,
               "The .panda format stores this QBitArray verbatim and the table's spec resizes every loaded "

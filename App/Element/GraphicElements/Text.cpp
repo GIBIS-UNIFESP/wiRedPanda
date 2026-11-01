@@ -7,7 +7,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Text> {
+struct ElementInfo<ElementType::Text> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Text,
         .group = ElementGroup::Other,

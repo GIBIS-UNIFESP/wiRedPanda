@@ -8,7 +8,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<InputGnd> {
+struct ElementInfo<ElementType::InputGnd> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::InputGnd,
         .group = ElementGroup::StaticInput,

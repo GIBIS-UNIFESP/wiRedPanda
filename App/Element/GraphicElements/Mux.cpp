@@ -11,7 +11,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<Mux> {
+struct ElementInfo<ElementType::Mux> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Mux,
         .group = ElementGroup::Mux,

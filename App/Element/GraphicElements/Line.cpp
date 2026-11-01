@@ -7,7 +7,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Line> {
+struct ElementInfo<ElementType::Line> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Line,
         .group = ElementGroup::Other,

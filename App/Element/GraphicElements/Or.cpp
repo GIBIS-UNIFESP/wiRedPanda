@@ -8,7 +8,7 @@
 #include "App/Element/ElementInfo.h"
 
 template<>
-struct ElementInfo<Or> {
+struct ElementInfo<ElementType::Or> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::Or,
         .group = ElementGroup::Gate,

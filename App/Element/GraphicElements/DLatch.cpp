@@ -8,7 +8,7 @@
 #include "App/Wiring/Port.h"
 
 template<>
-struct ElementInfo<DLatch> {
+struct ElementInfo<ElementType::DLatch> {
     static constexpr ElementConstraints constraints{
         .type = ElementType::DLatch,
         .group = ElementGroup::Memory,
