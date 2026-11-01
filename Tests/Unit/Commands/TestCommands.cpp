@@ -2351,7 +2351,7 @@ void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
     red->setColor("Red");
     green->setColor("Green");
 
-    auto *command = SetPropertyCommand::apply({red, green}, ElementProperty::Color, QString("Blue"), scene);
+    auto *command = SetPropertyCommand::apply({red, green}, ElementProperty::parameter(ParamId::Colour), QString("Blue"), scene);
     QVERIFY(command != nullptr);
     QCOMPARE(red->color(), QString("Blue"));
     QCOMPARE(green->color(), QString("Blue"));
@@ -2378,10 +2378,10 @@ void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, named, other}, scene));
     named->setLabel("x");
 
-    QCOMPARE(SetPropertyCommand::apply({gate, named}, ElementProperty::Label, QString("x"), scene), nullptr);
+    QCOMPARE(SetPropertyCommand::apply({gate, named}, ElementProperty::label(), QString("x"), scene), nullptr);
     QCOMPARE(gate->label(), QString());
 
-    auto *command = SetPropertyCommand::apply({gate, named, other}, ElementProperty::Label, QString("x"), scene);
+    auto *command = SetPropertyCommand::apply({gate, named, other}, ElementProperty::label(), QString("x"), scene);
     QVERIFY(command != nullptr);
     QCOMPARE(gate->label(), QString());
     QCOMPARE(other->label(), QString("x"));
@@ -2403,10 +2403,18 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch, rotary}, scene));
     rotary->setOutputSize(4);
 
-    scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::Value, 2, scene));
+    // The value of a rotary is its selected output, of a latching input its level; a button's follows the pointer
+    QCOMPARE(SetPropertyCommand::valueProperty(*rotary), ElementProperty::parameter(ParamId::Position));
+    QCOMPARE(SetPropertyCommand::valueProperty(*inputSwitch), ElementProperty::parameter(ParamId::On));
+    const InputButton button;
+    QVERIFY(!SetPropertyCommand::valueProperty(button).has_value());
+
+    scene->receiveCommand(SetPropertyCommand::apply({{inputSwitch, ElementProperty::parameter(ParamId::On), true},
+                                                     {rotary, ElementProperty::parameter(ParamId::Position), 2}},
+                                                    scene));
     QVERIFY(inputSwitch->isOn());
     QCOMPARE(rotary->outputValue(), 2);
-    scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::Locked, true, scene));
+    scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::parameter(ParamId::Locked), true, scene));
     QVERIFY(inputSwitch->isLocked());
     QVERIFY(rotary->isLocked());
 
@@ -2418,6 +2426,38 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
     QCOMPARE(rotary->outputValue(), 0);
 }
 
+void TestCommands::testSetPropertyCommandSetsSeveralPropertiesAsOneStep()
+{
+    // Edits of several properties, and of one property of an element twice, are one step; its undo leaves each
+    // element as it was before the first
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+    auto *clock = new Clock();
+    auto *led = new Led();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, led}, scene));
+    const double frequency = clock->frequency();
+    const int commands = undoStack->count();
+
+    scene->receiveCommand(SetPropertyCommand::apply({{clock, ElementProperty::parameter(ParamId::Frequency), 2.0},
+                                                     {clock, ElementProperty::label(), QString("first")},
+                                                     {led, ElementProperty::parameter(ParamId::Colour), QString("Red")},
+                                                     {clock, ElementProperty::label(), QString("second")}},
+                                                    scene));
+    QCOMPARE(undoStack->count(), commands + 1);
+    QCOMPARE(clock->frequency(), 2.0);
+    QCOMPARE(clock->label(), QString("second"));
+    QCOMPARE(led->color(), QString("Red"));
+
+    undoStack->undo();
+    QCOMPARE(clock->frequency(), frequency);
+    QCOMPARE(clock->label(), QString());
+    QCOMPARE(led->color(), QString("White"));
+    undoStack->redo();
+    QCOMPARE(clock->label(), QString("second"));
+    QCOMPARE(led->color(), QString("Red"));
+}
+
 void TestCommands::testSetPropertyCommandFirstRedoLeavesTheValues()
 {
     // apply() set the values; pushing the command writes nothing again
@@ -2426,7 +2466,7 @@ void TestCommands::testSetPropertyCommandFirstRedoLeavesTheValues()
     auto *input = new InputSwitch();
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{input}, scene));
 
-    auto *command = SetPropertyCommand::apply({input}, ElementProperty::Label, QString("a"), scene);
+    auto *command = SetPropertyCommand::apply({input}, ElementProperty::label(), QString("a"), scene);
     QVERIFY(command != nullptr);
     input->setLabel("changed meanwhile");
     scene->receiveCommand(command);
@@ -2449,7 +2489,7 @@ void TestCommands::testSetPropertyCommandMergesASession()
     const int commands = undoStack->count();
 
     const auto push = [&](const QString &text, const int session) {
-        scene->receiveCommand(SetPropertyCommand::apply({input}, ElementProperty::Label, text, scene, session));
+        scene->receiveCommand(SetPropertyCommand::apply({input}, ElementProperty::label(), text, scene, session));
     };
     push("a", 7);
     push("ab", 7);
@@ -2483,9 +2523,9 @@ void TestCommands::testSetPropertyCommandMergedBackIsNoStep()
     const double frequency = clock->frequency();
     const int commands = undoStack->count();
 
-    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::Frequency, frequency + 1.0, scene, 3));
+    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency + 1.0, scene, 3));
     QCOMPARE(undoStack->count(), commands + 1);
-    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::Frequency, frequency, scene, 3));
+    scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency, scene, 3));
     QCOMPARE(undoStack->count(), commands);
     QCOMPARE(clock->frequency(), frequency);
 }
@@ -2501,14 +2541,14 @@ void TestCommands::testSetPropertyCommandMergesOnlyTheSameChanges()
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
     const int commands = undoStack->count();
 
-    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::Frequency, 2.0, scene, 5));
-    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::Label, QString("c"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::parameter(ParamId::Frequency), 2.0, scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({first}, ElementProperty::label(), QString("c"), scene, 5));
     QCOMPARE(undoStack->count(), commands + 2);
-    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::Label, QString("s"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::label(), QString("s"), scene, 5));
     QCOMPARE(undoStack->count(), commands + 3);
-    scene->receiveCommand(SetPropertyCommand::apply({first, second}, ElementProperty::Label, QString("d"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({first, second}, ElementProperty::label(), QString("d"), scene, 5));
     QCOMPARE(undoStack->count(), commands + 4);
-    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::Label, QString("e"), scene, 5));
+    scene->receiveCommand(SetPropertyCommand::apply({second}, ElementProperty::label(), QString("e"), scene, 5));
     QCOMPARE(undoStack->count(), commands + 5);
 
     undoStack->undo();
@@ -2551,7 +2591,7 @@ void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
     sim->update();
     QCOMPARE(rx->outputValue(0), Status::Active);
 
-    scene->receiveCommand(SetPropertyCommand::apply({rx}, ElementProperty::Label, QString("B"), scene));
+    scene->receiveCommand(SetPropertyCommand::apply({rx}, ElementProperty::label(), QString("B"), scene));
     sim->update();
     QCOMPARE(rx->outputValue(0), Status::Inactive);
 
@@ -2572,7 +2612,7 @@ void TestCommands::testSetPropertyCommandNonWirelessLabelDoesNotRebuild()
     sim->update(); // the structural edit's rebuild
     QVERIFY(probe.arm());
 
-    scene->receiveCommand(SetPropertyCommand::apply({node}, ElementProperty::Label, QString("junction"), scene));
+    scene->receiveCommand(SetPropertyCommand::apply({node}, ElementProperty::label(), QString("junction"), scene));
     sim->update();
     QVERIFY(!probe.rebuilt());
     scene->undoStack()->undo();

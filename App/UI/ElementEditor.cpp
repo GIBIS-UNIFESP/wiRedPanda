@@ -577,7 +577,18 @@ bool ElementEditor::editable() const
     return !m_elements.isEmpty() && isEnabled() && m_scene;
 }
 
-void ElementEditor::setProperty(const ElementProperty property, const QVariant &value, const bool merges)
+void ElementEditor::setProperty(const ElementProperty property, const ParamValue &value, const bool merges)
+{
+    QList<PropertyEdit> edits;
+    for (auto *elm : std::as_const(m_elements)) {
+        if (SetPropertyCommand::appliesTo(*elm, property)) {
+            edits.append({elm, property, value});
+        }
+    }
+    applyEdits(edits, merges);
+}
+
+void ElementEditor::applyEdits(const QList<PropertyEdit> &edits, const bool merges)
 {
     if (!editable()) {
         return;
@@ -585,7 +596,7 @@ void ElementEditor::setProperty(const ElementProperty property, const QVariant &
     sentryBreadcrumb("ui", QStringLiteral("Element properties applied"));
     qCDebug(three) << "Apply.";
 
-    if (auto *command = SetPropertyCommand::apply(m_elements, property, value, m_scene, merges ? m_editSession : -1)) {
+    if (auto *command = SetPropertyCommand::apply(edits, m_scene, merges ? m_editSession : -1)) {
         m_scene->receiveCommand(command);
     }
 }
@@ -624,7 +635,7 @@ void ElementEditor::labelChanged(const QString &label)
     if (!editable() || (label == m_manyLabels) || !duplicateTxLabel(label, std::nullopt).isEmpty()) {
         return;
     }
-    setProperty(ElementProperty::Label, label, true);
+    setProperty(ElementProperty::label(), label, true);
 }
 
 void ElementEditor::labelEditingFinished()
@@ -649,26 +660,26 @@ void ElementEditor::colorChanged()
     // The item data is the untranslated colour name; the placeholder of a selection with many colours has none
     const QVariant color = m_ui->comboBoxColor->currentData();
     if (color.isValid()) {
-        setProperty(ElementProperty::Color, color.toString(), false);
+        setProperty(ElementProperty::parameter(ParamId::Colour), color.toString(), false);
     }
 }
 
 void ElementEditor::frequencyChanged(const double frequency)
 {
     if (m_ui->doubleSpinBoxFrequency->text() != m_manyFreq) {
-        setProperty(ElementProperty::Frequency, frequency, true);
+        setProperty(ElementProperty::parameter(ParamId::Frequency), frequency, true);
     }
 }
 
 void ElementEditor::delayChanged(const int eighths)
 {
     // The slider's -4 to 4 is the phase delay's -0.5 to 0.5 of the period
-    setProperty(ElementProperty::Delay, eighths / 8.0, m_ui->sliderDelay->isSliderDown());
+    setProperty(ElementProperty::parameter(ParamId::Delay), eighths / 8.0, m_ui->sliderDelay->isSliderDown());
 }
 
 void ElementEditor::volumeChanged(const int percent)
 {
-    setProperty(ElementProperty::Volume, static_cast<float>(percent) / 100.0f, m_ui->sliderVolume->isSliderDown());
+    setProperty(ElementProperty::parameter(ParamId::Volume), percent / 100.0, m_ui->sliderVolume->isSliderDown());
 }
 
 void ElementEditor::wirelessModeChanged(const int index)
@@ -705,7 +716,7 @@ void ElementEditor::wirelessModeChanged(const int index)
         m_scene->undoStack()->beginMacro(tr("Change wireless mode"));
     }
 
-    setProperty(ElementProperty::Wireless, index, false);
+    setProperty(ElementProperty::parameter(ParamId::Wireless), index, false);
 
     if (needsMacro) {
         m_scene->receiveCommand(new DeleteItemsCommand(wirelessConnsToDelete, m_scene));
@@ -800,15 +811,24 @@ void ElementEditor::outputIndexChanged(const int index)
 void ElementEditor::outputValueChanged(const QString &value)
 {
     // The placeholder of a selection with many values is no value
-    if (value != m_manyOV) {
-        setProperty(ElementProperty::Value, value.toInt(), false);
+    if (value == m_manyOV) {
+        return;
     }
+    // A rotary switch's value is the output it selects; any other input's is its level
+    QList<PropertyEdit> edits;
+    for (auto *elm : std::as_const(m_elements)) {
+        if (const std::optional<ElementProperty> property = SetPropertyCommand::valueProperty(*elm)) {
+            const ParamValue level = (property->id == ParamId::Position) ? ParamValue(value.toInt()) : ParamValue(value.toInt() != 0);
+            edits.append({elm, *property, level});
+        }
+    }
+    applyEdits(edits, false);
 }
 
 void ElementEditor::inputLocked(const bool value)
 {
     qCDebug(zero) << "Input locked.";
-    setProperty(ElementProperty::Locked, value, false);
+    setProperty(ElementProperty::parameter(ParamId::Locked), value, false);
 }
 
 void ElementEditor::triggerChanged(const QString &cmd)
@@ -821,7 +841,7 @@ void ElementEditor::triggerChanged(const QString &cmd)
         return;
     }
     if ((cmd != m_manyTriggers) && (cmd.size() <= 1)) {
-        setProperty(ElementProperty::Trigger, cmd, true);
+        setProperty(ElementProperty::trigger(), cmd, true);
     }
 }
 

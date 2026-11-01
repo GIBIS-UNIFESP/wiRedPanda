@@ -30,6 +30,7 @@
 #include <cstdint>
 #include <fuzzer/FuzzedDataProvider.h>
 #include <memory>
+#include <optional>
 
 #include <QApplication>
 #include <QByteArray>
@@ -107,27 +108,50 @@ constexpr ElementType kAddTypes[] = {
 };
 
 constexpr ElementProperty kProperties[] = {
-    ElementProperty::Label, ElementProperty::Color, ElementProperty::Frequency, ElementProperty::Delay,
-    ElementProperty::Volume, ElementProperty::Trigger, ElementProperty::Wireless, ElementProperty::Locked,
-    ElementProperty::Value,
+    ElementProperty::label(),
+    ElementProperty::parameter(ParamId::Colour),
+    ElementProperty::parameter(ParamId::Frequency),
+    ElementProperty::parameter(ParamId::Delay),
+    ElementProperty::parameter(ParamId::Volume),
+    ElementProperty::trigger(),
+    ElementProperty::parameter(ParamId::Wireless),
+    ElementProperty::parameter(ParamId::Locked),
 };
 
 // A value of \a property, as the element editor sets one, or one out of its range
-QVariant propertyValue(const ElementProperty property, FuzzedDataProvider &fdp)
+ParamValue propertyValue(const ElementProperty property, FuzzedDataProvider &fdp)
 {
     const int pick = fdp.ConsumeIntegralInRange<int>(0, 3);
-    switch (property) {
-    case ElementProperty::Label:     return QStringList{"", "a", "clk", QString(300, 'x')}.at(pick);
-    case ElementProperty::Color:     return QStringList{"Red", "Green", "White", "Plaid"}.at(pick);
-    case ElementProperty::Frequency: return QList<double>{0.5, 1.0, 50.0, -1.0}.at(pick);
-    case ElementProperty::Delay:     return QList<double>{0.0, 0.25, 0.5, -1.0}.at(pick);
-    case ElementProperty::Volume:    return QList<double>{0.0, 0.5, 1.0, 4.0}.at(pick);
-    case ElementProperty::Trigger:   return QStringList{"", "A", "Space", "Ctrl+Shift+F12"}.at(pick);
-    case ElementProperty::Wireless:  return QList<int>{0, 1, 2, 7}.at(pick);
-    case ElementProperty::Locked:    return pick % 2 == 0;
-    case ElementProperty::Value:     return QList<int>{0, 1, 3, -1}.at(pick);
+    if (property == ElementProperty::label()) {
+        return QStringList{"", "a", "clk", QString(300, 'x')}.at(pick);
     }
-    return {};
+    if (property == ElementProperty::trigger()) {
+        return QStringList{"", "A", "Space", "Ctrl+Shift+F12"}.at(pick);
+    }
+    switch (property.id) {
+    case ParamId::Colour:    return QStringList{"Red", "Green", "White", "Plaid"}.at(pick);
+    case ParamId::Frequency: return QList<double>{0.5, 1.0, 50.0, -1.0}.at(pick);
+    case ParamId::Delay:     return QList<double>{0.0, 0.25, 0.5, -1.0}.at(pick);
+    case ParamId::Volume:    return QList<double>{0.0, 0.5, 1.0, 4.0}.at(pick);
+    case ParamId::Wireless:  return QList<int>{0, 1, 2, 7}.at(pick);
+    case ParamId::Locked:    return pick % 2 == 0;
+    default:                 return {};
+    }
+}
+
+// The edits that set each of \a targets' value, as the element editor's value field does: a rotary's selected output,
+// a latching input's level, from one of the field's values or one out of its range
+QList<PropertyEdit> valueEdits(const QList<Element *> &targets, FuzzedDataProvider &fdp)
+{
+    const int value = QList<int>{0, 1, 3, -1}.at(fdp.ConsumeIntegralInRange<int>(0, 3));
+    QList<PropertyEdit> edits;
+    for (auto *element : targets) {
+        if (const std::optional<ElementProperty> property = SetPropertyCommand::valueProperty(*element)) {
+            edits.append({element, *property,
+                          (property->id == ParamId::Position) ? ParamValue(value) : ParamValue(value != 0)});
+        }
+    }
+    return edits;
 }
 
 QList<IC *> icsOf(const QList<Element *> &elements, const bool embedded)
@@ -264,13 +288,18 @@ void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QS
             }
             case 12: { // SetPropertyCommand: one element or every one, in an edit session or not
                 if (elems.isEmpty()) break;
-                const auto property = kProperties[fdp.ConsumeIntegralInRange<size_t>(0, std::size(kProperties) - 1)];
+                // A property of kProperties, or past them an input's value
+                const auto which = fdp.ConsumeIntegralInRange<size_t>(0, std::size(kProperties));
                 const QList<Element *> targets = fdp.ConsumeBool() ? elems : QList<Element *>{pickElement()};
                 const int session = fdp.ConsumeBool() ? 1 : -1;
                 // One to three edits in a row, as a field typed into or a slider dragged: in a session they merge
                 const int edits = fdp.ConsumeIntegralInRange<int>(1, 3);
                 for (int edit = 0; edit < edits; ++edit) {
-                    if (auto *command = SetPropertyCommand::apply(targets, property, propertyValue(property, fdp), scene, session)) {
+                    auto *command = (which == std::size(kProperties))
+                        ? SetPropertyCommand::apply(valueEdits(targets, fdp), scene, session)
+                        : SetPropertyCommand::apply(targets, kProperties[which], propertyValue(kProperties[which], fdp),
+                                                    scene, session);
+                    if (command) {
                         scene->receiveCommand(command);
                     }
                 }

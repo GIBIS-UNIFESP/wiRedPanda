@@ -732,114 +732,122 @@ constexpr int mergeId = 1;
 
 bool SetPropertyCommand::appliesTo(const Element &element, const ElementProperty property)
 {
-    const auto *input = qobject_cast<const ElementInput *>(&element);
-    switch (property) {
-    case ElementProperty::Label:        return element.hasLabel();
-    case ElementProperty::Color:        return element.hasColors();
-    case ElementProperty::Frequency:    return element.hasFrequency();
-    case ElementProperty::Delay:        return element.hasDelay();
-    case ElementProperty::Volume:       return element.hasVolume();
-    case ElementProperty::Trigger:      return element.hasTrigger();
-    case ElementProperty::Wireless:     return element.hasWirelessMode() && (qobject_cast<const Node *>(&element) != nullptr);
-    case ElementProperty::Locked:       return input != nullptr;
-    case ElementProperty::Value:        return (input != nullptr) && (element.elementType() != ElementType::InputButton);
+    switch (property.kind) {
+    case ElementProperty::Kind::Parameter: return element.offersParam(property.id);
+    case ElementProperty::Kind::Label:     return element.hasLabel();
+    case ElementProperty::Kind::Trigger:   return element.hasTrigger();
     }
     return false;
 }
 
-QVariant SetPropertyCommand::read(const Element &element, const ElementProperty property)
+std::optional<ElementProperty> SetPropertyCommand::valueProperty(const Element &element)
 {
-    switch (property) {
-    case ElementProperty::Label:        return element.label();
-    case ElementProperty::Color:        return element.color();
-    case ElementProperty::Frequency:    return element.frequency();
-    case ElementProperty::Delay:        return element.delay();
-    case ElementProperty::Volume:       return element.volume();
-    case ElementProperty::Trigger:      return element.trigger().toString();
-    case ElementProperty::Wireless:     return static_cast<int>(element.wirelessMode());
-    case ElementProperty::Locked:
-        if (const auto *input = qobject_cast<const ElementInput *>(&element)) {
-            return input->isLocked();
-        }
-        return {};
-    case ElementProperty::Value:
-        if (const auto *input = qobject_cast<const ElementInput *>(&element)) {
-            return input->outputValue();
-        }
-        return {};
+    // A button's level follows the pointer, so it has no value to set
+    if (element.offersParam(ParamId::Position)) {
+        return ElementProperty::parameter(ParamId::Position);
+    }
+    if ((element.elementGroup() == ElementGroup::Input) && (element.elementType() != ElementType::InputButton)
+        && element.offersParam(ParamId::On)) {
+        return ElementProperty::parameter(ParamId::On);
+    }
+    return std::nullopt;
+}
+
+ParamValue SetPropertyCommand::read(const Element &element, const ElementProperty property)
+{
+    switch (property.kind) {
+    case ElementProperty::Kind::Parameter: return element.parameters().value(property.id);
+    case ElementProperty::Kind::Label:     return element.label();
+    case ElementProperty::Kind::Trigger:   return element.trigger().toString();
     }
     return {};
 }
 
-void SetPropertyCommand::write(Element &element, const ElementProperty property, const QVariant &value)
+void SetPropertyCommand::write(Element &element, const ElementProperty property, const ParamValue &value)
 {
-    switch (property) {
-    case ElementProperty::Label:        element.setLabel(value.toString()); return;
-    case ElementProperty::Color:        element.setColor(value.toString()); return;
-    case ElementProperty::Frequency:    element.setFrequency(value.toDouble()); return;
-    case ElementProperty::Delay:        element.setDelay(value.toDouble()); return;
-    case ElementProperty::Volume:       element.setVolume(value.toFloat()); return;
-    case ElementProperty::Trigger:      element.setTrigger(QKeySequence(value.toString())); return;
-    case ElementProperty::Wireless:
-        if (auto *node = qobject_cast<Node *>(&element)) {
-            node->setWirelessMode(static_cast<WirelessMode>(value.toInt()));
+    switch (property.kind) {
+    case ElementProperty::Kind::Parameter:
+        element.setParam(property.id, value);
+        return;
+    case ElementProperty::Kind::Label:
+        if (const auto *text = std::get_if<QString>(&value)) {
+            element.setLabel(*text);
         }
         return;
-    case ElementProperty::Locked:
-        if (auto *input = qobject_cast<ElementInput *>(&element)) {
-            input->setLocked(value.toBool());
-        }
-        return;
-    case ElementProperty::Value:
-        // A rotary switch's value is the output it selects; any other input's is its level
-        if (auto *rotary = qobject_cast<InputRotary *>(&element)) {
-            rotary->setOn(true, value.toInt());
-        } else if (auto *input = qobject_cast<ElementInput *>(&element)) {
-            input->setOn(value.toInt() != 0);
+    case ElementProperty::Kind::Trigger:
+        if (const auto *text = std::get_if<QString>(&value)) {
+            element.setTrigger(QKeySequence(*text));
         }
         return;
     }
+}
+
+SetPropertyCommand *SetPropertyCommand::apply(const QList<PropertyEdit> &edits, Scene *scene, const int session)
+{
+    QList<Element *> reached;
+    QList<ElementProperty> properties;
+    QList<ParamValue> before;
+    QList<ParamValue> after;
+    for (const PropertyEdit &edit : edits) {
+        // Every caller asks only for a property the element has
+        if (!appliesTo(*edit.element, edit.property)) {
+            Q_ASSERT_X(false, "SetPropertyCommand::apply()", "an edit names a property its element does not have");
+            continue;
+        }
+        // A value of another kind would set nothing, silently: each caller gives the property's own kind
+        const ParamValue current = read(*edit.element, edit.property);
+        if (edit.value.index() != current.index()) {
+            Q_ASSERT_X(false, "SetPropertyCommand::apply()", "an edit's value is not of its property's kind");
+            continue;
+        }
+        reached.append(edit.element);
+        properties.append(edit.property);
+        before.append(current);
+        write(*edit.element, edit.property, edit.value);
+        after.append(read(*edit.element, edit.property));
+    }
+
+    // Every edit stays in the command, one that changed no value included, so each step of an edit session names the
+    // same elements and properties and the steps merge. An edit that changed nothing pushes nothing.
+    return (before != after) ? new SetPropertyCommand(reached, properties, before, after, scene, session) : nullptr;
 }
 
 SetPropertyCommand *SetPropertyCommand::apply(const QList<Element *> &elements, const ElementProperty property,
-                                              const QVariant &value, Scene *scene, const int session)
+                                              const ParamValue &value, Scene *scene, const int session)
 {
-    QList<Element *> reached;
-    QVariantList before;
-    QVariantList after;
+    QList<PropertyEdit> edits;
     for (auto *element : elements) {
-        if (!appliesTo(*element, property)) {
-            continue;
+        if (appliesTo(*element, property)) {
+            edits.append({element, property, value});
         }
-        reached.append(element);
-        before.append(read(*element, property));
-        write(*element, property, value);
-        after.append(read(*element, property));
     }
-
-    // Every element the edit reached stays in the command, one whose value did not change included, so each step of an
-    // edit session names the same elements and the steps merge. An edit that changed nothing pushes nothing.
-    return (before != after) ? new SetPropertyCommand(reached, property, before, after, scene, session) : nullptr;
+    return apply(edits, scene, session);
 }
 
-SetPropertyCommand::SetPropertyCommand(const QList<Element *> &elements, const ElementProperty property,
-                                       const QVariantList &before, const QVariantList &after, Scene *scene,
+SetPropertyCommand::SetPropertyCommand(const QList<Element *> &elements, const QList<ElementProperty> &properties,
+                                       const QList<ParamValue> &before, const QList<ParamValue> &after, Scene *scene,
                                        const int session)
     : ElementsCommand(elements, scene)
-    , m_property(property)
+    , m_properties(properties)
     , m_before(before)
     , m_after(after)
     , m_session(session)
 {
     // A node's mode is its wireless channel's direction and its label the channel's name; a label change of a node
     // with no mode moves no channel.
-    m_wirelessTopologyChange = (property == ElementProperty::Wireless)
-        || ((property == ElementProperty::Label)
-            && std::any_of(elements.cbegin(), elements.cend(), [](const Element *element) {
-                   return element->hasWirelessMode() && (element->wirelessMode() != WirelessMode::None);
-               }));
+    for (qsizetype i = 0; i < elements.size(); ++i) {
+        const ElementProperty property = properties.at(i);
+        const Element *element = elements.at(i);
+        m_wirelessTopologyChange = m_wirelessTopologyChange
+            || (property == ElementProperty::parameter(ParamId::Wireless))
+            || ((property == ElementProperty::label()) && element->hasWirelessMode()
+                && (element->wirelessMode() != WirelessMode::None));
+    }
 
-    setText(QCoreApplication::translate("UpdateCommand", "Update %1 elements").arg(elements.size()));
+    QList<int> distinct = m_ids;
+    std::sort(distinct.begin(), distinct.end());
+    distinct.erase(std::unique(distinct.begin(), distinct.end()), distinct.end());
+    setText(QCoreApplication::translate("UpdateCommand", "Update %1 elements").arg(distinct.size()));
 }
 
 void SetPropertyCommand::redo()
@@ -863,9 +871,16 @@ void SetPropertyCommand::write(const bool after)
     }
     const auto &elements = *found;
     if (!std::exchange(m_firstRedo, false)) {
-        const QVariantList &values = after ? m_after : m_before;
-        for (qsizetype i = 0; i < elements.size(); ++i) {
-            write(*elements.at(i), m_property, values.at(i));
+        const QList<ParamValue> &values = after ? m_after : m_before;
+        // Undone in the reverse order, so an element edited twice ends at its first value before
+        if (after) {
+            for (qsizetype i = 0; i < elements.size(); ++i) {
+                write(*elements.at(i), m_properties.at(i), values.at(i));
+            }
+        } else {
+            for (qsizetype i = elements.size() - 1; i >= 0; --i) {
+                write(*elements.at(i), m_properties.at(i), values.at(i));
+            }
         }
     }
     for (auto *element : elements) {
@@ -890,7 +905,7 @@ bool SetPropertyCommand::mergeWith(const QUndoCommand *other)
 {
     // Only a SetPropertyCommand has its merge id
     const auto *next = static_cast<const SetPropertyCommand *>(other);
-    if ((next->m_session != m_session) || (next->m_property != m_property) || (next->m_ids != m_ids)) {
+    if ((next->m_session != m_session) || (next->m_properties != m_properties) || (next->m_ids != m_ids)) {
         return false;
     }
 

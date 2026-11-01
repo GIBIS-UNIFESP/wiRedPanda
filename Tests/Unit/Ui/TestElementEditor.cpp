@@ -988,6 +988,8 @@ void TestElementEditor::testApplyVolumeProperty()
     slider->setValue(80);
 
     QCOMPARE(audiobox->volume(), 0.8f);
+    // The volume's spec takes a float, widened (AudioOutputElement::volumeSpec())
+    QCOMPARE(audiobox->param<double>(ParamId::Volume), static_cast<double>(0.8f));
 }
 
 void TestElementEditor::testVolumeShownAsNearestPercent()

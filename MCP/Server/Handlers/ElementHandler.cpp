@@ -62,7 +62,7 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         return kind("rotation", "a finite number");
     }
     if (params.contains("color")) {
-        if (!has(ElementProperty::Color)) {
+        if (!has(ElementProperty::parameter(ParamId::Colour))) {
             return lacks("color");
         }
         if (!params.value("color").isString() || !kColors.contains(params.value("color").toString())) {
@@ -70,7 +70,7 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         }
     }
     if (params.contains("frequency")) {
-        if (!has(ElementProperty::Frequency)) {
+        if (!has(ElementProperty::parameter(ParamId::Frequency))) {
             return lacks("frequency");
         }
         if (!number("frequency")) {
@@ -82,7 +82,7 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         }
     }
     if (params.contains("delay")) {
-        if (!has(ElementProperty::Delay)) {
+        if (!has(ElementProperty::parameter(ParamId::Delay))) {
             return lacks("delay");
         }
         if (!number("delay") || (params.value("delay").toDouble() < -1.0) || (params.value("delay").toDouble() > 1.0)) {
@@ -90,7 +90,7 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         }
     }
     if (params.contains("trigger")) {
-        if (!has(ElementProperty::Trigger)) {
+        if (!has(ElementProperty::trigger())) {
             return lacks("trigger");
         }
         // The editor's field takes one letter, digit or space, or none
@@ -100,7 +100,7 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         }
     }
     if (params.contains("locked")) {
-        if (!has(ElementProperty::Locked)) {
+        if (!has(ElementProperty::parameter(ParamId::Locked))) {
             return lacks("locked");
         }
         if (!params.value("locked").isBool()) {
@@ -108,7 +108,7 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         }
     }
     if (params.contains("volume")) {
-        if (!has(ElementProperty::Volume)) {
+        if (!has(ElementProperty::parameter(ParamId::Volume))) {
             return lacks("volume");
         }
         if (!number("volume") || (params.value("volume").toDouble() < 0.0) || (params.value("volume").toDouble() > 1.0)) {
@@ -139,7 +139,7 @@ QString refusal(const Element &element, const QJsonObject &params, const Scene *
         }
     }
     if (params.contains("wireless_mode")) {
-        if (!has(ElementProperty::Wireless)) {
+        if (!has(ElementProperty::parameter(ParamId::Wireless))) {
             return lacks("wireless_mode");
         }
         if (!whole("wireless_mode") || (params.value("wireless_mode").toInt() < 0) || (params.value("wireless_mode").toInt() > 2)) {

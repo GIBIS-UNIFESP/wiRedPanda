@@ -280,42 +280,73 @@ private:
     bool m_wirelessTopologyChange = false;
 };
 
-/// A property of an element that a SetPropertyCommand sets, through the element's own setter.
-enum class ElementProperty {
-    Label,
-    Color,
-    Frequency,
-    Delay,
-    Volume,
-    Trigger,        ///< Held as the key sequence's text.
-    Wireless,       ///< A node's wireless mode; held as the WirelessMode's integer.
-    Locked,         ///< An input's.
-    Value,          ///< An input's output value: a rotary switch's position, any other input's level.
+/// A property of an element that a SetPropertyCommand sets: a parameter of its type's schema, its label or its trigger
+/// key.
+struct ElementProperty {
+    enum class Kind : quint8 {
+        Parameter, ///< The parameter id names.
+        Label,
+        Trigger,   ///< Held as the key sequence's portable text.
+    };
+
+    Kind kind = Kind::Parameter;
+    ParamId id = ParamId::On; ///< The parameter, for Kind::Parameter.
+
+    /// Returns the parameter \a id.
+    static constexpr ElementProperty parameter(const ParamId id) { return {Kind::Parameter, id}; }
+    /// Returns the label.
+    static constexpr ElementProperty label() { return {Kind::Label, ParamId::On}; }
+    /// Returns the trigger key.
+    static constexpr ElementProperty trigger() { return {Kind::Trigger, ParamId::On}; }
+
+    friend constexpr bool operator==(const ElementProperty &a, const ElementProperty &b)
+    {
+        return (a.kind == b.kind) && ((a.kind != Kind::Parameter) || (a.id == b.id));
+    }
+};
+
+/// One value a SetPropertyCommand sets: \a property of \a element to \a value, of the property's kind (a parameter's
+/// kind, the label's text, the trigger key's portable text).
+struct PropertyEdit {
+    Element *element = nullptr;
+    ElementProperty property;
+    ParamValue value;
 };
 
 /**
  * \class SetPropertyCommand
- * \brief Undo command that sets one property of elements (ElementProperty), holding each one's value before and after.
+ * \brief Undo command that sets properties of elements (ElementProperty), holding each one's value before and after.
  *
  * \details Undo and redo write those values and nothing else of the elements. A command pushed in an edit session
- * merges into the one on top of the stack from the same session when both set the same property of the same
+ * merges into the one on top of the stack from the same session when both set the same properties of the same
  * elements, so a field typed into or a slider dragged is one undo step; a merge back to the values before is no step.
  */
 class SetPropertyCommand : public ElementsCommand
 {
 public:
     /**
-     * \brief Sets \a property of each of \a elements that has it to \a value, as the element takes it, and returns the
-     * command that holds the change, to push; null when no value changed.
-     * \details Every element that has the property stays in the command, one whose value did not change included, so
-     * the commands of an edit session name the same elements and merge. \a session is the edit session, a number
-     * the caller chooses: commands of one session merge; -1 is none.
+     * \brief Sets each of \a edits, as its element takes it, and returns the command that holds the change, to push;
+     * null when no value changed.
+     * \details Every edit stays in the command, one that changed no value included, so the commands of an edit session
+     * name the same elements and properties and merge. \a session is the edit session, a number the caller chooses:
+     * commands of one session merge; -1 is none. Each edit names a property its element has (appliesTo()).
      */
-    [[nodiscard]] static SetPropertyCommand *apply(const QList<Element *> &elements, ElementProperty property,
-                                                   const QVariant &value, Scene *scene, int session = -1);
+    [[nodiscard]] static SetPropertyCommand *apply(const QList<PropertyEdit> &edits, Scene *scene, int session = -1);
 
-    /// Returns whether \a element has \a property.
+    /// Sets \a property of each of \a elements that has it to \a value, as apply() sets edits.
+    [[nodiscard]] static SetPropertyCommand *apply(const QList<Element *> &elements, ElementProperty property,
+                                                   const ParamValue &value, Scene *scene, int session = -1);
+
+    /// Returns whether \a element has \a property: a parameter it offers for editing, or a label or a trigger key it
+    /// shows.
     static bool appliesTo(const Element &element, ElementProperty property);
+
+    /// Returns the property an input's value is, which the editor and MCP set: a rotary switch's selected output, a
+    /// latching input's level; nothing for an element with neither, a button among them.
+    static std::optional<ElementProperty> valueProperty(const Element &element);
+
+    /// Returns the value of \a property of \a element.
+    static ParamValue read(const Element &element, ElementProperty property);
 
     /// Sets the values after; the first redo(), as the command is pushed, finds them set.
     void redo() override;
@@ -326,28 +357,25 @@ public:
     /// Returns the merge id, or -1 for a command of no session.
     int id() const override;
 
-    /// Takes the values after from \a other when it is of the same session and sets the same property of the same
+    /// Takes the values after from \a other when it is of the same session and sets the same properties of the same
     /// elements; with every value back to its value before, the command is obsolete.
     bool mergeWith(const QUndoCommand *other) override;
 
 private:
-    SetPropertyCommand(const QList<Element *> &elements, ElementProperty property, const QVariantList &before,
-                       const QVariantList &after, Scene *scene, int session);
-
-    /// Returns the value of \a property of \a element.
-    static QVariant read(const Element &element, ElementProperty property);
+    SetPropertyCommand(const QList<Element *> &elements, const QList<ElementProperty> &properties,
+                       const QList<ParamValue> &before, const QList<ParamValue> &after, Scene *scene, int session);
 
     /// Sets \a property of \a element to \a value.
-    static void write(Element &element, ElementProperty property, const QVariant &value);
+    static void write(Element &element, ElementProperty property, const ParamValue &value);
 
     /// Sets each element's value before or after, then selects the elements and reports the change to the scene.
     void write(bool after);
 
-    ElementProperty m_property;
-    QVariantList m_before;    ///< One for each of elements(), in order.
-    QVariantList m_after;     ///< One for each of elements(), in order.
-    int m_session = -1;       ///< The edit session, or -1.
-    bool m_firstRedo = true;  ///< apply() set the values after, so the first redo() leaves them.
+    QList<ElementProperty> m_properties; ///< The property of each edit; its element is elements()'s at its index.
+    QList<ParamValue> m_before;          ///< One for each edit, in order.
+    QList<ParamValue> m_after;           ///< One for each edit, in order.
+    int m_session = -1;                  ///< The edit session, or -1.
+    bool m_firstRedo = true;             ///< apply() set the values after, so the first redo() leaves them.
 
     /// Whether the change moves a wireless channel (a node's mode, or the label of a Tx or Rx node), which the
     /// simulation reads only as it is rebuilt.

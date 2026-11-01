@@ -112,7 +112,10 @@ private:
      * \details When \a merges, later changes of the field are part of the step until the edit session ends
      * (endEditSession()); otherwise the step stands alone.
      */
-    void setProperty(ElementProperty property, const QVariant &value, bool merges);
+    void setProperty(ElementProperty property, const ParamValue &value, bool merges);
+
+    /// Sets \a edits as one undo step, which merges as setProperty()'s does when \a merges.
+    void applyEdits(const QList<PropertyEdit> &edits, bool merges);
     /// Ends the edit session: a field's next change is an undo step of its own.
     void endEditSession();
     /// Returns the label that giving the selected nodes \a label or \a mode (each when set; otherwise each node's own)

@@ -84,6 +84,7 @@ private slots:
     void testSetPropertyCommandUndoesEachElementsValue();
     void testSetPropertyCommandNamesEveryElementThatHasTheProperty();
     void testSetPropertyCommandSetsAnInputsLockAndValue();
+    void testSetPropertyCommandSetsSeveralPropertiesAsOneStep();
     void testSetPropertyCommandFirstRedoLeavesTheValues();
     void testSetPropertyCommandMergesASession();
     void testSetPropertyCommandMergedBackIsNoStep();
