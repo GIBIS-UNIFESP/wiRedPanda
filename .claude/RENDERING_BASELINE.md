@@ -11,6 +11,7 @@ A relwithdebinfo build.
 |---|---|---|---|---:|---:|---:|---:|---:|---:|
 | 1 | `61f552623` | 6.12.0 | GCC 15.2.0 | 20,661,867,938 | 3,744,965,284 | 187,668,977 | 620,535,775 | 52,476,187,621 | 10,637,974,430 |
 | 2 | `029057373` | 6.12.0 | GCC 15.2.0 | 21,970,251,552 | 3,463,272,333 | 225,322,558 | 620,623,122 | 52,511,646,927 | 10,642,411,072 |
+| 02a | `a85c729ba` | 6.12.0 | GCC 15.2.0 | 21,975,138,126 | 3,463,103,827 | 225,285,134 | 620,569,055 | 52,505,558,738 | 10,635,928,101 |
 
 ## Plan 1
 
@@ -27,3 +28,7 @@ A relwithdebinfo build.
   `cachedItemsBoundingRect()`: its 1:1 corner and its fit show a slightly different part of each circuit, so
   `clocked_2000` at 1:1 paints 7% more wire, zoomed to fit 7% less, and `combinational_1000` at 1:1 more wire (+18%) and
   more elements (+35%). The drawing per item did not change; every later plan frames alike.
+
+## Plan 02a
+
+- Within 0.4% of plan 2: the floor changes what the code may use, not the Qt it is built with here (6.12.0).
