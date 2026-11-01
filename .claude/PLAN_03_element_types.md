@@ -368,10 +368,19 @@ portable file keeping a default, the volume's float.
 Each slot of a type's descriptor has a key, each saved appearance names its slot, and an older file's positional list
 is read through the descriptor, which keeps the old positions, a dropped slot's included (P3.D8). Today the loader
 throws on an entry past a type's slots (`GraphicElementSerializer.cpp:431-433`), so no type can drop or reorder one.
-Text's second default picture, which nothing shows, then goes. It extends the current format, as every plan does:
-older files read as before, a file the application writes reads back and saves again byte for byte, and the extension
-is tested by reading files written before it (the backward-compatibility files and plan 1's payload goldens); the
-payload goldens of files with appearances change, each named by this cause.
+Text's second default picture, which nothing shows, then goes, and so does the rotary's arrow slot, which nothing
+shows either (P3.D8a). It extends the current format, as every plan does: older files read as before, a file the
+application writes reads back and saves again byte for byte, and the extension is tested by reading files written
+before it (the backward-compatibility files and plan 1's payload goldens).
+Each saved entry still sits at its slot's old position, empty maps between, so a released version, which reads the
+list by position and opens a newer file, reads each slot it knew as before. That version throws on an entry past its
+type's slots, so a slot a later plan adds gets the next position, and a file customising it is refused by every
+older version: the plan that first adds a slot says so in its own notes and in the release notes. A test holds every
+slot to a position.
+No payload golden changed (P3.17): a file saves only the slots showing a picture of the user's, no fixture's own
+elements show one, and the appearance lists the nested fixtures hold are their embedded ICs', older full lists of
+resource paths kept verbatim. No golden holds a keyed entry; the keyed format is held by the serializer's tests, a
+switch and an LED saved, read back and saved again byte for byte, from a file and from a snapshot.
 
 ### 3.8 The change funnel
 
@@ -598,6 +607,11 @@ user's choice between workable options).
   the old positions, a dropped slot's included; Text's unused second default picture goes. It extends the current
   format. Basis: read on `master` (the loader throws on an appearance past a type's slots); the user's ruling,
   2026-10-20.
+- **P3.D8a. The rotary's arrow slot goes too,** its old position kept so older files read as before. Nothing shows it:
+  the presenter draws the arrow from its own resource; `ElementAppearance::setAppearance()` writes slot 0 alone; the
+  rotary has no `appearanceStates()` of its own, so the editor and MCP's `appearance_index` reach slot 0 alone; only a
+  hand-edited file could hold a custom arrow. Basis: read on the branch at P3.17 (the second session's review); the
+  user's ruling, 2026-11-01.
 - **P3.D9. The inventory of what constructs the element subclasses is taken where it is used,** on `master`, before
   the subclasses go: about 2,360 constructions in 165 test files, plus 219 `new IC(`; the tests move to the factory
   first, each deletion checked by the compiler. Basis: measured on `master` for the restart, and again on the branch at
