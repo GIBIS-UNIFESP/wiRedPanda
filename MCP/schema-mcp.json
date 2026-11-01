@@ -129,13 +129,10 @@
           "type": "string"
         },
         "frequency": {
-          "type": "number",
-          "minimum": 0
+          "type": "number"
         },
         "delay": {
-          "type": "number",
-          "minimum": -1,
-          "maximum": 1
+          "type": "number"
         },
         "trigger": {
           "type": "string"
@@ -147,9 +144,7 @@
           "type": "boolean"
         },
         "wireless_mode": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 2
+          "type": "integer"
         }
       },
       "required": [
@@ -1634,12 +1629,12 @@
                 },
                 "color": {
                   "type": "string",
-                  "description": "Element color"
+                  "enum": ["White", "Red", "Green", "Blue", "Purple"],
+                  "description": "Element color (LED, displays)"
                 },
                 "frequency": {
                   "type": "number",
-                  "exclusiveMinimum": 0,
-                  "description": "Clock frequency in Hz"
+                  "description": "Frequency in Hz (Clock, Buzzer); the element refuses one it does not take"
                 },
                 "rotation": {
                   "type": "number",
@@ -1832,12 +1827,12 @@
                 },
                 "color": {
                   "type": "string",
-                  "description": "Element color"
+                  "enum": ["White", "Red", "Green", "Blue", "Purple"],
+                  "description": "Element color (LED, displays)"
                 },
                 "frequency": {
                   "type": "number",
-                  "exclusiveMinimum": 0,
-                  "description": "Clock frequency in Hz"
+                  "description": "Frequency in Hz (Clock, Buzzer); the element refuses one it does not take"
                 },
                 "rotation": {
                   "type": "number",

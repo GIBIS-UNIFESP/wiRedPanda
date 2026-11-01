@@ -343,8 +343,8 @@ class SetElementPropertiesCommand(MCPCommand):
     class Parameters(BaseModel):
         element_id: Annotated[int, Field(gt=0)]
         label: str | None = Field(default=None)
-        color: str | None = Field(default=None)
-        frequency: Annotated[float, Field(gt=0)] | None = None
+        color: Literal["White", "Red", "Green", "Blue", "Purple"] | None = Field(default=None)
+        frequency: float | None = Field(default=None, description="Refused by an element that does not take it")
         rotation: float | None = Field(default=None)
         delay: Annotated[float, Field(ge=-1, le=1)] | None = None
         trigger: str | None = Field(default=None, description="Keyboard shortcut for input elements")

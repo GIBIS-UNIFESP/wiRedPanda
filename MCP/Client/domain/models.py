@@ -27,12 +27,14 @@ class ElementInfo(BaseModel):
     input_size: Annotated[int, Field(ge=0, le=64)] | None = None
     output_size: Annotated[int, Field(ge=0, le=64)] | None = None
     rotation: Annotated[float, Field(ge=-360, le=360)] | None = None
+    # What the element holds, which a file's value outside what set_element_properties takes can be
     color: str | None = None
-    frequency: Annotated[float, Field(ge=0)] | None = None
-    delay: Annotated[float, Field(ge=-1, le=1)] | None = None
+    frequency: float | None = None
+    delay: float | None = None
     trigger: str | None = None
     volume: float | None = None
     locked: bool | None = None
+    wireless_mode: int | None = None
 
     model_config = ConfigDict(extra="forbid")
 

@@ -3,6 +3,9 @@
 
 #pragma once
 
+#include <QList>
+
+#include "App/Scene/Commands.h"
 #include "MCP/Server/Handlers/BaseHandler.h"
 
 /**
@@ -19,6 +22,16 @@ public:
     explicit ElementHandler(MainWindow *mainWindow, const MCPValidator *validator);
 
     QJsonObject handleCommand(const QString &command, const QJsonObject &params, const QJsonValue &requestId) override;
+
+    /// A property MCP reads and writes through the element, under its key in schema-mcp.json.
+    struct KeyedProperty {
+        const char *key;
+        ElementProperty property;
+    };
+
+    /// The properties list_elements reports and set_element_properties sets, each where it applies to the element
+    /// (SetPropertyCommand::appliesTo()): the label to every element, a parameter where the element offers it.
+    static const QList<KeyedProperty> &keyedProperties();
 
 private:
     QJsonObject handleCreateElement(const QJsonObject &params, const QJsonValue &requestId);

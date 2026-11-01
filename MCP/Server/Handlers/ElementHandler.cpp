@@ -33,29 +33,6 @@
 
 namespace ElementHandlerProperties {
 
-/// A property MCP reads and writes through the element, under its key in schema-mcp.json.
-struct KeyedProperty {
-    const char *key;
-    ElementProperty property;
-};
-
-/// The properties list_elements reports and set_element_properties sets, each where it applies to the element
-/// (SetPropertyCommand::appliesTo()): the label to every element, a parameter where the element offers it.
-const QList<KeyedProperty> &keyedProperties()
-{
-    static const QList<KeyedProperty> properties{
-        {"label", ElementProperty::label()},
-        {"color", ElementProperty::parameter(ParamId::Colour)},
-        {"frequency", ElementProperty::parameter(ParamId::Frequency)},
-        {"delay", ElementProperty::parameter(ParamId::Delay)},
-        {"trigger", ElementProperty::trigger()},
-        {"volume", ElementProperty::parameter(ParamId::Volume)},
-        {"locked", ElementProperty::parameter(ParamId::Locked)},
-        {"wireless_mode", ElementProperty::parameter(ParamId::Wireless)},
-    };
-    return properties;
-}
-
 /// Returns \a value as JSON; no keyed property holds a truth table's columns.
 QJsonValue toJson(const ParamValue &value)
 {
@@ -164,7 +141,7 @@ QString refusal(const Element &element, const QJsonObject &params)
         return QString("Parameter '%1' must be %2").arg(key, what);
     };
 
-    for (const KeyedProperty &keyed : keyedProperties()) {
+    for (const ElementHandler::KeyedProperty &keyed : ElementHandler::keyedProperties()) {
         const QString key = QString::fromLatin1(keyed.key);
         if (!params.contains(key)) {
             continue;
@@ -229,6 +206,21 @@ QString refusal(const Element &element, const QJsonObject &params)
 }
 
 } // namespace ElementHandlerProperties
+
+const QList<ElementHandler::KeyedProperty> &ElementHandler::keyedProperties()
+{
+    static const QList<KeyedProperty> properties{
+        {"label", ElementProperty::label()},
+        {"color", ElementProperty::parameter(ParamId::Colour)},
+        {"frequency", ElementProperty::parameter(ParamId::Frequency)},
+        {"delay", ElementProperty::parameter(ParamId::Delay)},
+        {"trigger", ElementProperty::trigger()},
+        {"volume", ElementProperty::parameter(ParamId::Volume)},
+        {"locked", ElementProperty::parameter(ParamId::Locked)},
+        {"wireless_mode", ElementProperty::parameter(ParamId::Wireless)},
+    };
+    return properties;
+}
 
 ElementHandler::ElementHandler(MainWindow *mainWindow, const MCPValidator *validator)
     : BaseHandler(mainWindow, validator)
@@ -413,7 +405,7 @@ QJsonObject ElementHandler::handleListElements(const QJsonObject &, const QJsonV
         elementObj["input_size"] = element->inputSize();
         elementObj["output_size"] = element->outputSize();
 
-        for (const auto &keyed : ElementHandlerProperties::keyedProperties()) {
+        for (const auto &keyed : ElementHandler::keyedProperties()) {
             if (SetPropertyCommand::appliesTo(*element, keyed.property)) {
                 elementObj[keyed.key] = ElementHandlerProperties::toJson(SetPropertyCommand::read(*element, keyed.property));
             }
@@ -534,7 +526,7 @@ QJsonObject ElementHandler::handleSetElementProperties(const QJsonObject &params
     QJsonObject newProperties;
     QList<PropertyEdit> edits;
     QList<const char *> keys; ///< The key of each edit.
-    for (const auto &keyed : ElementHandlerProperties::keyedProperties()) {
+    for (const auto &keyed : ElementHandler::keyedProperties()) {
         if (!params.contains(QLatin1String(keyed.key))) {
             continue;
         }

@@ -141,5 +141,7 @@ private slots:
 
     void testHandleCommandRejectsUnknownCommand();
 
+    void testSchemaMatchesTheKeyedProperties();
+    void testListElementsReportsAFilesValuesOutsideWhatMCPSets();
     void testResponsesMatchGolden();
 };

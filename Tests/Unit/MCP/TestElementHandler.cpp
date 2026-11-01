@@ -3,6 +3,11 @@
 
 #include "Tests/Unit/MCP/TestElementHandler.h"
 
+#include <optional>
+#include <type_traits>
+#include <utility>
+#include <variant>
+
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
@@ -19,6 +24,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
+#include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
@@ -1622,6 +1628,124 @@ void TestElementHandler::testHandleCommandRejectsUnknownCommand()
     const QJsonObject response = handler.handleCommand("totally_made_up", {}, 1);
     QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::MethodNotFound);
+}
+
+void TestElementHandler::testSchemaMatchesTheKeyedProperties()
+{
+    // schema-mcp.json's element properties are the ones MCP reads and writes (ElementHandler::keyedProperties()):
+    // set_element_properties, update_element and the Element of list_elements hold every keyed property and nothing
+    // else but their own keys. A command's is of its ParamSpec's kind, range and choices, which every type that has the
+    // parameter agrees on; the Element's states the kind alone, since an element holds what its spec's accept rule
+    // takes, which a file's value outside the range or the choices can be
+    QFile file(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QJsonObject schema = QJsonDocument::fromJson(file.readAll()).object();
+    const QJsonObject commands = schema["properties"]["commands"]["properties"].toObject();
+    const auto paramsOf = [&commands](const QString &command) {
+        return commands[command]["properties"]["params"]["properties"].toObject();
+    };
+    const QList<std::pair<QString, QJsonObject>> objects{
+        {"set_element_properties", paramsOf("set_element_properties")},
+        {"update_element", paramsOf("update_element")},
+        {"Element", schema["definitions"]["Element"]["properties"].toObject()},
+    };
+    // What each object holds besides the keyed properties
+    const QStringList commandKeys{"element_id", "rotation", "appearance", "appearance_index"};
+    const QStringList elementKeys{"element_id", "type", "x", "y", "width", "height", "rotation", "input_size", "output_size"};
+
+    // A spec's bounds are inclusive, so a property's schema holds them as its minimum and maximum, and its choices as
+    // its enum; an open bound and no choices are no keyword
+    struct Expected {
+        QString type;
+        QJsonValue minimum{QJsonValue::Undefined};
+        QJsonValue maximum{QJsonValue::Undefined};
+        QJsonValue choices{QJsonValue::Undefined};
+        bool operator==(const Expected &other) const = default;
+    };
+    const auto jsonType = [](const ParamValue &value) {
+        return std::visit([](const auto &held) {
+            using Kind = std::decay_t<decltype(held)>;
+            return std::is_same_v<Kind, bool>     ? QString("boolean")
+                   : std::is_same_v<Kind, int>    ? QString("integer")
+                   : std::is_same_v<Kind, double> ? QString("number")
+                                                  : QString("string");
+        }, value);
+    };
+    const auto bound = [](const std::optional<double> &value) {
+        return value ? QJsonValue(*value) : QJsonValue(QJsonValue::Undefined);
+    };
+    QHash<QString, Expected> expected;
+    for (const auto &keyed : ElementHandler::keyedProperties()) {
+        const QString key = QString::fromLatin1(keyed.key);
+        if (keyed.property.kind != ElementProperty::Kind::Parameter) {
+            expected[key] = {.type = "string"};
+            continue;
+        }
+        std::optional<Expected> found;
+        for (const ElementType type : TestUtils::dumpedTypes()) {
+            if (!ElementFactory::hasCreator(type)) {
+                continue;
+            }
+            for (const ParamSpec &spec : ElementTypeDescriptor::of(type).parameters) {
+                if (spec.id != keyed.property.id) {
+                    continue;
+                }
+                const Expected own{jsonType(spec.defaultValue), bound(spec.range.minimum), bound(spec.range.maximum),
+                                   spec.choices.isEmpty() ? QJsonValue(QJsonValue::Undefined)
+                                                          : QJsonValue(QJsonArray::fromStringList(spec.choices))};
+                QVERIFY2(!found || (*found == own),
+                         qPrintable(QString("%1's '%2' differs from another type's").arg(TestUtils::snapshotType(type), key)));
+                found = own;
+            }
+        }
+        QVERIFY2(found, qPrintable(QString("no type has '%1'").arg(key)));
+        expected[key] = *found;
+    }
+
+    for (const auto &[name, properties] : objects) {
+        QVERIFY2(!properties.isEmpty(), qPrintable(name));
+        const QStringList &others = (name == "Element") ? elementKeys : commandKeys;
+        for (const QString &key : properties.keys()) {
+            QVERIFY2(expected.contains(key) || others.contains(key),
+                     qPrintable(QString("%1 has '%2', which MCP does not read or write").arg(name, key)));
+        }
+        for (auto it = expected.cbegin(); it != expected.cend(); ++it) {
+            const QString where = QString("%1's '%2'").arg(name, it.key());
+            QVERIFY2(properties.contains(it.key()), qPrintable(where + " is missing"));
+            const QJsonObject property = properties[it.key()].toObject();
+            QVERIFY2(property["type"].toString() == it->type, qPrintable(where + " is not a " + it->type));
+            QVERIFY2(!property.contains("exclusiveMinimum") && !property.contains("exclusiveMaximum"),
+                     qPrintable(where + " has an exclusive bound, which no range has"));
+            if (name == "Element") {
+                QVERIFY2(!property.contains("minimum") && !property.contains("maximum") && !property.contains("enum"),
+                         qPrintable(where + " bounds what an element reports"));
+                continue;
+            }
+            QVERIFY2(property["minimum"] == it->minimum, qPrintable(where + "'s minimum differs from its range"));
+            QVERIFY2(property["maximum"] == it->maximum, qPrintable(where + "'s maximum differs from its range"));
+            QVERIFY2(property["enum"] == it->choices, qPrintable(where + "'s enum differs from its choices"));
+        }
+    }
+}
+
+void TestElementHandler::testListElementsReportsAFilesValuesOutsideWhatMCPSets()
+{
+    // A file keeps a colour off the choices and a volume past the range, which list_elements reports as they are, its
+    // response still the schema's
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
+    QVERIFY(validator.isSchemaLoaded());
+    elementById(window, createElement(handler, "Led"))->setColor("Orange");
+    elementById(window, createElement(handler, "Buzzer", 100, 0))->setVolume(1.5);
+
+    const QJsonObject response = handler.handleCommand("list_elements", {}, 1);
+    const ValidationResult valid = validator.validateResponse(response, "list_elements");
+    QVERIFY2(valid.isValid, qPrintable(valid.errorMessage));
+    const QJsonArray elements = response["result"].toObject()["elements"].toArray();
+    QCOMPARE(elements.size(), 2);
+    QCOMPARE(elements.at(0).toObject()["color"].toString(), QString("Orange"));
+    QCOMPARE(elements.at(1).toObject()["volume"].toDouble(), 1.5);
 }
 
 void TestElementHandler::testResponsesMatchGolden()
