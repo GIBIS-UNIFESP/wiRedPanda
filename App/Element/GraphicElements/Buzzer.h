@@ -8,13 +8,7 @@
 
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 
-class QAudioSink;
-class ToneGenerator;
-
-/// Audio output element that plays a continuous tone when its input is logic-1.
-///
-/// Uses a sine-wave ToneGenerator fed to QAudioSink for seamless,
-/// glitch-free playback at any user-chosen frequency.
+/// Audio output element that plays a continuous tone, at its frequency, while its input is logic-1 (AudioService).
 class Buzzer : public AudioOutputElement
 {
     Q_OBJECT
@@ -35,29 +29,10 @@ public:
     /// Copy-constructs by delegating to the parent item constructor.
     Buzzer(const Buzzer &other) : Buzzer(other.parentItem()) {}
 
-    /// Destroys the sink before its tone generator: QObject deletes children in creation order, the generator first,
-    /// and Qt 6.7's sink touches its source device as it is destroyed.
-    ~Buzzer() override;
-
     // --- Playback Control ---
 
     /// Sets the tone by note name (e.g. "C6"), as older files hold it; an empty name changes nothing.
     void setNote(const QString &note);
 
     static int noteToFrequency(const QString &note);
-
-protected:
-    // --- AudioOutputElement hooks ---
-
-    void startAudio() override;
-    void stopAudio() override;
-    void applyVolume() override;
-    void applyMute() override;
-
-    /// Plays a new frequency, at once when playing.
-    void parameterChanged(ParamId id, const ParamValue &previous) override;
-
-private:
-    QAudioSink *m_sink = nullptr;
-    ToneGenerator *m_generator = nullptr;
 };

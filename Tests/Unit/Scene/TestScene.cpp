@@ -34,6 +34,7 @@
 #include <QUrl>
 
 #include "App/Core/Application.h"
+#include "App/Core/AudioService.h"
 #include "App/Core/Constants.h"
 #include "App/Core/ItemWithId.h"
 #include "App/Core/MimeTypes.h"
@@ -41,7 +42,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
-#include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -1129,10 +1129,8 @@ void TestScene::testPropertyCycleAudio()
     // Select it
     buzzer->setSelected(true);
 
-    auto *audioElm = dynamic_cast<AudioOutputElement *>(buzzer);
-    QVERIFY(audioElm);
-    const double initialVolume = audioElm->volume();
-    const bool initialMuted = audioElm->isMuted();
+    const double initialVolume = buzzer->volume();
+    const bool initialMuted = AudioService::instance().isMuted(scene.get());
 
     // Cycle audio property -- PropertyShortcutHandler::adjustSecondaryProperty() has no case
     // for ElementType::Buzzer (it falls into the shared no-op group with And/AudioBox/Clock/
@@ -1142,8 +1140,8 @@ void TestScene::testPropertyCycleAudio()
 
     // Buzzer should still exist, unaffected.
     QCOMPARE(scene->elements().size(), 1);
-    QCOMPARE(audioElm->volume(), initialVolume);
-    QCOMPARE(audioElm->isMuted(), initialMuted);
+    QCOMPARE(buzzer->volume(), initialVolume);
+    QCOMPARE(AudioService::instance().isMuted(scene.get()), initialMuted);
 }
 
 void TestScene::testMorphingMultipleElements()
@@ -2823,21 +2821,19 @@ void TestScene::testMuteSilencesAllAudioOutputElements()
     auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
     scene->addItem(buzzer);
     scene->addItem(audioBox);
-
-    auto *buzzerAudio = qobject_cast<AudioOutputElement *>(buzzer);
-    auto *audioBoxAudio = qobject_cast<AudioOutputElement *>(audioBox);
-    QVERIFY(buzzerAudio);
-    QVERIFY(audioBoxAudio);
-    QVERIFY(!buzzerAudio->isMuted());
-    QVERIFY(!audioBoxAudio->isMuted());
+    for (auto *element : {buzzer, audioBox}) {
+        element->setParam(ParamId::Playing, true);
+        AudioService::instance().sync(*element);
+        QVERIFY(!AudioService::instance().playback(*element)->muted);
+    }
 
     scene->mute(true);
-    QVERIFY(buzzerAudio->isMuted());
-    QVERIFY2(audioBoxAudio->isMuted(), "Scene::mute() must silence AudioBox too, not just Buzzer");
+    QVERIFY(AudioService::instance().playback(*buzzer)->muted);
+    QVERIFY2(AudioService::instance().playback(*audioBox)->muted, "Scene::mute() must silence AudioBox too, not just Buzzer");
 
     scene->mute(false);
-    QVERIFY(!buzzerAudio->isMuted());
-    QVERIFY(!audioBoxAudio->isMuted());
+    QVERIFY(!AudioService::instance().playback(*buzzer)->muted);
+    QVERIFY(!AudioService::instance().playback(*audioBox)->muted);
 }
 
 void TestScene::testWireAntialiasingDegradesOnSlowPassesAndRestores()

@@ -5,11 +5,7 @@
 
 #include <cmath>
 
-#include <QAudioDevice>
-#include <QMediaDevices>
 #include <QString>
-
-#include "App/Wiring/Port.h"
 
 double AudioOutputElement::volumeTaken(const double volume)
 {
@@ -52,22 +48,6 @@ ParamSpec AudioOutputElement::playingSpec()
 AudioOutputElement::AudioOutputElement(ElementType type, QGraphicsItem *parent)
     : Element(type, parent)
 {
-    // Detect audio hardware once per process; subsequent calls are guarded by
-    // m_hasOutputDevice so the element works silently in headless/CI environments.
-    static const bool hasOutputDevice = !QMediaDevices::defaultAudioOutput().description().isEmpty();
-    m_hasOutputDevice = hasOutputDevice;
-}
-
-void AudioOutputElement::refresh()
-{
-    if (!isValid()) {
-        stop();
-        return;
-    }
-
-    const Status inputValue = inputs().constFirst()->status();
-
-    (inputValue == Status::Active) ? play() : stop();
 }
 
 bool AudioOutputElement::isPlaying() const
@@ -75,55 +55,10 @@ bool AudioOutputElement::isPlaying() const
     return param<bool>(ParamId::Playing);
 }
 
-bool AudioOutputElement::isMuted() const
-{
-    return m_muted;
-}
-
-void AudioOutputElement::mute(const bool mute)
-{
-    m_muted = mute;
-    if (!m_hasOutputDevice) {
-        return;
-    }
-    applyMute();
-}
-
 void AudioOutputElement::parameterChanged(const ParamId id, const ParamValue &previous)
 {
     Element::parameterChanged(id, previous);
-    if ((id == ParamId::Volume) && m_hasOutputDevice) {
-        applyVolume();
-    }
     if (id == ParamId::Playing) {
         pictureReplaced();
-    }
-}
-
-void AudioOutputElement::play()
-{
-    if (isPlaying()) {
-        return;
-    }
-
-    // The player starts before the element plays: a box whose sound comes back reloads it as it starts
-    // (AudioBox::startAudio()), and a reload starts a box already playing, which would start it twice
-    if (m_hasOutputDevice) {
-        startAudio();
-    }
-
-    setParam(ParamId::Playing, true);
-}
-
-void AudioOutputElement::stop()
-{
-    if (!isPlaying()) {
-        return;
-    }
-
-    setParam(ParamId::Playing, false);
-
-    if (m_hasOutputDevice) {
-        stopAudio();
     }
 }

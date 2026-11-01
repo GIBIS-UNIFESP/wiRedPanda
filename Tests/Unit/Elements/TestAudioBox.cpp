@@ -8,7 +8,6 @@
 #include <QDataStream>
 #include <QFile>
 #include <QKeySequence>
-#include <QMediaPlayer>
 #include <QPointF>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
@@ -145,94 +144,6 @@ void TestAudioBox::testAudioPathPreservedAfterMultipleSets()
 }
 
 // ============================================================================
-// Playback Control Tests
-// ============================================================================
-
-void TestAudioBox::testPlayStopTransition()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testPlayStopTransition(audioBox);
-}
-
-void TestAudioBox::testPlayIdempotency()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testPlayIdempotency(audioBox);
-}
-
-void TestAudioBox::testStopIdempotency()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testStopIdempotency(audioBox);
-}
-
-void TestAudioBox::testRefreshWithActiveInput()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testRefreshWithActiveInput(audioBox);
-}
-
-void TestAudioBox::testRefreshWithInactiveInput()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testRefreshWithInactiveInput(audioBox);
-}
-
-// ============================================================================
-// Mute Control Tests
-// ============================================================================
-
-void TestAudioBox::testMute()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testMute(audioBox);
-}
-
-void TestAudioBox::testUnmute()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testUnmute(audioBox);
-}
-
-// ============================================================================
-// Hardware-detection seam tests
-// ============================================================================
-// This test machine has a real (virtual) ALSA device, so m_hasOutputDevice is always
-// true from construction — the "!m_hasOutputDevice" guards below are otherwise
-// unreachable here (and would be reachable-but-untested the other way around on a
-// headless CI box with no device). Force it false post-construction to deterministically
-// exercise those guards regardless of which machine runs the test.
-
-void TestAudioBox::testMuteWithoutOutputDevice()
-{
-    AudioBox audioBox;
-    audioBox.setHasOutputDeviceForTesting(false);
-
-    audioBox.mute(true);
-    QVERIFY(audioBox.isMuted());
-}
-
-void TestAudioBox::testSetAudioWithoutOutputDeviceSkipsHardwareSetup()
-{
-    AudioBox audioBox;
-    audioBox.setHasOutputDeviceForTesting(false);
-
-    audioBox.setAudio(":/Components/Output/Audio/wiredpanda.wav");
-    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
-}
-
-void TestAudioBox::testSetAudioRestartsPlaybackWhenPlaying()
-{
-    AudioBox audioBox;
-    AudioElementTestHelpers::testRefreshWithActiveInput(audioBox);
-    QVERIFY(audioBox.isPlaying());
-
-    // Changing audio while already playing must restart playback with the new source.
-    audioBox.setAudio(":/Components/Output/Audio/wiredpanda.wav");
-    QVERIFY(audioBox.isPlaying());
-}
-
-// ============================================================================
 // Serialization Tests
 // ============================================================================
 
@@ -338,20 +249,11 @@ void TestAudioBox::testSetAudioWithNonExistentPathKeepsItAndPlaysTheDefault()
     }
     QVERIFY2(message.contains("gone.wav") && message.contains("does not exist"), qPrintable(message));
 
-    // Without an output device there is no player to read
-    auto *player = audioBox.findChild<QMediaPlayer *>();
-    if (player) {
-        QCOMPARE(player->source(), QUrl(QString("qrc") + AudioBox::kDefaultAudioPath));
-    }
-
+    // What plays in its place is the audio service's (TestAudioService::testAnAudioBoxPlaysItsFileOrTheBuiltInSound())
     QFile file(path);
     QVERIFY(file.open(QIODevice::WriteOnly));
     file.write("DUMMY AUDIO DATA");
     file.close();
-    AudioElementTestHelpers::testRefreshWithActiveInput(audioBox);
-    if (player) {
-        QCOMPARE(player->source(), QUrl::fromLocalFile(path));
-    }
     try {
         audioBox.reportFailedFiles();
     } catch (const Pandaception &e) {

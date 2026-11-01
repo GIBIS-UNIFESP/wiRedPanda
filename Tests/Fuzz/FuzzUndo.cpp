@@ -475,9 +475,9 @@ extern "C" int LLVMFuzzerInitialize(int *argc, char ***argv)
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 {
-    // Drain Qt's deferred-delete queue on every exit path.  Audio elements
-    // (Buzzer, AudioBox) queue DeferredDelete events for the audio backend's
-    // internal QObject helpers when destroyed; without spinning the event
+    // Drain Qt's deferred-delete queue on every exit path.  An audio
+    // element's voice (AudioService) queues DeferredDelete events for the audio
+    // backend's internal QObject helpers when it is destroyed; without spinning the event
     // loop, those helpers stay alive and hold PipeWire stream FDs open
     // across iterations, exhausting the audio subsystem after ~1000 inputs.
     auto drainQtEvents = qScopeGuard([] {

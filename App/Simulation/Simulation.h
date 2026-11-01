@@ -75,6 +75,10 @@ public:
     /// Returns \c true if the user has explicitly muted audio.
     bool isUserMuted() const;
 
+    /// Plays \a element, an audio element (ParamId::Playing), while it is valid and its input is Active, as the visual
+    /// push does, and returns \c true when that started or stopped it; any other element is left as it is.
+    static bool updatePlaying(Element *element);
+
     /// Invalidates the cached simulation topology after a structural edit: clears m_initialized
     /// and the hot-path element/connection vectors so no stale reference
     /// can be dereferenced on subsequent ticks. The next update() call

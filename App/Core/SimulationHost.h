@@ -9,6 +9,7 @@
 
 #include <QList>
 
+class Element;
 class QGraphicsItem;
 
 /**
@@ -26,4 +27,7 @@ public:
 
     /// Mutes or unmutes audio-producing elements in the host scene.
     virtual void setMuted(bool muted) = 0;
+
+    /// Hears that the visual push started or stopped \a elements, audio elements whose ParamId::Playing it changed.
+    virtual void playbackChanged(const QList<Element *> &elements) = 0;
 };

@@ -1032,6 +1032,7 @@ add_test(NAME TestWorkspaceUnit COMMAND test_wiredpanda TestWorkspaceUnit WORKIN
 
 # New unit tests from coverage improvement plan
 add_test(NAME TestApplication COMMAND test_wiredpanda TestApplication WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestAudioService COMMAND test_wiredpanda TestAudioService WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestArduinoCodeGenUnit COMMAND test_wiredpanda TestArduinoCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCircuitExporter COMMAND test_wiredpanda TestCircuitExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCodeGenUtils COMMAND test_wiredpanda TestCodeGenUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1185,8 +1186,8 @@ set_tests_properties(TestDanglingPointer PROPERTIES LABELS "unit;regression")
 set_tests_properties(TestPerfProbe PROPERTIES LABELS "perf")
 
 # Core Functionality Tests - Unit category
-foreach(TEST TestCommands TestCommon TestEnums TestGoldens TestModelIncludeCheck TestNotifyCatch TestPortReaders
-        TestPriorities TestRecentFiles TestSettings TestThemeManager)
+foreach(TEST TestAudioService TestCommands TestCommon TestEnums TestGoldens TestModelIncludeCheck TestNotifyCatch
+        TestPortReaders TestPriorities TestRecentFiles TestSettings TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
@@ -1236,7 +1237,7 @@ set(ALL_TESTS
     TestDanglingPointer
     TestCommands TestCommon TestEnums TestNotifyCatch TestPortReaders TestPriorities TestRecentFiles TestSettings
     TestThemeManager
-    TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
+    TestApplication TestAudioService TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestGoldens TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
     TestCircuitExporter TestElementEditor TestElementPalette

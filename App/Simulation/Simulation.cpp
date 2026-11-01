@@ -252,7 +252,9 @@ void Simulation::pushVisualStatuses(const QVector<Element *> &elements, const QV
         }
     }
 
-    // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports
+    // Phase 4: refresh output element visuals (LEDs, buzzers, etc.) using their input ports; an audio element plays
+    // while it is valid and its input is Active, and the host hears of each it starts or stops
+    QList<Element *> playbackChanged;
     for (auto *outputElm : outputs) {
         if (outputElm) {
             for (auto *inputPort : outputElm->inputs()) {
@@ -260,7 +262,13 @@ void Simulation::pushVisualStatuses(const QVector<Element *> &elements, const QV
                     updatePort(inputPort);
                 }
             }
+            if (updatePlaying(outputElm)) {
+                playbackChanged.append(outputElm);
+            }
         }
+    }
+    if (!playbackChanged.isEmpty() && m_host) {
+        m_host->playbackChanged(playbackChanged);
     }
 }
 
@@ -296,6 +304,15 @@ void Simulation::updatePort(InputPort *port)
     if (elm && elm->elementGroup() == ElementGroup::Output) {
         elm->refresh();
     }
+}
+
+bool Simulation::updatePlaying(Element *element)
+{
+    if (!element->hasParam(ParamId::Playing)) {
+        return false;
+    }
+    const bool playing = element->isValid() && (element->inputs().constFirst()->status() == Status::Active);
+    return element->setParam(ParamId::Playing, playing);
 }
 
 void Simulation::restart()

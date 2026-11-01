@@ -358,7 +358,7 @@ public:
     /// topmost and bottommost elements fixed as anchors. No-op below 3 elements.
     void distributeVertically();
 
-    /// Mutes or unmutes selected elements according to \a mute.
+    /// Mutes or unmutes the scene's audio elements according to \a mute, those added later too (AudioService).
     void mute(const bool mute = true);
     /// Selects all items in the scene.
     void selectAll();
@@ -427,6 +427,8 @@ public:
     QList<QGraphicsItem *> simulationItems() const override { return items(); }
     /// \reimp SimulationHost
     void setMuted(const bool muted) override { mute(muted); }
+    /// \reimp SimulationHost Plays or stops \a elements (AudioService::sync()).
+    void playbackChanged(const QList<Element *> &elements) override;
 
     // --- Context Directory ---
 
@@ -437,8 +439,9 @@ public:
 
     // --- Element changes ---
 
-    /// Tells the scene's listeners that \a what changed in the element whose id is \a id (elementChanged()).
-    void reportElementChange(const int id, const ElementChanges what) override { emit elementChanged(id, what); }
+    /// Tells the scene's listeners that \a what changed in the element whose id is \a id (elementChanged()); a
+    /// parameter changed reaches the element's voice too (AudioService::sync()).
+    void reportElementChange(int id, ElementChanges what) override;
 
     // --- IC Registry ---
 

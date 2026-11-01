@@ -34,6 +34,7 @@
 #include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Simulation/Simulation.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
@@ -167,6 +168,7 @@ void driveInputs(Element *element, const quint32 pattern)
         builder.connect(source, 0, element, index);
     }
     element->refresh();
+    Simulation::updatePlaying(element);
 }
 
 /// Has \a node's simulation see \a status on its input, which colours its wireless indicator.

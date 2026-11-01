@@ -25,6 +25,7 @@
 #include <QUrl>
 
 #include "App/Core/Application.h"
+#include "App/Core/AudioService.h"
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
 #include "App/Core/ItemWithId.h"
@@ -34,7 +35,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -172,6 +172,8 @@ void Scene::addItem(QGraphicsItem *item)
         } else if (auto *tt = qobject_cast<TruthTable *>(elm)) {
             connect(tt, &TruthTable::requestOpenTruthTableEditor, this, &Scene::openTruthTableRequested);
         }
+        // An audio element that comes back playing, as a deletion undone does, plays again, muted with the scene
+        AudioService::instance().sync(*elm);
     }
 }
 
@@ -196,6 +198,10 @@ void Scene::removeItem(QGraphicsItem *item)
     // Qt forgets the item that last held the mouse when it leaves the scene
     if (item == m_lastHolder) {
         m_lastHolder = nullptr;
+    }
+    // An audio element out of the scene plays nothing
+    if (auto *element = qgraphicsitem_cast<Element *>(item)) {
+        AudioService::instance().release(*element);
     }
     QGraphicsScene::removeItem(item);
 }
@@ -1165,11 +1171,24 @@ void Scene::rotate(const int angle)
 
 void Scene::mute(const bool mute)
 {
-    for (auto *element : unsortedElements()) {
-        if (auto *audioElement = qobject_cast<AudioOutputElement *>(element)) {
-            audioElement->mute(mute);
+    AudioService::instance().setMuted(this, mute);
+}
+
+void Scene::playbackChanged(const QList<Element *> &elements)
+{
+    for (auto *element : elements) {
+        AudioService::instance().sync(*element);
+    }
+}
+
+void Scene::reportElementChange(const int id, const ElementChanges what)
+{
+    if (what.testFlag(ElementChange::Parameter)) {
+        if (auto *element = dynamic_cast<Element *>(itemById(id))) {
+            AudioService::instance().sync(*element);
         }
     }
+    emit elementChanged(id, what);
 }
 
 void Scene::flipHorizontally()

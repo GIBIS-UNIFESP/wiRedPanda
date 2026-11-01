@@ -6,8 +6,6 @@
 #include <limits>
 #include <memory>
 
-#include <QAudioOutput>
-#include <QAudioSink>
 #include <QDataStream>
 #include <QFile>
 #include <QHash>
@@ -29,7 +27,6 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/ToneGenerator.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/Parameters.h"
 #include "App/IO/SerializationContext.h"
@@ -504,19 +501,6 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
     QCOMPARE(box.externalFiles(), QStringList{gone});
     box.setVolume(0.75);
     QCOMPARE(box.volume(), 0.75);
-
-    // With an output device, a new frequency and volume reach it
-    if (auto *tone = buzzer.findChild<ToneGenerator *>()) {
-        buzzer.setFrequency(880.0);
-        QCOMPARE(tone->frequency(), 880.0);
-        buzzer.setVolume(0.2);
-        // The sink keeps a float
-        QCOMPARE(static_cast<float>(buzzer.findChild<QAudioSink *>()->volume()), static_cast<float>(buzzer.volume()));
-    }
-    if (auto *output = box.findChild<QAudioOutput *>()) {
-        box.setVolume(0.3);
-        QCOMPARE(output->volume(), 0.3F);
-    }
 
     // A type without them has none and takes none
     const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));

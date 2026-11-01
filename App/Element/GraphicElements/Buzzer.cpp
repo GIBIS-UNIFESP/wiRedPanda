@@ -5,11 +5,8 @@
 
 #include <cmath>
 
-#include <QAudioSink>
-
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Element/GraphicElements/ToneGenerator.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
@@ -80,36 +77,6 @@ struct ElementInfo<Buzzer> {
 Buzzer::Buzzer(QGraphicsItem *parent)
     : AudioOutputElement(ElementType::Buzzer, parent)
 {
-    if (m_hasOutputDevice) {
-        m_generator = new ToneGenerator(this);
-        m_generator->setFrequency(frequency());
-        m_sink = new QAudioSink(ToneGenerator::format(), this);
-        m_sink->setVolume(volume());
-    }
-}
-
-Buzzer::~Buzzer()
-{
-    delete m_sink;
-    m_sink = nullptr;
-}
-
-void Buzzer::parameterChanged(const ParamId id, const ParamValue &previous)
-{
-    AudioOutputElement::parameterChanged(id, previous);
-    if ((id != ParamId::Frequency) || !m_hasOutputDevice) {
-        return;
-    }
-
-    m_generator->setFrequency(frequency());
-
-    // A new tone while playing restarts it, so it sounds at once. reset() discards what the sink holds of the old tone,
-    // which stop() would play out first (Qt drains the buffer on Linux and macOS)
-    if (isPlaying()) {
-        m_sink->reset();
-        m_generator->start();
-        m_sink->start(m_generator);
-    }
 }
 
 void Buzzer::setNote(const QString &note)
@@ -119,30 +86,6 @@ void Buzzer::setNote(const QString &note)
     }
 
     setFrequency(noteToFrequency(note));
-}
-
-void Buzzer::startAudio()
-{
-    m_generator->start();
-    m_sink->start(m_generator);
-}
-
-void Buzzer::stopAudio()
-{
-    m_sink->reset();
-    m_generator->close();
-}
-
-void Buzzer::applyVolume()
-{
-    if (!m_muted) {
-        m_sink->setVolume(volume());
-    }
-}
-
-void Buzzer::applyMute()
-{
-    m_sink->setVolume(m_muted ? 0.0 : volume());
 }
 
 int Buzzer::noteToFrequency(const QString &note)

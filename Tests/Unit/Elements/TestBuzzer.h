@@ -31,21 +31,6 @@ private slots:
     void testSetFrequencyRejectsInfinity();
     void testSetFrequencyRejectsZeroAndNegative();
 
-    // Playback control tests
-    void testPlayStopTransition();
-    void testPlayIdempotency();
-    void testStopIdempotency();
-    void testRefreshWithActiveInput();
-    void testRefreshWithInactiveInput();
-
-    // Mute control tests
-    void testMute();
-    void testUnmute();
-
-    // Hardware-detection seam tests (deterministic, environment-independent)
-    void testMuteWithoutOutputDevice();
-    void testSetFrequencyWithoutOutputDevice();
-    void testSetFrequencyRestartsPlaybackWhenPlaying();
     void testSetNoteWithEmptyNoteIsNoOp();
 
     // Serialization tests

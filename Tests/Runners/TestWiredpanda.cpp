@@ -141,6 +141,7 @@
 #include "Tests/Unit/Common/TestThemeManager.h"
 // unit/core
 #include "Tests/Unit/Core/TestApplication.h"
+#include "Tests/Unit/Core/TestAudioService.h"
 #include "Tests/Unit/Core/TestDragDropPayload.h"
 #include "Tests/Unit/Core/TestExerciseTourResources.h"
 #include "Tests/Unit/Core/TestExternalFilePath.h"
@@ -399,6 +400,7 @@ int main(int argc, char **argv)
         {"TestExerciseEngine", []() -> QObject * { return new TestExerciseEngine; }},
         {"TestUpdateChecker", []() -> QObject * { return new TestUpdateChecker; }},
         {"TestApplication", []() -> QObject * { return new TestApplication; }},
+        {"TestAudioService", []() -> QObject * { return new TestAudioService; }},
         {"TestDragDropPayload", []() -> QObject * { return new TestDragDropPayload; }},
         {"TestNotifyCatch", []() -> QObject * { return new TestNotifyCatch; }},
         {"TestAppearanceKey", []() -> QObject * { return new TestAppearanceKey; }},

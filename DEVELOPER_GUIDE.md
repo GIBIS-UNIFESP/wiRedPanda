@@ -803,7 +803,8 @@ flowchart TD
     step3["3. updatePort()
     Propagate values via connections (out→in)"]
     step4["4. Update outputs
-    LEDs, displays, buzzers redraw"]
+    LEDs, displays, buzzers redraw;
+    the audio service plays or stops"]
     wait(["Wait for next tick (1 ms)"])
 
     timer --> step1 --> step2 --> feedback

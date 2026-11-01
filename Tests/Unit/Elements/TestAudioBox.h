@@ -24,22 +24,6 @@ private slots:
     void testSetAudioWithValidPath();
     void testAudioPathPreservedAfterMultipleSets();
 
-    // Playback control tests
-    void testPlayStopTransition();
-    void testPlayIdempotency();
-    void testStopIdempotency();
-    void testRefreshWithActiveInput();
-    void testRefreshWithInactiveInput();
-
-    // Mute control tests
-    void testMute();
-    void testUnmute();
-
-    // Hardware-detection seam tests (deterministic, environment-independent)
-    void testMuteWithoutOutputDevice();
-    void testSetAudioWithoutOutputDeviceSkipsHardwareSetup();
-    void testSetAudioRestartsPlaybackWhenPlaying();
-
     // Serialization tests
     void testSaveAudioPath();
     void testLoadVersionOld();

@@ -38,9 +38,11 @@ class StubSimulationHost : public SimulationHost
 public:
     QList<QGraphicsItem *> simulationItems() const override { return m_items; }
     void setMuted(bool muted) override { m_muted = muted; }
+    void playbackChanged(const QList<Element *> &elements) override { m_playbackChanged.append(elements); }
 
     QList<QGraphicsItem *> m_items;
     bool m_muted = false;
+    QList<Element *> m_playbackChanged;
 };
 } // namespace
 

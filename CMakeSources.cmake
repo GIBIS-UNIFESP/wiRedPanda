@@ -125,7 +125,6 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/SRLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Text.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/ToneGenerator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.h
@@ -187,6 +186,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/AudioService.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.cpp
@@ -265,11 +265,13 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/SignalModel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/BeWavedDolphin/WaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Application.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/AudioService.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ExerciseTourResources.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/InstallRelativePaths.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/Settings.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/StepEngineCore.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Core/ToneGenerator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
@@ -489,6 +491,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestAudioService.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.cpp
@@ -732,6 +735,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestSettings.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Common/TestThemeManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestApplication.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestAudioService.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestDragDropPayload.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExerciseTourResources.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Core/TestExternalFilePath.h

@@ -7,9 +7,6 @@
 
 #pragma once
 
-#include <QAudioOutput>
-#include <QMediaPlayer>
-
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 
 template<typename T>
@@ -17,16 +14,15 @@ struct ElementInfo;
 
 /**
  * \class AudioBox
- * \brief Audio output element that streams an external audio file when its input is logic-1.
+ * \brief Audio output element that plays a sound file, looping, while its input is logic-1 (AudioService).
  *
- * \details Uses QMediaPlayer to play arbitrary audio files (MP3, WAV, OGG, etc.).
- * Supports looping and can be globally muted.
+ * \details A file the application's media backend reads: MP3, WAV, OGG and others.
  */
 class AudioBox : public AudioOutputElement
 {
     Q_OBJECT
 
-    friend struct ElementInfo<AudioBox>; // its descriptor's every-load rule reads the sound file again
+    friend struct ElementInfo<AudioBox>; // its descriptor's every-load rule checks the sound file again
 
 public:
     /// Default audio source: the bundled sample resource, NOT an empty path.
@@ -49,25 +45,16 @@ public:
     void reportFailedFiles() const override;
 
 protected:
-    // --- AudioOutputElement hooks ---
-
-    void startAudio() override;
-    void stopAudio() override;
-    void applyVolume() override;
-    void applyMute() override;
-
-    /// Loads a new sound file (loadAudio()).
+    /// Checks a new sound file (checkAudio()).
     void parameterChanged(ParamId id, const ParamValue &previous) override;
 
 private:
     /**
-     * \brief Loads the sound file, audio(), into the player.
-     * \details A sound that is gone or unreadable keeps its path and plays the built-in sound in its place: an undo
+     * \brief Checks that the sound file, audio(), can be read.
+     * \details A sound that is gone or unreadable keeps its path, and the built-in sound plays in its place: an undo
      * goes on. It plays again once its file is back; opening a file reports it (reportFailedFiles()).
      */
-    void loadAudio();
+    void checkAudio();
 
-    QAudioOutput *m_audioOutput = nullptr;
-    QString m_failedAudioPath;   ///< The sound last set when it did not load, else empty.
-    QMediaPlayer *m_player = nullptr;
+    QString m_failedAudioPath; ///< The sound last set when it could not be read, else empty.
 };
