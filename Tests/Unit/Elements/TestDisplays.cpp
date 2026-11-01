@@ -15,7 +15,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"

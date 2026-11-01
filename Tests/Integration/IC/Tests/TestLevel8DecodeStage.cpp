@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -22,11 +23,11 @@ struct DecodeStageFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> opcodeInputs;
-    QVector<Led *> aluopLeds;
-    QVector<Led *> decodedLineLeds;
-    Led *regwriteLed = nullptr;
-    Led *memreadLed = nullptr;
-    Led *memwriteLed = nullptr;
+    QVector<Element *> aluopLeds;
+    QVector<Element *> decodedLineLeds;
+    Element *regwriteLed = nullptr;
+    Element *memreadLed = nullptr;
+    Element *memwriteLed = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -41,11 +42,11 @@ struct DecodeStageFixture {
             auto *sw = new InputSwitch(); builder.add(sw); opcodeInputs.append(sw);
         }
         for (int i = 0; i < 3; i++) {
-            auto *led = new Led(); builder.add(led); aluopLeds.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); aluopLeds.append(led);
         }
-        regwriteLed = new Led(); builder.add(regwriteLed);
-        memreadLed = new Led(); builder.add(memreadLed);
-        memwriteLed = new Led(); builder.add(memwriteLed);
+        regwriteLed = ElementFactory::buildElement(ElementType::Led); builder.add(regwriteLed);
+        memreadLed = ElementFactory::buildElement(ElementType::Led); builder.add(memreadLed);
+        memwriteLed = ElementFactory::buildElement(ElementType::Led); builder.add(memwriteLed);
 
         for (int i = 0; i < 5; i++) {
             builder.connect(opcodeInputs[i], 0, ic, QString("OpCode[%1]").arg(i));
@@ -57,7 +58,7 @@ struct DecodeStageFixture {
         builder.connect(ic, "MemRead", memreadLed, 0);
         builder.connect(ic, "MemWrite", memwriteLed, 0);
         for (int i = 0; i < 32; i++) {
-            auto *led = new Led(); builder.add(led); decodedLineLeds.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); decodedLineLeds.append(led);
             builder.connect(ic, QString("InstrDecodedLines[%1]").arg(i), decodedLineLeds[i], 0);
         }
 

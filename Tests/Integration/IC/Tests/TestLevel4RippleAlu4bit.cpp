@@ -4,8 +4,9 @@
 #include "Tests/Integration/IC/Tests/TestLevel4RippleAlu4bit.h"
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,8 +24,8 @@ struct RippleAlu4bitFixture {
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
     InputSwitch *swCarryIn = nullptr, *swSubCarryIn = nullptr;
-    Led *ledAdd[4] = {}, *ledSub[4] = {}, *ledAnd[4] = {}, *ledOr[4] = {};
-    Led *ledCarryOut = nullptr, *ledSubCarryOut = nullptr;
+    Element *ledAdd[4] = {}, *ledSub[4] = {}, *ledAnd[4] = {}, *ledOr[4] = {};
+    Element *ledCarryOut = nullptr, *ledSubCarryOut = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -38,16 +39,16 @@ struct RippleAlu4bitFixture {
         for (int i = 0; i < 4; ++i) {
             swA[i] = new InputSwitch();
             swB[i] = new InputSwitch();
-            ledAdd[i] = new Led();
-            ledSub[i] = new Led();
-            ledAnd[i] = new Led();
-            ledOr[i] = new Led();
+            ledAdd[i] = ElementFactory::buildElement(ElementType::Led);
+            ledSub[i] = ElementFactory::buildElement(ElementType::Led);
+            ledAnd[i] = ElementFactory::buildElement(ElementType::Led);
+            ledOr[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(swA[i], swB[i], ledAdd[i], ledSub[i], ledAnd[i], ledOr[i]);
         }
         swCarryIn = new InputSwitch();
         swSubCarryIn = new InputSwitch();
-        ledCarryOut = new Led();
-        ledSubCarryOut = new Led();
+        ledCarryOut = ElementFactory::buildElement(ElementType::Led);
+        ledSubCarryOut = ElementFactory::buildElement(ElementType::Led);
         builder.add(swCarryIn, swSubCarryIn, ledCarryOut, ledSubCarryOut);
 
         for (int i = 0; i < 4; ++i) {
@@ -81,9 +82,9 @@ struct RippleAlu4bitFixture {
         sim->update();
     }
 
-    TestUtils::Bits readLanes(Led *const *leds) const
+    TestUtils::Bits readLanes(Element *const *leds) const
     {
-        return TestUtils::readMultiBitOutput(QVector<Led *>(leds, leds + 4));
+        return TestUtils::readMultiBitOutput(QVector<Element *>(leds, leds + 4));
     }
 };
 
@@ -263,7 +264,7 @@ void TestLevel4RippleALU4Bit::testAluResultAndCarry()
 
     f.setOperands(inputA, inputB);
 
-    Led *const *lanes = nullptr;
+    Element *const *lanes = nullptr;
     switch (operation) {
     case 0: lanes = f.ledAdd; break;
     case 1: lanes = f.ledSub; break;

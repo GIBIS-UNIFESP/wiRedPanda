@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPURegisterBank.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -37,7 +39,7 @@ void TestCPURegisterBank::testRegisterBank()
     QFETCH(int, expectedReadB);
     QVector<InputSwitch *> wAddr, wData, rAddrA, rAddrB;
     InputSwitch *writeEnable, *clock;
-    QVector<Led *> readDataA, readDataB;
+    QVector<Element *> readDataA, readDataB;
     for (int i = 0; i < 3; i++) {
         wAddr.append(new InputSwitch());
         rAddrA.append(new InputSwitch());
@@ -45,8 +47,8 @@ void TestCPURegisterBank::testRegisterBank()
     }
     for (int i = 0; i < 8; i++) {
         wData.append(new InputSwitch());
-        readDataA.append(new Led());
-        readDataB.append(new Led());
+        readDataA.append(ElementFactory::buildElement(ElementType::Led));
+        readDataB.append(ElementFactory::buildElement(ElementType::Led));
     }
     writeEnable = new InputSwitch();
     clock = new InputSwitch();

@@ -95,6 +95,9 @@ struct ParamSpec {
     /// Whether the value is a file's path (the audio box's sound), written as ExternalFilePath::forWriting() has it and
     /// read through forReading(); a portable file omits a resource's, which every element starts with.
     bool fileReference = false;
+
+    /// Whether the value picks the picture the presenter shows (an LED's lit slot), so a new one replaces the picture.
+    bool showsPicture = false;
 };
 
 /**

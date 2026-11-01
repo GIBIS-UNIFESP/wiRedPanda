@@ -15,9 +15,9 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -453,7 +453,7 @@ void TestFileHandler::testHandleExportArduinoExportsRealFile()
     FileHandler handler(&window, nullptr);
     auto *scene = window.currentTab()->scene();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand({sw, led}, scene));
 
     QTemporaryDir dir;
@@ -502,7 +502,7 @@ void TestFileHandler::testHandleExportSystemVerilogExportsRealFile()
     FileHandler handler(&window, nullptr);
     auto *scene = window.currentTab()->scene();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand({sw, led}, scene));
 
     QTemporaryDir dir;

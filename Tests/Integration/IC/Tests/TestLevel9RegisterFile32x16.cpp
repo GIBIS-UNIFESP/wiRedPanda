@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel9RegisterFile32x16.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,7 +24,7 @@ struct RegFile32x16Fixture {
     QVector<Element *> dataIn;
     InputSwitch *we = nullptr;
     InputSwitch *clk = nullptr;
-    QVector<Led *> readData1;
+    QVector<Element *> readData1;
     Simulation *sim = nullptr;
 
     bool build()
@@ -43,7 +44,7 @@ struct RegFile32x16Fixture {
         }
         for (int i = 0; i < 16; ++i) {
             auto *d = new InputSwitch(); builder.add(d); dataIn.append(d);
-            auto *led = new Led(); builder.add(led); readData1.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); readData1.append(led);
         }
 
         for (int i = 0; i < 5; ++i) {

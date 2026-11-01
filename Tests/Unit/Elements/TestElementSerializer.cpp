@@ -20,7 +20,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
@@ -417,7 +416,7 @@ void TestElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts()
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw1, sw2;
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
     subBuilder.add(&sw1, &sw2, &andGate, &led);
     subBuilder.connect(&sw1, 0, &andGate, 0);
     subBuilder.connect(&sw2, 0, &andGate, 1);
@@ -592,7 +591,7 @@ void TestElementSerializer::testAppearancesSaveAgainByteForByte()
     InputSwitch input;
     input.setOn(true);
     input.setAppearance(false, path);
-    Led led;
+    Element led{ElementType::Led};
     led.setColor("Red");
     led.inputPort(0)->setStatus(Status::Active);
     led.refresh();

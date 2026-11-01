@@ -19,7 +19,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
@@ -50,7 +49,7 @@ void TestSystemVerilogCodeGenUnit::testAndGateCircuit()
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, andGate, led);
     builder.connect(sw1, 0, andGate, 0);
@@ -89,7 +88,7 @@ void TestSystemVerilogCodeGenUnit::testOrNotCircuit()
     auto *sw2 = new InputSwitch;
     auto *orGate = ElementFactory::buildElement(ElementType::Or);
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, orGate, notGate, led);
     builder.connect(sw1, 0, orGate, 0);
@@ -126,7 +125,7 @@ void TestSystemVerilogCodeGenUnit::testMultiGateChain()
     auto *sw3 = new InputSwitch;
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *orGate = ElementFactory::buildElement(ElementType::Or);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, sw3, andGate, orGate, led);
     builder.connect(sw1, 0, andGate, 0);
@@ -160,7 +159,7 @@ void TestSystemVerilogCodeGenUnit::testMuxCircuit()
     auto *sw2 = new InputSwitch;
     auto *swSel = new InputSwitch;
     auto *mux = ElementFactory::buildElement(ElementType::Mux);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, swSel, mux, led);
     builder.connect(sw1, 0, mux, 0);   // data 0
@@ -192,8 +191,8 @@ void TestSystemVerilogCodeGenUnit::testDemuxCircuit()
     auto *swData = new InputSwitch;
     auto *swSel = new InputSwitch;
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
-    auto *led1 = new Led;
-    auto *led2 = new Led;
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(swData, swSel, demux, led1, led2);
     builder.connect(swData, 0, demux, 0); // data
@@ -260,8 +259,8 @@ void TestSystemVerilogCodeGenUnit::testTruthTableMultiOutput()
     auto *sw2 = new InputSwitch;
     auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     tt->setOutputSize(2);
-    auto *led0 = new Led;
-    auto *led1 = new Led;
+    auto *led0 = ElementFactory::buildElement(ElementType::Led);
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, tt, led0, led1);
     builder.connect(sw1, 0, tt, 0);
@@ -304,10 +303,10 @@ void TestSystemVerilogCodeGenUnit::testRotaryInputsDeclared()
     auto *rotary = new InputRotary;
     rotary->setOutputSize(4);
     rotary->setLabel("rot");
-    QVector<Led *> leds(4);
+    QVector<Element *> leds(4);
     builder.add(rotary);
     for (int i = 0; i < 4; ++i) {
-        leds[i] = new Led;
+        leds[i] = ElementFactory::buildElement(ElementType::Led);
         builder.add(leds[i]);
         builder.connect(rotary, i, leds[i], 0);
     }
@@ -340,14 +339,14 @@ void TestSystemVerilogCodeGenUnit::testDLatchAndSRLatchCircuits()
     auto *swD = new InputSwitch;
     auto *swEnable = new InputSwitch;
     auto *dLatch = ElementFactory::buildElement(ElementType::DLatch);
-    auto *dLatchQ = new Led;
-    auto *dLatchQBar = new Led;
+    auto *dLatchQ = ElementFactory::buildElement(ElementType::Led);
+    auto *dLatchQBar = ElementFactory::buildElement(ElementType::Led);
 
     auto *swS = new InputSwitch;
     auto *swR = new InputSwitch;
     auto *srLatch = ElementFactory::buildElement(ElementType::SRLatch);
-    auto *srLatchQ = new Led;
-    auto *srLatchQBar = new Led;
+    auto *srLatchQ = ElementFactory::buildElement(ElementType::Led);
+    auto *srLatchQBar = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(swD, swEnable, dLatch, dLatchQ, dLatchQBar,
                 swS, swR, srLatch, srLatchQ, srLatchQBar);
@@ -399,12 +398,12 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsNormalClockPath()
     auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
     auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
 
-    auto *srQ = new Led;
-    auto *srQBar = new Led;
-    auto *jkQ = new Led;
-    auto *jkQBar = new Led;
-    auto *tQ = new Led;
-    auto *tQBar = new Led;
+    auto *srQ = ElementFactory::buildElement(ElementType::Led);
+    auto *srQBar = ElementFactory::buildElement(ElementType::Led);
+    auto *jkQ = ElementFactory::buildElement(ElementType::Led);
+    auto *jkQBar = ElementFactory::buildElement(ElementType::Led);
+    auto *tQ = ElementFactory::buildElement(ElementType::Led);
+    auto *tQBar = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(clk, sw1, sw2, srff, jkff, tff, srQ, srQBar, jkQ, jkQBar, tQ, tQBar);
 
@@ -465,14 +464,14 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsWithPresetAndClearWired()
     auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
     auto *srff = ElementFactory::buildElement(ElementType::SRFlipFlop);
 
-    auto *dQ = new Led;
-    auto *dQBar = new Led;
-    auto *tQ = new Led;
-    auto *tQBar = new Led;
-    auto *jkQ = new Led;
-    auto *jkQBar = new Led;
-    auto *srQ = new Led;
-    auto *srQBar = new Led;
+    auto *dQ = ElementFactory::buildElement(ElementType::Led);
+    auto *dQBar = ElementFactory::buildElement(ElementType::Led);
+    auto *tQ = ElementFactory::buildElement(ElementType::Led);
+    auto *tQBar = ElementFactory::buildElement(ElementType::Led);
+    auto *jkQ = ElementFactory::buildElement(ElementType::Led);
+    auto *jkQBar = ElementFactory::buildElement(ElementType::Led);
+    auto *srQ = ElementFactory::buildElement(ElementType::Led);
+    auto *srQBar = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(clk, data, prst, clr, dff, tff, jkff, srff,
                 dQ, dQBar, tQ, tQBar, jkQ, jkQBar, srQ, srQBar);
@@ -540,8 +539,8 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopWithPresetOnlySensitivityList()
     auto *data = new InputSwitch;
     auto *prst = new InputSwitch;
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
-    auto *q = new Led;
-    auto *qBar = new Led;
+    auto *q = ElementFactory::buildElement(ElementType::Led);
+    auto *qBar = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(clk, data, prst, dff, q, qBar);
     builder.connect(data, 0, dff, 0);
@@ -577,8 +576,8 @@ void TestSystemVerilogCodeGenUnit::testAsyncControlDrivenByAGateReadsItsVariable
     auto *swPrstSrc = new InputSwitch;
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
-    auto *q = new Led;
-    auto *qBar = new Led;
+    auto *q = ElementFactory::buildElement(ElementType::Led);
+    auto *qBar = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(clk, data, swPrstSrc, notGate, dff, q, qBar);
     builder.connect(data, 0, dff, 0);
@@ -612,7 +611,7 @@ void TestSystemVerilogCodeGenUnit::testOutOfTopologicalOrderGateResolution()
     auto sw2 = std::make_unique<InputSwitch>();
     auto andGate = std::make_unique<Element>(ElementType::And);
     auto orGate = std::make_unique<Element>(ElementType::Or);
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
 
     std::vector<std::unique_ptr<Connection>> conns;
     auto connect = [&](OutputPort *from, InputPort *to) {
@@ -692,7 +691,7 @@ void TestSystemVerilogCodeGenUnit::testDeclareOutputsWithLabel()
     CircuitBuilder builder(workspace.scene());
 
     auto *sw = new InputSwitch;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("alarm");
 
     builder.add(sw, led);
@@ -730,9 +729,9 @@ void TestSystemVerilogCodeGenUnit::testDemuxWithFourOutputsUsesTwoSelectLines()
     builder.connect(swSel0, 0, demux, 1); // select bit 0
     builder.connect(swSel1, 0, demux, 2); // select bit 1
 
-    QVector<Led *> leds(4);
+    QVector<Element *> leds(4);
     for (int i = 0; i < 4; ++i) {
-        leds[i] = new Led;
+        leds[i] = ElementFactory::buildElement(ElementType::Led);
         builder.add(leds[i]);
         builder.connect(demux, i, leds[i], 0);
     }
@@ -775,10 +774,10 @@ void TestSystemVerilogCodeGenUnit::testIcPortNamesEscapeReservedWordsAndDedup()
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *orGate = ElementFactory::buildElement(ElementType::Or);
 
-    auto *ledMain = new Led;
-    auto *ledB = new Led;
+    auto *ledMain = ElementFactory::buildElement(ElementType::Led);
+    auto *ledB = ElementFactory::buildElement(ElementType::Led);
     ledB->setLabel("res");
-    auto *ledC = new Led;
+    auto *ledC = ElementFactory::buildElement(ElementType::Led);
     ledC->setLabel("res"); // duplicate label -> dedup suffix "res_1"
 
     subBuilder.add(sw1, sw2, sw3, sw4, andGate, orGate, ledMain, ledB, ledC);
@@ -842,7 +841,7 @@ void TestSystemVerilogCodeGenUnit::testOutOfOrderNodeUpstreamResolution()
     auto sw2 = std::make_unique<InputSwitch>();
     auto node = std::make_unique<Node>();
     auto andGate = std::make_unique<Element>(ElementType::And);
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
 
     std::vector<std::unique_ptr<Connection>> conns;
     auto connect = [&](OutputPort *from, InputPort *to) {
@@ -885,7 +884,7 @@ void TestSystemVerilogCodeGenUnit::testWirelessNodeCycleReadsEachOthersVariable(
     // graph), each reading the other's variable.
     auto n1 = std::make_unique<Node>();
     auto n2 = std::make_unique<Node>();
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
 
     std::vector<std::unique_ptr<Connection>> conns;
     auto connect = [&](OutputPort *from, InputPort *to) {
@@ -931,7 +930,7 @@ void TestSystemVerilogCodeGenUnit::testNandGateCircuit()
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *nandGate = ElementFactory::buildElement(ElementType::Nand);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, nandGate, led);
     builder.connect(sw1, 0, nandGate, 0);
@@ -960,7 +959,7 @@ void TestSystemVerilogCodeGenUnit::testNotOfANotReadsItsVariable()
     auto *sw = new InputSwitch;
     auto *not1 = ElementFactory::buildElement(ElementType::Not);
     auto *not2 = ElementFactory::buildElement(ElementType::Not);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw, not1, not2, led);
     builder.connect(sw, 0, not1, 0);
@@ -1010,7 +1009,7 @@ void andGate(CircuitBuilder &builder)
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *gate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw1, sw2, gate, led);
     builder.connect(sw1, 0, gate, 0);
     builder.connect(sw2, 0, gate, 1);
@@ -1100,7 +1099,7 @@ void TestSystemVerilogCodeGenUnit::testModuleGrowsLinearlyWithDepth()
             builder.connect(previous, 0, gate, 1);
             previous = gate;
         }
-        auto *led = new Led;
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(led);
         builder.connect(previous, 0, led, 0);
 

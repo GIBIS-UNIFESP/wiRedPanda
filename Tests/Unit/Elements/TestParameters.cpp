@@ -25,7 +25,6 @@
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/Parameters.h"
 #include "App/IO/SerializationContext.h"
@@ -435,7 +434,7 @@ void TestParameters::testAClocksFrequencyAndDelayAreItsRules()
 void TestParameters::testAColourIsAnyNameAndTheLedOffersItWithOneInput()
 {
     // Any name is kept; the LED's pictures follow a listed one, and one not in the list is drawn as White
-    Led led;
+    Element led{ElementType::Led};
     QVERIFY(led.hasColors());
     led.setColor(QStringLiteral("Green"));
     QCOMPARE(led.param<QString>(ParamId::Colour), QStringLiteral("Green"));

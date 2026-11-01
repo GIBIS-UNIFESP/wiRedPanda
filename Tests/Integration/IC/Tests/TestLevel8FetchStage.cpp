@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -32,11 +33,11 @@ struct FetchStageFixture {
     InputSwitch *pcInc = nullptr;
     InputSwitch *instrLoad = nullptr;
     InputSwitch *progWrite = nullptr;
-    Led *pc[8] = {};
-    Led *instr[8] = {};
-    Led *raw[8] = {};
-    Led *opcode[5] = {};
-    Led *regAddr[3] = {};
+    Element *pc[8] = {};
+    Element *instr[8] = {};
+    Element *raw[8] = {};
+    Element *opcode[5] = {};
+    Element *regAddr[3] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -58,17 +59,17 @@ struct FetchStageFixture {
             pcData[i] = new InputSwitch();
             progAddr[i] = new InputSwitch();
             progData[i] = new InputSwitch();
-            pc[i] = new Led();
-            instr[i] = new Led();
-            raw[i] = new Led();
+            pc[i] = ElementFactory::buildElement(ElementType::Led);
+            instr[i] = ElementFactory::buildElement(ElementType::Led);
+            raw[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(pcData[i], progAddr[i], progData[i], pc[i], instr[i], raw[i]);
         }
         for (int i = 0; i < 5; ++i) {
-            opcode[i] = new Led();
+            opcode[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(opcode[i]);
         }
         for (int i = 0; i < 3; ++i) {
-            regAddr[i] = new Led();
+            regAddr[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(regAddr[i]);
         }
 
@@ -144,9 +145,9 @@ struct FetchStageFixture {
         sim->update();
     }
 
-    static TestUtils::Bits readBits(Led *const *leds, int n)
+    static TestUtils::Bits readBits(Element *const *leds, int n)
     {
-        return readMultiBitOutput(QVector<Led *>(leds, leds + n));
+        return readMultiBitOutput(QVector<Element *>(leds, leds + n));
     }
 
     TestUtils::Bits readPC() { return readBits(pc, 8); }
@@ -250,9 +251,9 @@ void TestLevel8FetchStage::testFetchStage()
     builder.add(fetch);
 
     // Create output LEDs for PC (8-bit)
-    QVector<Led *> pc_leds;
+    QVector<Element *> pc_leds;
     for (int i = 0; i < 8; i++) {
-        Led *led = new Led();
+        Element *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(led);
         led->setLabel(QString("PC[%1]").arg(i));
         led->setPos(50 + i * 60, 200);
@@ -260,9 +261,9 @@ void TestLevel8FetchStage::testFetchStage()
     }
 
     // Create output LEDs for Instruction (8-bit)
-    QVector<Led *> instr_leds;
+    QVector<Element *> instr_leds;
     for (int i = 0; i < 8; i++) {
-        Led *led = new Led();
+        Element *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(led);
         led->setLabel(QString("Instruction[%1]").arg(i));
         led->setPos(50 + i * 60, 300);
@@ -470,7 +471,7 @@ void TestLevel8FetchStage::testFetchStageStructure()
     InputSwitch *sw = new InputSwitch();
     builder.add(sw);
 
-    Led *out = new Led();
+    Element *out = ElementFactory::buildElement(ElementType::Led);
     builder.add(out);
 
     // Verify IC port structure

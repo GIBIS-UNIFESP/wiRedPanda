@@ -6,8 +6,9 @@
 #include <QFile>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -21,7 +22,7 @@ struct Comparator4bitEqualityFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *inputA[4] = {}, *inputB[4] = {};
-    Led *ledEqual = nullptr;
+    Element *ledEqual = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -32,7 +33,7 @@ struct Comparator4bitEqualityFixture {
         ic = loadBuildingBlockIC("level3_comparator_4bit_equality.panda");
         builder.add(ic);
 
-        ledEqual = new Led();
+        ledEqual = ElementFactory::buildElement(ElementType::Led);
         builder.add(ledEqual);
 
         for (int i = 0; i < 4; ++i) {

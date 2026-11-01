@@ -6,10 +6,10 @@
 #include <utility>
 
 #include "App/Core/Priorities.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
@@ -27,7 +27,7 @@ void TestSimulation::testTopologicalSorting()
 
     InputButton button1, button2;
     Element andItem{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&button1, &button2, &andItem, &led);
     builder.connect(&button1, 0, &andItem, 0);
@@ -56,7 +56,7 @@ void TestSimulation::testAndGatePropagation()
 
     InputSwitch sw1, sw2;
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &andGate, &led);
     builder.connect(&sw1, 0, &andGate, 0);
@@ -86,7 +86,7 @@ void TestSimulation::testOrGatePropagation()
 
     InputSwitch sw1, sw2;
     Element orGate{ElementType::Or};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &orGate, &led);
     builder.connect(&sw1, 0, &orGate, 0);
@@ -115,7 +115,7 @@ void TestSimulation::testNotGatePropagation()
 
     InputSwitch sw;
     Element notGate{ElementType::Not};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw, &notGate, &led);
     builder.connect(&sw, 0, &notGate, 0);
@@ -137,7 +137,7 @@ void TestSimulation::testNandGatePropagation()
 
     InputSwitch sw1, sw2;
     Element nandGate{ElementType::Nand};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &nandGate, &led);
     builder.connect(&sw1, 0, &nandGate, 0);
@@ -166,7 +166,7 @@ void TestSimulation::testNorGatePropagation()
 
     InputSwitch sw1, sw2;
     Element norGate{ElementType::Nor};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &norGate, &led);
     builder.connect(&sw1, 0, &norGate, 0);
@@ -195,7 +195,7 @@ void TestSimulation::testXorGatePropagation()
 
     InputSwitch sw1, sw2;
     Element xorGate{ElementType::Xor};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &xorGate, &led);
     builder.connect(&sw1, 0, &xorGate, 0);
@@ -226,7 +226,7 @@ void TestSimulation::testCascadedGates()
     InputSwitch swA, swB, swC;
     Element andGate{ElementType::And};
     Element orGate{ElementType::Or};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&swA, &swB, &swC, &andGate, &orGate, &led);
     builder.connect(&swA, 0, &andGate, 0);
@@ -261,7 +261,7 @@ void TestSimulation::testMultiCycleStability()
 
     InputSwitch sw1, sw2;
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &andGate, &led);
     builder.connect(&sw1, 0, &andGate, 0);
@@ -292,7 +292,7 @@ void TestSimulation::testSimulationInitialization()
     QVERIFY2(!simulation->isRunning(), "Simulation should not be running initially");
 
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw, &led);
     builder.connect(&sw, 0, &led, 0);
@@ -331,7 +331,7 @@ void TestSimulation::testElementProcessingOrderConsistency()
         Element and1{ElementType::And}, and2{ElementType::And};
         Element or1{ElementType::Or};
         Element not1{ElementType::Not};
-        Led led;
+        Element led{ElementType::Led};
 
         // Position elements to potentially have same priorities
         button1.setPos(0, 0);
@@ -403,7 +403,7 @@ void TestSimulation::testSceneInitializationDeterminism()
         // Add items in same order to test deterministic element ordering
         InputButton button1, button2;
         Element andGate{ElementType::And};
-        Led led;
+        Element led{ElementType::Led};
         Connection conn1, conn2, conn3;
 
         // Set positions to ensure deterministic topological sorting
@@ -455,7 +455,7 @@ void TestSimulation::testSimulationOutputReproducibility()
         // Create deterministic test circuit: AND gate with two inputs
         InputButton button1, button2;
         Element andGate{ElementType::And};
-        Led led;
+        Element led{ElementType::Led};
 
         button1.setPos(0, 0);
         button2.setPos(0, 50);
@@ -534,7 +534,7 @@ void TestSimulation::testSimulationGraphStability()
         Element and1{ElementType::And}, and2{ElementType::And};
         Element or1{ElementType::Or};
         Element not1{ElementType::Not}, not2{ElementType::Not};
-        Led led1, led2;
+        Element led1{ElementType::Led}, led2{ElementType::Led};
 
         // Position elements to create complex priority relationships
         input1.setPos(0, 0);
@@ -643,7 +643,7 @@ void TestSimulation::testCircuitWithFeedbackLoops()
         // Create NAND-based SR latch circuit (classic feedback example)
         InputButton setBtn, resetBtn;
         Element nand1{ElementType::Nand}, nand2{ElementType::Nand};
-        Led qLed, notQLed;
+        Element qLed{ElementType::Led}, notQLed{ElementType::Led};
 
         setBtn.setPos(0, 0);
         resetBtn.setPos(0, 100);
@@ -760,7 +760,7 @@ void TestSimulation::testWirelessTxRxPropagation()
     InputSwitch sw;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("SIG");
     tx->setWirelessMode(WirelessMode::Tx);
@@ -795,7 +795,7 @@ void TestSimulation::testWirelessMultiRxFanOut()
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx1 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx2 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led1, led2;
+    Element led1{ElementType::Led}, led2{ElementType::Led};
 
     tx->setLabel("BUS");
     tx->setWirelessMode(WirelessMode::Tx);
@@ -832,7 +832,7 @@ void TestSimulation::testWirelessOrphanedRx()
     CircuitBuilder builder(workspace.scene());
 
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     rx->setLabel("ORPHAN");
     rx->setWirelessMode(WirelessMode::Rx);
@@ -864,7 +864,7 @@ void TestSimulation::testWirelessInsideIC()
 
     CircuitBuilder builder(ws.scene());
     InputSwitch outerSw;
-    Led outerLed;
+    Element outerLed{ElementType::Led};
 
     builder.add(&outerSw, ic, &outerLed);
 
@@ -919,7 +919,7 @@ void TestSimulation::testWirelessDuplicateTxIgnored()
     auto *tx1 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *tx2 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx  = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx1->setLabel("DUP");
     tx1->setWirelessMode(WirelessMode::Tx);
@@ -971,7 +971,7 @@ void TestSimulation::testWirelessEmptyLabelIgnored()
     InputSwitch sw;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("");
     tx->setWirelessMode(WirelessMode::Tx);
@@ -1002,7 +1002,7 @@ void TestSimulation::testWirelessLabelMismatchIsolation()
     InputSwitch sw;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("A");
     tx->setWirelessMode(WirelessMode::Tx);
@@ -1035,7 +1035,7 @@ void TestSimulation::testWirelessMultipleIndependentChannels()
     auto *rxA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *txB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rxB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led1, led2;
+    Element led1{ElementType::Led}, led2{ElementType::Led};
 
     txA->setLabel("CH_A"); txA->setWirelessMode(WirelessMode::Tx);
     rxA->setLabel("CH_A"); rxA->setWirelessMode(WirelessMode::Rx);
@@ -1081,7 +1081,7 @@ void TestSimulation::testWirelessTxUnconnectedInput()
 
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("OPEN");
     tx->setWirelessMode(WirelessMode::Tx);
@@ -1112,7 +1112,7 @@ void TestSimulation::testWirelessLabelCaseSensitive()
     InputSwitch sw;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("CLK");
     tx->setWirelessMode(WirelessMode::Tx);
@@ -1145,7 +1145,7 @@ void TestSimulation::testWirelessNoneModeNodeDoesNotInterfere()
     auto *tx   = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx   = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *none = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("SIG");   tx->setWirelessMode(WirelessMode::Tx);
     rx->setLabel("SIG");   rx->setWirelessMode(WirelessMode::Rx);
@@ -1175,7 +1175,7 @@ void TestSimulation::testWirelessLabelSetAfterMode()
     InputSwitch sw;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     // Set mode first, label second
     tx->setWirelessMode(WirelessMode::Tx);
@@ -1208,7 +1208,7 @@ void TestSimulation::testWirelessCascadeThroughWire()
     auto *rxA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *txB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rxB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     txA->setLabel("A"); txA->setWirelessMode(WirelessMode::Tx);
     rxA->setLabel("A"); rxA->setWirelessMode(WirelessMode::Rx);
@@ -1241,7 +1241,7 @@ void TestSimulation::testWirelessRxFeedsCombinationalLogic()
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("X"); tx->setWirelessMode(WirelessMode::Tx);
     rx->setLabel("X"); rx->setWirelessMode(WirelessMode::Rx);
@@ -1283,7 +1283,7 @@ void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
     InputSwitch sw1, sw2, sw3;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("DEAD_END");
     tx->setWirelessMode(WirelessMode::Tx);
@@ -1315,7 +1315,7 @@ void TestSimulation::testWirelessOrphanedRxWithPhysicalWire()
 
     InputSwitch sw;
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     rx->setLabel("NO_TX");
     rx->setWirelessMode(WirelessMode::Rx);
@@ -1346,7 +1346,7 @@ void TestSimulation::testWirelessOverridesPhysicalWire()
     InputSwitch swPhys, swWireless;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("CH"); tx->setWirelessMode(WirelessMode::Tx);
     rx->setLabel("CH"); rx->setWirelessMode(WirelessMode::Rx);
@@ -1385,7 +1385,7 @@ void TestSimulation::testWirelessFeedbackLoop()
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     Element notGate{ElementType::Not};
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel("FB"); tx->setWirelessMode(WirelessMode::Tx);
     rx->setLabel("FB"); rx->setWirelessMode(WirelessMode::Rx);
@@ -1419,7 +1419,7 @@ void TestSimulation::testWirelessUnicodeLabels()
     InputSwitch sw;
     auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
     auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    Led led;
+    Element led{ElementType::Led};
 
     tx->setLabel(QStringLiteral("信号")); tx->setWirelessMode(WirelessMode::Tx);
     rx->setLabel(QStringLiteral("信号")); rx->setWirelessMode(WirelessMode::Rx);
@@ -1450,7 +1450,7 @@ void TestSimulation::testUnconnectedRequiredInputGraceful()
     CircuitBuilder builder(workspace.scene());
 
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&andGate, &led);
     builder.connect(&andGate, 0, &led, 0);  // AND output → LED (no AND inputs connected)
@@ -1475,7 +1475,7 @@ void TestSimulation::testPartiallyConnectedCircuitIsolation()
 
     InputSwitch sw1, sw2;
     Element andWorking{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
     Element andIsolated{ElementType::And};  // no connections — will be unknown
 
     builder.add(&sw1, &sw2, &andWorking, &led, &andIsolated);
@@ -1508,7 +1508,7 @@ void TestSimulation::testDanglingConnectionGraceful()
     CircuitBuilder builder(workspace.scene());
 
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&andGate, &led);
     builder.connect(&andGate, 0, &led, 0);  // AND output → LED

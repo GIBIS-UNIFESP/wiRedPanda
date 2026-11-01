@@ -19,10 +19,10 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Enums.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRenderer.h"
 #include "App/IO/Serialization.h"
@@ -425,7 +425,7 @@ void TestIC::testICStatusPropagation()
     // Create input switch and simple logic to feed it
     InputSwitch inputSwitch;
     IC *ic = new IC();
-    Led outputLed;
+    Element outputLed{ElementType::Led};
 
     builder.add(&inputSwitch, ic, &outputLed);
 

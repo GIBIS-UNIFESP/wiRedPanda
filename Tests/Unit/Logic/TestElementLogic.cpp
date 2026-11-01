@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -151,54 +150,6 @@ void TestElementLogic::testSourceMultiOutput()
     src.setOutputValue(0, false);
     QCOMPARE(src.outputValue(0), Status::Inactive);
     QCOMPARE(src.outputValue(1), Status::Active);  // unchanged
-}
-
-/**
- * Test: LogicSink mirrors each input to the matching output so the display
- * layer can query outputValue(i) without traversing the graph.
- * Also verifies that Unknown on any input propagates to all outputs.
- */
-void TestElementLogic::testSink()
-{
-    Led sink; sink.setInputSize(3); sink.initSimulationVectors(3, 3);
-    Element in0{ElementType::InputVcc};
-    Element in1{ElementType::InputVcc};
-    Element in2{ElementType::InputVcc};
-    initSrc(in0);
-    initSrc(in1);
-    initSrc(in2);
-
-    sink.connectPredecessor(0, &in0, 0);
-    sink.connectPredecessor(1, &in1, 0);
-    sink.connectPredecessor(2, &in2, 0);
-
-    // All Active
-    in0.setOutputValue(true);
-    in1.setOutputValue(true);
-    in2.setOutputValue(true);
-    sink.updateLogic();
-    QCOMPARE(sink.outputValue(0), Status::Active);
-    QCOMPARE(sink.outputValue(1), Status::Active);
-    QCOMPARE(sink.outputValue(2), Status::Active);
-
-    // Mixed Active / Inactive
-    in0.setOutputValue(true);
-    in1.setOutputValue(false);
-    in2.setOutputValue(true);
-    sink.updateLogic();
-    QCOMPARE(sink.outputValue(0), Status::Active);
-    QCOMPARE(sink.outputValue(1), Status::Inactive);
-    QCOMPARE(sink.outputValue(2), Status::Active);
-
-    // Null predecessor on Led (optional ports) → defaults to Inactive
-    Led sinkPartial; sinkPartial.setInputSize(2); sinkPartial.initSimulationVectors(2, 2);
-    Element onlyInput{ElementType::InputVcc}; initSrc(onlyInput);
-    sinkPartial.connectPredecessor(0, &onlyInput, 0);
-    // port 1 left null — Led ports are optional, defaulting to Inactive
-    onlyInput.setOutputValue(true);
-    sinkPartial.updateLogic();
-    QCOMPARE(sinkPartial.outputValue(0), Status::Active);
-    QCOMPARE(sinkPartial.outputValue(1), Status::Inactive);
 }
 
 void TestElementLogic::testMux_data()

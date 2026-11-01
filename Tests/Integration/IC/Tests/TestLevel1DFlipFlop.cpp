@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel1DFlipFlop.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +17,7 @@ struct DFlipFlopFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *dataIn = nullptr, *clockIn = nullptr, *presetIn = nullptr, *clearIn = nullptr;
-    Led *ledQ = nullptr, *ledQBar = nullptr;
+    Element *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -28,8 +29,8 @@ struct DFlipFlopFixture {
         clockIn = new InputSwitch();
         presetIn = new InputSwitch();
         clearIn = new InputSwitch();
-        ledQ = new Led();
-        ledQBar = new Led();
+        ledQ = ElementFactory::buildElement(ElementType::Led);
+        ledQBar = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(dataIn, clockIn, presetIn, clearIn, ledQ, ledQBar);
 

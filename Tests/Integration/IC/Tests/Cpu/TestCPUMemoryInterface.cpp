@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUMemoryInterface.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -23,11 +25,11 @@ static void writeAndVerify(int address, int dataToWrite, bool doWrite, int expec
 {
     QVector<InputSwitch *> addr, dataIn;
     InputSwitch *memRead, *memWrite, *memEnable, *clock;
-    QVector<Led *> dataOut;
+    QVector<Element *> dataOut;
     for (int i = 0; i < 8; i++) {
         addr.append(new InputSwitch());
         dataIn.append(new InputSwitch());
-        dataOut.append(new Led());
+        dataOut.append(ElementFactory::buildElement(ElementType::Led));
     }
     memRead = new InputSwitch();
     memWrite = new InputSwitch();

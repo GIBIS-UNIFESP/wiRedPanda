@@ -353,8 +353,8 @@ public:
 
     /**
      * \brief Returns the list of editable appearance states for this element.
-     * Each pair is (appearance list index, human-readable state description).
-     * Override in subclasses with multi-state appearances (e.g., Led).
+     * Each pair is (appearance list index, human-readable state description): the descriptor's (an LED's), or the one
+     * slot, named "Default"; an input's override names its own.
      */
     virtual QList<std::pair<int, QString>> appearanceStates() const;
 
@@ -567,11 +567,12 @@ public:
 
     // --- Virtual Methods ---
 
-    /// Returns a string encoding element-specific properties for serialization or display.
+    /// Returns what the element is set to, for the name of an IC's port it is the boundary of: the descriptor's (an
+    /// LED's colour), or nothing; a clock's override gives its frequency.
     virtual QString genericProperties();
 
-    /// Brings what the element shows of its inputs up to them (an LED's picture, a display's segments, an audio
-    /// output's sound); nothing by default.
+    /// Brings what the element shows of its inputs up to them: an LED's slot, a display's segments (the descriptor's
+    /// slotFollowsInputs and pictureFollowsInputs).
     virtual void refresh();
 
     // --- Qt Graphics & Display ---
@@ -722,7 +723,8 @@ protected:
     virtual void loadState(QDataStream &stream, SerializationContext &context);
 
     /// Switches the element's appearance: the built-in default when \a defaultAppearance, else \a fileName's picture in
-    /// the slot the element's state shows. The base sets every slot. Called only by setAppearance().
+    /// the slot the element's state shows (the descriptor's shownSlot; the first slot for a type without one). Called
+    /// only by setAppearance().
     virtual void applyAppearance(bool defaultAppearance, const QString &fileName);
 
     // --- Parameters ---

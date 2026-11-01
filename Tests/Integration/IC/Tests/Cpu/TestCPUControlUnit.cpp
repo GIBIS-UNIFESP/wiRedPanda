@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUControlUnit.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -32,18 +34,18 @@ void TestCPUControlUnit::testControlUnit()
     QFETCH(int, stateTransitions);
     QFETCH(int, expectedFinalState);
     InputSwitch *reset, *clock;
-    QVector<Led *> state;
-    Led *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
+    QVector<Element *> state;
+    Element *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
     reset = new InputSwitch();
     clock = new InputSwitch();
     for (int i = 0; i < 3; i++) {
-        state.append(new Led());
+        state.append(ElementFactory::buildElement(ElementType::Led));
     }
-    pcInc = new Led();
-    irLoad = new Led();
-    regWrite = new Led();
-    aluEnable = new Led();
-    flagWrite = new Led();
+    pcInc = ElementFactory::buildElement(ElementType::Led);
+    irLoad = ElementFactory::buildElement(ElementType::Led);
+    regWrite = ElementFactory::buildElement(ElementType::Led);
+    aluEnable = ElementFactory::buildElement(ElementType::Led);
+    flagWrite = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
     auto *sim = workspace->simulation();
     // Reset to FETCH
@@ -70,18 +72,18 @@ void TestCPUControlUnit::testControlUnitFlagWrite()
 {
     // Test that flagWrite is asserted during EXECUTE state (state 2 = 010)
     InputSwitch *reset, *clock;
-    QVector<Led *> state;
-    Led *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
+    QVector<Element *> state;
+    Element *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
     reset = new InputSwitch();
     clock = new InputSwitch();
     for (int i = 0; i < 3; i++) {
-        state.append(new Led());
+        state.append(ElementFactory::buildElement(ElementType::Led));
     }
-    pcInc = new Led();
-    irLoad = new Led();
-    regWrite = new Led();
-    aluEnable = new Led();
-    flagWrite = new Led();
+    pcInc = ElementFactory::buildElement(ElementType::Led);
+    irLoad = ElementFactory::buildElement(ElementType::Led);
+    regWrite = ElementFactory::buildElement(ElementType::Led);
+    aluEnable = ElementFactory::buildElement(ElementType::Led);
+    flagWrite = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
     auto *sim = workspace->simulation();
     // Reset to FETCH (state 0)
@@ -129,10 +131,13 @@ void TestCPUControlUnit::testControlUnitSignals()
     //   WRITEBACK(3): regWrite      DECODE(1) and HALT(4): none
     InputSwitch *reset = new InputSwitch();
     InputSwitch *clock = new InputSwitch();
-    QVector<Led *> state;
-    for (int i = 0; i < 3; i++) state.append(new Led());
-    Led *pcInc = new Led(), *irLoad = new Led(), *regWrite = new Led();
-    Led *aluEnable = new Led(), *flagWrite = new Led();
+    QVector<Element *> state;
+    for (int i = 0; i < 3; i++) state.append(ElementFactory::buildElement(ElementType::Led));
+    Element *pcInc = ElementFactory::buildElement(ElementType::Led);
+    Element *irLoad = ElementFactory::buildElement(ElementType::Led);
+    Element *regWrite = ElementFactory::buildElement(ElementType::Led);
+    Element *aluEnable = ElementFactory::buildElement(ElementType::Led);
+    Element *flagWrite = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
     auto *sim = workspace->simulation();
 
@@ -171,10 +176,13 @@ void TestCPUControlUnit::testControlUnitResetClears()
     // looked correct because the register powers up at 0.
     InputSwitch *reset = new InputSwitch();
     InputSwitch *clock = new InputSwitch();
-    QVector<Led *> state;
-    for (int i = 0; i < 3; i++) state.append(new Led());
-    Led *pcInc = new Led(), *irLoad = new Led(), *regWrite = new Led();
-    Led *aluEnable = new Led(), *flagWrite = new Led();
+    QVector<Element *> state;
+    for (int i = 0; i < 3; i++) state.append(ElementFactory::buildElement(ElementType::Led));
+    Element *pcInc = ElementFactory::buildElement(ElementType::Led);
+    Element *irLoad = ElementFactory::buildElement(ElementType::Led);
+    Element *regWrite = ElementFactory::buildElement(ElementType::Led);
+    Element *aluEnable = ElementFactory::buildElement(ElementType::Led);
+    Element *flagWrite = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildControlUnit(reset, clock, state.data(), pcInc, irLoad, regWrite, aluEnable, flagWrite));
     auto *sim = workspace->simulation();
 

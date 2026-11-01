@@ -5,8 +5,9 @@
 
 #include <QFile>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -19,7 +20,7 @@ struct AluSelector5wayFixture {
     IC *ic = nullptr;
     InputSwitch *in[5] = {};
     InputSwitch *sel[3] = {};
-    Led *output = nullptr;
+    Element *output = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -35,7 +36,7 @@ struct AluSelector5wayFixture {
             sel[i] = new InputSwitch();
             builder.add(sel[i]);
         }
-        output = new Led();
+        output = ElementFactory::buildElement(ElementType::Led);
         builder.add(output);
 
         ic = loadBuildingBlockIC("level3_alu_selector_5way.panda");

@@ -32,7 +32,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Presentation/ElementPictures.h"
@@ -196,7 +195,7 @@ void TestElementEditor::testCreation()
 void TestElementEditor::testSetScene()
 {
     WorkSpace workspace;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
 
     ElementEditor editor(&workspace);
@@ -268,7 +267,7 @@ void TestElementEditor::testSetCurrentElementsGate()
 void TestElementEditor::testSetCurrentElementsLed()
 {
     WorkSpace workspace;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
 
     ElementEditor editor(&workspace);
@@ -296,7 +295,7 @@ void TestElementEditor::testSetCurrentElementsLed()
 void TestElementEditor::testAppearanceStateTileSelection()
 {
     WorkSpace workspace;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setInputSize(2);
     workspace.scene()->addItem(led);
 
@@ -635,7 +634,7 @@ void TestElementEditor::testUpdateElementAppearanceCancelledDialogIsNoOp()
 void TestElementEditor::testUpdateElementAppearanceViaTileGridUpdatesSelectedStateOnly()
 {
     WorkSpace workspace;
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setInputSize(2); // 4 appearance states
     workspace.scene()->addItem(led);
 
@@ -805,7 +804,7 @@ void TestElementEditor::testPickingAPictureThatDoesNotLoadForAStateChangesNothin
     broken.close();
 
     WorkSpace workspace;
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
 
     ElementEditor editor(&workspace);
@@ -1960,7 +1959,7 @@ void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
 void TestElementEditor::testEachComboPickIsAnUndoStep()
 {
     WorkSpace workspace;
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());

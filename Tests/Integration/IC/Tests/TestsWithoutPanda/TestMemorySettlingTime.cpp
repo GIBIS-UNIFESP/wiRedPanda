@@ -3,8 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.h"
 
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::inputStatus;
@@ -29,7 +29,7 @@ using TestUtils::inputStatus;
 struct SingleStageDecoderCircuit {
     InputSwitch addressBits[6];
     InputSwitch controlSignal;
-    Led outputs[64];
+    ElementArray outputs{ElementType::Led, 64};
     ElementArray decoders{ElementType::And, 64};
     ElementArray notGates{ElementType::Not, 6};
 };
@@ -37,7 +37,7 @@ struct SingleStageDecoderCircuit {
 void buildSingleStageDecoder6bit(WorkSpace* workspace,
                                  InputSwitch*& address,
                                  InputSwitch*& control,
-                                 Led*& outputs,
+                                 ElementArray *&outputs,
                                  std::unique_ptr<SingleStageDecoderCircuit>& circuit,
                                  Simulation*& sim)
 {
@@ -47,7 +47,7 @@ void buildSingleStageDecoder6bit(WorkSpace* workspace,
 
     address = circuit->addressBits;
     control = &circuit->controlSignal;
-    outputs = circuit->outputs;
+    outputs = &circuit->outputs;
 
     for (int i = 0; i < 6; i++) {
         builder.add(&circuit->addressBits[i], &circuit->notGates[i]);
@@ -93,7 +93,7 @@ void buildSingleStageDecoder6bit(WorkSpace* workspace,
 struct CascadedDecoderCircuit {
     InputSwitch addressBits[6];
     InputSwitch controlSignal;
-    Led outputs[64];
+    ElementArray outputs{ElementType::Led, 64};
     ElementArray level1Decoders{ElementType::And, 64};  // low 3 address bits
     ElementArray level2Decoders{ElementType::And, 64};  // level1 + high 3 bits + control
     ElementArray notGates{ElementType::Not, 6};
@@ -102,7 +102,7 @@ struct CascadedDecoderCircuit {
 void buildCascadedDecoder6bit(WorkSpace* workspace,
                               InputSwitch*& address,
                               InputSwitch*& control,
-                              Led*& outputs,
+                              ElementArray *&outputs,
                               std::unique_ptr<CascadedDecoderCircuit>& circuit,
                               Simulation*& sim)
 {
@@ -112,7 +112,7 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
 
     address = circuit->addressBits;
     control = &circuit->controlSignal;
-    outputs = circuit->outputs;
+    outputs = &circuit->outputs;
 
     for (int i = 0; i < 6; i++) {
         builder.add(&circuit->addressBits[i], &circuit->notGates[i]);
@@ -161,7 +161,7 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
 // ============================================================
 
 /// Returns true iff outputs[activeAddr] is Active and the other 63 outputs are Inactive.
-static bool isOneHot(Led *outputs, int activeAddr)
+static bool isOneHot(ElementArray &outputs, int activeAddr)
 {
     for (int i = 0; i < 64; ++i) {
         if (inputStatus(&outputs[i]) != TestUtils::level(i == activeAddr)) {
@@ -196,7 +196,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_singlestage()
     QFETCH(int, addressValue);
 
     InputSwitch *address, *control;
-    Led *outputs;
+    ElementArray *outputs = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
     std::unique_ptr<SingleStageDecoderCircuit> circuit;
@@ -211,7 +211,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_singlestage()
     sim->update();
 
     // Exactly the addressed output is active; all 63 others are inactive.
-    QVERIFY2(isOneHot(outputs, addressValue),
+    QVERIFY2(isOneHot(*outputs, addressValue),
              qPrintable(QString("single-stage decode of 0x%1 is not one-hot").arg(addressValue, 0, 16)));
 }
 
@@ -231,7 +231,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_cascaded()
     QFETCH(int, addressValue);
 
     InputSwitch *address, *control;
-    Led *outputs;
+    ElementArray *outputs = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
     std::unique_ptr<CascadedDecoderCircuit> circuit;
@@ -247,7 +247,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_cascaded()
 
     // The 2-level cascade is a genuine 6-bit decoder: one-hot like the single
     // stage. (Previously it wired only 2 address bits, so this was never checked.)
-    QVERIFY2(isOneHot(outputs, addressValue),
+    QVERIFY2(isOneHot(*outputs, addressValue),
              qPrintable(QString("cascaded decode of 0x%1 is not one-hot").arg(addressValue, 0, 16)));
 }
 
@@ -269,7 +269,8 @@ void TestMemorySettlingTime::testReadMuxSettlingTime()
     // address. (The old test compared cascaded vs single-stage "settling cycle
     // counts", which are identical in zero-delay mode and so proved nothing.)
     InputSwitch *addr_ss, *ctrl_ss, *addr_cas, *ctrl_cas;
-    Led *out_ss, *out_cas;
+    ElementArray *out_ss = nullptr;
+    ElementArray *out_cas = nullptr;
 
     auto workspace_ss = std::make_unique<WorkSpace>();
     std::unique_ptr<SingleStageDecoderCircuit> circuit_ss;
@@ -292,8 +293,8 @@ void TestMemorySettlingTime::testReadMuxSettlingTime()
     sim_ss->update();
     sim_cas->update();
 
-    QVERIFY2(isOneHot(out_ss, addressValue), "single-stage decode not one-hot");
-    QVERIFY2(isOneHot(out_cas, addressValue), "cascaded decode not one-hot");
+    QVERIFY2(isOneHot(*out_ss, addressValue), "single-stage decode not one-hot");
+    QVERIFY2(isOneHot(*out_cas, addressValue), "cascaded decode not one-hot");
 }
 
 void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
@@ -301,7 +302,8 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
     // Verify both decoders decode every tested address correctly (one-hot). The
     // old "average settling time" comparison was tautological in zero-delay mode.
     InputSwitch *addr_ss, *ctrl_ss, *addr_cas, *ctrl_cas;
-    Led *out_ss, *out_cas;
+    ElementArray *out_ss = nullptr;
+    ElementArray *out_cas = nullptr;
 
     auto workspace_ss = std::make_unique<WorkSpace>();
     std::unique_ptr<SingleStageDecoderCircuit> circuit_ss;
@@ -328,9 +330,9 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
         sim_ss->update();
         sim_cas->update();
 
-        QVERIFY2(isOneHot(out_ss, addr),
+        QVERIFY2(isOneHot(*out_ss, addr),
                  qPrintable(QString("single-stage 0x%1 not one-hot").arg(addr, 0, 16)));
-        QVERIFY2(isOneHot(out_cas, addr),
+        QVERIFY2(isOneHot(*out_cas, addr),
                  qPrintable(QString("cascaded 0x%1 not one-hot").arg(addr, 0, 16)));
     }
 }

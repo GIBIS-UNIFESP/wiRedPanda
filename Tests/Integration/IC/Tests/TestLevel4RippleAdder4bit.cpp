@@ -6,8 +6,9 @@
 #include <QFileInfo>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -21,8 +22,8 @@ struct RippleAdder4bitFixture {
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
     InputSwitch *carryIn = nullptr;
-    Led *ledSum[4] = {};
-    Led *ledCarryOut = nullptr;
+    Element *ledSum[4] = {};
+    Element *ledCarryOut = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -36,7 +37,7 @@ struct RippleAdder4bitFixture {
         for (int i = 0; i < 4; ++i) {
             swA[i] = new InputSwitch();
             swB[i] = new InputSwitch();
-            ledSum[i] = new Led();
+            ledSum[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(swA[i], swB[i], ledSum[i]);
             builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
             builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
@@ -44,7 +45,7 @@ struct RippleAdder4bitFixture {
         }
 
         carryIn = new InputSwitch();
-        ledCarryOut = new Led();
+        ledCarryOut = ElementFactory::buildElement(ElementType::Led);
         builder.add(carryIn, ledCarryOut);
         builder.connect(carryIn, 0, ic, "CarryIn");
         builder.connect(ic, "CarryOut", ledCarryOut, 0);

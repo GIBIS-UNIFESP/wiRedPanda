@@ -5,8 +5,9 @@
 
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,10 +24,10 @@ struct Alu8bitFixture {
     QVector<Element *> aInputs;
     QVector<Element *> bInputs;
     QVector<Element *> opcodeInputs;
-    QVector<Led *> resultOutputs;
-    Led *zeroFlag = nullptr;
-    Led *negativeFlag = nullptr;
-    Led *carryFlag = nullptr;
+    QVector<Element *> resultOutputs;
+    Element *zeroFlag = nullptr;
+    Element *negativeFlag = nullptr;
+    Element *carryFlag = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -57,21 +58,21 @@ struct Alu8bitFixture {
         }
 
         for (int i = 0; i < 8; i++) {
-            auto *result = new Led();
+            auto *result = ElementFactory::buildElement(ElementType::Led);
             builder.add(result);
             result->setLabel(QString("Result[%1]").arg(i));
             resultOutputs.append(result);
         }
 
-        zeroFlag = new Led();
+        zeroFlag = ElementFactory::buildElement(ElementType::Led);
         builder.add(zeroFlag);
         zeroFlag->setLabel("Zero");
 
-        negativeFlag = new Led();
+        negativeFlag = ElementFactory::buildElement(ElementType::Led);
         builder.add(negativeFlag);
         negativeFlag->setLabel("Negative");
 
-        carryFlag = new Led();
+        carryFlag = ElementFactory::buildElement(ElementType::Led);
         builder.add(carryFlag);
         carryFlag->setLabel("Carry");
 

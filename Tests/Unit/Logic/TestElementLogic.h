@@ -23,7 +23,6 @@ private slots:
     void testOr();
     void testSource();
     void testSourceMultiOutput();
-    void testSink();
     void testMux_data();
     void testMux();
     void testDemux_data();

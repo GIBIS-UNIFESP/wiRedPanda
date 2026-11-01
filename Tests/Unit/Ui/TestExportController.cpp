@@ -10,8 +10,9 @@
 #include <QTemporaryFile>
 #include <QWidget>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ExportController.h"
@@ -147,7 +148,8 @@ void TestExportController::testExportToWaveFormFileGeneratesAndPrints()
 {
     ExportControllerFixture f;
     f.tab.scene()->addItem(new InputSwitch());
-    f.tab.scene()->addItem(new Led()); // BewavedDolphin requires at least one output element
+    // BewavedDolphin requires at least one output element
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     ExportController controller(f.host);
 
     QTemporaryDir capDir;
@@ -166,7 +168,8 @@ void TestExportController::testExportToWaveFormTerminalReadsStdinAndPrints()
 {
     ExportControllerFixture f;
     f.tab.scene()->addItem(new InputSwitch());
-    f.tab.scene()->addItem(new Led()); // BewavedDolphin requires at least one output element
+    // BewavedDolphin requires at least one output element
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     ExportController controller(f.host);
 
     QTemporaryDir dir;

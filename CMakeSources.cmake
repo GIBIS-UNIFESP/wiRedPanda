@@ -106,7 +106,6 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputSwitch.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Led.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Node.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Text.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h

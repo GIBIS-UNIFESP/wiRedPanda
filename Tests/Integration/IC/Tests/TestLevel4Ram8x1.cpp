@@ -5,8 +5,9 @@
 
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -24,7 +25,7 @@ struct Ram8x1Fixture {
     InputSwitch *writeEnable = nullptr;
     InputSwitch *clock = nullptr;
     InputSwitch *reset = nullptr;
-    Led *dataOut = nullptr;
+    Element *dataOut = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -40,7 +41,7 @@ struct Ram8x1Fixture {
         writeEnable = new InputSwitch();
         clock = new InputSwitch();
         reset = new InputSwitch();
-        dataOut = new Led();
+        dataOut = ElementFactory::buildElement(ElementType::Led);
         builder.add(dataIn, writeEnable, clock, reset, dataOut);
 
         ramIC = loadBuildingBlockIC("level4_ram_8x1.panda");

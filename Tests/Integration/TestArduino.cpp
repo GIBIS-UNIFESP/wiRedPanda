@@ -27,7 +27,6 @@ QString TestArduino::s_cliCachePath;
 #include "App/Element/Element.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Core/Priorities.h"
@@ -1726,7 +1725,7 @@ void TestArduino::testWirelessNodeGeneration()
     rxNode->setLabel("CLK");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     // Physical wire: InputSwitch → Tx node, Rx node → LED
     auto conn1 = std::unique_ptr<Connection>(createConnection(sw, 0, txNode, 0));
@@ -1768,7 +1767,7 @@ void TestArduino::testWirelessRxReachedByAWireFollowsItsTx()
     rxNode->setLabel("CH");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     auto airToTx = std::unique_ptr<Connection>(createConnection(air, 0, txNode, 0));
     QVERIFY(airToTx);
@@ -1803,7 +1802,7 @@ void TestArduino::testWirelessOrphanedRxCodegen()
     rxNode->setLabel("MISSING_TX");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     auto conn = std::unique_ptr<Connection>(createConnection(rxNode, 0, led, 0));
     QVERIFY2(conn, "Failed to wire the Rx node to the LED -- the test below would silently exercise a disconnected node instead");
@@ -1829,7 +1828,7 @@ void TestArduino::testEmbeddedICGeneration()
     auto *ic = new IC();
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
     builder.add(sw1, sw2, ic, led);
@@ -1887,7 +1886,7 @@ void TestArduino::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
     auto *ic = new IC();
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
     builder.add(sw1, sw2, ic, led);
@@ -2306,6 +2305,12 @@ QVector<ArduinoCodeGen::TestVector> TestArduino::generateTruthTable(
         for (auto *elm : std::as_const(sorted)) {
             elm->updateLogic();
         }
+        // An output computes nothing (KernelKind::None): it reads its inputs, as the engine's port update does
+        for (auto *elm : elements) {
+            if (elm->elementGroup() == ElementGroup::Output) {
+                elm->simUpdateInputs();
+            }
+        }
 
         ArduinoCodeGen::TestVector entry;
         entry.inputs.resize(N);
@@ -2459,9 +2464,9 @@ void TestArduino::testArduinoExportHelper(const QString &icFile)
     }
 
     // Create LEDs (one per IC output)
-    QVector<Led *> leds;
+    QVector<Element *> leds;
     for (int i = 0; i < ic->outputSize(); ++i) {
-        auto *led = new Led();
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(led);
         leds.append(led);
         builder.connect(ic, i, led, 0);
@@ -2699,9 +2704,9 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
         builder.add(sw);
         builder.connect(sw, 0, ic, lbl);  // held low (inactive)
     }
-    QVector<Led *> leds;
+    QVector<Element *> leds;
     for (int i = 0; i < ic->outputSize(); ++i) {
-        auto *led = new Led();
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(led);
         leds.append(led);
         builder.connect(ic, i, led, 0);
@@ -2711,14 +2716,14 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
     // matches the Arduino codegen's input/output pin order exactly.
     QVector<Element *> allElements;
     QVector<InputSwitch *> scanInputs;
-    QVector<Led *> scanOutputs;
+    QVector<Element *> scanOutputs;
     for (auto *item : scene->items()) {
         if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
             allElements.append(elm);
             if (auto *sw = qobject_cast<InputSwitch *>(elm)) {
                 scanInputs.append(sw);
-            } else if (auto *led = qobject_cast<Led *>(elm)) {
-                scanOutputs.append(led);
+            } else if (elm->elementType() == ElementType::Led) {
+                scanOutputs.append(elm);
             }
         }
     }

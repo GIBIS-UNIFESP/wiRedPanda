@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::clockCycle;
@@ -20,7 +19,7 @@ struct RamCellFixture {
     Element writeControlGate{ElementType::And};
     Element cellDataMux{ElementType::Mux};
     Element storage{ElementType::DFlipFlop};
-    Led dataOut;
+    Element dataOut{ElementType::Led};
     Simulation *sim = nullptr;
 
     RamCellFixture()

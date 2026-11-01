@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/Cpu8bitIsa.h"
@@ -31,11 +32,11 @@ struct CPUFixture {
     InputSwitch *regProgWrite = nullptr;
     QVector<Element *> regProgAddr;
     QVector<Element *> regProgData;
-    QVector<Led *> pcLeds;
-    QVector<Led *> resultLeds;
-    QVector<Led *> instrLeds;
-    Led *zeroLed = nullptr;
-    Led *signLed = nullptr;
+    QVector<Element *> pcLeds;
+    QVector<Element *> resultLeds;
+    QVector<Element *> instrLeds;
+    Element *zeroLed = nullptr;
+    Element *signLed = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -92,25 +93,25 @@ struct CPUFixture {
 
         // Connect outputs
         for (int i = 0; i < 8; ++i) {
-            auto *led = new Led();
+            auto *led = ElementFactory::buildElement(ElementType::Led);
             builder.add(led);
             pcLeds.append(led);
             builder.connect(cpu, QString("PC[%1]").arg(i), led, 0);
         }
         for (int i = 0; i < 8; ++i) {
-            auto *led = new Led();
+            auto *led = ElementFactory::buildElement(ElementType::Led);
             builder.add(led);
             resultLeds.append(led);
             builder.connect(cpu, QString("Result[%1]").arg(i), led, 0);
         }
         for (int i = 0; i < 8; ++i) {
-            auto *led = new Led();
+            auto *led = ElementFactory::buildElement(ElementType::Led);
             builder.add(led);
             instrLeds.append(led);
             builder.connect(cpu, QString("Instruction[%1]").arg(i), led, 0);
         }
-        zeroLed = new Led();
-        signLed = new Led();
+        zeroLed = ElementFactory::buildElement(ElementType::Led);
+        signLed = ElementFactory::buildElement(ElementType::Led);
         builder.add(zeroLed, signLed);
         builder.connect(cpu, "Zero", zeroLed, 0);
         builder.connect(cpu, "Sign", signLed, 0);

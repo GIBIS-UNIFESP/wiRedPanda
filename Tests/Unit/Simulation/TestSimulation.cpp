@@ -16,7 +16,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -63,7 +62,7 @@ void TestSimulationUnit::testAddRemoveClockDuringSimulation()
     auto *sim = scene->simulation();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -76,7 +75,7 @@ void TestSimulationUnit::testAddRemoveClockDuringSimulation()
 
     // Add a wired Clock while the simulation runs.
     auto *clock = new Clock();
-    auto *clockLed = new Led();
+    auto *clockLed = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(clock);
     scene->addItem(clockLed);
     auto *clockConn = new Connection();
@@ -121,7 +120,7 @@ void TestSimulationUnit::testElementRemovalMidSimulation()
 
     auto *sw = new InputSwitch();
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(andGate);
     scene->addItem(led);
@@ -282,7 +281,7 @@ void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
     CircuitBuilder builder(scene);
@@ -476,7 +475,7 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
     CircuitBuilder builder(scene);
     auto *data = new InputSwitch();
     auto *clock = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(data, clock, led);
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
@@ -489,7 +488,7 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
             auto *innerData = new InputSwitch();
             auto *innerClock = new InputSwitch();
             auto *flipFlop = ElementFactory::buildElement(ElementType::DFlipFlop);
-            auto *innerQ = new Led();
+            auto *innerQ = ElementFactory::buildElement(ElementType::Led);
             innerData->setLabel("D");
             innerClock->setLabel("Clock");
             innerQ->setLabel("Q");

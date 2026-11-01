@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUAlu.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::readMultiBitOutput;
@@ -34,20 +36,20 @@ void TestCPUAlu::testALU8bit()
     QFETCH(int, aluOp);
     QFETCH(int, expectedResult);
     QVector<InputSwitch *> a, b, op;
-    QVector<Led *> result;
-    Led *zeroFlag, *signFlag, *carryFlag, *overflowFlag;
+    QVector<Element *> result;
+    Element *zeroFlag, *signFlag, *carryFlag, *overflowFlag;
     for (int i = 0; i < 8; i++) {
         a.append(new InputSwitch());
         b.append(new InputSwitch());
-        result.append(new Led());
+        result.append(ElementFactory::buildElement(ElementType::Led));
     }
     for (int i = 0; i < 3; i++) {
         op.append(new InputSwitch());
     }
-    zeroFlag = new Led();
-    signFlag = new Led();
-    carryFlag = new Led();
-    overflowFlag = new Led();
+    zeroFlag = ElementFactory::buildElement(ElementType::Led);
+    signFlag = ElementFactory::buildElement(ElementType::Led);
+    carryFlag = ElementFactory::buildElement(ElementType::Led);
+    overflowFlag = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildALU8bit(a.data(), b.data(), op.data(), result.data(), zeroFlag, signFlag, carryFlag, overflowFlag));
     auto *sim = workspace->simulation();
     // Set inputs
@@ -74,20 +76,20 @@ void TestCPUAlu::testALU8bitFlags()
     QFETCH(bool, expectedCarry);
     QFETCH(bool, expectedOverflow);
     QVector<InputSwitch *> a, b, op;
-    QVector<Led *> result;
-    Led *zeroFlag, *signFlag, *carryFlag, *overflowFlag;
+    QVector<Element *> result;
+    Element *zeroFlag, *signFlag, *carryFlag, *overflowFlag;
     for (int i = 0; i < 8; i++) {
         a.append(new InputSwitch());
         b.append(new InputSwitch());
-        result.append(new Led());
+        result.append(ElementFactory::buildElement(ElementType::Led));
     }
     for (int i = 0; i < 3; i++) {
         op.append(new InputSwitch());
     }
-    zeroFlag = new Led();
-    signFlag = new Led();
-    carryFlag = new Led();
-    overflowFlag = new Led();
+    zeroFlag = ElementFactory::buildElement(ElementType::Led);
+    signFlag = ElementFactory::buildElement(ElementType::Led);
+    carryFlag = ElementFactory::buildElement(ElementType::Led);
+    overflowFlag = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildALU8bit(a.data(), b.data(), op.data(), result.data(), zeroFlag, signFlag, carryFlag, overflowFlag));
     auto *sim = workspace->simulation();
     // Set inputs

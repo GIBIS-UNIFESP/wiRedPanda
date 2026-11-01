@@ -17,7 +17,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -2299,7 +2298,7 @@ void TestSceneUndoredo::testDeleteUndoConnectionsReattachedCorrectly()
 
     auto *swIn = new InputSwitch();
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     swIn->setPos(0, 0);
     andGate->setPos(96, 0);
     led->setPos(192, 0);
@@ -2368,7 +2367,7 @@ void TestSceneUndoredo::testDeleteUndoRedoConnectionCountStable()
     auto *swA = new InputSwitch();
     auto *swB = new InputSwitch();
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     swA->setPos(0, 0);
     swB->setPos(0, 48);
     andGate->setPos(96, 0);
@@ -2447,7 +2446,7 @@ void TestSceneUndoredo::testDeleteChainMiddleUndoRestoresTopology()
 
     auto *sw  = new InputSwitch();
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     notGate->setPos(96, 0);
     led->setPos(192, 0);
@@ -2514,7 +2513,7 @@ void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
     auto *swA     = new InputSwitch();
     auto *swB     = new InputSwitch();
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led     = new Led();
+    auto *led     = ElementFactory::buildElement(ElementType::Led);
     swA->setPos(0,  0);
     swB->setPos(0, 48);
     andGate->setPos(96, 0);

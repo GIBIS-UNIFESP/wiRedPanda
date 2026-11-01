@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -26,7 +27,7 @@ struct Ram8x8Fixture {
     InputSwitch *we = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;
-    QVector<Led *> dataOutOutputs;
+    QVector<Element *> dataOutOutputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -64,7 +65,7 @@ struct Ram8x8Fixture {
         reset->setLabel("Reset");
 
         for (int i = 0; i < 8; i++) {
-            auto *led = new Led();
+            auto *led = ElementFactory::buildElement(ElementType::Led);
             builder.add(led);
             led->setLabel(QString("DataOut[%1]").arg(i));
             dataOutOutputs.append(led);

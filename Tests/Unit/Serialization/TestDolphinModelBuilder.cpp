@@ -8,7 +8,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Workspace.h"
 
 void TestDolphinModelBuilder::testCollectSortsByLabel()
@@ -20,9 +19,9 @@ void TestDolphinModelBuilder::testCollectSortsByLabel()
     swB->setLabel("B");
     auto *swA = new InputSwitch();
     swA->setLabel("A");
-    auto *ledB = new Led();
+    auto *ledB = ElementFactory::buildElement(ElementType::Led);
     ledB->setLabel("outB");
-    auto *ledA = new Led();
+    auto *ledA = ElementFactory::buildElement(ElementType::Led);
     ledA->setLabel("outA");
 
     // Insertion order deliberately reversed from label order.
@@ -88,7 +87,7 @@ void TestDolphinModelBuilder::testCollectRejectsSceneWithNoInputs()
 {
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
-    scene->addItem(new Led());
+    scene->addItem(ElementFactory::buildElement(ElementType::Led));
 
     QVERIFY_THROWS_EXCEPTION(std::exception, DolphinModelBuilder::collect(scene));
 }

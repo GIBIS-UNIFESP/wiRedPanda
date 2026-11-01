@@ -21,12 +21,12 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementAppearance.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -481,7 +481,7 @@ void TestElementPictures::testAnLedShowsTheSlotLitAtItsLastRefresh()
     const QString path = dir.filePath("lit.png");
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
 
-    Led led;
+    Element led{ElementType::Led};
     const QSize off = ElementPicturesTestDetail::shownSize(led);
     QVERIFY(off.isValid());
 

@@ -16,10 +16,10 @@
 #include "App/Core/AudioService.h"
 #include "App/Core/SimulationHost.h"
 #include "App/Core/ToneGenerator.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
@@ -106,7 +106,7 @@ void TestAudioService::testThePushTellsTheHostWhatItStartedAndStopped()
 
     InputSwitch input;
     Buzzer buzzer;
-    Led led;
+    Element led{ElementType::Led};
     auto connection = std::make_unique<Connection>();
     connection->setStartPort(input.outputPort());
     connection->setEndPort(buzzer.inputPort(0));

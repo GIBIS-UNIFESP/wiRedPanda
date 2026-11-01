@@ -174,6 +174,9 @@ bool Element::setParam(const ParamId id, const ParamValue &value)
     // one (a button's press) changes only the picture, which the element reports itself.
     const ChangeBatch batch(*this, (spec->key != nullptr) ? ElementChanges(ElementChange::Parameter) : ElementChanges());
     const ParamValue previous = m_parameters.set(id, std::move(*taken));
+    if (spec->showsPicture) {
+        pictureReplaced();
+    }
     parameterChanged(id, previous);
     return true;
 }
@@ -403,7 +406,23 @@ void Element::setAppearance(const bool defaultAppearance, const QString &fileNam
 
 void Element::applyAppearance(const bool defaultAppearance, const QString &fileName)
 {
-    m_appearance.setAppearance(defaultAppearance, fileName);
+    if (!m_descriptor.shownSlot) {
+        m_appearance.setAppearance(defaultAppearance, fileName);
+        return;
+    }
+
+    // A custom picture replaces the slot shown now alone, so the other states keep theirs
+    const int slot = m_descriptor.shownSlot(*this);
+    if (defaultAppearance) {
+        m_appearance.resetAlternativeToDefault();
+    } else {
+        m_appearance.setAlternativeAppearanceAt(slot, fileName);
+    }
+    m_appearance.setUsingDefaultAppearance(defaultAppearance);
+    m_appearance.appearanceChanged();
+    if (m_descriptor.slotFollowsInputs) {
+        setParam(ParamId::Lit, slot);
+    }
 }
 
 void Element::setAppearanceAt(const int index, const QString &fileName)
@@ -414,6 +433,9 @@ void Element::setAppearanceAt(const int index, const QString &fileName)
 
 QList<std::pair<int, QString>> Element::appearanceStates() const
 {
+    if (m_descriptor.appearanceStates) {
+        return m_descriptor.appearanceStates(*this);
+    }
     // Default: single appearance at index 0, translated in the "GraphicElement" context the catalogues hold
     return {{0, QCoreApplication::translate("GraphicElement", "Default")}};
 }
@@ -517,6 +539,9 @@ void Element::refresh()
     if (m_descriptor.pictureFollowsInputs) {
         pictureChanged();
     }
+    if (m_descriptor.slotFollowsInputs) {
+        setParam(ParamId::Lit, m_descriptor.shownSlot(*this));
+    }
 }
 
 QVariant Element::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
@@ -597,7 +622,7 @@ void Element::setTrigger(const QKeySequence &trigger)
 
 QString Element::genericProperties()
 {
-    return {};
+    return m_descriptor.genericProperties ? m_descriptor.genericProperties(*this) : QString();
 }
 
 void Element::updateLabel()

@@ -13,7 +13,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
@@ -271,7 +270,7 @@ void TestElementContextMenu::testColorSubmenuPopulatesAndDispatches()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand({led}, scene));
     led->setSelected(true);
 
@@ -495,7 +494,7 @@ void TestElementContextMenu::testMorphSubmenuOutputNonDisplay()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand({led}, scene));
     led->setSelected(true);
 

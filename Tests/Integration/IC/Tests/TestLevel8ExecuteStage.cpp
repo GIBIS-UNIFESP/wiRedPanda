@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -24,9 +25,9 @@ struct ExecuteStageFixture {
     QVector<Element *> operandAInputs;
     QVector<Element *> operandBInputs;
     QVector<Element *> aluopInputs;
-    QVector<Led *> resultLeds;
-    Led *zeroLed = nullptr;
-    Led *signLed = nullptr;
+    QVector<Element *> resultLeds;
+    Element *zeroLed = nullptr;
+    Element *signLed = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -40,13 +41,13 @@ struct ExecuteStageFixture {
         for (int i = 0; i < 8; i++) {
             auto *a = new InputSwitch(); builder.add(a); operandAInputs.append(a);
             auto *b = new InputSwitch(); builder.add(b); operandBInputs.append(b);
-            auto *led = new Led(); builder.add(led); resultLeds.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); resultLeds.append(led);
         }
         for (int i = 0; i < 3; i++) {
             auto *sw = new InputSwitch(); builder.add(sw); aluopInputs.append(sw);
         }
-        zeroLed = new Led(); builder.add(zeroLed);
-        signLed = new Led(); builder.add(signLed);
+        zeroLed = ElementFactory::buildElement(ElementType::Led); builder.add(zeroLed);
+        signLed = ElementFactory::buildElement(ElementType::Led); builder.add(signLed);
 
         for (int i = 0; i < 8; i++) {
             builder.connect(operandAInputs[i], 0, ic, QString("OperandA[%1]").arg(i));

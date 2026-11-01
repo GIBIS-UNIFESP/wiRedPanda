@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -22,10 +23,10 @@ struct Alu16bitFixture {
     InputSwitch *opAIn[16] = {};
     InputSwitch *opBIn[16] = {};
     InputSwitch *opIn[3] = {};
-    Led *resultOut[16] = {};
-    Led *zeroFlag = nullptr;
-    Led *signFlag = nullptr;
-    Led *carryFlag = nullptr;
+    Element *resultOut[16] = {};
+    Element *zeroFlag = nullptr;
+    Element *signFlag = nullptr;
+    Element *carryFlag = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -35,15 +36,15 @@ struct Alu16bitFixture {
 
         ic = loadBuildingBlockIC("level7_alu_16bit.panda");
 
-        zeroFlag = new Led();
-        signFlag = new Led();
-        carryFlag = new Led();
+        zeroFlag = ElementFactory::buildElement(ElementType::Led);
+        signFlag = ElementFactory::buildElement(ElementType::Led);
+        carryFlag = ElementFactory::buildElement(ElementType::Led);
         builder.add(ic, zeroFlag, signFlag, carryFlag);
 
         for (int i = 0; i < 16; ++i) {
             opAIn[i] = new InputSwitch();
             opBIn[i] = new InputSwitch();
-            resultOut[i] = new Led();
+            resultOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(opAIn[i], opBIn[i], resultOut[i]);
         }
         for (int i = 0; i < 3; ++i) {

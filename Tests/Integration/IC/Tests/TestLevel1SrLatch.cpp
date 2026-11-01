@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel1SrLatch.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +17,7 @@ struct SrLatchFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *setIn = nullptr, *resetIn = nullptr;
-    Led *ledQ = nullptr, *ledQBar = nullptr;
+    Element *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -26,8 +27,8 @@ struct SrLatchFixture {
 
         setIn = new InputSwitch();
         resetIn = new InputSwitch();
-        ledQ = new Led();
-        ledQBar = new Led();
+        ledQ = ElementFactory::buildElement(ElementType::Led);
+        ledQBar = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(setIn, resetIn, ledQ, ledQBar);
 

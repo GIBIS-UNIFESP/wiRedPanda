@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <optional>
+#include <utility>
 
 #include <QMap>
 #include <QString>
@@ -167,6 +168,19 @@ struct ElementTypeDescriptor {
     /// order; empty while that is the slots' keys in order. A slot dropped or moved since keeps its old position here,
     /// so an older file reads as it did, and a dropped slot's key, which no slot has any longer, is skipped.
     QStringList appearancePositions;
+
+    /// For a type with a slot per state (an LED's colours and codes): the slot \a element shows now, the one a custom
+    /// appearance replaces alone (Element::applyAppearance()). None: a custom appearance replaces the first slot.
+    int (*shownSlot)(const Element &element) = nullptr;
+    /// Whether the inputs pick the slot shown (an LED's), so a refresh keeps ParamId::Lit, which the presenter shows,
+    /// at shownSlot.
+    bool slotFollowsInputs = false;
+    /// The states a custom appearance can be chosen for, each its slot and its name (Element::appearanceStates());
+    /// none, the one slot, named "Default".
+    std::function<QList<std::pair<int, QString>>(const Element &element)> appearanceStates{};
+    /// What the element is set to, for the name of an IC's port it is the boundary of (Element::genericProperties()):
+    /// an LED's colour. None: nothing.
+    std::function<QString(const Element &element)> genericProperties{};
 
     /// Returns each slot's built-in picture, in the slots' order.
     QStringList defaultAppearances() const;

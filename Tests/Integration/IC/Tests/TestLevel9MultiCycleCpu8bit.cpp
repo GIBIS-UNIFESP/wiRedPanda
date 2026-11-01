@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -30,10 +31,10 @@ struct MultiCycleCpu8bitFixture {
     InputSwitch *regProgWrite = nullptr;
     QVector<Element *> regProgAddr;
     QVector<Element *> regProgData;
-    QVector<Led *> pcLeds;
-    QVector<Led *> resultLeds;
-    QVector<Led *> counterLeds;
-    QVector<Led *> instrLeds;
+    QVector<Element *> pcLeds;
+    QVector<Element *> resultLeds;
+    QVector<Element *> counterLeds;
+    QVector<Element *> instrLeds;
     Simulation *sim = nullptr;
 
     bool build()
@@ -59,12 +60,12 @@ struct MultiCycleCpu8bitFixture {
         }
 
         for (int i = 0; i < 8; i++) {
-            auto *p = new Led(); builder.add(p); pcLeds.append(p);
-            auto *r = new Led(); builder.add(r); resultLeds.append(r);
-            auto *il = new Led(); builder.add(il); instrLeds.append(il);
+            auto *p = ElementFactory::buildElement(ElementType::Led); builder.add(p); pcLeds.append(p);
+            auto *r = ElementFactory::buildElement(ElementType::Led); builder.add(r); resultLeds.append(r);
+            auto *il = ElementFactory::buildElement(ElementType::Led); builder.add(il); instrLeds.append(il);
         }
         for (int i = 0; i < 2; i++) {
-            auto *c = new Led(); builder.add(c); counterLeds.append(c);
+            auto *c = ElementFactory::buildElement(ElementType::Led); builder.add(c); counterLeds.append(c);
         }
 
         builder.connect(clk, 0, ic, "Clock");

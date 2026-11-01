@@ -9,7 +9,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
@@ -46,7 +45,7 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
                                                            InputSwitch* inc,
                                                            InputSwitch* reset,
                                                            InputSwitch* clock,
-                                                           Led* pc[8])
+                                                           Element* pc[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -116,7 +115,7 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
 inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* instruction[8],
                                                 InputSwitch* load,
                                                 InputSwitch* clock,
-                                                Led* ir[8])
+                                                Element* ir[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -170,7 +169,7 @@ inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* inst
  * 13-15: Reserved
  */
 inline std::unique_ptr<WorkSpace> buildInstructionDecoder4to16(InputSwitch* opcode[4],
-                                                Led* decodedOpcode[16])
+                                                Element* decodedOpcode[16])
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -240,7 +239,7 @@ inline std::unique_ptr<WorkSpace> buildBranchCondition(InputSwitch* decoderJMP,
                                         InputSwitch* decoderBGE,
                                         InputSwitch* zeroFlag,
                                         InputSwitch* negativeFlag,
-                                        Led* pcLoad)
+                                        Element* pcLoad)
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -310,11 +309,11 @@ inline std::unique_ptr<WorkSpace> buildBranchCondition(InputSwitch* decoderJMP,
 inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
                                 InputSwitch* b[8],
                                 InputSwitch* aluOp[3],
-                                Led* result[8],
-                                Led* zeroFlag,
-                                Led* signFlag,
-                                Led* carryFlag,
-                                Led* overflowFlag)
+                                Element* result[8],
+                                Element* zeroFlag,
+                                Element* signFlag,
+                                Element* carryFlag,
+                                Element* overflowFlag)
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -593,12 +592,12 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
  */
 inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
                                     InputSwitch* clock,
-                                    Led* state[3],
-                                    Led* pcInc,
-                                    Led* irLoad,
-                                    Led* regWrite,
-                                    Led* aluEnable,
-                                    Led* flagWrite)
+                                    Element* state[3],
+                                    Element* pcInc,
+                                    Element* irLoad,
+                                    Element* regWrite,
+                                    Element* aluEnable,
+                                    Element* flagWrite)
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -789,7 +788,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
  * Returns decoder outputs as LEDs for debugging
  */
 inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
-                                         Led* outputs[8])
+                                         Element* outputs[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -858,7 +857,7 @@ inline std::unique_ptr<WorkSpace> buildSingleGatedRegister(InputSwitch* writeDat
                                             InputSwitch* decoderOut,
                                             InputSwitch* writeEnable,
                                             InputSwitch* clock,
-                                            Led* readOut[8])
+                                            Element* readOut[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -910,8 +909,8 @@ inline std::unique_ptr<WorkSpace> buildFlagRegister(InputSwitch* zeroIn,
                                      InputSwitch* negativeIn,
                                      InputSwitch* flagWrite,
                                      InputSwitch* clock,
-                                     Led* zeroOut,
-                                     Led* negativeOut)
+                                     Element* zeroOut,
+                                     Element* negativeOut)
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -959,8 +958,8 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
                                         InputSwitch* clock,
                                         InputSwitch* readAddrA[3],
                                         InputSwitch* readAddrB[3],
-                                        Led* readDataA[8],
-                                        Led* readDataB[8])
+                                        Element* readDataA[8],
+                                        Element* readDataB[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
@@ -1142,7 +1141,7 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
                                         InputSwitch* memWrite,
                                         InputSwitch* memEnable,
                                         InputSwitch* clock,
-                                        Led* dataOut[8])
+                                        Element* dataOut[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());

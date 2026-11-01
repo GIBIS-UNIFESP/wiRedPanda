@@ -23,7 +23,6 @@
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -568,7 +567,7 @@ void TestCommands::testConnectionPreservation()
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     sw1->setPos(0, 0);
     sw2->setPos(0, 100);
@@ -876,7 +875,7 @@ void TestCommands::testSplitCommandRedoAbandonedWhenUpstreamMissing()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(200, 0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
@@ -915,7 +914,7 @@ void TestCommands::testSplitCommand()
 
     // Create a simple circuit: Switch -> LED with one connection
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     sw->setPos(0, 0);
     led->setPos(200, 0);
@@ -1258,7 +1257,7 @@ void TestCommands::testMorphDropsAndRestoresOutputConnection()
     auto *undoStack = scene->undoStack();
 
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     andGate->setPos(0, 0);
     led->setPos(200, 0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, led}, scene));
@@ -1296,7 +1295,7 @@ void TestCommands::testMorphUndoSkipsRestoringConnectionToDeletedPeer()
     auto *undoStack = scene->undoStack();
 
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     andGate->setPos(0, 0);
     led->setPos(200, 0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, led}, scene));
@@ -1373,7 +1372,7 @@ void TestCommands::testSplitCommandRedoAbandonedWhenEndPortIsNull()
     auto *undoStack = scene->undoStack();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(200, 0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
@@ -1411,7 +1410,7 @@ void TestCommands::testSplitCommandUndoAbandonedWhenNodeMissing()
     auto *undoStack = scene->undoStack();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(200, 0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
@@ -1769,7 +1768,7 @@ void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
     {
         WorkSpace workspace;
         workspace.scene()->addItem(new InputSwitch());
-        workspace.scene()->addItem(new Led());
+        workspace.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         workspace.save(inner);
     }
     {
@@ -1778,7 +1777,7 @@ void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
         workspace.scene()->addItem(nested);
         nested->loadFile(inner, dir.path());
         workspace.scene()->addItem(new InputSwitch());
-        workspace.scene()->addItem(new Led());
+        workspace.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         workspace.save(outer);
     }
 
@@ -2018,7 +2017,7 @@ void writeSwitchToLed(const QString &path)
 {
     WorkSpace workspace;
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(sw);
     workspace.scene()->addItem(led);
     workspace.save(path);
@@ -2060,7 +2059,7 @@ void TestCommands::testLabelUndoOnAFileICKeepsItsCircuit()
         WorkSpace changed;
         changed.scene()->addItem(new InputSwitch());
         changed.scene()->addItem(new InputSwitch());
-        changed.scene()->addItem(new Led());
+        changed.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         changed.save(path);
     }
     scene->icRegistry()->invalidate(path);
@@ -2348,8 +2347,8 @@ void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *red = new Led();
-    auto *green = new Led();
+    auto *red = ElementFactory::buildElement(ElementType::Led);
+    auto *green = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{red, green}, scene));
     red->setColor("Red");
     green->setColor("Green");
@@ -2445,7 +2444,7 @@ void TestCommands::testSetPropertyCommandSetsSeveralPropertiesAsOneStep()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
     auto *clock = new Clock();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, led}, scene));
     const double frequency = clock->frequency();
     const int commands = undoStack->count();

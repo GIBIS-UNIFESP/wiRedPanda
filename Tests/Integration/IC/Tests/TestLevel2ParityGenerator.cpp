@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel2ParityGenerator.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -17,7 +18,7 @@ struct ParityGeneratorFixture {
     IC *ic = nullptr;
     InputSwitch *dataInputs[4] = {};
     InputSwitch *cascadeIn = nullptr;
-    Led *parityOutput = nullptr;
+    Element *parityOutput = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -31,7 +32,7 @@ struct ParityGeneratorFixture {
         }
         cascadeIn = new InputSwitch();
         builder.add(cascadeIn);
-        parityOutput = new Led();
+        parityOutput = ElementFactory::buildElement(ElementType::Led);
         builder.add(parityOutput);
 
         ic = loadBuildingBlockIC("level2_parity_generator.panda");

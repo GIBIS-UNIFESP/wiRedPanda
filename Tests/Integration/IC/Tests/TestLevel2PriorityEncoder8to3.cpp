@@ -4,8 +4,9 @@
 #include "Tests/Integration/IC/Tests/TestLevel2PriorityEncoder8to3.h"
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -19,9 +20,9 @@ struct PriorityEncoder8to3Fixture {
     IC *ic = nullptr;
     InputSwitch *inputs[8] = {};
     InputSwitch *ei = nullptr;
-    Led *outLeds[3] = {};
-    Led *validLed = nullptr;
-    Led *eoLed = nullptr;
+    Element *outLeds[3] = {};
+    Element *validLed = nullptr;
+    Element *eoLed = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -36,11 +37,11 @@ struct PriorityEncoder8to3Fixture {
         ei = new InputSwitch();
         builder.add(ei);
         for (int i = 0; i < 3; ++i) {
-            outLeds[i] = new Led();
+            outLeds[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(outLeds[i]);
         }
-        validLed = new Led();
-        eoLed = new Led();
+        validLed = ElementFactory::buildElement(ElementType::Led);
+        eoLed = ElementFactory::buildElement(ElementType::Led);
         builder.add(validLed, eoLed);
 
         ic = loadBuildingBlockIC("level2_priority_encoder_8to3.panda");

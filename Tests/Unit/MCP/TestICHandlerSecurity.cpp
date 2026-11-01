@@ -10,8 +10,9 @@
 #include <QJsonObject>
 #include <QTemporaryDir>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -26,7 +27,7 @@ void writeLeafIcFixture(const QString &path)
 {
     WorkSpace ws;
     ws.scene()->addItem(new InputSwitch());
-    ws.scene()->addItem(new Led());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QFile file(path);
     QVERIFY2(file.open(QIODevice::WriteOnly), qPrintable(path));
     QDataStream stream(&file);
@@ -41,7 +42,7 @@ QByteArray leafIcBytes()
 {
     WorkSpace ws;
     ws.scene()->addItem(new InputSwitch());
-    ws.scene()->addItem(new Led());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QByteArray bytes;
     QDataStream stream(&bytes, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);

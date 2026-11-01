@@ -12,9 +12,10 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
 #include "App/UI/FileDialogProvider.h"
@@ -32,7 +33,7 @@ static void createFixture(const QString &path)
 {
     WorkSpace ws;
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     ws.scene()->addItem(sw);
     ws.scene()->addItem(led);
     ws.save(path);
@@ -414,7 +415,7 @@ void TestFileDialogProvider::testWorkspaceSaveRepromptsOnPermissionsErrorB24()
 
     {
         std::unique_ptr<MainWindow> window(createWindow());
-        auto *led = new Led();
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         window->currentTab()->scene()->addItem(led);
         window->save(readOnlyPath);
     }
@@ -445,7 +446,7 @@ void TestFileDialogProvider::testWorkspaceManagerSaveAddsExtensionIfMissing()
     const QString expectedFile = tempDir.filePath("test.panda");
 
     std::unique_ptr<MainWindow> window(createWindow());
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     window->currentTab()->scene()->addItem(led);
 
     window->save(fileWithoutExt);
@@ -462,7 +463,7 @@ void TestFileDialogProvider::testWorkspaceManagerSaveDoesNotDuplicateExtension()
     const QString fileWithExt = tempDir.filePath("test.panda");
 
     std::unique_ptr<MainWindow> window(createWindow());
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     window->currentTab()->scene()->addItem(led);
 
     window->save(fileWithExt);

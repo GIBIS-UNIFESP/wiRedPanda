@@ -13,11 +13,14 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
-#include "App/Element/GraphicElements/Led.h"
+#include "App/Element/Element.h"
+#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -27,7 +30,7 @@
 
 void TestLED::testConstructorInitialization()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Verify element type
     QCOMPARE(led.elementType(), ElementType::Led);
@@ -57,7 +60,7 @@ void TestLED::testConstructorInitialization()
 
 void TestLED::testPortConfiguration()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Verify port counts within valid range
     int inputSize = led.inputSize();
@@ -75,7 +78,7 @@ void TestLED::testPortConfiguration()
 
 void TestLED::testInputPortNames()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Verify input ports are named with their index (0, 1, 2, 3)
     for (int i = 0; i < led.inputSize(); ++i) {
@@ -96,7 +99,7 @@ void TestLED::testInputPortNames()
 
 void TestLED::testDefaultColor()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Default color should be White
     QCOMPARE(led.color(), QString("White"));
@@ -104,7 +107,7 @@ void TestLED::testDefaultColor()
 
 void TestLED::testSetColorWhite()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     led.setColor("White");
     QCOMPARE(led.color(), QString("White"));
@@ -112,7 +115,7 @@ void TestLED::testSetColorWhite()
 
 void TestLED::testSetColorRed()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     led.setColor("Red");
     QCOMPARE(led.color(), QString("Red"));
@@ -120,7 +123,7 @@ void TestLED::testSetColorRed()
 
 void TestLED::testSetColorGreen()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     led.setColor("Green");
     QCOMPARE(led.color(), QString("Green"));
@@ -128,7 +131,7 @@ void TestLED::testSetColorGreen()
 
 void TestLED::testSetColorBlue()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     led.setColor("Blue");
     QCOMPARE(led.color(), QString("Blue"));
@@ -136,7 +139,7 @@ void TestLED::testSetColorBlue()
 
 void TestLED::testSetColorPurple()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     led.setColor("Purple");
     QCOMPARE(led.color(), QString("Purple"));
@@ -144,7 +147,7 @@ void TestLED::testSetColorPurple()
 
 void TestLED::testGetColor()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Test color persistence across changes
     led.setColor("Red");
@@ -161,37 +164,34 @@ void TestLED::testGetColor()
 }
 
 // ============================================================================
-// Color Index Tests
+// Shown Slot Tests
 // ============================================================================
 
-void TestLED::testColorIndexSingleInput()
+void TestLED::testShownSlotSingleInput()
 {
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
     QCOMPARE(led->inputSize(), 1);
+    QCOMPARE(led->outputSize(), 0);
 
-    // For single input LED, color determines base index
-    // Default is White (index 0), Red (index 2), Green (index 4), Blue (index 6), Purple (index 8)
-
-    led->setColor("White");
-    led->refresh();
-    // With single input, the color index is: m_colorIndex + input_bit_state
-    // White color index is 0, so total index should be 0 or 1 depending on input state
-    QVERIFY2(led->outputSize() == 0, "LED should have no outputs");
-    QVERIFY2(led->inputSize() == 1, "LED should have 1 input");
-
-    // Test with other color
-    led->setColor("Red");
-    led->refresh();
-    // Red has m_colorIndex = 2, so indices should be 2 or 3
-    QCOMPARE(led->color(), QString("Red"));
+    // A single input shows its colour's off slot, or the next one when on: White's at 0, Red's at 2, Green's at 4,
+    // Blue's at 6, Purple's at 8
+    const QList<std::pair<QString, int>> colours{{"White", 0}, {"Red", 2}, {"Green", 4}, {"Blue", 6}, {"Purple", 8}};
+    for (const auto &[colour, offset] : colours) {
+        led->setColor(colour);
+        for (const Status level : {Status::Inactive, Status::Active}) {
+            led->inputPort(0)->setStatus(level);
+            led->refresh();
+            QCOMPARE(led->param<int>(ParamId::Lit), offset + ((level == Status::Active) ? 1 : 0));
+        }
+    }
 }
 
-void TestLED::testColorIndexTwoInputs()
+void TestLED::testShownSlotTwoInputs()
 {
     // For 2-input LED, color mapping is different from 1-input
     // Special case: 0b11 (both inputs high) → index 25 (white)
     // Otherwise: index = 18 + binary_value (18-21 for 0b00-0b11, but 0b11 maps to 25)
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
     led->setInputSize(2);
     QCOMPARE(led->inputSize(), 2);
 
@@ -199,27 +199,28 @@ void TestLED::testColorIndexTwoInputs()
     auto *port1 = led->inputPort(1);
     QVERIFY2(port0 != nullptr && port1 != nullptr, "2-input LED should have 2 input ports");
 
-    // colorIndex() is a private implementation detail (friended for the test above), so this
-    // asserts the live formula directly rather than through color(), which setColor() alone
-    // determines and refresh() never touches.
+    // The slot a refresh shows (ParamId::Lit, which the presenter draws), whatever the colour.
     port0->setStatus(Status::Inactive);
     port1->setStatus(Status::Inactive);
-    QCOMPARE(led->colorIndex(), 18);
+    led->refresh();
+    QCOMPARE(led->param<int>(ParamId::Lit), 18);
 
     port0->setStatus(Status::Active);
     port1->setStatus(Status::Inactive);
-    QCOMPARE(led->colorIndex(), 19);
+    led->refresh();
+    QCOMPARE(led->param<int>(ParamId::Lit), 19);
 
     // The special case: both inputs high (0b11) maps to 25 (white), not 21.
     port0->setStatus(Status::Active);
     port1->setStatus(Status::Active);
-    QCOMPARE(led->colorIndex(), 25);
+    led->refresh();
+    QCOMPARE(led->param<int>(ParamId::Lit), 25);
 }
 
-void TestLED::testColorIndexThreeInputs()
+void TestLED::testShownSlotThreeInputs()
 {
-    // For 3-input LED, color mapping uses indices 18-25: colorIndex = 18 + binary_value.
-    auto led = std::make_unique<Led>();
+    // For 3-input LED, color mapping uses slots 18-25: slot = 18 + binary_value.
+    auto led = std::make_unique<Element>(ElementType::Led);
     led->setInputSize(3);
     QCOMPARE(led->inputSize(), 3);
 
@@ -227,14 +228,15 @@ void TestLED::testColorIndexThreeInputs()
         for (int i = 0; i < 3; ++i) {
             led->inputPort(i)->setStatus((value & (1 << i)) ? Status::Active : Status::Inactive);
         }
-        QCOMPARE(led->colorIndex(), 18 + value);
+        led->refresh();
+        QCOMPARE(led->param<int>(ParamId::Lit), 18 + value);
     }
 }
 
-void TestLED::testColorIndexFourInputs()
+void TestLED::testShownSlotFourInputs()
 {
-    // For 4-input LED, full 16-color palette mapping: colorIndex = 10 + binary_value.
-    auto led = std::make_unique<Led>();
+    // For 4-input LED, full 16-color palette mapping: slot = 10 + binary_value.
+    auto led = std::make_unique<Element>(ElementType::Led);
     led->setInputSize(4);
     QCOMPARE(led->inputSize(), 4);
 
@@ -242,8 +244,30 @@ void TestLED::testColorIndexFourInputs()
         for (int i = 0; i < 4; ++i) {
             led->inputPort(i)->setStatus((value & (1 << i)) ? Status::Active : Status::Inactive);
         }
-        QCOMPARE(led->colorIndex(), 10 + value);
+        led->refresh();
+        QCOMPARE(led->param<int>(ParamId::Lit), 10 + value);
     }
+}
+
+void TestLED::testShownSlotWithTwoDriversOnAnInput()
+{
+    // Two wires into one input are no level the LED can show: it shows its first slot, whatever its port reads
+    InputSwitch first;
+    InputSwitch second;
+    Element led{ElementType::Led};
+    Connection one;
+    one.setStartPort(first.outputPort());
+    one.setEndPort(led.inputPort());
+    led.inputPort()->setStatus(Status::Active);
+    led.refresh();
+    QCOMPARE(led.param<int>(ParamId::Lit), 1);
+
+    Connection other;
+    other.setStartPort(second.outputPort());
+    other.setEndPort(led.inputPort());
+    led.inputPort()->setStatus(Status::Active);
+    led.refresh();
+    QCOMPARE(led.param<int>(ParamId::Lit), 0);
 }
 
 // ============================================================================
@@ -253,14 +277,14 @@ void TestLED::testColorIndexFourInputs()
 void TestLED::testUpdatePortsProperties()
 {
     // Test with 1-input LED
-    Led led1;
+    Element led1{ElementType::Led};
     QCOMPARE(led1.inputSize(), 1);
     led1.updatePortsProperties();
     QVERIFY(led1.inputSize() > 0);
     QVERIFY2(led1.hasColors(), "1-input LED should have colors");
 
     // Test with 2-input LED (multi-input - no colors)
-    Led led2;
+    Element led2{ElementType::Led};
     led2.setInputSize(2);
     QCOMPARE(led2.inputSize(), 2);
     led2.updatePortsProperties();
@@ -268,7 +292,7 @@ void TestLED::testUpdatePortsProperties()
     QVERIFY2(!led2.hasColors(), "2-input LED should NOT have individual color controls");
 
     // Test with 3-input LED (multi-input - no colors)
-    Led led3;
+    Element led3{ElementType::Led};
     led3.setInputSize(3);
     QCOMPARE(led3.inputSize(), 3);
     led3.updatePortsProperties();
@@ -276,7 +300,7 @@ void TestLED::testUpdatePortsProperties()
     QVERIFY2(!led3.hasColors(), "3-input LED should NOT have individual color controls");
 
     // Test with 4-input LED (multi-input - no colors)
-    Led led4;
+    Element led4{ElementType::Led};
     led4.setInputSize(4);
     QCOMPARE(led4.inputSize(), 4);
     led4.updatePortsProperties();
@@ -287,7 +311,7 @@ void TestLED::testUpdatePortsProperties()
 void TestLED::testPortNamesAfterUpdate()
 {
     // Test 1-input LED port names
-    Led led1;
+    Element led1{ElementType::Led};
     led1.updatePortsProperties();
     for (int i = 0; i < led1.inputSize(); ++i) {
         auto *port = led1.inputPort(i);
@@ -295,7 +319,7 @@ void TestLED::testPortNamesAfterUpdate()
     }
 
     // Test 2-input LED port names
-    Led led2;
+    Element led2{ElementType::Led};
     led2.setInputSize(2);
     led2.updatePortsProperties();
     QCOMPARE(led2.inputSize(), 2);
@@ -305,7 +329,7 @@ void TestLED::testPortNamesAfterUpdate()
     }
 
     // Test 3-input LED port names
-    Led led3;
+    Element led3{ElementType::Led};
     led3.setInputSize(3);
     led3.updatePortsProperties();
     QCOMPARE(led3.inputSize(), 3);
@@ -315,7 +339,7 @@ void TestLED::testPortNamesAfterUpdate()
     }
 
     // Test 4-input LED port names
-    Led led4;
+    Element led4{ElementType::Led};
     led4.setInputSize(4);
     led4.updatePortsProperties();
     QCOMPARE(led4.inputSize(), 4);
@@ -332,24 +356,24 @@ void TestLED::testHasColorsProperty()
     // Multiple inputs: no colors (uses multi-input palette instead)
 
     // Test 1-input LED - should have colors
-    Led led1;
+    Element led1{ElementType::Led};
     QCOMPARE(led1.inputSize(), 1);
     QVERIFY2(led1.hasColors(), "1-input LED should have hasColors() = true");
 
     // Test 2-input LED - should NOT have colors
-    Led led2;
+    Element led2{ElementType::Led};
     led2.setInputSize(2);
     QCOMPARE(led2.inputSize(), 2);
     QVERIFY2(!led2.hasColors(), "2-input LED should have hasColors() = false (uses multi-input palette)");
 
     // Test 3-input LED - should NOT have colors
-    Led led3;
+    Element led3{ElementType::Led};
     led3.setInputSize(3);
     QCOMPARE(led3.inputSize(), 3);
     QVERIFY2(!led3.hasColors(), "3-input LED should have hasColors() = false (uses multi-input palette)");
 
     // Test 4-input LED - should NOT have colors
-    Led led4;
+    Element led4{ElementType::Led};
     led4.setInputSize(4);
     QCOMPARE(led4.inputSize(), 4);
     QVERIFY2(!led4.hasColors(), "4-input LED should have hasColors() = false (uses multi-input palette)");
@@ -361,7 +385,7 @@ void TestLED::testHasColorsProperty()
 
 void TestLED::testSaveColor()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     led.setColor("Red");
 
@@ -378,7 +402,7 @@ void TestLED::testSaveColor()
 void TestLED::testLoadColorOldVersion()
 {
     // v2.3.3 (old format, pre-v4.1: color stored as a bare QString -- see the
-    // hasClock()/!hasQMapFormat() branch in Led::load()) has four LEDs, three of them with
+    // hasClock() branch of the LED descriptor's readBeforeMap) has four LEDs, three of them with
     // distinct non-default colors, unlike display-3bits.panda (which has no Led at all,
     // only a Display7 -- confirmed by dumping every loaded element's type).
     QString filePath = TestUtils::backwardCompatibilityDir() + "v2.3.3/box.panda";
@@ -393,7 +417,7 @@ void TestLED::testLoadColorOldVersion()
 
         QSet<QString> loadedColors;
         for (auto *item : scene->items()) {
-            if (auto *led = dynamic_cast<Led *>(item)) {
+            if (auto *led = qgraphicsitem_cast<Element *>(item); led && led->elementType() == ElementType::Led) {
                 loadedColors.insert(led->color());
             }
         }
@@ -406,7 +430,7 @@ void TestLED::testLoadColorOldVersion()
 void TestLED::testLoadColorNewVersion()
 {
     // Create LED and save it
-    auto led1 = std::make_unique<Led>();
+    auto led1 = std::make_unique<Element>(ElementType::Led);
     led1->setColor("Blue");
 
     QByteArray data;
@@ -414,7 +438,7 @@ void TestLED::testLoadColorNewVersion()
     led1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Create new LED and load with new version (>= 4.1)
-    auto led2 = std::make_unique<Led>();
+    auto led2 = std::make_unique<Element>(ElementType::Led);
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -431,7 +455,7 @@ void TestLED::testLoadColorDefault()
     // Test that very old version (< 1.1) doesn't attempt to load color
 
     // Create LED and set color
-    Led led;
+    Element led{ElementType::Led};
     QCOMPARE(led.color(), QString("White")); // Default color
 
     // Change color
@@ -458,7 +482,7 @@ void TestLED::testLoadColorDefault()
 
 void TestLED::testGenericProperties()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Generic properties should return the color
     led.setColor("Red");
@@ -474,14 +498,14 @@ void TestLED::testGenericProperties()
 void TestLED::testAppearanceStates()
 {
     // 1-input: Off/On
-    Led led1;
+    Element led1{ElementType::Led};
     auto states1 = led1.appearanceStates();
     QCOMPARE(states1.size(), 2);
     QCOMPARE(states1.at(0).second, QString("Off"));
     QCOMPARE(states1.at(1).second, QString("On"));
 
     // 2-input: explicit per-port labels, no (off)/(on) suffix
-    Led led2;
+    Element led2{ElementType::Led};
     led2.setInputSize(2);
     auto states2 = led2.appearanceStates();
     QCOMPARE(states2.size(), 4);
@@ -491,7 +515,7 @@ void TestLED::testAppearanceStates()
     QCOMPARE(states2.at(3).second, QString("Port 1=1, Port 2=1"));
 
     // 3-input: 8 states
-    Led led3;
+    Element led3{ElementType::Led};
     led3.setInputSize(3);
     auto states3 = led3.appearanceStates();
     QCOMPARE(states3.size(), 8);
@@ -499,7 +523,7 @@ void TestLED::testAppearanceStates()
     QCOMPARE(states3.at(7).second, QString("Port 1=1, Port 2=1, Port 3=1"));
 
     // 4-input: 16 states
-    Led led4;
+    Element led4{ElementType::Led};
     led4.setInputSize(4);
     auto states4 = led4.appearanceStates();
     QCOMPARE(states4.size(), 16);
@@ -508,14 +532,14 @@ void TestLED::testAppearanceStates()
 
     // Index mapping into the appearance list must stay unchanged (serialized per-slot).
     QCOMPARE(states2.at(0).first, 18);
-    QCOMPARE(states2.at(3).first, 25); // colorIndex()'s backward-compat special case
+    QCOMPARE(states2.at(3).first, 25); // the slot two inputs both on show
     QCOMPARE(states3.at(0).first, 18);
     QCOMPARE(states4.at(0).first, 10);
 }
 
 void TestLED::testAppearancePreviewPixmap()
 {
-    Led led;
+    Element led{ElementType::Led};
     led.setInputSize(2);
     const auto states = led.appearanceStates();
 
@@ -541,7 +565,7 @@ void TestLED::testSetAppearanceDefault()
     image.fill(Qt::red);
     QVERIFY(image.save(imagePath));
 
-    Led led;
+    Element led{ElementType::Led};
     led.setAppearance(false, imagePath);
     QCOMPARE(led.externalFiles(), QStringList{imagePath});
 
@@ -558,7 +582,7 @@ void TestLED::testSetAppearanceWithAbsolutePathNoContextDir()
     const QString imagePath = tempDir.path() + "/custom_led.svg";
     QVERIFY(QFile::copy(":/Components/Output/Led/WhiteLed.svg", imagePath));
 
-    Led led;
+    Element led{ElementType::Led};
     bool threw = false;
     try {
         led.setAppearance(false, imagePath);
@@ -571,10 +595,10 @@ void TestLED::testSetAppearanceWithAbsolutePathNoContextDir()
 
 void TestLED::testSetAppearanceWithNonExistentFileShowsTheDefault()
 {
-    Led led;
+    Element led{ElementType::Led};
     led.setAppearance(false, "/tmp/nonexistent_custom_led_98765.png");
 
-    const Led fresh;
+    const Element fresh{ElementType::Led};
     QCOMPARE(SnapshotAccess::pixmapIdentity(&led), SnapshotAccess::pixmapIdentity(&fresh));
     QCOMPARE(led.externalFiles(), QStringList{"/tmp/nonexistent_custom_led_98765.png"});
 }
@@ -584,7 +608,7 @@ void TestLED::testSetAppearanceWithoutSavedProjectLoadsPixmap()
     // A bare, scene-less Led mirrors a brand-new, never-saved project: setAppearance()
     // is given a path directly (as the UI does from a file picker), with no load()
     // round-trip involved, so there's no contextDir to resolve against either way.
-    Led led;
+    Element led{ElementType::Led};
     const QRectF defaultBounds = led.boundingRect();
 
     QTemporaryDir tempDir;

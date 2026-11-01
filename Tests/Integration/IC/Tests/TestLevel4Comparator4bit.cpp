@@ -5,8 +5,9 @@
 
 #include <QFile>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -19,7 +20,7 @@ struct Level4Comparator4bitFixture {
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
     InputSwitch *swGtIn = nullptr, *swEqIn = nullptr, *swLtIn = nullptr;
-    Led *ledGreater = nullptr, *ledEqual = nullptr, *ledLess = nullptr;
+    Element *ledGreater = nullptr, *ledEqual = nullptr, *ledLess = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -45,9 +46,9 @@ struct Level4Comparator4bitFixture {
         builder.connect(swEqIn, 0, ic, "EqualIn");
         builder.connect(swLtIn, 0, ic, "LessIn");
 
-        ledGreater = new Led();
-        ledEqual = new Led();
-        ledLess = new Led();
+        ledGreater = ElementFactory::buildElement(ElementType::Led);
+        ledEqual = ElementFactory::buildElement(ElementType::Led);
+        ledLess = ElementFactory::buildElement(ElementType::Led);
         builder.add(ledGreater, ledEqual, ledLess);
 
         builder.connect(ic, "Greater", ledGreater, 0);

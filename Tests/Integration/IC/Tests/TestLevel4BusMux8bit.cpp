@@ -5,8 +5,9 @@
 
 #include <QFile>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -19,7 +20,7 @@ struct BusMux8bitFixture {
     IC *ic = nullptr;
     InputSwitch *in0[8] = {}, *in1[8] = {};
     InputSwitch *sel = nullptr;
-    Led *out[8] = {};
+    Element *out[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -36,7 +37,7 @@ struct BusMux8bitFixture {
         for (int i = 0; i < 8; ++i) {
             in0[i] = new InputSwitch();
             in1[i] = new InputSwitch();
-            out[i] = new Led();
+            out[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(in0[i], in1[i], out[i]);
             builder.connect(in0[i], 0, ic, QString("In0[%1]").arg(i));
             builder.connect(in1[i], 0, ic, QString("In1[%1]").arg(i));

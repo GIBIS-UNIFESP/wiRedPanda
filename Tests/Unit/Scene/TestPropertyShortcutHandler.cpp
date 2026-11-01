@@ -9,7 +9,6 @@
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -99,7 +98,7 @@ void TestPropertyShortcutHandler::testBuzzerFrequency()
 void TestPropertyShortcutHandler::testLedColorSecondary()
 {
     WorkSpace workspace;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
     QString originalColor = led->color();
 
@@ -302,8 +301,8 @@ void TestPropertyShortcutHandler::testTruthTableOutputSizeSecondaryProperty()
 void TestPropertyShortcutHandler::testMultiElementSecondaryPropertyIsSingleUndoStep()
 {
     WorkSpace workspace;
-    auto *led1 = new Led;
-    auto *led2 = new Led;
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
     led2->setPos(100, 0);
     workspace.scene()->addItem(led1);
     workspace.scene()->addItem(led2);

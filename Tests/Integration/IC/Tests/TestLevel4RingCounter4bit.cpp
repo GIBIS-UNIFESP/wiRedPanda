@@ -7,8 +7,9 @@
 #include <QFileInfo>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -22,7 +23,7 @@ struct RingCounter4bitFixture {
     IC *ic = nullptr;
     InputSwitch *clk = nullptr, *preset = nullptr, *ce = nullptr, *load = nullptr;
     InputSwitch *data[4] = {};
-    Led *counterOut[4] = {};
+    Element *counterOut[4] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -52,7 +53,7 @@ struct RingCounter4bitFixture {
         }
 
         for (int i = 0; i < 4; ++i) {
-            counterOut[i] = new Led();
+            counterOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(counterOut[i]);
             builder.connect(ic, QString("Q%1").arg(i), counterOut[i], 0);
         }

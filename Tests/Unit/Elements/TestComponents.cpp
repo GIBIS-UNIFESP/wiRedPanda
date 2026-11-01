@@ -5,8 +5,9 @@
 
 #include <QFile>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
@@ -84,8 +85,8 @@ void TestComponents::testIC()
     auto *clkButton = new InputButton();
     auto *prstButton = new InputButton();
 
-    auto *led1 = new Led();
-    auto *led2 = new Led();
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
 
     auto *connection1 = new Connection();
     connection1->setStartPort(clkButton->outputPort());

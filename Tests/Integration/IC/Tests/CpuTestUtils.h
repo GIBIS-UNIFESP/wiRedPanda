@@ -9,7 +9,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -52,14 +51,14 @@ constexpr int PATTERN_ODD_BITS = 0xAA;
 /**
  * \brief Get 8-bit output value from C-style array of LEDs
  *
- * Convenience overload for C-style arrays (e.g., Led* q[8]).
+ * Convenience overload for C-style arrays (e.g., Element* q[8]).
  * Converts the array to a QVector and reads the output.
  *
  * \param leds C-style array of 8 LED pointers
  * \return The LEDs' bits, equal to an 8-bit value (0-255) only when every one is a level
  */
 template<size_t N>
-inline TestUtils::Bits get8BitValue(Led* (&leds)[N]) {
+inline TestUtils::Bits get8BitValue(Element * (&leds)[N]) {
     QVector<Element *> elements;
     for (size_t i = 0; i < N; ++i) {
         elements.append(leds[i]);

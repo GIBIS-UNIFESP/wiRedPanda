@@ -25,10 +25,10 @@
 
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -701,7 +701,7 @@ void TestICInline::testFlattenBlobCircularReference()
         WorkSpace ws;
         ws.scene()->setContextDir(dir);
         auto *sw = new InputSwitch();  sw->setPos(96, 144);
-        auto *led = new Led();         led->setPos(400, 144);
+        auto *led = ElementFactory::buildElement(ElementType::Led);         led->setPos(400, 144);
         auto *ic = new IC();
         ic->loadFile(dir + "/circular_b.panda", dir);
         ic->setPos(256, 144);
@@ -715,7 +715,7 @@ void TestICInline::testFlattenBlobCircularReference()
         WorkSpace ws;
         ws.scene()->setContextDir(dir);
         auto *sw = new InputSwitch();  sw->setPos(96, 144);
-        auto *led = new Led();         led->setPos(400, 144);
+        auto *led = ElementFactory::buildElement(ElementType::Led);         led->setPos(400, 144);
         auto *ic = new IC();
         ic->loadFile(dir + "/circular_a.panda", dir);
         ic->setPos(256, 144);
@@ -777,7 +777,7 @@ void TestICInline::testEmbedSimulatesCorrectly()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *ic = new IC();
 
     CircuitBuilder builder(ws.scene());
@@ -816,7 +816,7 @@ void TestICInline::testEmbedSimulatesMultiLevel()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *ic = new IC();
 
     CircuitBuilder builder(ws.scene());
@@ -917,7 +917,7 @@ void TestICInline::testEmbedExtractWithActiveConnections()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *fileBacked = new IC();
 
     CircuitBuilder builder(ws.scene());
@@ -2055,7 +2055,7 @@ void TestICInline::testSaveChildICBlobPortCountWithConnections()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *ic = new IC();
 
     CircuitBuilder builder(ws.scene());
@@ -2431,7 +2431,7 @@ void TestICInline::testRemoveEmbeddedICWithConnections()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *ic = new IC();
 
     CircuitBuilder builder(ws.scene());
@@ -2509,7 +2509,7 @@ void TestICInline::testRemoveEmbeddedICCrossConnections()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *icAnd = new IC();
     auto *icNot = new IC();
 
@@ -2611,7 +2611,7 @@ void TestICInline::testPortCountChangeConnectionCleanup()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *ic = new IC();
 
     CircuitBuilder builder(ws.scene());
@@ -2832,7 +2832,7 @@ void TestICInline::testSetInlineDataRollbackSimulationWorks()
     auto *reg = ws.scene()->icRegistry();
 
     InputSwitch swA, swB;
-    Led led;
+    Element led{ElementType::Led};
     auto *ic = new IC();
 
     CircuitBuilder builder(ws.scene());
@@ -2999,7 +2999,7 @@ void TestICInline::testSimulationRestartTimingDuringSetInlineData()
         auto *reg = ws.scene()->icRegistry();
 
         InputSwitch swA, swB;
-        Led led;
+        Element led{ElementType::Led};
         auto *ic = new IC();
 
         CircuitBuilder builder(ws.scene());
@@ -3837,7 +3837,7 @@ void TestICInline::testSystemVerilogCodegenEmbeddedIC()
     auto *ic = new IC();
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
     builder.add(sw1, sw2, ic, led);
@@ -3886,8 +3886,8 @@ void TestICInline::testSystemVerilogCodegenTwoEmbeddedSameBlobName()
     auto *sw2 = new InputSwitch();
     auto *sw3 = new InputSwitch();
     auto *sw4 = new InputSwitch();
-    auto *led1 = new Led();
-    auto *led2 = new Led();
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
     builder.add(sw1, sw2, sw3, sw4, ic1, ic2, led1, led2);
@@ -3943,7 +3943,7 @@ void TestICInline::testSVCodegenReservedWordBlobName()
     auto *ic = new IC();
     auto *sw1 = new InputSwitch();
     auto *sw2 = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
     builder.add(sw1, sw2, ic, led);

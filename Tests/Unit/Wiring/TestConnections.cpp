@@ -8,9 +8,9 @@
 #include <QTest>
 
 #include "App/Core/Application.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -83,7 +83,7 @@ void TestConnections::testOtherPort()
     auto *scene = workspace.scene();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -365,7 +365,7 @@ void TestConnections::testStatusPropagation()
     auto *scene = workspace.scene();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -396,9 +396,9 @@ void TestConnections::testMultiConnectionStatus()
     auto *scene = workspace.scene();
 
     auto *sw = new InputSwitch();
-    auto *led1 = new Led();
-    auto *led2 = new Led();
-    auto *led3 = new Led();
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
+    auto *led3 = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led1);
     scene->addItem(led2);
@@ -491,7 +491,7 @@ void TestConnections::testConnectionPositionUpdate()
     auto *scene = workspace.scene();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(100, 0);
     scene->addItem(sw);

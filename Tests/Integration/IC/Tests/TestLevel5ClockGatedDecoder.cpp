@@ -5,8 +5,9 @@
 
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -20,7 +21,7 @@ struct ClockGatedDecoderFixture {
     InputSwitch *addressBits[3] = {};
     InputSwitch *clockGate = nullptr;
     InputSwitch *writeEnable = nullptr;
-    Led *outputs[8] = {};
+    Element *outputs[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -37,7 +38,7 @@ struct ClockGatedDecoderFixture {
         builder.add(clockGate, writeEnable);
 
         for (int i = 0; i < 8; ++i) {
-            outputs[i] = new Led();
+            outputs[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(outputs[i]);
         }
 

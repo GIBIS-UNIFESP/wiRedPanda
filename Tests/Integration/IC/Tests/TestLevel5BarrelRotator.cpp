@@ -5,8 +5,9 @@
 
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -20,7 +21,7 @@ struct BarrelRotatorFixture {
     InputSwitch *dataInputs[4] = {};
     InputSwitch *rotateAmountInputs[2] = {};
     InputSwitch *directionInput = nullptr;
-    Led *resultOutputs[4] = {};
+    Element *resultOutputs[4] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -30,7 +31,7 @@ struct BarrelRotatorFixture {
 
         for (int i = 0; i < 4; ++i) {
             dataInputs[i] = new InputSwitch();
-            resultOutputs[i] = new Led();
+            resultOutputs[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(dataInputs[i], resultOutputs[i]);
         }
         for (int i = 0; i < 2; ++i) {

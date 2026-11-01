@@ -17,7 +17,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
@@ -34,7 +33,7 @@ void writeLeafIcHandlerFixture(const QString &path)
 {
     WorkSpace ws;
     ws.scene()->addItem(new InputSwitch());
-    ws.scene()->addItem(new Led());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QFile file(path);
     QVERIFY2(file.open(QIODevice::WriteOnly), qPrintable(path));
     QDataStream stream(&file);
@@ -47,7 +46,7 @@ QByteArray leafIcHandlerBytes()
 {
     WorkSpace ws;
     ws.scene()->addItem(new InputSwitch());
-    ws.scene()->addItem(new Led());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QByteArray bytes;
     QDataStream stream(&bytes, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
@@ -153,7 +152,7 @@ void TestICHandler::testHandleCreateIcCreatesRealFile()
     window.loadPandaFile(projectPath);
     Scene *scene = window.currentTab()->scene();
     scene->addItem(new InputSwitch());
-    scene->addItem(new Led());
+    scene->addItem(ElementFactory::buildElement(ElementType::Led));
 
     ICHandler handler(&window, nullptr);
     const QJsonObject response = handler.handleCommand(

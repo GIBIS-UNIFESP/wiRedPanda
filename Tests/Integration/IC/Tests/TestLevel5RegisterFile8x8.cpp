@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -26,8 +27,8 @@ struct RegFile8x8Fixture {
     InputSwitch *writeData[8] = {};
     InputSwitch *writeEnable = nullptr;
     InputSwitch *clock = nullptr;
-    Led *readData[8] = {};
-    Led *readData2[8] = {};
+    Element *readData[8] = {};
+    Element *readData2[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -50,8 +51,8 @@ struct RegFile8x8Fixture {
         }
         for (int i = 0; i < 8; ++i) {
             writeData[i] = new InputSwitch();
-            readData[i] = new Led();
-            readData2[i] = new Led();
+            readData[i] = ElementFactory::buildElement(ElementType::Led);
+            readData2[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(writeData[i], readData[i], readData2[i]);
         }
 

@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -20,7 +21,7 @@ struct Controller4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> opcodeInputs;
-    QVector<Led *> ctrlOutputs;
+    QVector<Element *> ctrlOutputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -38,7 +39,7 @@ struct Controller4bitFixture {
             builder.connect(sw, 0, ic, QString("opcode[%1]").arg(i));
         }
         for (int i = 0; i < 4; ++i) {
-            auto *led = new Led();
+            auto *led = ElementFactory::buildElement(ElementType::Led);
             builder.add(led);
             ctrlOutputs.append(led);
             builder.connect(ic, QString("ctrl[%1]").arg(i), led, 0);

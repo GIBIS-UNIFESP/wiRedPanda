@@ -7,8 +7,9 @@
 #include <QFileInfo>
 #include <QMap>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -22,7 +23,7 @@ struct InstrDecoder8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> instrInputs;
-    QMap<int, Led *> opOutputs;
+    QMap<int, Element *> opOutputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -48,7 +49,7 @@ struct InstrDecoder8bitFixture {
         // Connect every one of the 256 output lines — testInstructionDecoder8BitOneHot()
         // sweeps all of them, not just the handful of named rows in _data().
         for (int idx = 0; idx < 256; idx++) {
-            auto *led = new Led();
+            auto *led = ElementFactory::buildElement(ElementType::Led);
             builder.add(led);
             led->setLabel(QString("op[%1]").arg(idx));
             builder.connect(ic, QString("op[%1]").arg(idx), led, 0);

@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel2Mux2to1.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +17,7 @@ struct Mux2to1Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *in0 = nullptr, *in1 = nullptr, *select = nullptr;
-    Led *output = nullptr;
+    Element *output = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -27,7 +28,7 @@ struct Mux2to1Fixture {
         in0 = new InputSwitch();
         in1 = new InputSwitch();
         select = new InputSwitch();
-        output = new Led();
+        output = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(in0, in1, select, output);
 
@@ -122,7 +123,7 @@ void TestLevel2MUX2To1::testEnableGating()
     auto *d1 = new InputSwitch();
     auto *sel = new InputSwitch();
     auto *en = new InputSwitch();
-    auto *out = new Led();
+    auto *out = ElementFactory::buildElement(ElementType::Led);
     builder.add(d0, d1, sel, en, out);
 
     auto *ic = loadBuildingBlockIC("level2_mux_2to1.panda");

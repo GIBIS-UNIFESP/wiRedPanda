@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -29,10 +30,10 @@ struct Cpu16bitRiscFixture {
     InputSwitch *regProgAddr[5] = {};
     InputSwitch *regProgData[16] = {};
     InputSwitch *regProgWrite = nullptr;
-    QVector<Led *> pcLeds;
-    QVector<Led *> resultLeds;
-    QVector<Led *> instrLeds;
-    QVector<Led *> opcodeLeds;
+    QVector<Element *> pcLeds;
+    QVector<Element *> resultLeds;
+    QVector<Element *> instrLeds;
+    QVector<Element *> opcodeLeds;
     Simulation *sim = nullptr;
 
     bool build()
@@ -61,14 +62,14 @@ struct Cpu16bitRiscFixture {
         }
 
         for (int i = 0; i < 8; i++) {
-            auto *p = new Led(); builder.add(p); pcLeds.append(p);
+            auto *p = ElementFactory::buildElement(ElementType::Led); builder.add(p); pcLeds.append(p);
         }
         for (int i = 0; i < 16; i++) {
-            auto *r = new Led(); builder.add(r); resultLeds.append(r);
-            auto *il = new Led(); builder.add(il); instrLeds.append(il);
+            auto *r = ElementFactory::buildElement(ElementType::Led); builder.add(r); resultLeds.append(r);
+            auto *il = ElementFactory::buildElement(ElementType::Led); builder.add(il); instrLeds.append(il);
         }
         for (int i = 0; i < 5; i++) {
-            auto *o = new Led(); builder.add(o); opcodeLeds.append(o);
+            auto *o = ElementFactory::buildElement(ElementType::Led); builder.add(o); opcodeLeds.append(o);
         }
 
         builder.connect(clk, 0, ic, "Clock");

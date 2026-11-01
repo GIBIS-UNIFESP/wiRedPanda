@@ -3,8 +3,8 @@
 
 #include "Tests/Unit/Elements/TestLogicGates.h"
 
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestLogicGates::testAnd()
@@ -82,7 +82,7 @@ void TestLogicGates::testAndGateBehavior()
 
     InputSwitch sw1, sw2;
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &andGate, &led);
     builder.connect(&sw1, 0, &andGate, 0);
@@ -112,7 +112,7 @@ void TestLogicGates::testOrGateBehavior()
 
     InputSwitch sw1, sw2;
     Element orGate{ElementType::Or};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &orGate, &led);
     builder.connect(&sw1, 0, &orGate, 0);
@@ -142,7 +142,7 @@ void TestLogicGates::testNotGateBehavior()
 
     InputSwitch sw;
     Element notGate{ElementType::Not};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw, &notGate, &led);
     builder.connect(&sw, 0, &notGate, 0);
@@ -165,7 +165,7 @@ void TestLogicGates::testNandGateBehavior()
 
     InputSwitch sw1, sw2;
     Element nandGate{ElementType::Nand};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &nandGate, &led);
     builder.connect(&sw1, 0, &nandGate, 0);
@@ -195,7 +195,7 @@ void TestLogicGates::testNorGateBehavior()
 
     InputSwitch sw1, sw2;
     Element norGate{ElementType::Nor};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &norGate, &led);
     builder.connect(&sw1, 0, &norGate, 0);
@@ -225,7 +225,7 @@ void TestLogicGates::testXorGateBehavior()
 
     InputSwitch sw1, sw2;
     Element xorGate{ElementType::Xor};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &xorGate, &led);
     builder.connect(&sw1, 0, &xorGate, 0);
@@ -255,7 +255,7 @@ void TestLogicGates::testXnorGateBehavior()
 
     InputSwitch sw1, sw2;
     Element xnorGate{ElementType::Xnor};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &xnorGate, &led);
     builder.connect(&sw1, 0, &xnorGate, 0);

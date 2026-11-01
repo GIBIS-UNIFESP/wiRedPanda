@@ -5,8 +5,9 @@
 
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -24,9 +25,9 @@ struct InstrRegister8bitFixture {
     InputSwitch *clock = nullptr;
     InputSwitch *load = nullptr;
     InputSwitch *reset = nullptr;
-    QVector<Led *> instrOutputs;
-    QVector<Led *> opcodeOutputs;
-    QVector<Led *> regaddrOutputs;
+    QVector<Element *> instrOutputs;
+    QVector<Element *> opcodeOutputs;
+    QVector<Element *> regaddrOutputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -46,13 +47,13 @@ struct InstrRegister8bitFixture {
         reset = new InputSwitch(); builder.add(reset);
 
         for (int i = 0; i < 8; i++) {
-            auto *led = new Led(); builder.add(led); instrOutputs.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); instrOutputs.append(led);
         }
         for (int i = 0; i < 5; i++) {
-            auto *led = new Led(); builder.add(led); opcodeOutputs.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); opcodeOutputs.append(led);
         }
         for (int i = 0; i < 3; i++) {
-            auto *led = new Led(); builder.add(led); regaddrOutputs.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); regaddrOutputs.append(led);
         }
 
         for (int i = 0; i < 8; i++) {

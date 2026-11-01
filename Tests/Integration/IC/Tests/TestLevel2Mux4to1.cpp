@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel2Mux4to1.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -19,7 +20,7 @@ struct Mux4to1Fixture {
     IC *ic = nullptr;
     InputSwitch *inputs[4] = {};
     InputSwitch *selectBit0 = nullptr, *selectBit1 = nullptr;
-    Led *output = nullptr;
+    Element *output = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -35,7 +36,7 @@ struct Mux4to1Fixture {
 
         selectBit0 = new InputSwitch();
         selectBit1 = new InputSwitch();
-        output = new Led();
+        output = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(selectBit0, selectBit1, output);
 
@@ -143,7 +144,7 @@ void TestLevel2MUX4To1::testEnableGating()
     auto *s0 = new InputSwitch();
     auto *s1 = new InputSwitch();
     auto *en = new InputSwitch();
-    auto *out = new Led();
+    auto *out = ElementFactory::buildElement(ElementType::Led);
     builder.add(s0, s1, en, out);
 
     auto *ic = loadBuildingBlockIC("level2_mux_4to1.panda");

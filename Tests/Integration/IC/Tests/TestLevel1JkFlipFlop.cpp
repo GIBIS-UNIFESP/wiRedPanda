@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel1JkFlipFlop.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -36,7 +37,7 @@ struct JkFlipFlopFixture {
     IC *ic = nullptr;
     InputSwitch *jIn = nullptr, *kIn = nullptr, *clockIn = nullptr;
     InputSwitch *presetIn = nullptr, *clearIn = nullptr;
-    Led *ledQ = nullptr, *ledQBar = nullptr;
+    Element *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -49,8 +50,8 @@ struct JkFlipFlopFixture {
         clockIn = new InputSwitch();
         presetIn = new InputSwitch();
         clearIn = new InputSwitch();
-        ledQ = new Led();
-        ledQBar = new Led();
+        ledQ = ElementFactory::buildElement(ElementType::Led);
+        ledQBar = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(jIn, kIn, clockIn, presetIn, clearIn, ledQ, ledQBar);
 

@@ -37,7 +37,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/Scene/Commands.h"
@@ -62,7 +61,7 @@ static std::unique_ptr<WorkSpace> createAndCircuit()
     auto *sw0 = new InputSwitch();
     auto *sw1 = new InputSwitch();
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     scene->addItem(sw0);
     scene->addItem(sw1);
@@ -225,7 +224,7 @@ void TestBewavedDolphinGui::testRunLeavesLiveSequentialStateUnchanged()
     auto *data = new InputSwitch();
     auto *clk = new InputSwitch();
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(data);
     scene->addItem(clk);
     scene->addItem(dff);
@@ -695,7 +694,7 @@ void TestBewavedDolphinGui::testSaveToTxtSplitsAfterTheLastInputPort()
     auto *scene = ws->scene();
 
     auto *rotary = new InputRotary();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(rotary);
     scene->addItem(led);
     rotary->setLabel("ROT");
@@ -1281,7 +1280,7 @@ void TestBewavedDolphinGui::testSaveToTxtClampsColumnCountForManyInputPorts()
     for (int i = 0; i < 12; ++i) {
         scene->addItem(new InputSwitch());
     }
-    scene->addItem(new Led());
+    scene->addItem(ElementFactory::buildElement(ElementType::Led));
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
 
     QString text;

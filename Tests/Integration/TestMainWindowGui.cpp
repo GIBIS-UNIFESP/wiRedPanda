@@ -38,12 +38,12 @@
 #include "App/Core/MimeTypes.h"
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Exercise/ExerciseEngine.h"
@@ -80,7 +80,7 @@ static void createMWFixture(const QString &path)
 {
     WorkSpace ws;
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     ws.scene()->addItem(sw);
     ws.scene()->addItem(led);
     ws.save(path);
@@ -592,7 +592,7 @@ void TestMainWindowGui::testRestartSimulation()
     auto *scene = window->currentTab()->scene();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -929,7 +929,7 @@ void TestMainWindowGui::testSelectAllViaKeyboard()
 
     scene->addItem(new InputSwitch());
     scene->addItem(ElementFactory::buildElement(ElementType::And));
-    scene->addItem(new Led());
+    scene->addItem(ElementFactory::buildElement(ElementType::Led));
 
     QTest::keyClick(window.get(), Qt::Key_A, Qt::ControlModifier);
 
@@ -1024,7 +1024,7 @@ void TestMainWindowGui::testPropertyCycleSecondary()
     auto *scene = window->currentTab()->scene();
     auto *view = window->currentTab()->view();
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(100, 100);
     scene->addItem(led);
 
@@ -1304,7 +1304,7 @@ void TestMainWindowGui::testOpenWaveformEditor()
     std::unique_ptr<MainWindow> window(createMW());
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     window->currentTab()->scene()->addItem(sw);
     window->currentTab()->scene()->addItem(led);
     CircuitBuilder builder(window->currentTab()->scene());
@@ -1677,7 +1677,7 @@ void TestMainWindowGui::testEmbeddedICDeleteUndo()
 
     auto *ic = placeEmbeddedIC(scene, m_fixtureDir, "del_test");
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(50, 100);
     led->setPos(250, 100);
     scene->addItem(sw);
@@ -1714,7 +1714,7 @@ void TestMainWindowGui::testEmbeddedICSelectAllDeleteUndo()
 
     placeEmbeddedIC(scene, m_fixtureDir, "selall", {100, 100});
     scene->addItem(ElementFactory::buildElement(ElementType::And));
-    scene->addItem(new Led());
+    scene->addItem(ElementFactory::buildElement(ElementType::Led));
 
     int origCount = static_cast<int>(scene->elements().size());
     QCOMPARE(origCount, 3);
@@ -1767,7 +1767,7 @@ void TestMainWindowGui::testEmbeddedICSimulationAfterDeleteUndo()
 
     auto *swA = new InputSwitch();
     auto *swB = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     swA->setPos(50, 80);
     swB->setPos(50, 120);
     led->setPos(300, 100);
@@ -2545,7 +2545,7 @@ void TestMainWindowGui::testInlineICSaveMarksRootDirty()
     QVERIFY(window->currentTab()->isInlineIC());
 
     // Add an element and save inline tab
-    window->currentTab()->scene()->addItem(new Led());
+    window->currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::Led));
 
     ScopedFileDialogStub guard;
     QTest::keyClick(window.get(), Qt::Key_S, Qt::ControlModifier);
@@ -2569,7 +2569,7 @@ void TestMainWindowGui::testClearSelectionViaEscape()
 
     scene->addItem(new InputSwitch());
     scene->addItem(ElementFactory::buildElement(ElementType::And));
-    scene->addItem(new Led());
+    scene->addItem(ElementFactory::buildElement(ElementType::Led));
 
     scene->selectAll();
     QCOMPARE(scene->selectedElements().size(), 3);
@@ -2774,7 +2774,7 @@ void TestMainWindowGui::testRedoAfterNewAction()
     QCOMPARE(static_cast<int>(scene->elements().size()), 1);
 
     // Perform a NEW delete — this should clear the redo stack
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 200);
     scene->addItem(led);
     clickElement(view, led);
@@ -2801,7 +2801,7 @@ void TestMainWindowGui::testWireCreationViaMouse()
     auto *view = window->currentTab()->view();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(50, 100);
     led->setPos(250, 100);
     scene->addItem(sw);
@@ -2833,7 +2833,7 @@ void TestMainWindowGui::testRubberBandSelection()
 
     auto *sw = new InputSwitch();
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(100, 100);
     andGate->setPos(150, 100);
     led->setPos(200, 100);
@@ -2855,7 +2855,7 @@ void TestMainWindowGui::testDeleteConnection()
     auto *scene = window->currentTab()->scene();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(50, 100);
     led->setPos(250, 100);
     scene->addItem(sw);
@@ -2880,7 +2880,7 @@ void TestMainWindowGui::testCopyPasteConnectedCircuit()
     auto *scene = window->currentTab()->scene();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(50, 100);
     led->setPos(250, 100);
     scene->addItem(sw);
@@ -2932,7 +2932,7 @@ void TestMainWindowGui::testToggleInputDuringSimulation()
     auto *view = window->currentTab()->view();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(50, 100);
     led->setPos(250, 100);
     scene->addItem(sw);
@@ -2963,7 +2963,7 @@ void TestMainWindowGui::testInputButtonMomentary()
     auto *scene = window->currentTab()->scene();
 
     auto *button = new InputButton();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     button->setPos(50, 100);
     led->setPos(250, 100);
     scene->addItem(button);
@@ -2998,7 +2998,7 @@ void TestMainWindowGui::testInputButtonMousePressReleaseIsMomentary()
     auto *view = window->currentTab()->view();
 
     auto *button = new InputButton();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     button->setPos(50, 100);
     led->setPos(250, 100);
     scene->addItem(button);
@@ -3153,7 +3153,7 @@ void TestMainWindowGui::testContextMenuRename()
     editor.setScene(workspace.scene());
 
     // Use Led since it supports labels (And gates don't have hasLabel=true)
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
     led->setSelected(true);
     QCoreApplication::processEvents();
@@ -3286,7 +3286,7 @@ void TestMainWindowGui::testDoubleClickWireSplit()
     auto *scene = window->currentTab()->scene();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(50, 100);
     led->setPos(350, 100);
     scene->addItem(sw);
@@ -3460,7 +3460,7 @@ void TestMainWindowGui::testElementLabelRename()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
     led->setSelected(true);
     QCoreApplication::processEvents();
@@ -4243,7 +4243,8 @@ void TestMainWindowGui::testExportWrapperMethodsDelegateToController()
 {
     std::unique_ptr<MainWindow> window(createMW());
     auto *scene = window->currentTab()->scene();
-    scene->receiveCommand(new AddItemsCommand({new InputSwitch(), new Led()}, scene));
+    scene->receiveCommand(
+        new AddItemsCommand({new InputSwitch(), ElementFactory::buildElement(ElementType::Led)}, scene));
 
     const QString arduinoPath = m_fixtureDir + "/wrapper_test.ino";
     window->exportToArduino(arduinoPath);
@@ -4329,7 +4330,7 @@ void TestMainWindowGui::testWaveformActionRaisesExistingWindow()
     std::unique_ptr<MainWindow> window(createMW());
     // BewavedDolphin requires at least one input and one output element.
     window->currentTab()->scene()->addItem(new InputSwitch());
-    window->currentTab()->scene()->addItem(new Led());
+    window->currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     auto *action = window->findChild<QAction *>("actionWaveform");
     QVERIFY(action);
 
@@ -4382,7 +4383,7 @@ void TestMainWindowGui::testClickTargetDrivesEachKnownId()
     auto *scene = window->currentTab()->scene();
     // BewavedDolphin requires at least one input and one output element.
     scene->addItem(new InputSwitch());
-    scene->addItem(new Led());
+    scene->addItem(ElementFactory::buildElement(ElementType::Led));
 
     window->clickTarget(QStringLiteral("ioTab"));
     QCOMPARE(tabElements->currentIndex(), 0);
@@ -4448,7 +4449,7 @@ void TestMainWindowGui::testResolveTourTargetForEachKnownId()
 
     // "bwd:" targets need a real BewavedDolphin instance first.
     window->currentTab()->scene()->addItem(new InputSwitch());
-    window->currentTab()->scene()->addItem(new Led());
+    window->currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     auto *waveformAction = window->findChild<QAction *>("actionWaveform");
     QVERIFY(waveformAction);
     waveformAction->trigger();
@@ -4466,7 +4467,8 @@ void TestMainWindowGui::testResolveTourTargetForEachKnownId()
 void TestMainWindowGui::testStartExerciseDrivesClickTargetsAndOverlayParenting()
 {
     std::unique_ptr<MainWindow> window(createMW());
-    window->currentTab()->scene()->addItem(new Led()); // BewavedDolphin requires at least one output element
+    // BewavedDolphin requires at least one output element
+    window->currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     auto *tabElements = window->findChild<QTabWidget *>("tabElements");
     QVERIFY(tabElements);
 
@@ -4550,7 +4552,7 @@ void TestMainWindowGui::testExerciseCloseRequestedDetachesOverlayFromOpenBewaved
     std::unique_ptr<MainWindow> window(createMW());
     // BewavedDolphin requires at least one input and one output element.
     window->currentTab()->scene()->addItem(new InputSwitch());
-    window->currentTab()->scene()->addItem(new Led());
+    window->currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::Led));
 
     const QString path = writeJsonFixture(m_tempDir, "close_requested_bwd_open.json", R"({
         "id": "test-mw-close-requested-bwd-open",
@@ -4581,7 +4583,7 @@ void TestMainWindowGui::testStartTourDrivesClickTargetsAndOverlayParenting()
     std::unique_ptr<MainWindow> window(createMW());
     // BewavedDolphin requires at least one input and one output element.
     window->currentTab()->scene()->addItem(new InputSwitch());
-    window->currentTab()->scene()->addItem(new Led());
+    window->currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::Led));
 
     // Guards: empty resourcePath, and (separately) a load failure.
     window->startTour(QString());

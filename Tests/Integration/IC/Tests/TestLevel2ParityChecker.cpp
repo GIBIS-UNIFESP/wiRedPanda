@@ -4,8 +4,9 @@
 #include "Tests/Integration/IC/Tests/TestLevel2ParityChecker.h"
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,7 +21,7 @@ struct ParityCheckerFixture {
     InputSwitch *swD[4] = {};
     InputSwitch *swP = nullptr;
     InputSwitch *cascadeIn = nullptr;
-    Led *ledResult = nullptr;
+    Element *ledResult = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -34,7 +35,7 @@ struct ParityCheckerFixture {
         }
         swP = new InputSwitch();
         cascadeIn = new InputSwitch();
-        ledResult = new Led();
+        ledResult = ElementFactory::buildElement(ElementType::Led);
         builder.add(swP, cascadeIn, ledResult);
 
         ic = loadBuildingBlockIC("level2_parity_checker.panda");

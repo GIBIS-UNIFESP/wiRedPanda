@@ -5,9 +5,9 @@
 
 #include <array>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 
@@ -41,8 +41,8 @@ using TestSequentialHelpers::complementary;
 void buildSimple2StateFsm(WorkSpace* workspace,
                           InputSwitch*& triggerSwitch,
                           InputSwitch*& clockSwitch,
-                          Led*& stateLed,
-                          Led*& stateNotLed,
+                          Element *& stateLed,
+                          Element *& stateNotLed,
                           Element*& outStateFf,
                           Simulation*& sim)
 {
@@ -52,8 +52,8 @@ void buildSimple2StateFsm(WorkSpace* workspace,
     triggerSwitch = new InputSwitch();
     clockSwitch = new InputSwitch();
     outStateFf = ElementFactory::buildElement(ElementType::DFlipFlop);
-    stateLed = new Led();
-    stateNotLed = new Led();
+    stateLed = ElementFactory::buildElement(ElementType::Led);
+    stateNotLed = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(triggerSwitch, clockSwitch, outStateFf, stateLed, stateNotLed);
 
@@ -141,7 +141,7 @@ void TestSequential::testRegisterAsyncClear()
     ElementArray dff{ElementType::DFlipFlop, 4};
 
     // Output LEDs (4-bit)
-    Led dataOut[4];
+    ElementArray dataOut{ElementType::Led, 4};
 
     // Add all elements
     builder.add(&clk, &clear);
@@ -237,7 +237,7 @@ void TestSequential::testCounterAsyncReset()
     ElementArray dff{ElementType::DFlipFlop, 4};
 
     // Output LEDs
-    Led counterOut[4];
+    ElementArray counterOut{ElementType::Led, 4};
 
     // Increment logic gates (ripple carry counter)
     ElementArray notQ{ElementType::Not, 4};
@@ -408,7 +408,7 @@ void TestSequential::testShiftRegisterAsyncClear()
     ElementArray dff{ElementType::DFlipFlop, 4};
 
     // Output LEDs (parallel output)
-    Led dataOut[4];
+    ElementArray dataOut{ElementType::Led, 4};
 
     // Add all elements
     builder.add(&clk, &serialIn, &clear);
@@ -520,8 +520,8 @@ void TestSequential::testSimpleStateMachine()
     // Build circuit using helper function
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -588,8 +588,8 @@ void TestSequential::testFsmStateTransitions()
     // Build circuit using helper function (FIX: Extract circuit builder)
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -676,8 +676,8 @@ void TestSequential::testFsmTimingEdgeCases()
     // Build circuit using helper function (FIX: Extract circuit builder)
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -767,8 +767,8 @@ void TestSequential::testFsmExtendedSequences()
     // Build circuit using helper function (FIX: Extract circuit builder)
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -859,8 +859,8 @@ void TestSequential::testFsmQnotComplementarity()
 
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -924,8 +924,8 @@ void TestSequential::testFsmLongSequenceStability()
 
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -985,8 +985,8 @@ void TestSequential::testFsmStateLock()
 
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -1044,8 +1044,8 @@ void TestSequential::testFsmRapidClockNoSettle()
 
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -1099,8 +1099,8 @@ void TestSequential::testFsmTriggerDuringClock()
 
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -1142,8 +1142,8 @@ void TestSequential::testFsmLongTermStability()
 
     InputSwitch *triggerSwitch = nullptr;
     InputSwitch *clockSwitch = nullptr;
-    Led *stateLed = nullptr;
-    Led *stateNotLed = nullptr;
+    Element *stateLed = nullptr;
+    Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -1221,7 +1221,7 @@ void TestSequential::testTFlipFlopToggle()
 
     InputSwitch tSwitch, clockSwitch;
     Element tff{ElementType::TFlipFlop};
-    Led ledQ, ledQnot;
+    Element ledQ{ElementType::Led}, ledQnot{ElementType::Led};
 
     builder.add(&tSwitch, &clockSwitch, &tff, &ledQ, &ledQnot);
 
@@ -1298,7 +1298,7 @@ void TestSequential::testSRFlipFlopSetReset()
 
     InputSwitch sSwitch, clockSwitch, rSwitch;
     Element srff{ElementType::SRFlipFlop};
-    Led ledQ, ledQnot;
+    Element ledQ{ElementType::Led}, ledQnot{ElementType::Led};
 
     builder.add(&sSwitch, &clockSwitch, &rSwitch, &srff, &ledQ, &ledQnot);
 

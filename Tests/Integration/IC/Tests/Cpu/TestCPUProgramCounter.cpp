@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUProgramCounter.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -36,10 +38,10 @@ void TestCPUProgramCounter::testProgramCounter()
     QFETCH(int, expectedResult);
     QVector<InputSwitch *> loadValueBits;
     InputSwitch *load, *inc, *reset, *clock;
-    QVector<Led *> pcBits;
+    QVector<Element *> pcBits;
     for (int i = 0; i < 8; i++) {
         loadValueBits.append(new InputSwitch());
-        pcBits.append(new Led());
+        pcBits.append(ElementFactory::buildElement(ElementType::Led));
     }
     load = new InputSwitch();
     inc = new InputSwitch();
@@ -134,10 +136,10 @@ void TestCPUProgramCounter::testProgramCounterPriority()
     QFETCH(int, expectedResult);
     QVector<InputSwitch *> loadValueBits;
     InputSwitch *loadSwitch, *incSwitch, *resetSwitch, *clock;
-    QVector<Led *> pcBits;
+    QVector<Element *> pcBits;
     for (int i = 0; i < 8; i++) {
         loadValueBits.append(new InputSwitch());
-        pcBits.append(new Led());
+        pcBits.append(ElementFactory::buildElement(ElementType::Led));
     }
     loadSwitch = new InputSwitch();
     incSwitch = new InputSwitch();

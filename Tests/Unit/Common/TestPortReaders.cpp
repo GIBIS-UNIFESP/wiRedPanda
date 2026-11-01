@@ -5,8 +5,9 @@
 
 #include <memory>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -18,14 +19,14 @@ const Status kStatuses[] = {Status::Inactive, Status::Active, Status::Unknown, S
 struct Leds {
     std::unique_ptr<WorkSpace> workspace = std::make_unique<WorkSpace>();
     InputSwitch *switches[4] = {};
-    Led *leds[4] = {};
+    Element *leds[4] = {};
 
     Leds()
     {
         CircuitBuilder builder(workspace->scene());
         for (int i = 0; i < 4; ++i) {
             switches[i] = new InputSwitch();
-            leds[i] = new Led();
+            leds[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(switches[i], leds[i]);
             builder.connect(switches[i], 0, leds[i], 0);
         }
@@ -116,7 +117,7 @@ void TestPortReaders::testReadMultiBitOutputKeepsEachBitsStatus()
 
     // The QVector overload reads the same bits.
     f.hold({Status::Error, Status::Active, Status::Inactive, Status::Active});
-    const QVector<Led *> leds(std::begin(f.leds), std::end(f.leds));
+    const QVector<Element *> leds(std::begin(f.leds), std::end(f.leds));
     QCOMPARE(TestUtils::readMultiBitOutput(leds), TestUtils::readMultiBitOutput(f.leds));
     QCOMPARE(TestUtils::readMultiBitOutput(leds).text(), QString("101E"));
 }

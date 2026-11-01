@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel2HalfAdder.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +17,7 @@ struct HalfAdderFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *swA = nullptr, *swB = nullptr;
-    Led *ledSum = nullptr, *ledCarry = nullptr;
+    Element *ledSum = nullptr, *ledCarry = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -26,8 +27,8 @@ struct HalfAdderFixture {
 
         swA = new InputSwitch();
         swB = new InputSwitch();
-        ledSum = new Led();
-        ledCarry = new Led();
+        ledSum = ElementFactory::buildElement(ElementType::Led);
+        ledCarry = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(swA, swB, ledSum, ledCarry);
 

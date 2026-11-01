@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -28,7 +29,7 @@ struct MemoryStage16bitFixture {
     InputSwitch *memwrite = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;
-    QVector<Led *> dataoutLeds;
+    QVector<Element *> dataoutLeds;
     Simulation *sim = nullptr;
 
     bool build()
@@ -45,7 +46,7 @@ struct MemoryStage16bitFixture {
         for (int i = 0; i < 16; i++) {
             auto *d = new InputSwitch(); builder.add(d); datainInputs.append(d);
             auto *r = new InputSwitch(); builder.add(r); resultInputs.append(r);
-            auto *led = new Led(); builder.add(led); dataoutLeds.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); dataoutLeds.append(led);
         }
 
         memread = new InputSwitch(); builder.add(memread);

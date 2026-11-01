@@ -4,8 +4,9 @@
 #include "Tests/Integration/IC/Tests/TestLevel2PriorityMux3to1.h"
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -19,7 +20,7 @@ struct PriorityMux3to1Fixture {
     IC *ic = nullptr;
     InputSwitch *data[3] = {};
     InputSwitch *sel[2] = {};
-    Led *output = nullptr;
+    Element *output = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -35,7 +36,7 @@ struct PriorityMux3to1Fixture {
             sel[i] = new InputSwitch();
             builder.add(sel[i]);
         }
-        output = new Led();
+        output = ElementFactory::buildElement(ElementType::Led);
         builder.add(output);
 
         ic = loadBuildingBlockIC("level2_priority_mux_3to1.panda");

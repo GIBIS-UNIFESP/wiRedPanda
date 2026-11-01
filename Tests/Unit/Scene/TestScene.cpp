@@ -43,7 +43,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -210,7 +209,7 @@ void TestScene::testConnectionsQuery()
 
     InputSwitch sw;
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw, &andGate, &led);
     builder.connect(&sw, 0, &andGate, 0);
@@ -1484,7 +1483,7 @@ void TestScene::testInlineLabelEditorRelabelsAnICWithoutReadingItsFile()
     {
         WorkSpace sub;
         sub.scene()->addItem(new InputSwitch());
-        sub.scene()->addItem(new Led());
+        sub.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         sub.save(path);
     }
     WorkSpace workspace;
@@ -2176,7 +2175,7 @@ void TestScene::testSortSimpleChain()
 
     InputSwitch sw;
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw, &andGate, &led);
     builder.connect(&sw, 0, &andGate, 0);
@@ -2226,7 +2225,7 @@ void TestScene::testSortMultipleChains()
     InputSwitch sw1, sw2;
     Element andGate{ElementType::And};
     Element orGate{ElementType::Or};
-    Led led1, led2;
+    Element led1{ElementType::Led}, led2{ElementType::Led};
 
     builder.add(&sw1, &sw2, &andGate, &orGate, &led1, &led2);
 
@@ -2333,7 +2332,7 @@ void TestScene::testSortDisconnectedComponents()
 
     InputSwitch sw1, sw2;
     Element andGate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw1, &sw2, &andGate, &led);
 
@@ -2421,7 +2420,7 @@ void TestScene::testForgetItemIdC7()
     WorkSpace ws;
     auto *scene = ws.scene();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -2469,7 +2468,7 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     WorkSpace ws;
     auto *scene = ws.scene();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -3031,7 +3030,7 @@ void TestScene::testPressOnPortWhileWireInProgressCompletesConnection()
     auto *sw = new InputSwitch();
     sw->setPos(0, 0);
     scene->addItem(sw);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 0);
     scene->addItem(led);
 
@@ -3055,7 +3054,7 @@ void TestScene::testPressOnEmptyInputPortStartsWireFromInput()
     Scene *scene = workspace.scene();
     GraphicsView *view = workspace.view();
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(100, 100);
     scene->addItem(led);
 
@@ -3076,7 +3075,7 @@ void TestScene::testPressOnOccupiedInputPortDetachesWire()
 
     auto *sw = new InputSwitch();
     sw->setPos(0, 0);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 0);
     builder.add(sw, led);
     Connection *conn = builder.connect(sw, 0, led, 0);
@@ -3183,7 +3182,7 @@ void TestScene::testCtrlDoubleClickOnWireDoesNotInsertNode()
     CircuitBuilder builder(scene);
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw, led);
     builder.connect(sw, 0, led, 0);
 
@@ -3210,7 +3209,7 @@ void TestScene::testDoubleClickOnConnectedWireInsertsSplitNode()
 
     auto *sw = new InputSwitch();
     sw->setPos(0, 0);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 0);
     builder.add(sw, led);
     Connection *conn = builder.connect(sw, 0, led, 0);
@@ -3258,7 +3257,7 @@ void TestScene::testConnectionsReturnsRealConnections()
     CircuitBuilder builder(scene);
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw, led);
     Connection *conn = builder.connect(sw, 0, led, 0);
     QVERIFY(conn);
@@ -3275,7 +3274,7 @@ void TestScene::testUpdateThemeUpdatesConnectionTheme()
     CircuitBuilder builder(scene);
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw, led);
     Connection *conn = builder.connect(sw, 0, led, 0);
     QVERIFY(conn);
@@ -3742,7 +3741,7 @@ void TestScene::testHelpEventShowsPortHoverLabelsOverPort()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(100, 100);
     scene->addItem(led);
     auto *inputPort = led->inputPort(0);
@@ -3852,7 +3851,7 @@ void TestScene::testElementCountAgreesAfterEveryMutation()
     QCOMPARE(scene->elementCount(), 0);
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
     QCOMPARE(scene->elementCount(), 2);
@@ -3900,14 +3899,14 @@ void TestScene::testElementCountAgreesAfterEveryMutation()
     scene->rotateRight();
     QVERIFY2(agrees(), "after rotating");
 
-    auto *removed = new Led();
+    auto *removed = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(removed);
     scene->removeItem(removed);
     QVERIFY2(agrees(), "after removing an element");
     delete removed;
     QVERIFY2(agrees(), "after deleting a removed element");
 
-    auto *destroyed = new Led();
+    auto *destroyed = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(destroyed);
     delete destroyed;
     QCOMPARE(scene->elementCount(), 4);
@@ -3945,7 +3944,7 @@ void TestScene::testUnsortedElementsFollowTheStacking()
     };
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw);
     scene->addItem(led);
@@ -3979,7 +3978,7 @@ void TestScene::testUnsortedElementsFollowTheStacking()
     scene->duplicateAction();
     QVERIFY2(agrees(), "after duplicate");
 
-    auto *destroyed = new Led();
+    auto *destroyed = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(destroyed);
     delete destroyed;
     QVERIFY2(agrees(), "after destroying an element still in the scene");
@@ -4041,7 +4040,7 @@ void TestScene::testElementCountKeepsAForgottenElement()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 

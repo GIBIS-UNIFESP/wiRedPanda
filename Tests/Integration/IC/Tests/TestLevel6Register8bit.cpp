@@ -5,8 +5,9 @@
 
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,7 +24,7 @@ struct Register8bitFixture {
     InputSwitch *clock = nullptr;
     InputSwitch *writeEnable = nullptr;
     InputSwitch *reset = nullptr;
-    Led *q[8] = {};
+    Element *q[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -53,7 +54,7 @@ struct Register8bitFixture {
         reset->setLabel("Reset");
 
         for (int i = 0; i < 8; i++) {
-            q[i] = new Led();
+            q[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(q[i]);
             q[i]->setLabel(QString("Q[%1]").arg(i));
         }

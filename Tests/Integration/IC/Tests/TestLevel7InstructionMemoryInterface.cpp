@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -27,7 +28,7 @@ struct InstructionMemoryInterfaceFixture {
     QVector<Element *> dataInputs;
     InputSwitch *writeEnable = nullptr;
     InputSwitch *clk = nullptr;
-    QVector<Led *> instrOutputs;
+    QVector<Element *> instrOutputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -41,7 +42,7 @@ struct InstructionMemoryInterfaceFixture {
         for (int i = 0; i < 8; i++) {
             auto *addr = new InputSwitch(); builder.add(addr); addressInputs.append(addr);
             auto *data = new InputSwitch(); builder.add(data); dataInputs.append(data);
-            auto *led = new Led(); builder.add(led); instrOutputs.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); instrOutputs.append(led);
         }
 
         writeEnable = new InputSwitch(); builder.add(writeEnable);
@@ -172,7 +173,7 @@ void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterfaceStructu
     InputSwitch *addr = new InputSwitch();
     builder.add(addr);
 
-    Led *out = new Led();
+    Element *out = ElementFactory::buildElement(ElementType::Led);
     builder.add(out);
 
     // Verify IC port structure

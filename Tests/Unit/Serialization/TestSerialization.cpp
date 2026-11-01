@@ -21,7 +21,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -339,7 +338,7 @@ void TestSerialization::testComplexCircuitSaveLoad()
     InputSwitch sw1, sw2, sw3;
     Element and1{ElementType::And}, and2{ElementType::And};
     Element orGate{ElementType::Or};
-    Led led1, led2;
+    Element led1{ElementType::Led}, led2{ElementType::Led};
 
     builder.add(&sw1, &sw2, &sw3, &and1, &and2, &orGate, &led1, &led2);
 
@@ -1880,7 +1879,7 @@ void TestSerialization::testFuzzRegressionICBlobShrink()
             sw->setPos(0, 64 * i);
             builder.add(sw);
         }
-        auto *led = new Led();
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         led->setPos(200, 0);
         builder.add(led);
         return saveToMemory(circuit);
@@ -1996,7 +1995,7 @@ void TestSerialization::testFuzzRegressionOldFormatICSkinRef()
     WorkSpace sub;
     CircuitBuilder subBuilder(sub.scene());
     auto *subSwitch = new InputSwitch();
-    auto *subLed = new Led();
+    auto *subLed = ElementFactory::buildElement(ElementType::Led);
     subLed->setPos(200, 0);
     subBuilder.add(subSwitch, subLed);
     subBuilder.connect(subSwitch, 0, subLed, 0);

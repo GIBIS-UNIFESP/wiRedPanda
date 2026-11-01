@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUDecoders.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::inputStatus;
@@ -29,12 +31,12 @@ void TestCPUDecoders::cleanup()
 void TestCPUDecoders::testDecoder3to8()
 {
     InputSwitch *addr[3];
-    Led *outputs[8];
+    Element *outputs[8];
     for (int i = 0; i < 3; i++) {
         addr[i] = new InputSwitch();
     }
     for (int i = 0; i < 8; i++) {
-        outputs[i] = new Led();
+        outputs[i] = ElementFactory::buildElement(ElementType::Led);
     }
     std::unique_ptr<WorkSpace> workspace(buildDecoder3to8Debug(addr, outputs));
     auto *sim = workspace->simulation();
@@ -100,12 +102,12 @@ void TestCPUDecoders::testInstructionDecoder4to16()
     QFETCH(int, expectedOneHot);
 
     QVector<InputSwitch *> opcodeBits;
-    QVector<Led *> decodedOutput;
+    QVector<Element *> decodedOutput;
     for (int i = 0; i < 4; i++) {
         opcodeBits.append(new InputSwitch());
     }
     for (int i = 0; i < 16; i++) {
-        decodedOutput.append(new Led());
+        decodedOutput.append(ElementFactory::buildElement(ElementType::Led));
     }
     std::unique_ptr<WorkSpace> workspace(buildInstructionDecoder4to16(opcodeBits.data(), decodedOutput.data()));
     auto *sim = workspace->simulation();

@@ -39,7 +39,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRenderer.h"
@@ -63,7 +62,7 @@ void TestICUnit::testICLoadFromFile()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
     const QString subPath = subDir.path() + "/load_from_file_probe.panda";
@@ -90,7 +89,7 @@ void TestICUnit::testICPortLabelResolution()
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw;
     sw.setLabel("DataIn");
-    Led led;
+    Element led{ElementType::Led};
     led.setLabel("DataOut");
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
@@ -118,7 +117,7 @@ void TestICUnit::testICNestedSaveLoad()
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
     InputSwitch innerSw;
-    Led innerLed;
+    Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
     const QString innerPath = subDir.path() + "/nested_inner.panda";
@@ -129,7 +128,7 @@ void TestICUnit::testICNestedSaveLoad()
     InputSwitch outerSw;
     auto *innerIc = new IC;
     innerIc->loadFile(innerPath, subDir.path());
-    Led outerLed;
+    Element outerLed{ElementType::Led};
     outerBuilder.add(&outerSw, innerIc, &outerLed);
     outerBuilder.connect(&outerSw, 0, innerIc, 0);
     outerBuilder.connect(innerIc, 0, &outerLed, 0);
@@ -293,7 +292,7 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
 
@@ -385,7 +384,7 @@ void TestICUnit::testAPreviewShowsTheDefaultForAPictureThatIsGone()
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
     InputSwitch innerSw;
-    Led innerLed;
+    Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
     auto *gate = ElementFactory::buildElement(ElementType::And);
@@ -411,7 +410,7 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
     InputSwitch innerSw;
-    Led innerLed;
+    Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
     const QString innerPath = subDir.path() + "/preview_inner.panda";
@@ -422,7 +421,7 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
     InputSwitch outerSw;
     auto *innerIc = new IC;
     innerIc->loadFile(innerPath, subDir.path());
-    Led outerLed;
+    Element outerLed{ElementType::Led};
     outerBuilder.add(&outerSw, innerIc, &outerLed);
     outerBuilder.connect(&outerSw, 0, innerIc, 0);
     outerBuilder.connect(innerIc, 0, &outerLed, 0);
@@ -466,7 +465,7 @@ void TestICUnit::testLoadGrowsLinearlyInICs()
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
     InputSwitch innerSw;
-    Led innerLed;
+    Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
     const QString innerPath = dir.path() + "/linear_inner.panda";
@@ -603,7 +602,7 @@ void TestICUnit::testExecuteShowWithTitleAndPreviewShowsBoth()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
     const QString subPath = subDir.path() + "/popup_probe.panda";
@@ -684,7 +683,7 @@ void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
     CircuitBuilder bigBuilder(bigWorkspace.scene());
     InputSwitch bigSw1, bigSw2;
     Element andGate{ElementType::And};
-    Led bigLed1, bigLed2;
+    Element bigLed1{ElementType::Led}, bigLed2{ElementType::Led};
     bigBuilder.add(&bigSw1, &bigSw2, &andGate, &bigLed1, &bigLed2);
     bigBuilder.connect(&bigSw1, 0, &andGate, 0);
     bigBuilder.connect(&bigSw2, 0, &andGate, 1);
@@ -696,7 +695,7 @@ void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
     WorkSpace smallWorkspace;
     CircuitBuilder smallBuilder(smallWorkspace.scene());
     InputSwitch smallSw;
-    Led smallLed;
+    Element smallLed{ElementType::Led};
     smallBuilder.add(&smallSw, &smallLed);
     smallBuilder.connect(&smallSw, 0, &smallLed, 0);
     const QString smallPath = subDir.path() + "/small.panda";
@@ -760,7 +759,7 @@ IC *hoverProbe(WorkSpace &workspace, const QTemporaryDir &dir, const QPointF &po
         WorkSpace sub;
         CircuitBuilder builder(sub.scene());
         auto *input = new InputSwitch;
-        auto *led = new Led;
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(input, led);
         builder.connect(input, 0, led, 0);
         if (sub.save(path) != WorkSpace::SaveOutcome::Saved) {
@@ -981,7 +980,7 @@ void TestICUnit::testHoverOverPortRequestsPreviewHide()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
     const QString subPath = subDir.path() + "/hover_probe.panda";
@@ -1027,7 +1026,7 @@ void TestICUnit::testDisplayNameForEmbeddedIc()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
     const QString subPath = subDir.path() + "/embedded_probe.panda";
@@ -1119,7 +1118,7 @@ void TestICUnit::testLoadFileDetectsCircularSelfReference()
     WorkSpace baseWorkspace;
     CircuitBuilder baseBuilder(baseWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     baseBuilder.add(&sw, &led);
     baseBuilder.connect(&sw, 0, &led, 0);
     QCOMPARE(baseWorkspace.save(cyclePath), WorkSpace::SaveOutcome::Saved);
@@ -1291,7 +1290,7 @@ void TestICUnit::testLoadBoundaryPortsLogsSummaryAtVerbosity()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
     const QString subPath = subDir.path() + "/verbosity_probe.panda";
@@ -1325,7 +1324,7 @@ void TestICUnit::testDeserializeAndLoadEnforcesNestingDepthLimit()
     WorkSpace leafWorkspace;
     CircuitBuilder leafBuilder(leafWorkspace.scene());
     InputSwitch sw;
-    Led led;
+    Element led{ElementType::Led};
     leafBuilder.add(&sw, &led);
     leafBuilder.connect(&sw, 0, &led, 0);
     const QString leafPath = tempDir.path() + "/level0.panda";

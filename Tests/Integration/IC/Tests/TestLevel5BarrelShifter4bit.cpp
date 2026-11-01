@@ -5,8 +5,9 @@
 
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -20,7 +21,7 @@ struct BarrelShifter4bitFixture {
     InputSwitch *swData[4] = {};
     InputSwitch *swShift[2] = {};
     InputSwitch *swDir = nullptr;
-    Led *ledOut[4] = {};
+    Element *ledOut[4] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -33,7 +34,7 @@ struct BarrelShifter4bitFixture {
 
         for (int i = 0; i < 4; ++i) {
             swData[i] = new InputSwitch();
-            ledOut[i] = new Led();
+            ledOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(swData[i], ledOut[i]);
             builder.connect(swData[i], 0, ic, QString("Data[%1]").arg(i));
             builder.connect(ic, QString("ShiftedData[%1]").arg(i), ledOut[i], 0);

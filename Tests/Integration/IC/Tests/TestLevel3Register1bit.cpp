@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -19,7 +20,7 @@ struct Register1bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *data = nullptr, *clock = nullptr, *writeEnable = nullptr, *reset = nullptr;
-    Led *q = nullptr, *notQ = nullptr;
+    Element *q = nullptr, *notQ = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -31,8 +32,8 @@ struct Register1bitFixture {
         clock = new InputSwitch();
         writeEnable = new InputSwitch();
         reset = new InputSwitch();
-        q = new Led();
-        notQ = new Led();
+        q = ElementFactory::buildElement(ElementType::Led);
+        notQ = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(data, clock, writeEnable, reset, q, notQ);
 

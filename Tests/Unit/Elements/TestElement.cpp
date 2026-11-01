@@ -27,7 +27,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Text.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
@@ -76,13 +75,13 @@ void TestElement::testElementSaveLoad()
 
 void TestElement::testElementSkin()
 {
-    Led led;
+    Element led{ElementType::Led};
     QVERIFY(led.hasColors());
 }
 
 void TestElement::testElementAppearance()
 {
-    Led led;
+    Element led{ElementType::Led};
     led.setColor("Red");
     QCOMPARE(led.color(), QString("Red"));
 }
@@ -171,7 +170,7 @@ void TestElement::testDisplay16Paint()
 void TestElement::testInlineDoubleClickRenamesLabelWithUndo()
 {
     WorkSpace workspace;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("Original");
     workspace.scene()->addItem(led);
 
@@ -197,7 +196,7 @@ void TestElement::testInlineDoubleClickRenamesLabelWithUndo()
 void TestElement::testInlineDoubleClickEscapeCancelsWithoutUndo()
 {
     WorkSpace workspace;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("Original");
     workspace.scene()->addItem(led);
 
@@ -412,7 +411,7 @@ void TestElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
     auto *gate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(gate, led);
     builder.connect(gate, 0, led, 0);
 

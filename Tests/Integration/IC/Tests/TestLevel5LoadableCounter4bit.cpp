@@ -7,8 +7,9 @@
 #include <QFileInfo>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -22,7 +23,7 @@ struct LoadableCounter4bitFixture {
     IC *ic = nullptr;
     InputSwitch *clk = nullptr, *load = nullptr;
     InputSwitch *dataIn[4] = {};
-    Led *counterOut[4] = {};
+    Element *counterOut[4] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -42,7 +43,7 @@ struct LoadableCounter4bitFixture {
 
         for (int i = 0; i < 4; ++i) {
             dataIn[i] = new InputSwitch();
-            counterOut[i] = new Led();
+            counterOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(dataIn[i], counterOut[i]);
             builder.connect(dataIn[i], 0, ic, QString("D[%1]").arg(i));
             builder.connect(ic, QString("Q[%1]").arg(i), counterOut[i], 0);

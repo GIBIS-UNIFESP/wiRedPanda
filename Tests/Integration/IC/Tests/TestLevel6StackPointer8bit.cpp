@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -25,7 +26,7 @@ struct StackPointer8bitFixture {
     InputSwitch *push = nullptr;
     InputSwitch *pop = nullptr;
     InputSwitch *loadVal[8] = {};
-    Led *sp[8] = {};
+    Element *sp[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -45,7 +46,7 @@ struct StackPointer8bitFixture {
 
         for (int i = 0; i < 8; ++i) {
             loadVal[i] = new InputSwitch();
-            sp[i] = new Led();
+            sp[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(loadVal[i], sp[i]);
         }
 

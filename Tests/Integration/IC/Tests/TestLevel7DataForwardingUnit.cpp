@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -25,7 +26,7 @@ struct DataForwardingUnitFixture {
     QVector<Element *> dataCInputs;
     QVector<Element *> dataDInputs;
     QVector<Element *> selectInputs;
-    QVector<Led *> outputLeds;
+    QVector<Element *> outputLeds;
     Simulation *sim = nullptr;
 
     bool build()
@@ -41,7 +42,7 @@ struct DataForwardingUnitFixture {
             auto *b = new InputSwitch(); builder.add(b); dataBInputs.append(b);
             auto *c = new InputSwitch(); builder.add(c); dataCInputs.append(c);
             auto *d = new InputSwitch(); builder.add(d); dataDInputs.append(d);
-            auto *led = new Led(); builder.add(led); outputLeds.append(led);
+            auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); outputLeds.append(led);
         }
 
         for (int i = 0; i < 2; i++) {

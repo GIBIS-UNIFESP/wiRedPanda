@@ -22,7 +22,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -340,7 +339,7 @@ void TestGoldens::testElementsById()
     // The order a walk of the scene gives is the scene's own; the dumps list elements by id instead.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     auto *sw = new InputSwitch();
     auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(led);

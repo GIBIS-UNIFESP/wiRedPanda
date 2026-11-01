@@ -14,8 +14,8 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/Settings.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
@@ -386,7 +386,8 @@ void TestWorkspace::testAutosaveFileNameFormatSavedProject()
     int ledCount = 0;
     const auto items = loadedScene->items();
     for (auto *item : std::as_const(items)) {
-        if (dynamic_cast<Led *>(item)) {
+        if (auto *element = qgraphicsitem_cast<Element *>(item);
+            element && (element->elementType() == ElementType::Led)) {
             ledCount++;
         }
     }

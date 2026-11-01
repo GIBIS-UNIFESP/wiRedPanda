@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPURegisters.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -39,8 +41,8 @@ void TestCPURegisters::testFlagRegister()
     InputSwitch *negativeInput = new InputSwitch();
     InputSwitch *flagWrite = new InputSwitch();
     InputSwitch *clock = new InputSwitch();
-    Led *zeroOut = new Led();
-    Led *negativeOut = new Led();
+    Element *zeroOut = ElementFactory::buildElement(ElementType::Led);
+    Element *negativeOut = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut));
     auto *sim = workspace->simulation();
     // Initialize - all inputs off
@@ -97,8 +99,8 @@ void TestCPURegisters::testFlagRegisterPersistence()
     InputSwitch *negativeInput = new InputSwitch();
     InputSwitch *flagWrite = new InputSwitch();
     InputSwitch *clock = new InputSwitch();
-    Led *zeroOut = new Led();
-    Led *negativeOut = new Led();
+    Element *zeroOut = ElementFactory::buildElement(ElementType::Led);
+    Element *negativeOut = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut));
     auto *sim = workspace->simulation();
 
@@ -133,10 +135,10 @@ void TestCPURegisters::testInstructionRegister()
     QFETCH(int, expectedIR);
     QVector<InputSwitch *> instruction;
     InputSwitch *load, *clock;
-    QVector<Led *> ir;
+    QVector<Element *> ir;
     for (int i = 0; i < 8; i++) {
         instruction.append(new InputSwitch());
-        ir.append(new Led());
+        ir.append(ElementFactory::buildElement(ElementType::Led));
     }
     load = new InputSwitch();
     clock = new InputSwitch();
@@ -210,10 +212,10 @@ void TestCPURegisters::testSingleGatedRegister()
 {
     InputSwitch *writeData[8];
     InputSwitch *decoderOut, *writeEnable, *clock;
-    Led *readOut[8];
+    Element *readOut[8];
     for (int i = 0; i < 8; i++) {
         writeData[i] = new InputSwitch();
-        readOut[i] = new Led();
+        readOut[i] = ElementFactory::buildElement(ElementType::Led);
     }
     decoderOut = new InputSwitch();
     writeEnable = new InputSwitch();

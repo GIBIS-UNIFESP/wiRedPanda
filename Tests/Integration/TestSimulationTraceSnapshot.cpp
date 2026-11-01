@@ -22,7 +22,6 @@
 #include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -434,7 +433,7 @@ void TestSimulationTraceSnapshot::testClocksHoldWhileStepped()
     auto *clock = new Clock();
     clock->setFrequency(1000.0);
     scene->addItem(clock);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 0);
     scene->addItem(led);
     auto *wire = new Connection();

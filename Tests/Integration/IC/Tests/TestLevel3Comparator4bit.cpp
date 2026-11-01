@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel3Comparator4bit.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -17,7 +18,7 @@ struct Comparator4bitFixture {
     IC *ic = nullptr;
     InputSwitch *swA[4] = {}, *swB[4] = {};
     InputSwitch *swGtIn = nullptr, *swEqIn = nullptr, *swLtIn = nullptr;
-    Led *ledGreater = nullptr, *ledEqual = nullptr, *ledLess = nullptr;
+    Element *ledGreater = nullptr, *ledEqual = nullptr, *ledLess = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -38,9 +39,9 @@ struct Comparator4bitFixture {
         swLtIn = new InputSwitch();
         builder.add(swGtIn, swEqIn, swLtIn);
 
-        ledGreater = new Led();
-        ledEqual = new Led();
-        ledLess = new Led();
+        ledGreater = ElementFactory::buildElement(ElementType::Led);
+        ledEqual = ElementFactory::buildElement(ElementType::Led);
+        ledLess = ElementFactory::buildElement(ElementType::Led);
         builder.add(ledGreater, ledEqual, ledLess);
 
         for (int i = 0; i < 4; ++i) {

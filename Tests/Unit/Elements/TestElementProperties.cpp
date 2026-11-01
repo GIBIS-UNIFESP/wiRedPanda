@@ -7,9 +7,9 @@
 #include <QDataStream>
 #include <QIODevice>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
@@ -147,7 +147,7 @@ void TestElementProperties::testOutputSizeFixed()
     QCOMPARE(clock.outputSize(), 1);  // Unchanged
 
     // LED: outputs [0, 0] (no outputs)
-    Led led;
+    Element led{ElementType::Led};
     QCOMPARE(led.outputSize(), 0);
     QCOMPARE(led.minOutputSize(), 0);
     QCOMPARE(led.maxOutputSize(), 0);
@@ -217,7 +217,7 @@ void TestElementProperties::testLabelPersistence()
 
 void TestElementProperties::testColorProperty()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Verify has color support
     QVERIFY(led.hasColors());
@@ -241,7 +241,7 @@ void TestElementProperties::testColorProperty()
 
 void TestElementProperties::testColorCycling()
 {
-    Led led;
+    Element led{ElementType::Led};
 
     // Start with White
     led.setColor("White");
@@ -401,7 +401,7 @@ void TestElementProperties::testPropertiesSaveLoad()
     andGate->setRotation(90.0);
     workspace1.scene()->addItem(andGate);
 
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setInputSize(3);
     led->setLabel("SavedLED");
     led->setColor("Blue");
@@ -430,14 +430,14 @@ void TestElementProperties::testPropertiesSaveLoad()
 
     // Find elements by type
     Element *loadedAnd = nullptr;
-    Led *loadedLed = nullptr;
+    Element *loadedLed = nullptr;
     Clock *loadedClock = nullptr;
 
     for (auto *elem : elements) {
         if (elem->elementType() == ElementType::And) {
             loadedAnd = elem;
         } else if (elem->elementType() == ElementType::Led) {
-            loadedLed = dynamic_cast<Led *>(elem);
+            loadedLed = elem;
         } else if (elem->elementType() == ElementType::Clock) {
             loadedClock = dynamic_cast<Clock *>(elem);
         }

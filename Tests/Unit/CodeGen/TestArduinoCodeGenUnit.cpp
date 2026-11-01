@@ -18,7 +18,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/Goldens.h"
@@ -44,7 +43,7 @@ void TestArduinoCodeGenUnit::testAndGateCircuit()
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, andGate, led);
     builder.connect(sw1, 0, andGate, 0);
@@ -76,7 +75,7 @@ void TestArduinoCodeGenUnit::testMultiGateCircuit()
     auto *sw2 = new InputSwitch;
     auto *orGate = ElementFactory::buildElement(ElementType::Or);
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, orGate, notGate, led);
     builder.connect(sw1, 0, orGate, 0);
@@ -109,7 +108,7 @@ void TestArduinoCodeGenUnit::testMuxCircuit()
     auto *sw2 = new InputSwitch;
     auto *swSel = new InputSwitch;
     auto *mux = ElementFactory::buildElement(ElementType::Mux);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, swSel, mux, led);
     builder.connect(sw1, 0, mux, 0);
@@ -140,8 +139,8 @@ void TestArduinoCodeGenUnit::testDemuxCircuit()
     auto *swData = new InputSwitch;
     auto *swSel = new InputSwitch;
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
-    auto *led1 = new Led;
-    auto *led2 = new Led;
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(swData, swSel, demux, led1, led2);
     builder.connect(swData, 0, demux, 0);
@@ -193,8 +192,8 @@ void TestArduinoCodeGenUnit::testTruthTableMultiOutput()
     auto *sw2 = new InputSwitch;
     auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     tt->setOutputSize(2);
-    auto *led0 = new Led;
-    auto *led1 = new Led;
+    auto *led0 = ElementFactory::buildElement(ElementType::Led);
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, tt, led0, led1);
     builder.connect(sw1, 0, tt, 0);
@@ -233,8 +232,8 @@ void TestArduinoCodeGenUnit::testSRLatchCircuit()
     auto *swS = new InputSwitch;
     auto *swR = new InputSwitch;
     auto *latch = ElementFactory::buildElement(ElementType::SRLatch);
-    auto *ledQ = new Led;
-    auto *ledNotQ = new Led;
+    auto *ledQ = ElementFactory::buildElement(ElementType::Led);
+    auto *ledNotQ = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(swS, swR, latch, ledQ, ledNotQ);
     builder.connect(swS, 0, latch, 0);
@@ -267,10 +266,10 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchDeclaresSequentialState()
     auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
     auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
     auto *srff = ElementFactory::buildElement(ElementType::SRFlipFlop);
-    auto *led1 = new Led;
-    auto *led2 = new Led;
-    auto *led3 = new Led;
-    auto *led4 = new Led;
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
+    auto *led3 = ElementFactory::buildElement(ElementType::Led);
+    auto *led4 = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(clk, sw, dff, tff, jkff, srff, led1, led2, led3, led4);
     builder.connect(sw, 0, dff, 0);
@@ -395,7 +394,7 @@ void TestArduinoCodeGenUnit::testTruthTableInputTiedToVccResolvesToHigh()
     auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
     auto *sw = new InputSwitch;
     auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(vcc, sw, tt, led);
     builder.connect(vcc, 0, tt, 0); // always-HIGH input
@@ -428,7 +427,7 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchNonSequentialSettleLoop()
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(sw1, sw2, andGate, led);
     builder.connect(sw1, 0, andGate, 0);
@@ -462,10 +461,10 @@ void TestArduinoCodeGenUnit::testDemuxWithFourOutputsUsesTwoSelectLines()
     auto *swSel1 = new InputSwitch;
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     demux->setOutputSize(4);
-    auto *led0 = new Led;
-    auto *led1 = new Led;
-    auto *led2 = new Led;
-    auto *led3 = new Led;
+    auto *led0 = ElementFactory::buildElement(ElementType::Led);
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
+    auto *led3 = ElementFactory::buildElement(ElementType::Led);
 
     builder.add(swData, swSel0, swSel1, demux, led0, led1, led2, led3);
     builder.connect(swData, 0, demux, 0);
@@ -517,7 +516,7 @@ void andGate(CircuitBuilder &builder)
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *gate = ElementFactory::buildElement(ElementType::And);
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw1, sw2, gate, led);
     builder.connect(sw1, 0, gate, 0);
     builder.connect(sw2, 0, gate, 1);
@@ -544,7 +543,7 @@ void TestArduinoCodeGenUnit::testClockIntervalFollowsItsFrequency()
     CircuitBuilder builder(workspace.scene());
 
     auto *clk = new Clock;
-    auto *led = new Led;
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(clk, led);
     builder.connect(clk, 0, led, 0);
     clk->setFrequency(4.0); // not the default, which the sketch would show all the same

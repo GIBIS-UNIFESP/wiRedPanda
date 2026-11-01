@@ -21,8 +21,8 @@
 #include <QVector>
 
 #include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -320,7 +320,7 @@ void TestDanglingPointer::jd_initializeMustSkipIncompleteConnections()
     auto *sim = scene->simulation();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -540,7 +540,7 @@ void TestDanglingPointer::jd_cancelledWireMustNotLeaveDanglingPointer()
     auto *sim = scene->simulation();
 
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 
@@ -581,7 +581,7 @@ void TestDanglingPointer::hcDrainConnectionsMustCleanRegistry()
     WorkSpace ws;
     auto *scene = ws.scene();
     auto *sw = new InputSwitch();
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
 

@@ -9,7 +9,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestClocksAdvanced::testClockBehavior()
@@ -18,7 +17,7 @@ void TestClocksAdvanced::testClockBehavior()
     CircuitBuilder builder(workspace.scene());
 
     Clock clock;
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&clock, &led);
     builder.connect(&clock, 0, &led, 0);

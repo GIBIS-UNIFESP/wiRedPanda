@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel2Decoder3to8.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +17,7 @@ struct Decoder3to8Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *swAddr[3] = {};
-    Led *ledOut[8] = {};
+    Element *ledOut[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -29,7 +30,7 @@ struct Decoder3to8Fixture {
             builder.add(swAddr[i]);
         }
         for (int i = 0; i < 8; ++i) {
-            ledOut[i] = new Led();
+            ledOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(ledOut[i]);
         }
 
@@ -124,9 +125,9 @@ void TestLevel2Decoder3To8::testEnableGating()
     }
     auto *en = new InputSwitch();
     builder.add(en);
-    Led *outs[8] = {};
+    Element *outs[8] = {};
     for (auto &o : outs) {
-        o = new Led();
+        o = ElementFactory::buildElement(ElementType::Led);
         builder.add(o);
     }
 

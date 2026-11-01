@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -22,8 +23,8 @@ struct ProgramCounter4bitFixture {
     IC *ic = nullptr;
     QVector<Element *> loadValueInputs;
     InputSwitch *clock = nullptr, *load = nullptr, *inc = nullptr, *reset = nullptr;
-    QVector<Led *> pcOutputs;
-    QVector<Led *> pcPlus1Outputs;
+    QVector<Element *> pcOutputs;
+    QVector<Element *> pcPlus1Outputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -47,8 +48,8 @@ struct ProgramCounter4bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 4; ++i) {
-            auto *p = new Led();
-            auto *p1 = new Led();
+            auto *p = ElementFactory::buildElement(ElementType::Led);
+            auto *p1 = ElementFactory::buildElement(ElementType::Led);
             builder.add(p, p1);
             pcOutputs.append(p);
             pcPlus1Outputs.append(p1);

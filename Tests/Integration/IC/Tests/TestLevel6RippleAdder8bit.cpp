@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,8 +24,8 @@ struct RippleAdder8bitFixture {
     InputSwitch *a[8] = {};
     InputSwitch *b[8] = {};
     InputSwitch *carryIn = nullptr;
-    Led *sum[8] = {};
-    Led *carryOut = nullptr;
+    Element *sum[8] = {};
+    Element *carryOut = nullptr;
     Simulation *sim = nullptr;
 
     bool build()
@@ -50,12 +51,12 @@ struct RippleAdder8bitFixture {
         carryIn->setLabel("CarryIn");
 
         for (int i = 0; i < 8; i++) {
-            sum[i] = new Led();
+            sum[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(sum[i]);
             sum[i]->setLabel(QString("Sum[%1]").arg(i));
         }
 
-        carryOut = new Led();
+        carryOut = ElementFactory::buildElement(ElementType::Led);
         builder.add(carryOut);
         carryOut->setLabel("CarryOut");
 

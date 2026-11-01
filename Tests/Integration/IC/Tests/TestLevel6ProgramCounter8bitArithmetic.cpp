@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -26,8 +27,8 @@ struct ProgramCounter8bitArithFixture {
     InputSwitch *load = nullptr;
     InputSwitch *inc = nullptr;
     InputSwitch *reset = nullptr;
-    QVector<Led *> pcOutputs;
-    QVector<Led *> pcPlus1Outputs;
+    QVector<Element *> pcOutputs;
+    QVector<Element *> pcPlus1Outputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -62,12 +63,12 @@ struct ProgramCounter8bitArithFixture {
         reset->setLabel("Reset");
 
         for (int i = 0; i < 8; i++) {
-            auto *p = new Led();
+            auto *p = ElementFactory::buildElement(ElementType::Led);
             builder.add(p);
             p->setLabel(QString("pc[%1]").arg(i));
             pcOutputs.append(p);
 
-            auto *p1 = new Led();
+            auto *p1 = ElementFactory::buildElement(ElementType::Led);
             builder.add(p1);
             p1->setLabel(QString("pc_plus_1[%1]").arg(i));
             pcPlus1Outputs.append(p1);

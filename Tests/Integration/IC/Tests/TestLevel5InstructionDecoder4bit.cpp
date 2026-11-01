@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -20,7 +21,7 @@ struct InstructionDecoder4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> instrInputs;
-    QVector<Led *> opOutputs;
+    QVector<Element *> opOutputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -38,7 +39,7 @@ struct InstructionDecoder4bitFixture {
             builder.connect(sw, 0, ic, QString("instr[%1]").arg(i));
         }
         for (int i = 0; i < 16; ++i) {
-            auto *led = new Led();
+            auto *led = ElementFactory::buildElement(ElementType::Led);
             builder.add(led);
             opOutputs.append(led);
             builder.connect(ic, QString("op[%1]").arg(i), led, 0);

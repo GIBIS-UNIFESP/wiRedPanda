@@ -10,9 +10,9 @@
 #include <QTabWidget>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
@@ -476,7 +476,7 @@ void TestBaseHandler::testAvailableOutputPortsHandlesNullZeroAndNamed()
 
     QCOMPARE(handler.availableOutputPorts(nullptr), QStringLiteral("(element is null)"));
 
-    Led led; // 0 output ports (display-only element)
+    Element led{ElementType::Led}; // 0 output ports (display-only element)
     QCOMPARE(handler.availableOutputPorts(&led), QStringLiteral("(no output ports)"));
 
     Element andGate{ElementType::And};

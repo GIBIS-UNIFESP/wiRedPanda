@@ -24,11 +24,12 @@ private slots:
     void testSetColorPurple();
     void testGetColor();
 
-    // Color index tests
-    void testColorIndexSingleInput();
-    void testColorIndexTwoInputs();
-    void testColorIndexThreeInputs();
-    void testColorIndexFourInputs();
+    // Shown slot tests
+    void testShownSlotSingleInput();
+    void testShownSlotTwoInputs();
+    void testShownSlotThreeInputs();
+    void testShownSlotFourInputs();
+    void testShownSlotWithTwoDriversOnAnInput();
 
     // Port properties tests
     void testUpdatePortsProperties();

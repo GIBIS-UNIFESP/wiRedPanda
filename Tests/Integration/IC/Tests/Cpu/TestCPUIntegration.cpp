@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUIntegration.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -31,10 +33,10 @@ void TestCPUIntegration::testProgramCounterIncrement()
     InputSwitch *pc_clock = new InputSwitch();
     InputSwitch *reset = new InputSwitch();
     QVector<InputSwitch *> pc_load_val;
-    QVector<Led *> pc_out;
+    QVector<Element *> pc_out;
     for (int i = 0; i < 8; i++) {
         pc_load_val.append(new InputSwitch());
-        pc_out.append(new Led());
+        pc_out.append(ElementFactory::buildElement(ElementType::Led));
     }
     InputSwitch *pc_load = new InputSwitch();
     InputSwitch *pc_inc = new InputSwitch();

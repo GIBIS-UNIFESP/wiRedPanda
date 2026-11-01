@@ -17,9 +17,9 @@
 #include <QSignalSpy>
 #include <QWheelEvent>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -171,7 +171,7 @@ void TestGraphicsView::testZoomToFit()
     auto *inputSwitch = new InputSwitch();
     inputSwitch->setPos(0, 0);
     scene->addItem(inputSwitch);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(3000, 2000);
     scene->addItem(led);
 
@@ -453,7 +453,7 @@ void TestGraphicsView::testZoomToFitIgnoresARubberBandOutsideTheCircuit()
             pointer.move(QPointF(3200, 3200));
             pointer.release(QPointF(3200, 3200));
         }
-        auto *led = new Led();
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         led->setPos(64, 0);
         scene->addItem(led);
         scene->setPropertyUpdateRequired();
@@ -486,7 +486,7 @@ void TestGraphicsView::testZoomToFitFitsSelectionOnly()
     auto *inputSwitch = new InputSwitch();
     inputSwitch->setPos(0, 0);
     scene->addItem(inputSwitch);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(3000, 2000);
     scene->addItem(led);
 

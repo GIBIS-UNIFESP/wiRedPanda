@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -28,9 +29,9 @@ struct StackMemoryInterfaceFixture {
     InputSwitch *addressSelect = nullptr;
     InputSwitch *memWrite = nullptr;
     InputSwitch *clk = nullptr;
-    Led *spOut[8] = {};
-    Led *dataOutLeds[8] = {};
-    Led *finalAddrLeds[8] = {};
+    Element *spOut[8] = {};
+    Element *dataOutLeds[8] = {};
+    Element *finalAddrLeds[8] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -54,9 +55,9 @@ struct StackMemoryInterfaceFixture {
         for (int i = 0; i < 8; ++i) {
             dataInSwitches[i] = new InputSwitch();
             addressSwitches[i] = new InputSwitch();
-            spOut[i] = new Led();
-            dataOutLeds[i] = new Led();
-            finalAddrLeds[i] = new Led();
+            spOut[i] = ElementFactory::buildElement(ElementType::Led);
+            dataOutLeds[i] = ElementFactory::buildElement(ElementType::Led);
+            finalAddrLeds[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(dataInSwitches[i], addressSwitches[i], spOut[i], dataOutLeds[i], finalAddrLeds[i]);
         }
 

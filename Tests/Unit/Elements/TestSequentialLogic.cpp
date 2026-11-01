@@ -14,9 +14,9 @@
 #include <QTemporaryDir>
 
 #include "App/Core/ThemeManager.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
@@ -108,7 +108,7 @@ void TestSequentialLogic::testDFlipFlopBehavior()
 
     InputSwitch swD, swClk;
     Element dff{ElementType::DFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swD, &swClk, &dff, &ledQ, &ledNQ);
     builder.connect(&swD, 0, &dff, 0);    // D
@@ -149,7 +149,7 @@ void TestSequentialLogic::testDLatchBehavior()
 
     InputSwitch swD, swEnable;
     Element dlatch{ElementType::DLatch};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swD, &swEnable, &dlatch, &ledQ, &ledNQ);
     builder.connect(&swD, 0, &dlatch, 0);      // D
@@ -192,7 +192,7 @@ void TestSequentialLogic::testJKFlipFlopBehavior()
 
     InputSwitch swJ, swClk, swK;
     Element jkff{ElementType::JKFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swJ, &swClk, &swK, &jkff, &ledQ, &ledNQ);
     builder.connect(&swJ, 0, &jkff, 0);   // J
@@ -245,7 +245,7 @@ void TestSequentialLogic::testSRFlipFlopBehavior()
 
     InputSwitch swS, swClk, swR;
     Element srff{ElementType::SRFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swS, &swClk, &swR, &srff, &ledQ, &ledNQ);
     builder.connect(&swS, 0, &srff, 0);   // S
@@ -292,7 +292,7 @@ void TestSequentialLogic::testSRLatchBehavior()
 
     InputSwitch swS, swR;
     Element srlatch{ElementType::SRLatch};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swS, &swR, &srlatch, &ledQ, &ledNQ);
     builder.connect(&swS, 0, &srlatch, 0); // Set
@@ -340,7 +340,7 @@ void TestSequentialLogic::testTFlipFlopBehavior()
 
     InputSwitch swT, swClk;
     Element tff{ElementType::TFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swT, &swClk, &tff, &ledQ, &ledNQ);
     builder.connect(&swT, 0, &tff, 0);    // T
@@ -383,7 +383,7 @@ void TestSequentialLogic::testSRFlipFlopWithOneOfSAndROpen()
 
     InputSwitch swClk, swS, swR, swPreset;
     Element setOnly{ElementType::SRFlipFlop}, resetOnly{ElementType::SRFlipFlop};
-    Led ledSet, ledReset;
+    Element ledSet{ElementType::Led}, ledReset{ElementType::Led};
 
     builder.add(&swClk, &swS, &swR, &swPreset, &setOnly, &resetOnly, &ledSet, &ledReset);
     builder.connect(&swS, 0, &setOnly, 0);        // S; R open
@@ -426,7 +426,7 @@ void TestSequentialLogic::testTFlipFlopWithTOpen()
 
     InputSwitch swClk, swPreset, swClear;
     Element tff{ElementType::TFlipFlop};
-    Led ledQ;
+    Element ledQ{ElementType::Led};
 
     builder.add(&swClk, &swPreset, &swClear, &tff, &ledQ);
     builder.connect(&swClk, 0, &tff, 1);    // T open
@@ -477,7 +477,7 @@ void TestSequentialLogic::testDFlipFlopResetSimState()
 
     InputSwitch swD, swClk;
     Element dff{ElementType::DFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swD, &swClk, &dff, &ledQ, &ledNQ);
     builder.connect(&swD, 0, &dff, 0);
@@ -514,7 +514,7 @@ void TestSequentialLogic::testJKFlipFlopResetSimState()
 
     InputSwitch swJ, swClk, swK;
     Element jkff{ElementType::JKFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swJ, &swClk, &swK, &jkff, &ledQ, &ledNQ);
     builder.connect(&swJ, 0, &jkff, 0);
@@ -553,7 +553,7 @@ void TestSequentialLogic::testSRFlipFlopResetSimState()
 
     InputSwitch swS, swClk, swR;
     Element srff{ElementType::SRFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swS, &swClk, &swR, &srff, &ledQ, &ledNQ);
     builder.connect(&swS, 0, &srff, 0);
@@ -592,7 +592,7 @@ void TestSequentialLogic::testTFlipFlopResetSimState()
 
     InputSwitch swT, swClk;
     Element tff{ElementType::TFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swT, &swClk, &tff, &ledQ, &ledNQ);
     builder.connect(&swT, 0, &tff, 0);

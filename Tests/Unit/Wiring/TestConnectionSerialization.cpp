@@ -9,8 +9,8 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
@@ -174,7 +174,7 @@ void TestConnectionSerialization::testLoadPortTypeResolution()
     auto *scene = workspace.scene();
 
     auto sw = std::make_unique<InputSwitch>();
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
     scene->addItem(sw.get());
     scene->addItem(led.get());
 
@@ -350,7 +350,7 @@ void TestConnectionSerialization::testSaveLoadPreservesConnectionStatus()
     auto *scene = workspace.scene();
 
     auto sw = std::make_unique<InputSwitch>();
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
     scene->addItem(sw.get());
     scene->addItem(led.get());
 

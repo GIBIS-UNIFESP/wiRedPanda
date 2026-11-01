@@ -26,7 +26,6 @@
 #include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -95,7 +94,7 @@ IC *icWithABrokenFile(Scene *scene, const QTemporaryDir &dir)
     {
         WorkSpace sub;
         sub.scene()->addItem(new InputSwitch());
-        sub.scene()->addItem(new Led());
+        sub.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         sub.save(path);
     }
     auto *ic = new IC();

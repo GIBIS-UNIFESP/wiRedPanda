@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUInstructionFetch.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -33,12 +35,12 @@ void TestCPUInstructionFetch::testInstructionFetch()
     QFETCH(int, cyclesPerFetch);
     // This is an integration test combining PC + Memory + IR
     QVector<InputSwitch *> pcLoadVal;
-    QVector<Led *> pcOut;
+    QVector<Element *> pcOut;
     InputSwitch *pcLoad, *pcInc, *pcReset;
     InputSwitch *clock;
     for (int i = 0; i < 8; i++) {
         pcLoadVal.append(new InputSwitch());
-        pcOut.append(new Led());
+        pcOut.append(ElementFactory::buildElement(ElementType::Led));
     }
     pcLoad = new InputSwitch();
     pcInc = new InputSwitch();

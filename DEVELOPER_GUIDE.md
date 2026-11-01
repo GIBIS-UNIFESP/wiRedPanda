@@ -443,12 +443,12 @@ QGraphicsObject
         │     ├── InputButton     (momentary press)
         │     ├── InputRotary     (multi-position rotary switch)
         │     └── Clock           (frequency-driven square wave)
-        ├── Led, Buzzer, AudioBox (output elements)
+        ├── Buzzer, AudioBox      (output elements)
         ├── IC                    (sub-circuit / integrated circuit)
         └── Node, Text            (structural/annotation)
 ```
 
-The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the 7-, 14- and 16-segment displays, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
+The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
 
 ### Element: The Base Class
 
@@ -1170,8 +1170,8 @@ WorkSpace workspace;
 // CircuitBuilder reduces wiring boilerplate
 CircuitBuilder builder(workspace.scene());
 InputSwitch sw1, sw2;
-And andGate;
-Led led;
+Element andGate{ElementType::And};
+Element led{ElementType::Led};
 builder.add(&sw1, &sw2, &andGate, &led);
 builder.connect(&sw1, 0, &andGate, 0);  // sw1 output 0 → AND input 0
 builder.connect(&sw2, 0, &andGate, 1);  // sw2 output 0 → AND input 1
@@ -1228,7 +1228,6 @@ private slots:
 #include "TestMyGate.h"
 #include "Tests/Common/TestUtils.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 
 void TestMyGate::testAndTruthTable()
 {
@@ -1237,7 +1236,7 @@ void TestMyGate::testAndTruthTable()
 
     InputSwitch sw0, sw1;
     Element gate{ElementType::And};
-    Led led;
+    Element led{ElementType::Led};
 
     builder.add(&sw0, &sw1, &gate, &led);
     builder.connect(&sw0, 0, &gate, 0);
@@ -1276,7 +1275,7 @@ void TestMyFlipFlop::testDFlipFlop()
 
     InputSwitch swD, swClk;
     Element dff{ElementType::DFlipFlop};
-    Led ledQ, ledNQ;
+    Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
     builder.add(&swD, &swClk, &dff, &ledQ, &ledNQ);
     builder.connect(&swD, 0, &dff, 0);       // D input

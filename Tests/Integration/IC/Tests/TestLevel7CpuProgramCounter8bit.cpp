@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -26,7 +27,7 @@ struct CpuPC8bitFixture {
     InputSwitch *load = nullptr;
     InputSwitch *inc = nullptr;
     InputSwitch *reset = nullptr;
-    QVector<Led *> addressOutputs;
+    QVector<Element *> addressOutputs;
     Simulation *sim = nullptr;
 
     bool build()
@@ -61,7 +62,7 @@ struct CpuPC8bitFixture {
         reset->setLabel("Reset");
 
         for (int i = 0; i < 8; i++) {
-            auto *addr = new Led();
+            auto *addr = ElementFactory::buildElement(ElementType::Led);
             builder.add(addr);
             addr->setLabel(QString("Address[%1]").arg(i));
             addressOutputs.append(addr);

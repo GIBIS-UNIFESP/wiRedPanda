@@ -3,8 +3,9 @@
 
 #include "Tests/Integration/IC/Tests/TestLevel2Decoder2to4.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,7 +19,7 @@ struct Decoder2to4Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     InputSwitch *addressBits[2] = {};
-    Led *outputs[4] = {};
+    Element *outputs[4] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -31,7 +32,7 @@ struct Decoder2to4Fixture {
             builder.add(addressBits[i]);
         }
         for (int i = 0; i < 4; ++i) {
-            outputs[i] = new Led();
+            outputs[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(outputs[i]);
         }
 
@@ -141,9 +142,9 @@ void TestLevel2Decoder2To4::testEnableGating()
     auto *a1 = new InputSwitch();
     auto *en = new InputSwitch();
     builder.add(a0, a1, en);
-    Led *outs[4] = {};
+    Element *outs[4] = {};
     for (auto &o : outs) {
-        o = new Led();
+        o = ElementFactory::buildElement(ElementType::Led);
         builder.add(o);
     }
 

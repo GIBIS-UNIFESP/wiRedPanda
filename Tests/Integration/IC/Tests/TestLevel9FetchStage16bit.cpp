@@ -6,8 +6,9 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -29,12 +30,12 @@ struct FetchStage16bitFixture {
     InputSwitch *progAddr[8] = {};
     InputSwitch *progData[16] = {};
     InputSwitch *progWrite = nullptr;
-    Led *pc[8] = {};
-    Led *instruction[16] = {};
-    Led *rawInstr[16] = {};
-    Led *opCode[5] = {};
-    Led *destReg[5] = {};
-    Led *srcBits[6] = {};
+    Element *pc[8] = {};
+    Element *instruction[16] = {};
+    Element *rawInstr[16] = {};
+    Element *opCode[5] = {};
+    Element *destReg[5] = {};
+    Element *srcBits[6] = {};
     Simulation *sim = nullptr;
 
     bool build()
@@ -53,25 +54,25 @@ struct FetchStage16bitFixture {
 
         for (int i = 0; i < 8; ++i) {
             pcDataIn[i] = new InputSwitch();
-            pc[i] = new Led();
+            pc[i] = ElementFactory::buildElement(ElementType::Led);
             progAddr[i] = new InputSwitch();
             builder.add(pcDataIn[i], pc[i], progAddr[i]);
         }
         progWrite = new InputSwitch();
         builder.add(progWrite);
         for (int i = 0; i < 16; ++i) {
-            instruction[i] = new Led();
-            rawInstr[i] = new Led();
+            instruction[i] = ElementFactory::buildElement(ElementType::Led);
+            rawInstr[i] = ElementFactory::buildElement(ElementType::Led);
             progData[i] = new InputSwitch();
             builder.add(instruction[i], rawInstr[i], progData[i]);
         }
         for (int i = 0; i < 5; ++i) {
-            opCode[i] = new Led();
-            destReg[i] = new Led();
+            opCode[i] = ElementFactory::buildElement(ElementType::Led);
+            destReg[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(opCode[i], destReg[i]);
         }
         for (int i = 0; i < 6; ++i) {
-            srcBits[i] = new Led();
+            srcBits[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(srcBits[i]);
         }
 

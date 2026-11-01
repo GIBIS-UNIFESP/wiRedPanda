@@ -21,7 +21,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
@@ -242,7 +241,7 @@ void TestSystemVerilogExport::testWirelessRxReachedByAWireFollowsItsTx()
     rxNode->setLabel("CH");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
     led->setLabel("Shown");
 
     const auto connect = [](OutputPort *start, InputPort *end) {
@@ -292,7 +291,7 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     rxNode->setLabel("CLK");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
 
     // Physical wire: InputSwitch → Tx node, Rx node → LED
     auto *swOut = sw->outputPort(0);
@@ -364,7 +363,7 @@ void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
     rxNode->setLabel("MISSING_TX");
     rxNode->setWirelessMode(WirelessMode::Rx);
 
-    auto led = std::make_unique<Led>();
+    auto led = std::make_unique<Element>(ElementType::Led);
 
     auto conn = std::make_unique<Connection>();
     conn->setStartPort(rxNode->outputPort(0));
@@ -408,7 +407,7 @@ void TestSystemVerilogExport::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
     ic->setLabel("Evil\nmodule injected_module; endmodule");
 
     std::vector<std::unique_ptr<InputSwitch>> switchOwners;
-    std::vector<std::unique_ptr<Led>> ledOwners;
+    std::vector<std::unique_ptr<Element>> ledOwners;
     std::vector<std::unique_ptr<Connection>> connOwners;
     QVector<Element *> elements{ic.get()};
 
@@ -423,7 +422,7 @@ void TestSystemVerilogExport::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
     }
 
     for (int i = 0; i < ic->outputSize(); ++i) {
-        auto led = std::make_unique<Led>();
+        auto led = std::make_unique<Element>(ElementType::Led);
         auto conn = std::make_unique<Connection>();
         conn->setStartPort(ic->outputPort(i));
         conn->setEndPort(led->inputPort(0));
@@ -576,7 +575,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
     // Create LEDs (one per IC output)
     QVector<Element *> leds;
     for (int i = 0; i < ic->outputSize(); ++i) {
-        auto *led = new Led();
+        auto *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(led);
         leds.append(led);
         builder.connect(ic, i, led, 0);
@@ -1416,9 +1415,9 @@ void TestSystemVerilogExport::testTruthTablesCompileAndSimulate()
     auto *andTable = ElementFactory::buildElement(ElementType::TruthTable);
     auto *orXorTable = ElementFactory::buildElement(ElementType::TruthTable);
     orXorTable->setOutputSize(2);
-    auto *ledAnd = new Led();
-    auto *ledOr = new Led();
-    auto *ledXor = new Led();
+    auto *ledAnd = ElementFactory::buildElement(ElementType::Led);
+    auto *ledOr = ElementFactory::buildElement(ElementType::Led);
+    auto *ledXor = ElementFactory::buildElement(ElementType::Led);
     builder.add(swA, swB, andTable, orXorTable, ledAnd, ledOr, ledXor);
     swA->setLabel("A");
     swB->setLabel("B");
@@ -1538,7 +1537,7 @@ void TestSystemVerilogExport::testTopLevelFeedbackLatchHoldsStateInExport()
     auto *swR = new InputSwitch();
     auto *nandQ = ElementFactory::buildElement(ElementType::Nand);
     auto *nandQBar = ElementFactory::buildElement(ElementType::Nand);
-    auto *led = new Led();
+    auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(swS, swR, nandQ, nandQBar, led);
     swS->setLabel("NS");
     swR->setLabel("NR");

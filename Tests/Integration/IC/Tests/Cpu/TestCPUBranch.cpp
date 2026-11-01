@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/IC/Tests/Cpu/TestCPUBranch.h"
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuHelpers.h"
 
 using TestUtils::clockCycle;
@@ -39,7 +41,7 @@ void TestCPUBranch::testBranchCondition()
     InputSwitch *decoderBGE = new InputSwitch();
     InputSwitch *zeroFlag = new InputSwitch();
     InputSwitch *negativeFlag = new InputSwitch();
-    Led *pcLoad = new Led();
+    Element *pcLoad = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildBranchCondition(
         decoderJMP, decoderBEQ, decoderBNE, decoderBLT, decoderBGE,
         zeroFlag, negativeFlag, pcLoad));
@@ -102,10 +104,10 @@ void TestCPUBranch::testBranchIntegration()
     InputSwitch *pc_clock = new InputSwitch();
     InputSwitch *reset = new InputSwitch();
     QVector<InputSwitch *> pc_load_val;
-    QVector<Led *> pc_out;
+    QVector<Element *> pc_out;
     for (int i = 0; i < 8; i++) {
         pc_load_val.append(new InputSwitch());
-        pc_out.append(new Led());
+        pc_out.append(ElementFactory::buildElement(ElementType::Led));
     }
     InputSwitch *pc_load = new InputSwitch();
     InputSwitch *pc_inc = new InputSwitch();
@@ -115,12 +117,12 @@ void TestCPUBranch::testBranchIntegration()
     auto *sim_pc = workspace_pc->simulation();
     // === Instruction Decoder (4-to-16) ===
     QVector<InputSwitch *> opcode_bits;
-    QVector<Led *> decoder_out;
+    QVector<Element *> decoder_out;
     for (int i = 0; i < 4; i++) {
         opcode_bits.append(new InputSwitch());
     }
     for (int i = 0; i < 16; i++) {
-        decoder_out.append(new Led());
+        decoder_out.append(ElementFactory::buildElement(ElementType::Led));
     }
     std::unique_ptr<WorkSpace> workspace_decoder(buildInstructionDecoder4to16(
         opcode_bits.data(), decoder_out.data()));
@@ -130,8 +132,8 @@ void TestCPUBranch::testBranchIntegration()
     InputSwitch *flag_negative_in = new InputSwitch();
     InputSwitch *flag_write = new InputSwitch();
     InputSwitch *flag_clock = new InputSwitch();
-    Led *flag_zero_out = new Led();
-    Led *flag_negative_out = new Led();
+    Element *flag_zero_out = ElementFactory::buildElement(ElementType::Led);
+    Element *flag_negative_out = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace_flags(buildFlagRegister(
         flag_zero_in, flag_negative_in, flag_write, flag_clock, flag_zero_out, flag_negative_out));
     auto *sim_flags = workspace_flags->simulation();
@@ -143,7 +145,7 @@ void TestCPUBranch::testBranchIntegration()
     InputSwitch *branch_decoder_bge = new InputSwitch();
     InputSwitch *branch_zero_flag = new InputSwitch();
     InputSwitch *branch_negative_flag = new InputSwitch();
-    Led *branch_pc_load = new Led();
+    Element *branch_pc_load = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace_branch(buildBranchCondition(
         branch_decoder_jmp, branch_decoder_beq, branch_decoder_bne,
         branch_decoder_blt, branch_decoder_bge,
