@@ -10,6 +10,7 @@ A relwithdebinfo build.
 | Plan | Commit | Qt | Compiler | clocked_2000 run | clocked_2000 runfit | combinational_1000 run | combinational_1000 runfit | ic_heavy run | ic_heavy runfit |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|
 | 1 | `61f552623` | 6.12.0 | GCC 15.2.0 | 20,661,867,938 | 3,744,965,284 | 187,668,977 | 620,535,775 | 52,476,187,621 | 10,637,974,430 |
+| 2 | `029057373` | 6.12.0 | GCC 15.2.0 | 21,970,251,552 | 3,463,272,333 | 225,322,558 | 620,623,122 | 52,511,646,927 | 10,642,411,072 |
 
 ## Plan 1
 
@@ -19,3 +20,10 @@ A relwithdebinfo build.
   `runfit` costs more than `run` there, where the clocked circuits' long wires make 1:1 the dearer.
 - Whole native run (load included, 8 frames): clocked_2000 10.3 s / 5.5 s, combinational_1000 0.8 s / 1.1 s,
   ic_heavy 35 s / 22 s; all six under callgrind at once, 7 min 39 s.
+
+## Plan 2
+
+- The probe frames the circuit by `cachedCircuitBoundingRect()` from here on, where plan 1 used
+  `cachedItemsBoundingRect()`: its 1:1 corner and its fit show a slightly different part of each circuit, so
+  `clocked_2000` at 1:1 paints 7% more wire, zoomed to fit 7% less, and `combinational_1000` at 1:1 more wire (+18%) and
+  more elements (+35%). The drawing per item did not change; every later plan frames alike.
