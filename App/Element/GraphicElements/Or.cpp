@@ -28,7 +28,7 @@ struct ElementInfo<Or> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Or", "OR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Or", "Or");
         descriptor.trContext = "Or";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/or.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/or.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

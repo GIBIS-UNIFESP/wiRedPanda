@@ -41,3 +41,38 @@ bool ElementTypeDescriptor::has(ElementType type)
 {
     return registry().contains(type);
 }
+
+QStringList ElementTypeDescriptor::defaultAppearances() const
+{
+    QStringList pictures;
+    pictures.reserve(appearanceSlots.size());
+    for (const AppearanceSlot &slot : appearanceSlots) {
+        pictures.append(slot.picture);
+    }
+    return pictures;
+}
+
+int ElementTypeDescriptor::appearanceSlot(const QString &key) const
+{
+    for (qsizetype index = 0; index < appearanceSlots.size(); ++index) {
+        if (appearanceSlots.at(index).key == key) {
+            return static_cast<int>(index);
+        }
+    }
+    return -1;
+}
+
+std::optional<QString> ElementTypeDescriptor::appearanceKeyAt(const qsizetype position) const
+{
+    if (!appearancePositions.isEmpty()) {
+        return (position >= 0) && (position < appearancePositions.size()) ? std::optional(appearancePositions.at(position))
+                                                                         : std::nullopt;
+    }
+    return (position >= 0) && (position < appearanceSlots.size()) ? std::optional(appearanceSlots.at(position).key)
+                                                                 : std::nullopt;
+}
+
+qsizetype ElementTypeDescriptor::appearancePosition(const QString &key) const
+{
+    return appearancePositions.isEmpty() ? appearanceSlot(key) : appearancePositions.indexOf(key);
+}

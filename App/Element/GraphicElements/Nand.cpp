@@ -28,7 +28,7 @@ struct ElementInfo<Nand> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Nand", "NAND");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Nand", "Nand");
         descriptor.trContext = "Nand";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/nand.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/nand.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

@@ -28,7 +28,7 @@ struct ElementInfo<Xnor> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Xnor", "XNOR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Xnor", "Xnor");
         descriptor.trContext = "Xnor";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/xnor.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/xnor.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

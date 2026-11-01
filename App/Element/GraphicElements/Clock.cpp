@@ -36,10 +36,10 @@ struct ElementInfo<Clock> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");
         descriptor.trContext = "Clock";
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Input/clock0.svg",
-            ":/Components/Input/clock1.svg",
-        });
+        descriptor.appearanceSlots = {
+            {"off", ":/Components/Input/clock0.svg"},
+            {"on", ":/Components/Input/clock1.svg"},
+        };
         // A clock's level follows the simulation's time: no state of the circuit
         descriptor.parameters = {
             ElementInput::levelSpec(nullptr),

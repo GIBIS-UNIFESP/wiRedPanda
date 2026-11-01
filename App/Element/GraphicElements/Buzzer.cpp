@@ -34,10 +34,10 @@ struct ElementInfo<Buzzer> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Buzzer", "BUZZER");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Buzzer", "Buzzer");
         descriptor.trContext = "Buzzer";
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Output/Buzzer/BuzzerOff.svg",
-            ":/Components/Output/Buzzer/BuzzerOn.svg",
-        });
+        descriptor.appearanceSlots = {
+            {"off", ":/Components/Output/Buzzer/BuzzerOff.svg"},
+            {"on", ":/Components/Output/Buzzer/BuzzerOn.svg"},
+        };
         descriptor.parameters = {
             {
                 // A file can hold a non-finite or non-positive value; ToneGenerator::readData() casts a NaN-derived

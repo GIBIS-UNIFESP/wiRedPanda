@@ -29,7 +29,7 @@ struct ElementInfo<InputGnd> {
         descriptor.titleText = QT_TRANSLATE_NOOP("InputGnd", "GROUND");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputGnd", "GND");
         descriptor.trContext = "InputGnd";
-        descriptor.defaultAppearances = QStringList({":/Components/Input/0.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Input/0.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

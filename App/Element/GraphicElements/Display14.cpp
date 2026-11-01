@@ -30,24 +30,24 @@ struct ElementInfo<Display14> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Display14", "14-SEGMENT DISPLAY");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Display14", "14-Segment Display");
         descriptor.trContext = "Display14";
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Output/Counter/counter_14_off.svg",
-            ":/Components/Output/Counter/counter_a.svg",
-            ":/Components/Output/Counter/counter_b.svg",
-            ":/Components/Output/Counter/counter_c.svg",
-            ":/Components/Output/Counter/counter_d.svg",
-            ":/Components/Output/Counter/counter_e.svg",
-            ":/Components/Output/Counter/counter_f.svg",
-            ":/Components/Output/Counter/counter_g1.svg",
-            ":/Components/Output/Counter/counter_g2.svg",
-            ":/Components/Output/Counter/counter_h.svg",
-            ":/Components/Output/Counter/counter_j.svg",
-            ":/Components/Output/Counter/counter_k.svg",
-            ":/Components/Output/Counter/counter_l.svg",
-            ":/Components/Output/Counter/counter_m.svg",
-            ":/Components/Output/Counter/counter_n.svg",
-            ":/Components/Output/Counter/counter_dp.svg",
-        });
+        descriptor.appearanceSlots = {
+            {"off", ":/Components/Output/Counter/counter_14_off.svg"},
+            {"a", ":/Components/Output/Counter/counter_a.svg"},
+            {"b", ":/Components/Output/Counter/counter_b.svg"},
+            {"c", ":/Components/Output/Counter/counter_c.svg"},
+            {"d", ":/Components/Output/Counter/counter_d.svg"},
+            {"e", ":/Components/Output/Counter/counter_e.svg"},
+            {"f", ":/Components/Output/Counter/counter_f.svg"},
+            {"g1", ":/Components/Output/Counter/counter_g1.svg"},
+            {"g2", ":/Components/Output/Counter/counter_g2.svg"},
+            {"h", ":/Components/Output/Counter/counter_h.svg"},
+            {"j", ":/Components/Output/Counter/counter_j.svg"},
+            {"k", ":/Components/Output/Counter/counter_k.svg"},
+            {"l", ":/Components/Output/Counter/counter_l.svg"},
+            {"m", ":/Components/Output/Counter/counter_m.svg"},
+            {"n", ":/Components/Output/Counter/counter_n.svg"},
+            {"dp", ":/Components/Output/Counter/counter_dp.svg"},
+        };
         // Any name is kept; one not in the list is drawn as White
         descriptor.parameters = {{
             .id = ParamId::Colour,

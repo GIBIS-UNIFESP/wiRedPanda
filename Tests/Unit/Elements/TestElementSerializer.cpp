@@ -3,15 +3,21 @@
 
 #include "Tests/Unit/Elements/TestElementSerializer.h"
 
+#include <memory>
+
 #include <QDataStream>
+#include <QFile>
 #include <QKeySequence>
+#include <QMap>
 #include <QPointF>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTest>
+#include <QVariant>
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Demux.h"
@@ -54,9 +60,74 @@ bool loadsWithPorts(Element &element, const int inputs, const int outputs)
     return true;
 }
 
+using AppearanceEntries = QList<QMap<QString, QVariant>>;
+
+/// Loads \a element from a current-format stream holding its own ports and \a appearances, for \a purpose, resolving
+/// file names against \a contextDir; false if refused.
+bool loadsAppearances(Element &element, const AppearanceEntries &appearances, const SerializationPurpose purpose,
+                      const QString &contextDir = {})
+{
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << QMap<QString, QVariant>();
+    writeStream << AppearanceEntries(element.inputSize()) << AppearanceEntries(element.outputSize());
+    writeStream << appearances;
+    writeStream << QMap<QString, QVariant>(); // a truth table's own map: empty; other types leave it unread
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, FormatRev::current, purpose};
+    context.contextDir = contextDir;
+    QDataStream readStream(data);
+    try {
+        element.load(readStream, context);
+    } catch (const Pandaception &) {
+        return false;
+    }
+    return true;
+}
+
+/// Returns the appearance entries \a element saves for \a purpose.
+AppearanceEntries savedAppearances(const Element &element, const SerializationPurpose purpose)
+{
+    QByteArray data;
+    {
+        QDataStream stream(&data, QIODevice::WriteOnly);
+        element.save(stream, {.purpose = purpose});
+    }
+    QDataStream stream(data);
+    QMap<QString, QVariant> properties;
+    AppearanceEntries inputs;
+    AppearanceEntries outputs;
+    AppearanceEntries appearances;
+    stream >> properties >> inputs >> outputs >> appearances;
+    return appearances;
+}
+
+/// Returns the bytes \a element saves for \a purpose.
+QByteArray savedBytes(const Element &element, const SerializationPurpose purpose)
+{
+    QByteArray data;
+    QDataStream stream(&data, QIODevice::WriteOnly);
+    element.save(stream, {.purpose = purpose});
+    return data;
+}
+
+/// Writes a 64x64 picture to \a path and returns whether it was written.
+bool writePicture(const QString &path)
+{
+    QFile file(path);
+    return file.open(QIODevice::WriteOnly)
+        && (file.write("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"/>") > 0);
+}
+
 } // namespace TestElementSerializerHelpers
 
+using TestElementSerializerHelpers::AppearanceEntries;
+using TestElementSerializerHelpers::loadsAppearances;
 using TestElementSerializerHelpers::loadsWithPorts;
+using TestElementSerializerHelpers::savedAppearances;
+using TestElementSerializerHelpers::savedBytes;
+using TestElementSerializerHelpers::writePicture;
 
 void TestElementSerializer::testLoadRefusesPortCountsAboveTheTypeMaximum()
 {
@@ -384,4 +455,164 @@ void TestElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts()
     QDataStream outputRead(outputData);
     ElementSerializer::loadOutputPorts(*ic, outputRead, context);
     QCOMPARE(ic->outputPort(0)->name(), QString("renamed_out"));
+}
+
+void TestElementSerializer::testAFileSavesACustomSlotByKeyAtItsPosition()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("lit.svg");
+    QVERIFY(writePicture(path));
+    InputSwitch input;
+    input.setOn(true);
+    input.setAppearance(false, path);
+
+    // Only the custom slot, named by its key, at the position a version reading by position reads it at; an empty
+    // map holds the default slot's place before it
+    const AppearanceEntries saved = savedAppearances(input, SerializationPurpose::PortableFile);
+    QCOMPARE(saved.size(), 2);
+    QVERIFY(saved.at(0).isEmpty());
+    QCOMPARE(saved.at(1), (QMap<QString, QVariant>{{"key", "on"}, {"skinName", "lit.svg"}}));
+
+    // A file of defaults saves no entry
+    const InputSwitch plain;
+    QVERIFY(savedAppearances(plain, SerializationPurpose::PortableFile).isEmpty());
+}
+
+void TestElementSerializer::testASnapshotSavesEverySlotByKey()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("lit.svg");
+    QVERIFY(writePicture(path));
+    InputSwitch input;
+    input.setOn(true);
+    input.setAppearance(false, path);
+
+    // Every slot, the default's resource path too, so restoring the snapshot restores the defaults
+    const AppearanceEntries saved = savedAppearances(input, SerializationPurpose::InMemorySnapshot);
+    QCOMPARE(saved, (AppearanceEntries{
+                        {{"key", "off"}, {"skinName", input.appearance().defaultAppearances().at(0)}},
+                        {{"key", "on"}, {"skinName", path}},
+                    }));
+}
+
+void TestElementSerializer::testAKeyedEntryIsReadByItsKey()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QVERIFY(writePicture(dir.filePath("lit.svg")));
+
+    // The key names the slot wherever the entry sits: first in the list, it is still the on slot's
+    InputSwitch input;
+    QVERIFY(loadsAppearances(input, {{{"key", "on"}, {"skinName", "lit.svg"}}}, SerializationPurpose::PortableFile,
+                             dir.path()));
+    QCOMPARE(input.appearance().alternativeAppearances(),
+             QStringList({input.appearance().defaultAppearances().at(0), dir.filePath("lit.svg")}));
+}
+
+void TestElementSerializer::testAKeyNoSlotHasIsSkipped()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QVERIFY(writePicture(dir.filePath("lit.svg")));
+
+    // A key the type has no slot for, a slot dropped since or one a newer version added, is skipped, wherever it sits
+    InputSwitch input;
+    QVERIFY(loadsAppearances(input,
+                             {{{"key", "flashing"}, {"skinName", "lit.svg"}}, {}, {{"key", "dimmed"}, {"skinName", "lit.svg"}}},
+                             SerializationPurpose::PortableFile, dir.path()));
+    QCOMPARE(input.appearance().alternativeAppearances(), input.appearance().defaultAppearances());
+}
+
+void TestElementSerializer::testAnOlderFilesPositionsReadAsTheSlotsTheyNamed()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QVERIFY(writePicture(dir.filePath("first.svg")));
+    QVERIFY(writePicture(dir.filePath("second.svg")));
+
+    // A list with no keys reads each position as the slot it named: a switch's second is its on slot
+    InputSwitch input;
+    QVERIFY(loadsAppearances(input, {{}, {{"skinName", "second.svg"}}}, SerializationPurpose::PortableFile, dir.path()));
+    QCOMPARE(input.appearance().alternativeAppearances(),
+             QStringList({input.appearance().defaultAppearances().at(0), dir.filePath("second.svg")}));
+
+    // Text's second position named a picture nothing showed, a slot since dropped: it is skipped, and the first
+    // position is still Text's one slot
+    const std::unique_ptr<Element> text(ElementFactory::buildElement(ElementType::Text));
+    QVERIFY(loadsAppearances(*text, {{{"skinName", "first.svg"}}, {{"skinName", "second.svg"}}},
+                             SerializationPurpose::PortableFile, dir.path()));
+    QCOMPARE(text->appearance().alternativeAppearances(), QStringList({dir.filePath("first.svg")}));
+
+    // So does the rotary's second, its arrow
+    const std::unique_ptr<Element> rotary(ElementFactory::buildElement(ElementType::InputRotary));
+    QVERIFY(loadsAppearances(*rotary, {{}, {{"skinName", "second.svg"}}}, SerializationPurpose::PortableFile, dir.path()));
+    QCOMPARE(rotary->appearance().alternativeAppearances(), rotary->appearance().defaultAppearances());
+
+    // A position past those the type ever had is refused, as a corrupt stream
+    QVERIFY(!loadsAppearances(*text, {{}, {}, {{"skinName", "first.svg"}}}, SerializationPurpose::PortableFile, dir.path()));
+}
+
+void TestElementSerializer::testOlderAppearanceNamesReadAsTheSlotsTheyNamed()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString first = dir.filePath("first.svg");
+    QVERIFY(writePicture(first));
+
+    // A file older than 4.1 lists a name at each position: Text's second, a slot since dropped, is skipped
+    const std::unique_ptr<Element> text(ElementFactory::buildElement(ElementType::Text));
+    QByteArray data;
+    QDataStream writeStream(&data, QIODevice::WriteOnly);
+    writeStream << quint64(2) << first << QString(":/Components/Misc/text.png");
+
+    QHash<quint64, Port *> portMap;
+    SerializationContext context = {portMap, Versions::V_4_0_1, SerializationPurpose::PortableFile};
+    QDataStream readStream(data);
+    ElementSerializer::loadPixmapAppearanceNames(*text, readStream, context);
+    QCOMPARE(readStream.status(), QDataStream::Ok);
+    QCOMPARE(text->appearance().alternativeAppearances(), QStringList({first}));
+}
+
+void TestElementSerializer::testAppearancesSaveAgainByteForByte_data()
+{
+    QTest::addColumn<int>("purpose");
+    QTest::newRow("file") << static_cast<int>(SerializationPurpose::PortableFile);
+    QTest::newRow("snapshot") << static_cast<int>(SerializationPurpose::InMemorySnapshot);
+}
+
+void TestElementSerializer::testAppearancesSaveAgainByteForByte()
+{
+    QFETCH(int, purpose);
+    const auto how = static_cast<SerializationPurpose>(purpose);
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("custom.svg");
+    QVERIFY(writePicture(path));
+
+    // A switch showing the file in its on slot, and an LED in its lit red slot: what each saves, read back into a new
+    // element, saves again byte for byte
+    InputSwitch input;
+    input.setOn(true);
+    input.setAppearance(false, path);
+    Led led;
+    led.setColor("Red");
+    led.inputPort(0)->setStatus(Status::Active);
+    led.refresh();
+    led.setAppearance(false, path);
+    QCOMPARE(led.appearance().alternativeAppearances().indexOf(path), 3);
+
+    for (const Element *element : {static_cast<const Element *>(&input), static_cast<const Element *>(&led)}) {
+        const QByteArray first = savedBytes(*element, how);
+        const std::unique_ptr<Element> copy(ElementFactory::buildElement(element->elementType()));
+        QHash<quint64, Port *> portMap;
+        SerializationContext context = {portMap, FormatRev::current, how};
+        context.contextDir = dir.path();
+        QDataStream readStream(first);
+        copy->load(readStream, context);
+        QCOMPARE(readStream.status(), QDataStream::Ok);
+        QCOMPARE(copy->appearance().alternativeAppearances(), element->appearance().alternativeAppearances());
+        QCOMPARE(savedBytes(*copy, how), first);
+    }
 }

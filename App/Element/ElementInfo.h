@@ -66,7 +66,7 @@ constexpr bool validate(const ElementConstraints &c)
  *
  * \details Specializations of ElementInfo<T>::describe() call this first, then fill in
  * the remaining display fields: \c pixmapPath, \c titleText, \c translatedName,
- * \c trContext and \c defaultAppearances.
+ * \c trContext and \c appearanceSlots.
  * \param c Source constraints.
  * \return Partially populated ElementTypeDescriptor.
  */
@@ -115,7 +115,7 @@ inline ElementTypeDescriptor descriptorFromConstraints(const ElementConstraints 
  *         descriptor.titleText = QT_TRANSLATE_NOOP("And", "AND");
  *         descriptor.translatedName = QT_TRANSLATE_NOOP("And", "And");
  *         descriptor.trContext = "And";
- *         descriptor.defaultAppearances = {":/path.svg"};
+ *         descriptor.appearanceSlots = {{"body", ":/path.svg"}};
  *         return descriptor;
  *     }
  *

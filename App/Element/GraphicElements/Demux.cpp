@@ -31,7 +31,7 @@ struct ElementInfo<Demux> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Demux", "DEMULTIPLEXER");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
         descriptor.trContext = "Demux";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/demux.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/demux.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

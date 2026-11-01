@@ -26,7 +26,7 @@ struct ElementInfo<SRFlipFlop> {
         descriptor.kernel = KernelKind::SRFlipFlop;
         // The Light theme's picture; presentation shows its Dark sibling in the Dark theme (ElementPictures::themed())
         descriptor.pixmapPath = QStringLiteral(":/Components/Memory/Light/SR-flipflop.svg");
-        descriptor.defaultAppearances = QStringList({descriptor.pixmapPath});
+        descriptor.appearanceSlots = {{"body", descriptor.pixmapPath}};
         descriptor.titleText = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-FLIP-FLOP");
         descriptor.translatedName = QT_TRANSLATE_NOOP("SRFlipFlop", "SR-Flip-Flop");
         descriptor.trContext = "SRFlipFlop";

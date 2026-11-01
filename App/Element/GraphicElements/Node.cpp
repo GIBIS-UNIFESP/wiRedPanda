@@ -32,7 +32,7 @@ struct ElementInfo<Node> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Node", "NODE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Node", "Node");
         descriptor.trContext = "Node";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/node.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/node.svg"}};
         // A mode out of range (a corrupted file) is None
         descriptor.parameters = {
             {

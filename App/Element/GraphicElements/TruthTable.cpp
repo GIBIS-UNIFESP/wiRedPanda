@@ -35,7 +35,7 @@ struct ElementInfo<TruthTable> {
         descriptor.titleText = QT_TRANSLATE_NOOP("TruthTable", "TRUTH TABLE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("TruthTable", "Truth Table");
         descriptor.trContext = "TruthTable";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/truthtable-rotated.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/truthtable-rotated.svg"}};
         // Laid out as [out0_row0..out0_rowN, out1_row0..out1_rowN, ...], all false by default. updateLogic() indexes
         // the table up to its last bit and the toggle command flips bits in it, so it holds exactly tableBits whatever
         // a (possibly corrupt or crafted) file supplied: padded with zeros or truncated

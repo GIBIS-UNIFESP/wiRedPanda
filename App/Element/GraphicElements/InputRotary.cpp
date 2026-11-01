@@ -44,10 +44,9 @@ struct ElementInfo<InputRotary> {
         descriptor.titleText = QT_TRANSLATE_NOOP("InputRotary", "ROTARY SWITCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputRotary", "Rotary Switch");
         descriptor.trContext = "InputRotary";
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Input/rotary.svg",
-            ":/Components/Input/rotary_arrow.svg",
-        });
+        // The arrow over the selected position is drawn by the presenter; an older file's second position named it
+        descriptor.appearanceSlots = {{"body", ":/Components/Input/rotary.svg"}};
+        descriptor.appearancePositions = {"body", "arrow"};
         // A selection out of the outputs' range is the first output, as a file's loads
         descriptor.parameters = {
             {

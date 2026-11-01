@@ -40,7 +40,6 @@ struct ElementInfo<IC> {
         descriptor.titleText = QT_TRANSLATE_NOOP("IC", "INTEGRATED CIRCUIT");
         descriptor.translatedName = QT_TRANSLATE_NOOP("IC", "IC");
         descriptor.trContext = "IC";
-        descriptor.defaultAppearances = QStringList();
         return descriptor;
     }
 

@@ -32,37 +32,36 @@ struct ElementInfo<Led> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Led", "LED");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Led", "LED");
         descriptor.trContext = "Led";
-        descriptor.defaultAppearances = QStringList({
-            // Single input values:
-            ":/Components/Output/Led/LedOff.svg",        // 0
-            ":/Components/Output/Led/WhiteLed.svg",      // 1
-            ":/Components/Output/Led/LedOff.svg",        // 2
-            ":/Components/Output/Led/RedLed.svg",        // 3
-            ":/Components/Output/Led/LedOff.svg",        // 4
-            ":/Components/Output/Led/GreenLed.svg",      // 5
-            ":/Components/Output/Led/LedOff.svg",        // 6
-            ":/Components/Output/Led/BlueLed.svg",       // 7
-            ":/Components/Output/Led/LedOff.svg",        // 8
-            ":/Components/Output/Led/PurpleLed.svg",     // 9
-            // Multiple input values:
-            ":/Components/Output/Led//BlackLed.png",     // 10
-            ":/Components/Output/Led//NavyBlueLed.png",  // 11
-            ":/Components/Output/Led//GreenLed.png",     // 12
-            ":/Components/Output/Led//TealLed.png",      // 13
-            ":/Components/Output/Led//DarkRedLed.png",   // 14
-            ":/Components/Output/Led//MagentaLed.png",   // 15
-            ":/Components/Output/Led//OrangeLed.png",    // 16
-            ":/Components/Output/Led//LightGrayLed.png", // 17
-
-            ":/Components/Output/Led/LedOff.svg",        // 18
-            ":/Components/Output/Led/RoyalLed.png",      // 19
-            ":/Components/Output/Led/LimeGreenLed.png",  // 20
-            ":/Components/Output/Led/AquaLightLed.png",  // 21
-            ":/Components/Output/Led/RedLed.png",        // 22
-            ":/Components/Output/Led/HotPinkLed.png",    // 23
-            ":/Components/Output/Led/YellowLed.png",     // 24
-            ":/Components/Output/Led/WhiteLed.png",      // 25
-        });
+        // One input: an off and an on picture for each colour. More inputs: a picture for each code, the first input its
+        // lowest bit; four inputs show their code, three their code plus 8, two their code plus 8 but both on code 15
+        descriptor.appearanceSlots = {
+            {"white-off", ":/Components/Output/Led/LedOff.svg"},
+            {"white-on", ":/Components/Output/Led/WhiteLed.svg"},
+            {"red-off", ":/Components/Output/Led/LedOff.svg"},
+            {"red-on", ":/Components/Output/Led/RedLed.svg"},
+            {"green-off", ":/Components/Output/Led/LedOff.svg"},
+            {"green-on", ":/Components/Output/Led/GreenLed.svg"},
+            {"blue-off", ":/Components/Output/Led/LedOff.svg"},
+            {"blue-on", ":/Components/Output/Led/BlueLed.svg"},
+            {"purple-off", ":/Components/Output/Led/LedOff.svg"},
+            {"purple-on", ":/Components/Output/Led/PurpleLed.svg"},
+            {"code-0", ":/Components/Output/Led//BlackLed.png"},
+            {"code-1", ":/Components/Output/Led//NavyBlueLed.png"},
+            {"code-2", ":/Components/Output/Led//GreenLed.png"},
+            {"code-3", ":/Components/Output/Led//TealLed.png"},
+            {"code-4", ":/Components/Output/Led//DarkRedLed.png"},
+            {"code-5", ":/Components/Output/Led//MagentaLed.png"},
+            {"code-6", ":/Components/Output/Led//OrangeLed.png"},
+            {"code-7", ":/Components/Output/Led//LightGrayLed.png"},
+            {"code-8", ":/Components/Output/Led/LedOff.svg"},
+            {"code-9", ":/Components/Output/Led/RoyalLed.png"},
+            {"code-10", ":/Components/Output/Led/LimeGreenLed.png"},
+            {"code-11", ":/Components/Output/Led/AquaLightLed.png"},
+            {"code-12", ":/Components/Output/Led/RedLed.png"},
+            {"code-13", ":/Components/Output/Led/HotPinkLed.png"},
+            {"code-14", ":/Components/Output/Led/YellowLed.png"},
+            {"code-15", ":/Components/Output/Led/WhiteLed.png"},
+        };
         // Any name is kept; one not in the list is drawn as White. With more than one input the inputs' code picks
         // the colour, so only a single-input LED offers it
         descriptor.parameters = {
@@ -99,7 +98,7 @@ Led::Led(QGraphicsItem *parent)
     // base offset for the chosen color (0=White, 2=Red, 4=Green, 6=Blue, 8=Purple).
     // Even indices are the Off state; odd indices are the On state.
     // Indices 10-25 cover multi-input (2/3/4-bit) color palettes (see comment below).
-    m_appearance.seed(ElementTypeDescriptor::of(ElementType::Led).defaultAppearances);
+    m_appearance.seed(ElementTypeDescriptor::of(ElementType::Led).defaultAppearances());
     m_appearance.appearanceChanged();
 
     updatePortsProperties();

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <functional>
+#include <optional>
 
 #include <QMap>
 #include <QString>
@@ -47,6 +48,12 @@ enum class KernelKind : quint8 {
     TFlipFlop,
     JKFlipFlop,
     SRFlipFlop,
+};
+
+/// One slot of a type's appearance: the key a file saves the slot's picture by, and the slot's built-in picture.
+struct AppearanceSlot {
+    QString key;     ///< The slot's name in a file, unique among the type's slots.
+    QString picture; ///< The slot's built-in picture, a resource path.
 };
 
 /**
@@ -115,8 +122,27 @@ struct ElementTypeDescriptor {
 
     // --- Appearance configuration ---
 
-    /// Built-in appearance resource paths, one per slot; an element's active list starts as them.
-    QStringList defaultAppearances;
+    /// The type's appearance slots, in the order its presenter picks them by; an element's appearance list starts as
+    /// their pictures. A file names each slot it saves by its key.
+    QList<AppearanceSlot> appearanceSlots;
+
+    /// The key of the slot each position of an appearance list named in a file written before slots had keys, in
+    /// order; empty while that is the slots' keys in order. A slot dropped or moved since keeps its old position here,
+    /// so an older file reads as it did, and a dropped slot's key, which no slot has any longer, is skipped.
+    QStringList appearancePositions;
+
+    /// Returns each slot's built-in picture, in the slots' order.
+    QStringList defaultAppearances() const;
+
+    /// Returns the index of the slot keyed \a key; -1 if the type has no such slot.
+    int appearanceSlot(const QString &key) const;
+
+    /// Returns the key of the slot position \a position of an older file's appearance list names; nothing for a
+    /// position past the list.
+    std::optional<QString> appearanceKeyAt(qsizetype position) const;
+
+    /// Returns the position of the slot keyed \a key in an older file's appearance list; -1 for a slot added since.
+    qsizetype appearancePosition(const QString &key) const;
 
     // --- Feature flags ---
 

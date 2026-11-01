@@ -28,7 +28,7 @@ struct ElementInfo<Nor> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Nor", "NOR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Nor", "Nor");
         descriptor.trContext = "Nor";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/nor.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/nor.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

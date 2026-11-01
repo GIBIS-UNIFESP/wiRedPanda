@@ -533,7 +533,7 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `hasVolume`           | Has volume control (e.g., Buzzer, AudioBox)                                     |
 | `rotatesGraphic`      | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
 
-`ElementTypeDescriptor` extends this with visual information: pixmap paths, translated names, and its `defaultAppearances` list, which an element's appearance list starts as.
+`ElementTypeDescriptor` extends this with visual information: pixmap paths, translated names, and its `appearanceSlots`: each slot's key, which a file saves the slot's picture by, and its built-in picture, which an element's appearance list starts as. `appearancePositions` keeps the slot each position of an older file's positional list named.
 
 ### Element Catalog
 
@@ -638,7 +638,7 @@ struct ElementInfo<And> {
         descriptor.titleText = QT_TRANSLATE_NOOP("And", "AND");
         descriptor.translatedName = QT_TRANSLATE_NOOP("And", "And");
         descriptor.trContext = "And";
-        descriptor.defaultAppearances = {":/Components/Logic/and.svg"};
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/and.svg"}};
         return descriptor;
     }
 
@@ -1459,7 +1459,7 @@ struct ElementInfo<Buffer> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Buffer", "BUFFER");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Buffer", "Buffer");
         descriptor.trContext = "Buffer";
-        descriptor.defaultAppearances = {":/Components/Logic/buffer.svg"};
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/buffer.svg"}};
         return descriptor;
     }
 

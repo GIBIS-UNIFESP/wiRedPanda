@@ -34,10 +34,10 @@ struct ElementInfo<AudioBox> {
         descriptor.titleText = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
         descriptor.translatedName = QT_TRANSLATE_NOOP("AudioBox", "Audio Box");
         descriptor.trContext = "AudioBox";
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Output/AudioBox/audioboxOff.svg",
-            ":/Components/Output/AudioBox/audioboxOn.svg",
-        });
+        descriptor.appearanceSlots = {
+            {"off", ":/Components/Output/AudioBox/audioboxOff.svg"},
+            {"on", ":/Components/Output/AudioBox/audioboxOn.svg"},
+        };
         descriptor.parameters = {
             {
                 // An empty path changes nothing; any other is kept as QFileInfo has it, whether or not its file is

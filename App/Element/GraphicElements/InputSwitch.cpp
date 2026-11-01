@@ -34,10 +34,10 @@ struct ElementInfo<InputSwitch> {
         descriptor.titleText = QT_TRANSLATE_NOOP("InputSwitch", "INPUT SWITCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputSwitch", "Input Switch");
         descriptor.trContext = "InputSwitch";
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Input/switchOff.svg",
-            ":/Components/Input/switchOn.svg",
-        });
+        descriptor.appearanceSlots = {
+            {"off", ":/Components/Input/switchOff.svg"},
+            {"on", ":/Components/Input/switchOn.svg"},
+        };
         descriptor.parameters = {ElementInput::levelSpec("isOn"), ElementInput::lockSpec()};
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // Before 4.1 the level was a bare bool, then from 3.1 the lock another

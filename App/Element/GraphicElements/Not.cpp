@@ -28,7 +28,7 @@ struct ElementInfo<Not> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Not", "NOT");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Not", "Not");
         descriptor.trContext = "Not";
-        descriptor.defaultAppearances = QStringList({":/Components/Logic/not.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Logic/not.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

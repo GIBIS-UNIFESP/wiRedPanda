@@ -102,7 +102,7 @@ private:
     static void removeSurplusOutputs(Element &element, quint64 outputSize_, SerializationContext &context);
 
     static void loadPixmapAppearanceNames(Element &element, QDataStream &stream, SerializationContext &context);
-    static void loadPixmapAppearanceName(Element &element, QDataStream &stream, int index, const SerializationContext &context);
+    static void loadPixmapAppearanceName(Element &element, QDataStream &stream, int position, const SerializationContext &context);
 
     /// Reads a `QList<QMap<QString, QVariant>>` from \a stream, rejecting implausible counts up
     /// front (fuzz-hardening). A member (not a file-local helper) so its load-error throws extract

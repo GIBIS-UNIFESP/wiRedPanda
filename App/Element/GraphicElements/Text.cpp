@@ -22,14 +22,10 @@ struct ElementInfo<Text> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Text", "TEXT");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Text", "Text");
         descriptor.trContext = "Text";
-        // Text has two built-in appearance assets, but only index 0 (the transparent
-        // placeholder) is ever actually shown -- its presenter shows slot 0, and nothing
-        // switches to index 1. The empty-state hint (TextPresenter) is a separate,
-        // lighter-weight mechanism layered on top rather than an attempt to wire up this swap.
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Misc/no_text.png",
-            ":/Components/Misc/text.png",
-        });
+        // The transparent placeholder, under the label and the empty text's hint; an older file's second position named
+        // a picture nothing showed
+        descriptor.appearanceSlots = {{"body", ":/Components/Misc/no_text.png"}};
+        descriptor.appearancePositions = {"body", "text"};
         // Text is decorative and excluded from simulation.
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.

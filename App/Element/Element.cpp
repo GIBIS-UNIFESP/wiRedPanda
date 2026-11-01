@@ -37,7 +37,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     , m_parameters(m_descriptor.parameters)
 {
     const ElementTypeDescriptor &descriptor = m_descriptor;
-    m_appearance.seed(descriptor.defaultAppearances);
+    m_appearance.seed(descriptor.defaultAppearances());
     m_elementGroup = descriptor.group;
     m_maxInputSize = descriptor.maxInputSize;
     m_maxOutputSize = descriptor.maxOutputSize;

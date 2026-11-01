@@ -38,6 +38,12 @@ private slots:
     void testEachTypeNamesItsKernel();
     void testAnInputsSourceLevelComesFromItsParameters();
 
+    // Appearance slots
+    void testAnOlderFilesPositionsReadAsTheSlotsTheyNamed_data();
+    void testAnOlderFilesPositionsReadAsTheSlotsTheyNamed();
+    void testEachTypesAppearanceKeysAreFixed_data();
+    void testEachTypesAppearanceKeysAreFixed();
+
     // Unregistered type
     void testDescriptorForUnknownTypeIsEmpty();
     void testTranslatedNameForUnknownType();

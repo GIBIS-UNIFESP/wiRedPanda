@@ -34,10 +34,10 @@ struct ElementInfo<InputButton> {
         descriptor.titleText = QT_TRANSLATE_NOOP("InputButton", "PUSH BUTTON");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputButton", "Push Button");
         descriptor.trContext = "InputButton";
-        descriptor.defaultAppearances = QStringList({
-            ":/Components/Input/buttonOff.svg",
-            ":/Components/Input/buttonOn.svg",
-        });
+        descriptor.appearanceSlots = {
+            {"off", ":/Components/Input/buttonOff.svg"},
+            {"on", ":/Components/Input/buttonOn.svg"},
+        };
         // A button is held only while pressed: its level is no state of the circuit
         descriptor.parameters = {ElementInput::levelSpec(nullptr), ElementInput::lockSpec()};
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {

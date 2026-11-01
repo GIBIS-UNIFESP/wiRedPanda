@@ -186,31 +186,40 @@ void ElementSerializer::save(const Element &element, QDataStream &stream, Serial
 
     // -------------------------------------------
 
-    // Appearance entries. Slim streams write resource paths (":/...") as empty
-    // maps: forReading() discards them on every PortableFile load anyway (a
-    // stale saved resource identifier must not clobber the element's current
-    // compiled-in default). Kept per-slot — NOT gated on the element-level
-    // usingDefaultAppearance() flag, which is maintained manually by scattered
-    // callers and a stale-true value would silently drop a live custom skin;
-    // the resource-vs-not test matches forReading()'s semantics by construction.
-    // Empty maps (rather than omitted entries) preserve positional slot
-    // alignment when custom and default slots are mixed; the all-default case
-    // collapses to a list of empty maps, or the loop below to an empty list.
+    // Appearance entries, each naming its slot by the key the type's descriptor gives it. A slim stream writes only
+    // the slots showing a picture of the user's, a resource path standing for the slot's own default, which a load
+    // keeps; an in-memory one writes every slot, so a snapshot restores the defaults too. Kept per slot, not gated on
+    // usingDefaultAppearance(), which a stale value would make drop a live custom picture. Each entry sits at the
+    // position its slot had before slots had keys, empty maps between, so a version that reads the list by position
+    // reads each slot it knew as before. Such a version refuses an entry past its type's slots, so every slot has a
+    // position (TestElementFactory); one without, a broken invariant, goes after them in a release build.
+    const ElementTypeDescriptor &descriptor = ElementTypeDescriptor::of(element.elementType());
+    const QStringList &appearances = element.m_appearance.alternativeAppearances();
     QList<QMap<QString, QVariant>> appearancesMap;
-    bool anyCustom = false;
+    QList<QMap<QString, QVariant>> unpositioned;
 
-    for (const auto &appearance : element.m_appearance.alternativeAppearances()) {
-        QMap<QString, QVariant> tempMap;
-        if (!slim || !appearance.startsWith(":/")) {
-            tempMap.insert("skinName", ExternalFilePath::forWriting(appearance, options.purpose));
-            anyCustom = true;
+    for (qsizetype slot = 0; (slot < appearances.size()) && (slot < descriptor.appearanceSlots.size()); ++slot) {
+        const QString &appearance = appearances.at(slot);
+        if (slim && appearance.startsWith(":/")) {
+            continue;
         }
-        appearancesMap << tempMap;
+        const QString &key = descriptor.appearanceSlots.at(slot).key;
+        const QMap<QString, QVariant> entry{
+            {"key", key},
+            {"skinName", ExternalFilePath::forWriting(appearance, options.purpose)},
+        };
+        const qsizetype position = descriptor.appearancePosition(key);
+        if (position < 0) {
+            Q_ASSERT_X(false, "ElementSerializer::save()", "every appearance slot has a position in older files' lists");
+            unpositioned << entry;
+            continue;
+        }
+        if (appearancesMap.size() <= position) {
+            appearancesMap.resize(position + 1);
+        }
+        appearancesMap[position] = entry;
     }
-
-    if (slim && !anyCustom) {
-        appearancesMap.clear();
-    }
+    appearancesMap << unpositioned;
 
     stream << appearancesMap;
 
@@ -538,23 +547,31 @@ void ElementSerializer::loadNewFormat(Element &element, QDataStream &stream, Ser
                            QString::number(stream.device()->pos())); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
 
-    int index = 0;
+    const ElementTypeDescriptor &descriptor = ElementTypeDescriptor::of(element.elementType());
 
-    for (const auto &entry : std::as_const(appearancesMap)) {
-        if (index >= element.m_appearance.alternativeAppearances().size()) {
+    for (qsizetype position = 0; position < appearancesMap.size(); ++position) {
+        const QMap<QString, QVariant> &entry = appearancesMap.at(position);
+
+        // An entry names its slot by key; one written before slots had keys, by its position, which the descriptor
+        // reads as the slot it named then. A position past those is refused, as a corrupt stream; a key the type has
+        // no slot for, one dropped since or one a newer version added, is skipped.
+        QString key;
+        if (const auto saved = entry.constFind("key"); saved != entry.cend()) {
+            key = saved->toString();
+        } else if (const std::optional<QString> named = descriptor.appearanceKeyAt(position)) {
+            key = *named;
+        } else {
             throw PANDACEPTION("Appearance index %1 out of range (size=%2) — stream may be corrupt",
-                               QString::number(index),
+                               QString::number(position),
                                QString::number(element.m_appearance.alternativeAppearances().size()));
         }
+        const int index = descriptor.appearanceSlot(key);
 
         const QString name = entry.value("skinName").toString();
 
-        // Slim streams write default (resource) slots as empty maps to keep
-        // positional alignment; skip them — the slot keeps its compiled-in
-        // default. Must be checked BEFORE forReading(): for PortableFile it
-        // resolves "" to "" (not nullopt) and would clobber the slot.
-        if (name.isEmpty()) {
-            ++index;
+        // A slim stream's empty map holds a position between custom slots; the slot keeps its default. Checked before
+        // forReading(), which for PortableFile resolves "" to "" (not nullopt) and would clobber the slot.
+        if ((index < 0) || name.isEmpty()) {
             continue;
         }
 
@@ -562,15 +579,12 @@ void ElementSerializer::loadNewFormat(Element &element, QDataStream &stream, Ser
         // leaves the slot at it
         if ((context.purpose == SerializationPurpose::InMemorySnapshot) && name.startsWith(":/")) {
             element.m_appearance.setAlternativeAppearanceAt(index, element.m_appearance.defaultAppearances().value(index, name));
-            ++index;
             continue;
         }
 
         if (const auto resolved = ExternalFilePath::forReading(name, context.contextDir, context.purpose)) {
             element.m_appearance.setAlternativeAppearanceAt(index, *resolved);
         }
-
-        ++index;
     }
 
     // If all alternative appearance slots still match the defaults, the user never
@@ -827,13 +841,20 @@ void ElementSerializer::loadPixmapAppearanceNames(Element &element, QDataStream 
     }
 }
 
-void ElementSerializer::loadPixmapAppearanceName(Element &element, QDataStream &stream, const int index, const SerializationContext &context)
+void ElementSerializer::loadPixmapAppearanceName(Element &element, QDataStream &stream, const int position, const SerializationContext &context)
 {
     const QString name = Serialization::readBoundedString(stream);
 
-    if (index >= element.m_appearance.alternativeAppearances().size()) {
+    // The name at each position is the slot's the descriptor reads that position as; a slot dropped since is skipped
+    const ElementTypeDescriptor &descriptor = ElementTypeDescriptor::of(element.elementType());
+    const std::optional<QString> key = descriptor.appearanceKeyAt(position);
+    if (!key) {
         throw PANDACEPTION("Appearance index %1 out of range (size=%2) for appearance name \"%3\" — stream may be corrupt",
-                           QString::number(index), QString::number(element.m_appearance.alternativeAppearances().size()), name);
+                           QString::number(position), QString::number(element.m_appearance.alternativeAppearances().size()), name);
+    }
+    const int index = descriptor.appearanceSlot(*key);
+    if (index < 0) {
+        return;
     }
 
     if (const auto resolved = ExternalFilePath::forReading(name, context.contextDir, context.purpose)) {

@@ -38,4 +38,14 @@ private slots:
 
     // loadInputPort()/loadOutputPort()'s IC-only rename-existing-port branch
     void testLoadInputOutputPortRenamesExistingIcPorts();
+
+    // Appearance slots saved by key, at the positions older versions read them by
+    void testAFileSavesACustomSlotByKeyAtItsPosition();
+    void testASnapshotSavesEverySlotByKey();
+    void testAKeyedEntryIsReadByItsKey();
+    void testAKeyNoSlotHasIsSkipped();
+    void testAnOlderFilesPositionsReadAsTheSlotsTheyNamed();
+    void testOlderAppearanceNamesReadAsTheSlotsTheyNamed();
+    void testAppearancesSaveAgainByteForByte_data();
+    void testAppearancesSaveAgainByteForByte();
 };

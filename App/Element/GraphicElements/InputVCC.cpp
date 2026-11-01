@@ -28,7 +28,7 @@ struct ElementInfo<InputVcc> {
         descriptor.titleText = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputVcc", "VCC");
         descriptor.trContext = "InputVcc";
-        descriptor.defaultAppearances = QStringList({":/Components/Input/1.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Input/1.svg"}};
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

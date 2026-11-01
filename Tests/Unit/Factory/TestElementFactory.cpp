@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <optional>
 #include <utility>
 
 #include <QList>
@@ -12,6 +13,7 @@
 #include <QMetaEnum>
 #include <QSet>
 #include <QString>
+#include <QStringList>
 
 #include "App/Core/Common.h"
 #include "App/Core/Enums.h"
@@ -435,6 +437,198 @@ void TestElementFactory::testEachTypeNamesItsKernel()
     // A type whose elements have outputs computes them, an IC through its definition; one without computes nothing
     const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
     QCOMPARE(descriptor.kernel != KernelKind::None, (element->outputSize() > 0) || (type == ElementType::IC));
+}
+
+void TestElementFactory::testAnOlderFilesPositionsReadAsTheSlotsTheyNamed_data()
+{
+    QTest::addColumn<ElementType>("type");
+    QTest::addColumn<QList<int>>("dropped");
+    QTest::addColumn<QStringList>("pictures");
+
+    // The picture at each position of each type's appearance list when files saved it by position, before slots had
+    // keys (plan 3's P3.17), and the positions of the slots dropped since. This table is the released format: a row
+    // extended is a slot added, which every older version refuses a file customising (PLAN_03 §3.7), not a stale
+    // fixture brought up to date
+    const QMap<ElementType, std::pair<QList<int>, QStringList>> positions{
+        {ElementType::And, {{}, {":/Components/Logic/and.svg"}}},
+        {ElementType::AudioBox, {{}, {":/Components/Output/AudioBox/audioboxOff.svg",
+            ":/Components/Output/AudioBox/audioboxOn.svg"}}},
+        {ElementType::Buzzer, {{}, {":/Components/Output/Buzzer/BuzzerOff.svg",
+            ":/Components/Output/Buzzer/BuzzerOn.svg"}}},
+        {ElementType::Clock, {{}, {":/Components/Input/clock0.svg", ":/Components/Input/clock1.svg"}}},
+        {ElementType::DFlipFlop, {{}, {":/Components/Memory/Light/D-flipflop.svg"}}},
+        {ElementType::DLatch, {{}, {":/Components/Memory/Light/D-latch.svg"}}},
+        {ElementType::Demux, {{}, {":/Components/Logic/demux.svg"}}},
+        {ElementType::Display14, {{}, {":/Components/Output/Counter/counter_14_off.svg",
+            ":/Components/Output/Counter/counter_a.svg", ":/Components/Output/Counter/counter_b.svg",
+            ":/Components/Output/Counter/counter_c.svg", ":/Components/Output/Counter/counter_d.svg",
+            ":/Components/Output/Counter/counter_e.svg", ":/Components/Output/Counter/counter_f.svg",
+            ":/Components/Output/Counter/counter_g1.svg", ":/Components/Output/Counter/counter_g2.svg",
+            ":/Components/Output/Counter/counter_h.svg", ":/Components/Output/Counter/counter_j.svg",
+            ":/Components/Output/Counter/counter_k.svg", ":/Components/Output/Counter/counter_l.svg",
+            ":/Components/Output/Counter/counter_m.svg", ":/Components/Output/Counter/counter_n.svg",
+            ":/Components/Output/Counter/counter_dp.svg"}}},
+        {ElementType::Display16, {{}, {":/Components/Output/Counter/counter_16_off.svg",
+            ":/Components/Output/Counter/counter_a1.svg", ":/Components/Output/Counter/counter_a2.svg",
+            ":/Components/Output/Counter/counter_b.svg", ":/Components/Output/Counter/counter_c.svg",
+            ":/Components/Output/Counter/counter_d1.svg", ":/Components/Output/Counter/counter_d2.svg",
+            ":/Components/Output/Counter/counter_e.svg", ":/Components/Output/Counter/counter_f.svg",
+            ":/Components/Output/Counter/counter_g1.svg", ":/Components/Output/Counter/counter_g2.svg",
+            ":/Components/Output/Counter/counter_h.svg", ":/Components/Output/Counter/counter_j.svg",
+            ":/Components/Output/Counter/counter_k.svg", ":/Components/Output/Counter/counter_l.svg",
+            ":/Components/Output/Counter/counter_m.svg", ":/Components/Output/Counter/counter_n.svg",
+            ":/Components/Output/Counter/counter_dp.svg"}}},
+        {ElementType::Display7, {{}, {":/Components/Output/Counter/counter_off.svg",
+            ":/Components/Output/Counter/counter_a.svg", ":/Components/Output/Counter/counter_b.svg",
+            ":/Components/Output/Counter/counter_c.svg", ":/Components/Output/Counter/counter_d.svg",
+            ":/Components/Output/Counter/counter_e.svg", ":/Components/Output/Counter/counter_f.svg",
+            ":/Components/Output/Counter/counter_g.svg", ":/Components/Output/Counter/counter_dp.svg"}}},
+        {ElementType::IC, {{}, {}}},
+        {ElementType::InputButton, {{}, {":/Components/Input/buttonOff.svg", ":/Components/Input/buttonOn.svg"}}},
+        {ElementType::InputGnd, {{}, {":/Components/Input/0.svg"}}},
+        {ElementType::InputRotary, {{1}, {":/Components/Input/rotary.svg", ":/Components/Input/rotary_arrow.svg"}}},
+        {ElementType::InputSwitch, {{}, {":/Components/Input/switchOff.svg", ":/Components/Input/switchOn.svg"}}},
+        {ElementType::InputVcc, {{}, {":/Components/Input/1.svg"}}},
+        {ElementType::JKFlipFlop, {{}, {":/Components/Memory/Light/JK-flipflop.svg"}}},
+        {ElementType::Led, {{}, {":/Components/Output/Led/LedOff.svg", ":/Components/Output/Led/WhiteLed.svg",
+            ":/Components/Output/Led/LedOff.svg", ":/Components/Output/Led/RedLed.svg",
+            ":/Components/Output/Led/LedOff.svg", ":/Components/Output/Led/GreenLed.svg",
+            ":/Components/Output/Led/LedOff.svg", ":/Components/Output/Led/BlueLed.svg",
+            ":/Components/Output/Led/LedOff.svg", ":/Components/Output/Led/PurpleLed.svg",
+            ":/Components/Output/Led//BlackLed.png", ":/Components/Output/Led//NavyBlueLed.png",
+            ":/Components/Output/Led//GreenLed.png", ":/Components/Output/Led//TealLed.png",
+            ":/Components/Output/Led//DarkRedLed.png", ":/Components/Output/Led//MagentaLed.png",
+            ":/Components/Output/Led//OrangeLed.png", ":/Components/Output/Led//LightGrayLed.png",
+            ":/Components/Output/Led/LedOff.svg", ":/Components/Output/Led/RoyalLed.png",
+            ":/Components/Output/Led/LimeGreenLed.png", ":/Components/Output/Led/AquaLightLed.png",
+            ":/Components/Output/Led/RedLed.png", ":/Components/Output/Led/HotPinkLed.png",
+            ":/Components/Output/Led/YellowLed.png", ":/Components/Output/Led/WhiteLed.png"}}},
+        {ElementType::Line, {{}, {":/Components/Misc/line.svg"}}},
+        {ElementType::Mux, {{}, {":/Components/Logic/mux.svg"}}},
+        {ElementType::Nand, {{}, {":/Components/Logic/nand.svg"}}},
+        {ElementType::Node, {{}, {":/Components/Logic/node.svg"}}},
+        {ElementType::Nor, {{}, {":/Components/Logic/nor.svg"}}},
+        {ElementType::Not, {{}, {":/Components/Logic/not.svg"}}},
+        {ElementType::Or, {{}, {":/Components/Logic/or.svg"}}},
+        {ElementType::SRFlipFlop, {{}, {":/Components/Memory/Light/SR-flipflop.svg"}}},
+        {ElementType::SRLatch, {{}, {":/Components/Memory/Light/SR-latch.svg"}}},
+        {ElementType::TFlipFlop, {{}, {":/Components/Memory/Light/T-flipflop.svg"}}},
+        {ElementType::Text, {{1}, {":/Components/Misc/no_text.png", ":/Components/Misc/text.png"}}},
+        {ElementType::TruthTable, {{}, {":/Components/Logic/truthtable-rotated.svg"}}},
+        {ElementType::Xnor, {{}, {":/Components/Logic/xnor.svg"}}},
+        {ElementType::Xor, {{}, {":/Components/Logic/xor.svg"}}},
+    };
+
+    // Every registered type is in the table: older files hold its positions
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if (ElementTypeDescriptor::has(type)) {
+            QVERIFY2(positions.contains(type), metaEnum.key(i));
+            const auto &[dropped, pictures] = positions.value(type);
+            QTest::newRow(metaEnum.key(i)) << type << dropped << pictures;
+        }
+    }
+}
+
+void TestElementFactory::testAnOlderFilesPositionsReadAsTheSlotsTheyNamed()
+{
+    QFETCH(ElementType, type);
+    QFETCH(QList<int>, dropped);
+    QFETCH(QStringList, pictures);
+
+    // Each position reads as the slot whose built-in picture it held, or as a dropped slot's key, which no slot has;
+    // a position past them reads as nothing
+    const auto &descriptor = ElementTypeDescriptor::of(type);
+    for (qsizetype position = 0; position < pictures.size(); ++position) {
+        const std::optional<QString> key = descriptor.appearanceKeyAt(position);
+        QVERIFY(key.has_value());
+        const int slot = descriptor.appearanceSlot(*key);
+        QCOMPARE(slot < 0, dropped.contains(static_cast<int>(position)));
+        if (slot >= 0) {
+            QCOMPARE(descriptor.appearanceSlots.at(slot).picture, pictures.at(position));
+            QCOMPARE(descriptor.appearancePosition(*key), position);
+        }
+    }
+    QVERIFY(!descriptor.appearanceKeyAt(pictures.size()).has_value());
+
+    // Each slot has a key of its own, and a position: a released version refuses a file holding an entry past its
+    // type's slots, so a slot added with no position would make every older version refuse a file customising it
+    QSet<QString> keys;
+    for (const AppearanceSlot &slot : descriptor.appearanceSlots) {
+        QVERIFY(!slot.key.isEmpty());
+        QVERIFY2(!keys.contains(slot.key), qPrintable(slot.key));
+        keys.insert(slot.key);
+        QVERIFY2(descriptor.appearancePosition(slot.key) >= 0, qPrintable(slot.key));
+    }
+}
+
+void TestElementFactory::testEachTypesAppearanceKeysAreFixed_data()
+{
+    QTest::addColumn<ElementType>("type");
+    QTest::addColumn<QStringList>("keys");
+
+    // A file names each slot it saves by its key, so a key renamed loses that slot's picture from every file saved
+    // before: the keys are fixed here, in the slots' order
+    const QMap<ElementType, QStringList> fixed{
+        {ElementType::And, {"body"}},
+        {ElementType::AudioBox, {"off", "on"}},
+        {ElementType::Buzzer, {"off", "on"}},
+        {ElementType::Clock, {"off", "on"}},
+        {ElementType::DFlipFlop, {"body"}},
+        {ElementType::DLatch, {"body"}},
+        {ElementType::Demux, {"body"}},
+        {ElementType::Display14, {"off", "a", "b", "c", "d", "e", "f", "g1", "g2", "h", "j", "k", "l", "m", "n",
+            "dp"}},
+        {ElementType::Display16, {"off", "a1", "a2", "b", "c", "d1", "d2", "e", "f", "g1", "g2", "h", "j", "k",
+            "l", "m", "n", "dp"}},
+        {ElementType::Display7, {"off", "a", "b", "c", "d", "e", "f", "g", "dp"}},
+        {ElementType::IC, {}},
+        {ElementType::InputButton, {"off", "on"}},
+        {ElementType::InputGnd, {"body"}},
+        {ElementType::InputRotary, {"body"}},
+        {ElementType::InputSwitch, {"off", "on"}},
+        {ElementType::InputVcc, {"body"}},
+        {ElementType::JKFlipFlop, {"body"}},
+        {ElementType::Led, {"white-off", "white-on", "red-off", "red-on", "green-off", "green-on", "blue-off",
+            "blue-on", "purple-off", "purple-on", "code-0", "code-1", "code-2", "code-3", "code-4", "code-5",
+            "code-6", "code-7", "code-8", "code-9", "code-10", "code-11", "code-12", "code-13", "code-14", "code-15"}},
+        {ElementType::Line, {"body"}},
+        {ElementType::Mux, {"body"}},
+        {ElementType::Nand, {"body"}},
+        {ElementType::Node, {"body"}},
+        {ElementType::Nor, {"body"}},
+        {ElementType::Not, {"body"}},
+        {ElementType::Or, {"body"}},
+        {ElementType::SRFlipFlop, {"body"}},
+        {ElementType::SRLatch, {"body"}},
+        {ElementType::TFlipFlop, {"body"}},
+        {ElementType::Text, {"body"}},
+        {ElementType::TruthTable, {"body"}},
+        {ElementType::Xnor, {"body"}},
+        {ElementType::Xor, {"body"}},
+    };
+
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if (ElementTypeDescriptor::has(type)) {
+            QVERIFY2(fixed.contains(type), metaEnum.key(i));
+            QTest::newRow(metaEnum.key(i)) << type << fixed.value(type);
+        }
+    }
+}
+
+void TestElementFactory::testEachTypesAppearanceKeysAreFixed()
+{
+    QFETCH(ElementType, type);
+    QFETCH(QStringList, keys);
+
+    QStringList named;
+    for (const AppearanceSlot &slot : ElementTypeDescriptor::of(type).appearanceSlots) {
+        named.append(slot.key);
+    }
+    QCOMPARE(named, keys);
 }
 
 void TestElementFactory::testAnInputsSourceLevelComesFromItsParameters()

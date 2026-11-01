@@ -24,7 +24,7 @@ struct ElementInfo<Line> {
         descriptor.titleText = QT_TRANSLATE_NOOP("Line", "LINE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Line", "Line");
         descriptor.trContext = "Line";
-        descriptor.defaultAppearances = QStringList({":/Components/Misc/line.svg"});
+        descriptor.appearanceSlots = {{"body", ":/Components/Misc/line.svg"}};
         // Line is decorative and excluded from simulation.
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
