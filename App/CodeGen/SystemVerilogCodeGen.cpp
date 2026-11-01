@@ -10,8 +10,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
@@ -1159,10 +1157,7 @@ void SystemVerilogCodeGen::assignVariablesRec(const QVector<Element *> &elements
                 break;
             }
             case ElementType::TruthTable: {
-                auto *ttGraphic = dynamic_cast<TruthTable *>(elm);
-                if (!ttGraphic) break;
-
-                QBitArray propositions = ttGraphic->key();
+                const QBitArray &propositions = elm->param<QBitArray>(ParamId::Table);
                 const int nInputs = elm->inputSize();
                 const int rows = 1 << nInputs;
 

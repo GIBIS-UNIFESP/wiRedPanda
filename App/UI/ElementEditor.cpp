@@ -22,9 +22,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
-#include "App/Element/GraphicElements/AudioBox.h"
-#include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -532,12 +529,11 @@ void ElementEditor::applyCapabilitiesToUi()
     /* Wireless mode — Node elements only */
     setSection(c.hasWirelessMode, m_ui->labelWirelessMode, m_ui->comboBoxWirelessMode);
     if (c.hasWirelessMode && !m_elements.isEmpty()) {
-        auto *first = qobject_cast<Node *>(m_elements.constFirst());
-        const bool sameMode = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](Element *elm) {
-            const auto *n = qobject_cast<Node *>(elm);
-            return n && n->wirelessMode() == first->wirelessMode();
+        const auto *first = m_elements.constFirst();
+        const bool sameMode = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](const Element *elm) {
+            return (elm->elementType() == ElementType::Node) && (elm->wirelessMode() == first->wirelessMode());
         });
-        if (prepareCombo(m_ui->comboBoxWirelessMode, true, sameMode, m_manyWirelessModes) && first) {
+        if (prepareCombo(m_ui->comboBoxWirelessMode, true, sameMode, m_manyWirelessModes) && (first->elementType() == ElementType::Node)) {
             QSignalBlocker blocker(m_ui->comboBoxWirelessMode);
             m_ui->comboBoxWirelessMode->setCurrentIndex(static_cast<int>(first->wirelessMode()));
         }
@@ -679,11 +675,10 @@ void ElementEditor::wirelessModeChanged(const int index)
     // itself — that is handled here via DeleteItemsCommand so undo can restore them.
     QList<QGraphicsItem *> wirelessConnsToDelete;
     for (auto *elm : std::as_const(m_elements)) {
-        auto *node = qobject_cast<Node *>(elm);
-        if (!node) continue;
+        if (elm->elementType() != ElementType::Node) continue;
 
-        Port *port = (mode == WirelessMode::Rx) ? static_cast<Port *>(node->inputPort())
-                     : (mode == WirelessMode::Tx) ? static_cast<Port *>(node->outputPort())
+        Port *port = (mode == WirelessMode::Rx) ? static_cast<Port *>(elm->inputPort())
+                     : (mode == WirelessMode::Tx) ? static_cast<Port *>(elm->outputPort())
                      : nullptr;
         if (port) {
             for (auto *conn : port->connections()) {
@@ -846,9 +841,9 @@ void ElementEditor::truthTable()
     if (!m_caps.hasTruthTable || m_elements.isEmpty()) return;
 
     // Only a single TruthTable element is supported at a time.
-    auto *truthtable = qobject_cast<TruthTable *>(m_elements[0]);
-    if (!truthtable) {
-        return; // LCOV_EXCL_LINE — m_caps.hasTruthTable is AND-merged across the selection and only TruthTable::hasTruthTable() ever returns true, so hasTruthTable implies m_elements[0] already IS a TruthTable.
+    auto *truthtable = m_elements[0];
+    if (truthtable->elementType() != ElementType::TruthTable) {
+        return; // LCOV_EXCL_LINE — m_caps.hasTruthTable is AND-merged across the selection and only TruthTable::hasTruthTable() ever returns true, so hasTruthTable implies m_elements[0] is a truth table.
     }
 
     // --- Build / refresh table ---
@@ -896,7 +891,7 @@ void ElementEditor::truthTable()
 
         // The key QBitArray stores all outputs interleaved: output z at row i
         // lives at index 256*z + i (256 rows max per output).
-        auto bitArray = truthtable->key();
+        const QBitArray &bitArray = truthtable->param<QBitArray>(ParamId::Table);
 
         for (int z = 0; z < nOutputs; ++z) {
             // The key QBitArray stores all outputs interleaved: output z at row i
@@ -953,8 +948,8 @@ void ElementEditor::audioBox()
     if (m_elements.isEmpty()) {
         return;
     }
-    auto *audiobox = qobject_cast<AudioBox *>(m_elements[0]);
-    if (!audiobox) {
+    auto *audiobox = m_elements[0];
+    if (audiobox->elementType() != ElementType::AudioBox) {
         return;
     }
 

@@ -13,10 +13,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Buzzer.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -409,12 +406,8 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<Element *> &elements, 
             switch (elm->elementType()) {
             case ElementType::Clock: {
                 if (!isBox) {
-                    auto *clk = qobject_cast<Clock *>(elm);
-                    if (!clk) {
-                        break; // LCOV_EXCL_LINE -- elementType() == Clock guarantees this cast succeeds
-                    }
                     m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
-                    m_stream << "int " << varName2 << "_interval = " << (std::max)(1, static_cast<int>(1000.0 / clk->frequency())) << ";" << Qt::endl;
+                    m_stream << "int " << varName2 << "_interval = " << (std::max)(1, static_cast<int>(1000.0 / elm->frequency())) << ";" << Qt::endl;
                 }
                 break;
             }
@@ -966,10 +959,7 @@ void ArduinoCodeGen::emitDemux(Element *elm)
 
 void ArduinoCodeGen::emitTruthTable(Element *elm)
 {
-    auto *ttGraphic = dynamic_cast<TruthTable *>(elm);
-    if (!ttGraphic) return;
-
-    const QBitArray propositions = ttGraphic->key();
+    const QBitArray &propositions = elm->param<QBitArray>(ParamId::Table);
     const int nInputs = elm->inputSize();
     const int rows = 1 << nInputs;
 
@@ -1274,10 +1264,8 @@ void ArduinoCodeGen::loop()
     m_stream << "    // Writing output data. //" << Qt::endl;
     for (const auto &pin : std::as_const(m_outputMap)) {
         if (pin.m_elm->elementType() == ElementType::Buzzer) {
-            auto *buzzer = qobject_cast<Buzzer *>(pin.m_elm);
-            if (!buzzer) continue;
-            const QString inputSignal = otherPortName(buzzer->inputPort(0));
-            const int frequency = static_cast<int>(buzzer->frequency());
+            const QString inputSignal = otherPortName(pin.m_elm->inputPort(0));
+            const int frequency = static_cast<int>(pin.m_elm->frequency());
             m_stream << QString("    if (%1) {").arg(inputSignal) << Qt::endl;
             m_stream << QString("        tone(%1, %2);").arg(pin.m_varName).arg(frequency) << Qt::endl;
             m_stream << QString("    } else {") << Qt::endl;

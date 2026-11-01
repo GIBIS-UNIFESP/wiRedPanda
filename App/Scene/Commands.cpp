@@ -23,8 +23,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputRotary.h"
-#include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -1541,8 +1539,8 @@ void ToggleTruthTableOutputCommand::redo()
 {
     qCDebug(zero) << text();
 
-    auto *truthtable = qobject_cast<TruthTable *>(CommandUtils::findElm(m_scene, m_id));
-    if (!truthtable) {
+    auto *truthtable = CommandUtils::findElm(m_scene, m_id);
+    if (!truthtable || (truthtable->elementType() != ElementType::TruthTable)) {
         CommandUtils::abandon(this, "the truth table it toggles is not on the scene");
         return;
     }
@@ -1550,12 +1548,14 @@ void ToggleTruthTableOutputCommand::redo()
     // The key holds a fixed number of bits, derived from the element's port limits in
     // TruthTable.cpp; a bit set outside it is an out-of-bounds write. Both callers (the editor and the MCP server)
     // bound the position first, and undo() == redo(), so the bound is checked here regardless of caller.
-    if (m_pos < 0 || m_pos >= truthtable->key().size()) {
+    QBitArray table = truthtable->param<QBitArray>(ParamId::Table);
+    if (m_pos < 0 || m_pos >= table.size()) {
         CommandUtils::abandon(this, "the position it toggles is outside the truth table's key");
         return;
     }
 
-    truthtable->setKeyBit(m_pos, !truthtable->key().testBit(m_pos));
+    table.toggleBit(m_pos);
+    truthtable->setParam(ParamId::Table, table);
 
     m_scene->setCircuitUpdateRequired();
     emit m_scene->truthTableElementChanged(truthtable);

@@ -31,4 +31,6 @@ private slots:
     void testTruthTableInputTiedToVccResolvesToHigh();
     void testGenerateTestbenchNonSequentialSettleLoop();
     void testDemuxWithFourOutputsUsesTwoSelectLines();
+    void testClockIntervalFollowsItsFrequency();
+    void testBuzzerToneFollowsItsFrequency();
 };

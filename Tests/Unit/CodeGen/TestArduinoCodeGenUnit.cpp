@@ -13,6 +13,7 @@
 
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/DFlipFlop.h"
@@ -549,6 +550,50 @@ void display(CircuitBuilder &builder)
 }
 
 } // namespace ArduinoTranslatedSketch
+
+void TestArduinoCodeGenUnit::testClockIntervalFollowsItsFrequency()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *clk = new Clock;
+    auto *led = new Led;
+    builder.add(clk, led);
+    builder.connect(clk, 0, led, 0);
+    clk->setFrequency(4.0); // not the default, which the sketch would show all the same
+
+    QTemporaryDir dir;
+    const QString path = dir.path() + "/clock.ino";
+    ArduinoCodeGen codegen(path, arduinoSceneElements(workspace.scene()));
+    codegen.generate();
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString content = file.readAll();
+    QVERIFY2(content.contains("_interval = 250;"), qPrintable(content));
+}
+
+void TestArduinoCodeGenUnit::testBuzzerToneFollowsItsFrequency()
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+
+    auto *sw = new InputSwitch;
+    auto *buzzer = new Buzzer;
+    builder.add(sw, buzzer);
+    builder.connect(sw, 0, buzzer, 0);
+    buzzer->setFrequency(880.0); // not the default, which the sketch would show all the same
+
+    QTemporaryDir dir;
+    const QString path = dir.path() + "/buzzer.ino";
+    ArduinoCodeGen codegen(path, arduinoSceneElements(workspace.scene()));
+    codegen.generate();
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+    const QString content = file.readAll();
+    QVERIFY2(QRegularExpression(R"(tone\(\w+, 880\);)").match(content).hasMatch(), qPrintable(content));
+}
 
 void TestArduinoCodeGenUnit::testSketchUnderTranslationMatchesGolden()
 {

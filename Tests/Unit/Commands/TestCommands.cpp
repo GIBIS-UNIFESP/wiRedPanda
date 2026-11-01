@@ -1181,6 +1181,13 @@ void TestCommands::testToggleTruthTableOutputCommandBounds()
         QCOMPARE(scene->undoStack()->index(), index);
         QCOMPARE(truthTable->key(), key);
     }
+
+    // So is an element that is no truth table (both callers check its type): the stack drops the command
+    auto *notGate = new Not();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{notGate}, scene));
+    const int index = scene->undoStack()->index();
+    scene->receiveCommand(new ToggleTruthTableOutputCommand(notGate, 0, scene));
+    QCOMPARE(scene->undoStack()->index(), index);
 #endif
 }
 

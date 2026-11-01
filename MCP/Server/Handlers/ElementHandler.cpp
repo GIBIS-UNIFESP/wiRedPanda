@@ -22,7 +22,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -909,8 +908,7 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
         return createErrorResponse(errorMsg, requestId, JsonRpcError::ElementNotFound);
     }
 
-    auto *truthTable = dynamic_cast<TruthTable *>(element);
-    if (!truthTable) {
+    if (element->elementType() != ElementType::TruthTable) {
         return createErrorResponse(QString("Element %1 is not a TruthTable").arg(element->id()),
                                    requestId, JsonRpcError::ValidationError);
     }
@@ -918,10 +916,10 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
     // The key stores 256 rows per output; positions beyond the current
     // outputs address nothing the UI can ever toggle (and ≥ 2048 would be an
     // out-of-bounds write on the 2048-bit key — the command guards that too).
-    const int maxPosition = 256 * truthTable->outputSize();
+    const int maxPosition = 256 * element->outputSize();
     if (position >= maxPosition) {
         return createErrorResponse(QString("position %1 out of range: TruthTable %2 has %3 outputs (valid positions 0..%4)") // LCOV_EXCL_LINE -- pattern 8: gcov misattributes this multi-line chained-.arg() call's first line even though it's genuinely reached (see testHandleToggleTruthTableOutputRejectsOutOfRangePosition)
-                                       .arg(position).arg(element->id()).arg(truthTable->outputSize()).arg(maxPosition - 1),
+                                       .arg(position).arg(element->id()).arg(element->outputSize()).arg(maxPosition - 1),
                                    requestId, JsonRpcError::ValidationError);
     }
 
@@ -934,7 +932,7 @@ QJsonObject ElementHandler::handleToggleTruthTableOutput(const QJsonObject &para
 
     return tryCommand([&]() -> QJsonObject { // LCOV_EXCL_LINE -- pattern 45: gcov misattributes this multi-line lambda-taking call's entry; the lambda body below is genuinely covered
         // ToggleTruthTableOutputCommand flips one cell in the truth table's output column.
-        scene->pushCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
+        scene->pushCommand(new ToggleTruthTableOutputCommand(element, position, scene));
         QJsonObject result;
         result["element_id"] = element->id();
         result["position"] = position;
