@@ -25,11 +25,11 @@ struct MultiCycleCpu8bitFixture {
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;
     InputSwitch *progWrite = nullptr;
-    QVector<InputSwitch *> progAddr;
-    QVector<InputSwitch *> progData;
+    QVector<Element *> progAddr;
+    QVector<Element *> progData;
     InputSwitch *regProgWrite = nullptr;
-    QVector<InputSwitch *> regProgAddr;
-    QVector<InputSwitch *> regProgData;
+    QVector<Element *> regProgAddr;
+    QVector<Element *> regProgData;
     QVector<Led *> pcLeds;
     QVector<Led *> resultLeds;
     QVector<Led *> counterLeds;

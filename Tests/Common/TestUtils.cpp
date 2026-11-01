@@ -30,8 +30,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Led.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -254,15 +252,15 @@ QList<Connection *> sceneConnections(Scene *scene)
     return connections;
 }
 
-void setMultiBitInput(const QVector<InputSwitch *> &inputs, int value)
+void setMultiBitInput(const QVector<Element *> &inputs, int value)
 {
     for (int i = 0; i < inputs.size(); ++i) {
-        bool bit = (value >> i) & 1;
-        inputs[i]->setOn(bit);
+        const bool bit = (value >> i) & 1;
+        inputs[i]->setParam(ParamId::On, bit);
     }
 }
 
-void clockCycle(Simulation *simulation, InputSwitch *clk)
+void clockCycle(Simulation *simulation, Element *clk)
 {
     // Unreachable in any correctly-written test: same class as inputStatus()'s guard above.
     if (!simulation) {
@@ -273,16 +271,16 @@ void clockCycle(Simulation *simulation, InputSwitch *clk)
     } // LCOV_EXCL_LINE
     // Complete clock pulse: ensure rising edge followed by falling edge
     // This guarantees a rising edge occurs regardless of initial state
-    clk->setOn(true);   // Rising edge (triggers latch on edge-triggered flip-flops)
+    clk->setParam(ParamId::On, true);  // Rising edge (triggers latch on edge-triggered flip-flops)
     simulation->update();
-    clk->setOff();      // Falling edge (return to low for next cycle)
+    clk->setParam(ParamId::On, false); // Falling edge (return to low for next cycle)
     simulation->update();
 }
 
 void initSrc(Element &elm) { elm.initSimulationVectors(0, 1); }
 void initElm(Element &elm) { elm.initSimulationVectors(elm.inputSize(), elm.outputSize()); }
 
-void clockToggle(Simulation *simulation, InputSwitch *clk)
+void clockToggle(Simulation *simulation, Element *clk)
 {
     // Unreachable in any correctly-written test: same class as inputStatus()'s guard above.
     if (!simulation) {
@@ -292,7 +290,7 @@ void clockToggle(Simulation *simulation, InputSwitch *clk)
         qFatal("FATAL ERROR in clockToggle(): Clock switch pointer is nullptr"); // LCOV_EXCL_LINE
     } // LCOV_EXCL_LINE
     // Single edge toggle for fine-grained clock control
-    clk->setOn(!clk->isOn());
+    clk->setParam(ParamId::On, !clk->param<bool>(ParamId::On));
     simulation->update();
 }
 
@@ -529,8 +527,8 @@ int alignedMismatch(const QImage &a, const QPoint ca, const QImage &b, const QPo
 }
 
 QVector<DiffStep> generateDifferentialVectors(
-    const QVector<InputSwitch *> &switches,
-    const QVector<Led *> &leds,
+    const QVector<Element *> &switches,
+    const QVector<Element *> &leds,
     Simulation *sim,
     const int clockIdx,
     const QVector<int> &asyncLowIdx,
@@ -547,7 +545,7 @@ QVector<DiffStep> generateDifferentialVectors(
         QVector<int> bits;
         bits.reserve(switches.size());
         for (auto *sw : switches) {
-            bits.append(sw->isOn() ? 1 : 0);
+            bits.append(sw->param<bool>(ParamId::On) ? 1 : 0);
         }
         return bits;
     };
@@ -593,7 +591,7 @@ QVector<DiffStep> generateDifferentialVectors(
     // Initial (unrecorded) settle: clock and data LOW, active-low async controls
     // HIGH (inactive). This matches the testbench's t=0 init.
     for (int i = 0; i < switches.size(); ++i) {
-        switches[i]->setOn(asyncSet.contains(i));
+        switches[i]->setParam(ParamId::On, asyncSet.contains(i));
     }
     settle();
 
@@ -609,16 +607,16 @@ QVector<DiffStep> generateDifferentialVectors(
     // testbench but not checked, so checks begin from the settled state.
     if (!asyncLowIdx.isEmpty()) {
         for (const int idx : asyncLowIdx) {
-            switches[idx]->setOn(false);              // assert all (active-low)
+            switches[idx]->setParam(ParamId::On, false);              // assert all (active-low)
         }
         settle();
         recordSetup();
         for (int i = 1; i < asyncLowIdx.size(); ++i) {
-            switches[asyncLowIdx[i]]->setOn(true);    // release all but the first
+            switches[asyncLowIdx[i]]->setParam(ParamId::On, true); // release all but the first
         }
         settle();
         recordSetup();
-        switches[asyncLowIdx.first()]->setOn(true);   // release; state now held
+        switches[asyncLowIdx.first()]->setParam(ParamId::On, true);   // release; state now held
         settle();
         recordSetup();
     }
@@ -632,12 +630,12 @@ QVector<DiffStep> generateDifferentialVectors(
     // from the same defined state; it stays inactive (LOW) for the random body.
     if (!asyncHighIdx.isEmpty()) {
         for (const int idx : asyncHighIdx) {
-            switches[idx]->setOn(true);               // assert reset/seed
+            switches[idx]->setParam(ParamId::On, true);               // assert reset/seed
         }
         settle();
         recordSetup();
         for (const int idx : asyncHighIdx) {
-            switches[idx]->setOn(false);              // release; state now held
+            switches[idx]->setParam(ParamId::On, false);              // release; state now held
         }
         settle();
         recordSetup();
@@ -650,7 +648,7 @@ QVector<DiffStep> generateDifferentialVectors(
             if (i == clockIdx || asyncSet.contains(i) || asyncHighSet.contains(i)) {
                 continue;
             }
-            switches[i]->setOn((rng.generate() & 1U) != 0U);
+            switches[i]->setParam(ParamId::On, (rng.generate() & 1U) != 0U);
         }
         // Hold async controls inactive during synchronous operation: the preamble
         // already established a defined state, so the random body exercises the
@@ -658,11 +656,11 @@ QVector<DiffStep> generateDifferentialVectors(
         // where iverilog's comb-loop evaluation and the engine's settle diverge on
         // undefined behaviour — not export defects.)
         for (const int idx : asyncLowIdx) {
-            switches[idx]->setOn(true);
+            switches[idx]->setParam(ParamId::On, true);
         }
         // Hold active-high reset/seed inactive (LOW) during synchronous operation.
         for (const int idx : asyncHighIdx) {
-            switches[idx]->setOn(false);
+            switches[idx]->setParam(ParamId::On, false);
         }
 
         if (clockIdx >= 0) {
@@ -674,10 +672,10 @@ QVector<DiffStep> generateDifferentialVectors(
             // makes the check edge-polarity sensitive.
             settle();
             record();                       // new data, clock LOW
-            switches[clockIdx]->setOn(true);
+            switches[clockIdx]->setParam(ParamId::On, true);
             settle();
             record();                       // rising edge (data stable)
-            switches[clockIdx]->setOn(false);
+            switches[clockIdx]->setParam(ParamId::On, false);
             settle();
             record();                       // falling edge (data stable)
         } else {

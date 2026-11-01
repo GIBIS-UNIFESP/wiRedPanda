@@ -565,7 +565,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
     builder.add(ic);
 
     // Create input switches (one per IC input)
-    QVector<InputSwitch *> switches;
+    QVector<Element *> switches;
     for (int i = 0; i < ic->inputSize(); ++i) {
         auto *sw = new InputSwitch();
         builder.add(sw);
@@ -574,7 +574,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
     }
 
     // Create LEDs (one per IC output)
-    QVector<Led *> leds;
+    QVector<Element *> leds;
     for (int i = 0; i < ic->outputSize(); ++i) {
         auto *led = new Led();
         builder.add(led);
@@ -822,7 +822,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
 
             auto collectVector = [&](const QVector<int> &bits) {
                 for (int i = 0; i < numInputs; ++i) {
-                    switches[i]->setOn(bits.at(i) != 0);
+                    switches[i]->setParam(ParamId::On, bits.at(i) != 0);
                 }
                 sim->update();
                 testVectors.append({bits, collectOutputBits()});
@@ -958,7 +958,7 @@ void TestSystemVerilogExport::testSystemVerilogExportFlat()
 
     const auto &inputPins = generator.inputMap();
     const auto &outputPins = generator.outputMap();
-    QVector<InputSwitch *> switches;
+    QVector<Element *> switches;
     for (const auto &pin : inputPins) {
         auto *sw = qobject_cast<InputSwitch *>(pin.m_elm);
         QVERIFY2(sw, "every input of a building block is a switch");
@@ -971,7 +971,7 @@ void TestSystemVerilogExport::testSystemVerilogExportFlat()
     QString nonLevelOutput;
     const auto collectVector = [&](const QVector<int> &bits) {
         for (int i = 0; i < switches.size(); ++i) {
-            switches[i]->setOn(bits.at(i) != 0);
+            switches[i]->setParam(ParamId::On, bits.at(i) != 0);
         }
         sim->update();
         QVector<int> outputBits;

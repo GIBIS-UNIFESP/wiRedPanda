@@ -18,9 +18,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct RegFile32x16Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> writeAddr;
-    QVector<InputSwitch *> readAddr1;
-    QVector<InputSwitch *> dataIn;
+    QVector<Element *> writeAddr;
+    QVector<Element *> readAddr1;
+    QVector<Element *> dataIn;
     InputSwitch *we = nullptr;
     InputSwitch *clk = nullptr;
     QVector<Led *> readData1;

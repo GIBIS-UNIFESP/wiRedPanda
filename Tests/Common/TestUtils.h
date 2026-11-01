@@ -116,8 +116,6 @@ inline QDragMoveEvent makeDragMoveEvent(QPoint pos, Qt::DropActions actions, con
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 
-class InputSwitch;
-class Led;
 class Connection;
 class Simulation;
 class QGraphicsScene;
@@ -268,10 +266,10 @@ QList<Connection *> sceneConnections(Scene *scene);
  * Example: setMultiBitInput({sw0, sw1, sw2, sw3}, 0b1010) sets:
  *   sw0=0, sw1=1, sw2=0, sw3=1 (bit order matches array order)
  *
- * @param inputs Vector of InputSwitch pointers in bit order (index 0 = LSB)
+ * @param inputs Switches in bit order (index 0 = LSB), each set by its level (ParamId::On)
  * @param value Integer value to decompose into bits
  */
-void setMultiBitInput(const QVector<InputSwitch *> &inputs, int value);
+void setMultiBitInput(const QVector<Element *> &inputs, int value);
 
 /**
  * @brief Read multiple output bits from graphic elements
@@ -317,9 +315,9 @@ inline Bits readMultiBitOutput(T *const (&elements)[N], int port = 0)
  *   // Flip-flop has latched on the rising edge
  *
  * @param simulation Simulation to run
- * @param clk Clock input switch
+ * @param clk Clock input switch, driven by its level (ParamId::On)
  */
-void clockCycle(Simulation *simulation, InputSwitch *clk);
+void clockCycle(Simulation *simulation, Element *clk);
 
 /**
  * @brief Toggle the clock signal once (single edge)
@@ -334,9 +332,9 @@ void clockCycle(Simulation *simulation, InputSwitch *clk);
  *   clockToggle(sim, &clk);  // HIGH → LOW (falling edge)
  *
  * @param simulation Simulation to run
- * @param clk Clock input switch to toggle
+ * @param clk Clock input switch to toggle, by its level (ParamId::On)
  */
-void clockToggle(Simulation *simulation, InputSwitch *clk);
+void clockToggle(Simulation *simulation, Element *clk);
 /**
  * @brief Initialize a source element for direct-logic testing (0 inputs, 1 output)
  */
@@ -661,8 +659,8 @@ struct DiffStep {
  * @param numSteps     Number of stimulus steps (each clocked step emits three samples).
  */
 QVector<DiffStep> generateDifferentialVectors(
-    const QVector<InputSwitch *> &switches,
-    const QVector<Led *> &leds,
+    const QVector<Element *> &switches,
+    const QVector<Element *> &leds,
     Simulation *sim,
     int clockIdx,
     const QVector<int> &asyncLowIdx,

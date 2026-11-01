@@ -20,7 +20,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ProgramCounter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> loadValueInputs;
+    QVector<Element *> loadValueInputs;
     InputSwitch *clock = nullptr, *load = nullptr, *inc = nullptr, *reset = nullptr;
     QVector<Led *> pcOutputs;
     QVector<Led *> pcPlus1Outputs;

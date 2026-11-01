@@ -21,9 +21,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct MemoryStage16bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> addressInputs;
-    QVector<InputSwitch *> datainInputs;
-    QVector<InputSwitch *> resultInputs;
+    QVector<Element *> addressInputs;
+    QVector<Element *> datainInputs;
+    QVector<Element *> resultInputs;
     InputSwitch *memread = nullptr;
     InputSwitch *memwrite = nullptr;
     InputSwitch *clk = nullptr;

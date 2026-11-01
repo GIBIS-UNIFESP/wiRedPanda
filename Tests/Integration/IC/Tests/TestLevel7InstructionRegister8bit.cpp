@@ -20,7 +20,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct InstrRegister8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> dataInputs;
+    QVector<Element *> dataInputs;
     InputSwitch *clock = nullptr;
     InputSwitch *load = nullptr;
     InputSwitch *reset = nullptr;

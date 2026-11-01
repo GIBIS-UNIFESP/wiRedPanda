@@ -20,11 +20,11 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct DataForwardingUnitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> dataAInputs;
-    QVector<InputSwitch *> dataBInputs;
-    QVector<InputSwitch *> dataCInputs;
-    QVector<InputSwitch *> dataDInputs;
-    QVector<InputSwitch *> selectInputs;
+    QVector<Element *> dataAInputs;
+    QVector<Element *> dataBInputs;
+    QVector<Element *> dataCInputs;
+    QVector<Element *> dataDInputs;
+    QVector<Element *> selectInputs;
     QVector<Led *> outputLeds;
     Simulation *sim = nullptr;
 

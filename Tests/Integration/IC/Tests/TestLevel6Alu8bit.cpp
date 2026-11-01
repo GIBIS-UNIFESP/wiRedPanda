@@ -20,9 +20,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Alu8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> aInputs;
-    QVector<InputSwitch *> bInputs;
-    QVector<InputSwitch *> opcodeInputs;
+    QVector<Element *> aInputs;
+    QVector<Element *> bInputs;
+    QVector<Element *> opcodeInputs;
     QVector<Led *> resultOutputs;
     Led *zeroFlag = nullptr;
     Led *negativeFlag = nullptr;
@@ -98,7 +98,7 @@ struct Alu8bitFixture {
     void setOpCode(int code)
     {
         for (int i = 0; i < 3; i++) {
-            opcodeInputs[i]->setOn((code >> i) & 1);
+            opcodeInputs[i]->setParam(ParamId::On, ((code >> i) & 1) != 0);
         }
     }
 
@@ -216,12 +216,12 @@ void TestLevel6ALU8Bit::testALU8BitInputPortIsolation()
 
     // Set B to all 1s (0xFF)
     for (int i = 0; i < 8; i++) {
-        f.bInputs[i]->setOn(true);
+        f.bInputs[i]->setParam(ParamId::On, true);
     }
 
     // Set A with only bit at bitPosition = 1, all others = 0
     for (int i = 0; i < 8; i++) {
-        f.aInputs[i]->setOn(i == bitPosition);
+        f.aInputs[i]->setParam(ParamId::On, i == bitPosition);
     }
 
     f.sim->update();
@@ -253,8 +253,8 @@ void TestLevel6ALU8Bit::testALU8BitOutputPortIsolation()
 
     // Test: Set A[bitPosition]=1, all other A bits=0, B=all 0s
     for (int i = 0; i < 8; i++) {
-        f.aInputs[i]->setOn(i == bitPosition);
-        f.bInputs[i]->setOn(false);
+        f.aInputs[i]->setParam(ParamId::On, i == bitPosition);
+        f.bInputs[i]->setParam(ParamId::On, false);
     }
 
     f.sim->update();

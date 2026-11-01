@@ -145,10 +145,10 @@ void TestLevel6RippleAdder8Bit::test8BitAdder() {
     for (size_t test_idx = 0; test_idx < sizeof(cases) / sizeof(cases[0]); test_idx++) {
         const auto &testCase = cases[test_idx];
 
-        QVector<InputSwitch *> a_vec(f.a, f.a + 8);
+        QVector<Element *> a_vec(f.a, f.a + 8);
         setMultiBitInput(a_vec, testCase.a_val);
 
-        QVector<InputSwitch *> b_vec(f.b, f.b + 8);
+        QVector<Element *> b_vec(f.b, f.b + 8);
         setMultiBitInput(b_vec, testCase.b_val);
 
         f.carryIn->setOn(testCase.cin_val != 0);

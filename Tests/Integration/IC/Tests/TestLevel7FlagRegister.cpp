@@ -21,7 +21,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct FlagRegisterFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> flagInputs;
+    QVector<Element *> flagInputs;
     InputSwitch *load = nullptr;
     InputSwitch *clk = nullptr;
     QVector<Led *> flagOutputs;

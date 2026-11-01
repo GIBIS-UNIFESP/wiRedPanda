@@ -21,8 +21,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Ram8x8Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> addressInputs;
-    QVector<InputSwitch *> dataInInputs;
+    QVector<Element *> addressInputs;
+    QVector<Element *> dataInInputs;
     InputSwitch *we = nullptr;
     InputSwitch *clk = nullptr;
     InputSwitch *reset = nullptr;

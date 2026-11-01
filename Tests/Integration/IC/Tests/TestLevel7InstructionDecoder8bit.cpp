@@ -21,7 +21,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct InstrDecoder8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> instrInputs;
+    QVector<Element *> instrInputs;
     QMap<int, Led *> opOutputs;
     Simulation *sim = nullptr;
 

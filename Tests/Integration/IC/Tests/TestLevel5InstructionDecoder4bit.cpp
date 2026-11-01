@@ -19,7 +19,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct InstructionDecoder4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> instrInputs;
+    QVector<Element *> instrInputs;
     QVector<Led *> opOutputs;
     Simulation *sim = nullptr;
 

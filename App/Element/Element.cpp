@@ -153,7 +153,11 @@ void Element::operate(const Operation operation)
 bool Element::setParam(const ParamId id, const ParamValue &value)
 {
     const ParamSpec *spec = m_parameters.spec(id);
-    if ((spec == nullptr) || (value.index() != spec->defaultValue.index())) {
+    if (spec == nullptr) {
+        return false;
+    }
+    if (value.index() != spec->defaultValue.index()) {
+        Q_ASSERT_X(false, "Element::setParam()", "a value not of its parameter's kind");
         return false;
     }
 

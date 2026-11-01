@@ -272,8 +272,9 @@ public:
     /**
      * \brief Sets parameter \a id to \a value as its spec takes it (ParamSpec::accept).
      * \details The element follows the new value (parameterChanged()).
-     * \returns \c false, changing nothing, when the type has no such parameter, \a value is of another kind, the spec
-     * leaves the parameter as it is, or the value it takes is the one the parameter has.
+     * \returns \c false, changing nothing, when the type has no such parameter, the spec leaves the parameter as it is,
+     * or the value it takes is the one the parameter has. A value of another kind than the parameter's is a broken
+     * invariant: it asserts, and a release build changes nothing.
      */
     bool setParam(ParamId id, const ParamValue &value);
 

@@ -119,7 +119,7 @@ void TestLevel6Register8Bit::testRegisterWriteAndHoldWhenDisabled() {
     f.reset->setOn(false);
 
     // Write 0xAA on clock edge
-    QVector<InputSwitch *> data_vec1(f.data, f.data + 8);
+    QVector<Element *> data_vec1(f.data, f.data + 8);
     setMultiBitInput(data_vec1, CPUTestUtils::PATTERN_ALTERNATING_1);
 
     f.writeEnable->setOn(true);
@@ -131,7 +131,7 @@ void TestLevel6Register8Bit::testRegisterWriteAndHoldWhenDisabled() {
     QCOMPARE(write_val, CPUTestUtils::PATTERN_ALTERNATING_1);
 
     // Hold value when WriteEnable=0
-    QVector<InputSwitch *> data_vec2(f.data, f.data + 8);
+    QVector<Element *> data_vec2(f.data, f.data + 8);
     setMultiBitInput(data_vec2, CPUTestUtils::PATTERN_ALTERNATING_2);
 
     f.writeEnable->setOn(false);
@@ -155,7 +155,7 @@ void TestLevel6Register8Bit::testRegisterReenableAfterHold() {
     f.writeEnable->setOn(true);
     f.sim->update();
 
-    QVector<InputSwitch *> data_vec3(f.data, f.data + 8);
+    QVector<Element *> data_vec3(f.data, f.data + 8);
     setMultiBitInput(data_vec3, CPUTestUtils::PATTERN_ALTERNATING_2);
     f.sim->update();
 
@@ -175,7 +175,7 @@ void TestLevel6Register8Bit::testRegisterWriteAllOnesAndHoldAfter() {
     f.reset->setOn(false);
 
     // Write 0xFF
-    QVector<InputSwitch *> data_vec4(f.data, f.data + 8);
+    QVector<Element *> data_vec4(f.data, f.data + 8);
     setMultiBitInput(data_vec4, CPUTestUtils::PATTERN_ALL_ONES);
     f.writeEnable->setOn(true);
     f.sim->update();
@@ -189,7 +189,7 @@ void TestLevel6Register8Bit::testRegisterWriteAllOnesAndHoldAfter() {
     QCOMPARE(q_after_ff, CPUTestUtils::PATTERN_ALL_ONES);
 
     // Hold after known good state
-    QVector<InputSwitch *> data_vec5(f.data, f.data + 8);
+    QVector<Element *> data_vec5(f.data, f.data + 8);
     setMultiBitInput(data_vec5, CPUTestUtils::PATTERN_ALL_ZEROS);
 
     f.writeEnable->setOn(false);
@@ -206,7 +206,7 @@ void TestLevel6Register8Bit::testRegisterIndividualBitMapping() {
     f.reset->setOn(true);
     f.sim->update();
     f.reset->setOn(false);
-    QVector<InputSwitch *> test_data(f.data, f.data + 8);
+    QVector<Element *> test_data(f.data, f.data + 8);
     setMultiBitInput(test_data, 0x01);
     f.writeEnable->setOn(true);
     f.sim->update();
@@ -267,7 +267,7 @@ void TestLevel6Register8Bit::testRegisterMidRangeValues() {
     for (size_t i = 0; i < sizeof(midRangeValues) / sizeof(midRangeValues[0]); i++) {
         int testValue = midRangeValues[i].value;
 
-        QVector<InputSwitch *> phase2_data(f.data, f.data + 8);
+        QVector<Element *> phase2_data(f.data, f.data + 8);
         setMultiBitInput(phase2_data, testValue);
         f.writeEnable->setOn(true);
         f.sim->update();
@@ -349,7 +349,7 @@ void TestLevel6Register8Bit::test8BitRegisterSequential() {
     for (int i = 0; i < total_operations; i++) {
         int testValue = sequentialValues[i].value;
 
-        QVector<InputSwitch *> seq_data(f.data, f.data + 8);
+        QVector<Element *> seq_data(f.data, f.data + 8);
         setMultiBitInput(seq_data, testValue);
         f.sim->update();
 
@@ -385,7 +385,7 @@ void TestLevel6Register8Bit::test8BitRegisterEdgeCases() {
 
     f.writeEnable->setOn(true);
     // SCENARIO 1: Reset During Normal Operation
-    QVector<InputSwitch *> data_vec(f.data, f.data + 8);
+    QVector<Element *> data_vec(f.data, f.data + 8);
     setMultiBitInput(data_vec, CPUTestUtils::PATTERN_ALTERNATING_1);
     f.sim->update();
 

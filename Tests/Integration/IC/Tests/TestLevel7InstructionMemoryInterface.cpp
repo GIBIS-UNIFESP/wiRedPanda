@@ -23,8 +23,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct InstructionMemoryInterfaceFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> addressInputs;
-    QVector<InputSwitch *> dataInputs;
+    QVector<Element *> addressInputs;
+    QVector<Element *> dataInputs;
     InputSwitch *writeEnable = nullptr;
     InputSwitch *clk = nullptr;
     QVector<Led *> instrOutputs;

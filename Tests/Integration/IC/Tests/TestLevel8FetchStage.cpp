@@ -209,7 +209,7 @@ void TestLevel8FetchStage::testFetchStage()
     CircuitBuilder builder(workspace->scene());
 
     // Create PC data input switches (8-bit)
-    QVector<InputSwitch *> pcdata_inputs;
+    QVector<Element *> pcdata_inputs;
     for (int i = 0; i < 8; i++) {
         InputSwitch *sw = new InputSwitch();
         builder.add(sw);

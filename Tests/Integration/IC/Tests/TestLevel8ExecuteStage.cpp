@@ -21,9 +21,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ExecuteStageFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> operandAInputs;
-    QVector<InputSwitch *> operandBInputs;
-    QVector<InputSwitch *> aluopInputs;
+    QVector<Element *> operandAInputs;
+    QVector<Element *> operandBInputs;
+    QVector<Element *> aluopInputs;
     QVector<Led *> resultLeds;
     Led *zeroLed = nullptr;
     Led *signLed = nullptr;
@@ -172,7 +172,7 @@ void TestLevel8ExecuteStage::testInputPortIsolation()
     // yield a one-hot result at the same position (no bit-lane cross-wiring).
     setMultiBitInput(f.operandBInputs, 0xFF);
     for (int i = 0; i < 8; ++i) {
-        f.operandAInputs[i]->setOn(i == bitPosition);
+        f.operandAInputs[i]->setParam(ParamId::On, i == bitPosition);
     }
     setMultiBitInput(f.aluopInputs, 2);
 
@@ -199,7 +199,7 @@ void TestLevel8ExecuteStage::testOutputPortIsolation()
     // result bit; every other result bit must stay low.
     setMultiBitInput(f.operandBInputs, 0x00);
     for (int i = 0; i < 8; ++i) {
-        f.operandAInputs[i]->setOn(i == bitPosition);
+        f.operandAInputs[i]->setParam(ParamId::On, i == bitPosition);
     }
     setMultiBitInput(f.aluopInputs, 3);
 

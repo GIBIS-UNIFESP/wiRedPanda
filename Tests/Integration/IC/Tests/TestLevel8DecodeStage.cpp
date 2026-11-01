@@ -21,7 +21,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct DecodeStageFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> opcodeInputs;
+    QVector<Element *> opcodeInputs;
     QVector<Led *> aluopLeds;
     QVector<Led *> decodedLineLeds;
     Led *regwriteLed = nullptr;

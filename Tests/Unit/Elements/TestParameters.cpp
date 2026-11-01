@@ -287,9 +287,12 @@ void TestParameters::testSetParamTakesAValueAsItsSpecDoes()
     QVERIFY(!node.inputPort()->isRequired());
     QVERIFY(!node.inputPort()->isVisible());
 
-    // The value it has, a value of another kind and a parameter the type does not have change nothing
+    // The value it has and a parameter the type does not have change nothing; so does a value of another kind, a broken
+    // invariant, which a debug build asserts
     QVERIFY(!node.setParam(ParamId::Wireless, static_cast<int>(WirelessMode::Rx)));
+#ifdef QT_NO_DEBUG
     QVERIFY(!node.setParam(ParamId::Wireless, QStringLiteral("Tx")));
+#endif
     QVERIFY(!node.setParam(ParamId::Colour, QStringLiteral("Red")));
     QCOMPARE(node.wirelessMode(), WirelessMode::Rx);
 
@@ -323,7 +326,9 @@ void TestParameters::testParameterChangedFollowsEachChangeOnly()
     QCOMPARE(node.previous, ParamValue(static_cast<int>(WirelessMode::None)));
 
     QVERIFY(!node.setParam(ParamId::Wireless, static_cast<int>(WirelessMode::Tx)));
-    QVERIFY(!node.setParam(ParamId::Wireless, 2.0));
+#ifdef QT_NO_DEBUG
+    QVERIFY(!node.setParam(ParamId::Wireless, 2.0)); // A value of another kind, which a debug build asserts
+#endif
     QCOMPARE(node.changes, 1);
 
     QVERIFY(node.setParam(ParamId::Wireless, 9));

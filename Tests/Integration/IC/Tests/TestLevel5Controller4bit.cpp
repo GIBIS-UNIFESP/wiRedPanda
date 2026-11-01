@@ -19,7 +19,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Controller4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    QVector<InputSwitch *> opcodeInputs;
+    QVector<Element *> opcodeInputs;
     QVector<Led *> ctrlOutputs;
     Simulation *sim = nullptr;
 
