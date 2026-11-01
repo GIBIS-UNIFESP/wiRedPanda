@@ -7,7 +7,6 @@
 #include <QFileInfo>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
@@ -123,10 +122,10 @@ inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* inst
     CircuitBuilder builder(workspace->scene());
 
     // Create 8 D flip-flops for IR storage
-    QVector<DFlipFlop *> irStorage;
+    QVector<Element *> irStorage;
     QVector<Mux *> irMuxes;
     for (int i = 0; i < 8; i++) {
-        irStorage.append(new DFlipFlop());
+        irStorage.append(ElementFactory::buildElement(ElementType::DFlipFlop));
         irMuxes.append(new Mux());
     }
 
@@ -605,7 +604,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     CircuitBuilder builder(workspace->scene());
 
     // Create 3 D flip-flops for state (FETCH=0, DECODE=1, EXECUTE=2, WRITEBACK=3, HALT=4)
-    QVector<DFlipFlop *> stateReg;
+    QVector<Element *> stateReg;
     QVector<Mux *> stateMuxes;
 
     // State increment logic: need XOR/AND gates for ripple-carry increment
@@ -614,7 +613,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
     QVector<Element *> carryAnd;
 
     for (int i = 0; i < 3; i++) {
-        stateReg.append(new DFlipFlop());
+        stateReg.append(ElementFactory::buildElement(ElementType::DFlipFlop));
         stateMuxes.append(new Mux());
         incrementXor.append(ElementFactory::buildElement(ElementType::Xor));
         carryAnd.append(ElementFactory::buildElement(ElementType::And));
@@ -865,9 +864,9 @@ inline std::unique_ptr<WorkSpace> buildSingleGatedRegister(InputSwitch* writeDat
     CircuitBuilder builder(workspace->scene());
 
     // Create 8-bit register (8 flip-flops)
-    QVector<DFlipFlop *> registers;
+    QVector<Element *> registers;
     for (int b = 0; b < 8; b++) {
-        registers.append(new DFlipFlop());
+        registers.append(ElementFactory::buildElement(ElementType::DFlipFlop));
         builder.add(registers[b], writeData[b], readOut[b]);
     }
 
@@ -918,8 +917,8 @@ inline std::unique_ptr<WorkSpace> buildFlagRegister(InputSwitch* zeroIn,
     CircuitBuilder builder(workspace->scene());
 
     // Create 2 DFlipFlops for flags
-    DFlipFlop *zeroFF = new DFlipFlop();
-    DFlipFlop *negativeFF = new DFlipFlop();
+    Element *zeroFF = ElementFactory::buildElement(ElementType::DFlipFlop);
+    Element *negativeFF = ElementFactory::buildElement(ElementType::DFlipFlop);
 
     // Clock gating: AND(flagWrite, clock)
     Element *clockGate = ElementFactory::buildElement(ElementType::And);
@@ -1149,11 +1148,11 @@ inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
     CircuitBuilder builder(workspace->scene());
 
     // Create memory array: 64 locations x 8 bits
-    QVector<QVector<DFlipFlop *>> memoryArray;
+    QVector<QVector<Element *>> memoryArray;
     for (int addr = 0; addr < 64; addr++) {
-        QVector<DFlipFlop *> word;
+        QVector<Element *> word;
         for (int b = 0; b < 8; b++) {
-            word.append(new DFlipFlop());
+            word.append(ElementFactory::buildElement(ElementType::DFlipFlop));
         }
         memoryArray.append(word);
     }

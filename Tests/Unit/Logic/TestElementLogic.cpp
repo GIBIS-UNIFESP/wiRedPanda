@@ -5,15 +5,9 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Demux.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
-#include "App/Element/GraphicElements/DLatch.h"
-#include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/SRFlipFlop.h"
-#include "App/Element/GraphicElements/SRLatch.h"
-#include "App/Element/GraphicElements/TFlipFlop.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::initSrc;
@@ -313,7 +307,7 @@ void TestElementLogic::testDFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    DFlipFlop elm; initElm(elm);
+    Element elm{ElementType::DFlipFlop}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -362,7 +356,7 @@ void TestElementLogic::testDLatch()
     QFETCH(bool, prevState);
     QFETCH(bool, expectedQ);
 
-    DLatch elm; initElm(elm);
+    Element elm{ElementType::DLatch}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 
@@ -423,7 +417,7 @@ void TestElementLogic::testJKFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    JKFlipFlop elm; initElm(elm);
+    Element elm{ElementType::JKFlipFlop}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -509,7 +503,7 @@ void TestElementLogic::testSRFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    SRFlipFlop elm; initElm(elm);
+    Element elm{ElementType::SRFlipFlop}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -581,7 +575,7 @@ void TestElementLogic::testTFlipFlop()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    TFlipFlop elm; initElm(elm);
+    Element elm{ElementType::TFlipFlop}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -851,7 +845,7 @@ void TestElementLogic::testSRLatch()
     QFETCH(bool, expectedQ);
     QFETCH(bool, expectedNotQ);
 
-    SRLatch elm; initElm(elm);
+    Element elm{ElementType::SRLatch}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 

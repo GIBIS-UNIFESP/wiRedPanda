@@ -16,18 +16,13 @@
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Demux.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
-#include "App/Element/GraphicElements/SRFlipFlop.h"
-#include "App/Element/GraphicElements/SRLatch.h"
-#include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -242,7 +237,7 @@ void TestArduinoCodeGenUnit::testSRLatchCircuit()
 
     auto *swS = new InputSwitch;
     auto *swR = new InputSwitch;
-    auto *latch = new SRLatch;
+    auto *latch = ElementFactory::buildElement(ElementType::SRLatch);
     auto *ledQ = new Led;
     auto *ledNotQ = new Led;
 
@@ -273,10 +268,10 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchDeclaresSequentialState()
 
     auto *clk = new Clock;
     auto *sw = new InputSwitch;
-    auto *dff = new DFlipFlop;
-    auto *tff = new TFlipFlop;
-    auto *jkff = new JKFlipFlop;
-    auto *srff = new SRFlipFlop;
+    auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
+    auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
+    auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
+    auto *srff = ElementFactory::buildElement(ElementType::SRFlipFlop);
     auto *led1 = new Led;
     auto *led2 = new Led;
     auto *led3 = new Led;

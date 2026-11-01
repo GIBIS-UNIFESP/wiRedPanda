@@ -17,20 +17,14 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Demux.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
-#include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/SRFlipFlop.h"
-#include "App/Element/GraphicElements/SRLatch.h"
-#include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
@@ -350,13 +344,13 @@ void TestSystemVerilogCodeGenUnit::testDLatchAndSRLatchCircuits()
 
     auto *swD = new InputSwitch;
     auto *swEnable = new InputSwitch;
-    auto *dLatch = new DLatch;
+    auto *dLatch = ElementFactory::buildElement(ElementType::DLatch);
     auto *dLatchQ = new Led;
     auto *dLatchQBar = new Led;
 
     auto *swS = new InputSwitch;
     auto *swR = new InputSwitch;
-    auto *srLatch = new SRLatch;
+    auto *srLatch = ElementFactory::buildElement(ElementType::SRLatch);
     auto *srLatchQ = new Led;
     auto *srLatchQBar = new Led;
 
@@ -406,9 +400,9 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsNormalClockPath()
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
 
-    auto *srff = new SRFlipFlop;
-    auto *jkff = new JKFlipFlop;
-    auto *tff = new TFlipFlop;
+    auto *srff = ElementFactory::buildElement(ElementType::SRFlipFlop);
+    auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
+    auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
 
     auto *srQ = new Led;
     auto *srQBar = new Led;
@@ -471,10 +465,10 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsWithPresetAndClearWired()
     auto *prst = new InputSwitch;
     auto *clr = new InputSwitch;
 
-    auto *dff = new DFlipFlop;
-    auto *tff = new TFlipFlop;
-    auto *jkff = new JKFlipFlop;
-    auto *srff = new SRFlipFlop;
+    auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
+    auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
+    auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
+    auto *srff = ElementFactory::buildElement(ElementType::SRFlipFlop);
 
     auto *dQ = new Led;
     auto *dQBar = new Led;
@@ -550,7 +544,7 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopWithPresetOnlySensitivityList()
     auto *clk = new Clock;
     auto *data = new InputSwitch;
     auto *prst = new InputSwitch;
-    auto *dff = new DFlipFlop;
+    auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *q = new Led;
     auto *qBar = new Led;
 
@@ -587,7 +581,7 @@ void TestSystemVerilogCodeGenUnit::testAsyncControlDrivenByAGateReadsItsVariable
     auto *data = new InputSwitch;
     auto *swPrstSrc = new InputSwitch;
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
-    auto *dff = new DFlipFlop;
+    auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *q = new Led;
     auto *qBar = new Led;
 

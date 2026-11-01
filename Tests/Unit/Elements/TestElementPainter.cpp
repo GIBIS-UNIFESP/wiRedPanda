@@ -13,7 +13,7 @@
 #include <QTest>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
+#include "App/Element/Element.h"
 #include "App/Presentation/ElementPainter.h"
 
 namespace ElementPainterTestDetail {
@@ -107,7 +107,7 @@ void TestElementPainter::testAnElementIsDrawnWhollyInTheThemeHanded()
     const ThemeAttributes dark = attributesOf(Theme::Dark);
     QVERIFY(light.m_selectionBrush != dark.m_selectionBrush);
 
-    DFlipFlop flipFlop;
+    Element flipFlop{ElementType::DFlipFlop};
     const std::optional<QPoint> clear = clearPixelIn(drawn(flipFlop, light), flipFlop.outlineRect());
     QVERIFY(clear);
     flipFlop.setSelected(true);
@@ -134,7 +134,7 @@ void TestElementPainter::testAnElementDrawsItselfWithThePainter()
 
     for (const Theme current : {Theme::Light, Theme::Dark}) {
         ThemeManager::setTheme(current);
-        DFlipFlop flipFlop;
+        Element flipFlop{ElementType::DFlipFlop};
         flipFlop.setSelected(true);
 
         QImage image(kArea.size(), QImage::Format_ARGB32_Premultiplied);

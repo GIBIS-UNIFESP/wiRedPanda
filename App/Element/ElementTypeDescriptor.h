@@ -98,6 +98,9 @@ struct ElementTypeDescriptor {
     KernelKind kernel = KernelKind::None; ///< What the simulation core computes for an element of the type.
     QList<ParamId> kernelParameters;      ///< The parameters the kernel reads, each one in the type's schema.
     bool kernelReadsLabel = false; ///< Whether the kernel reads the element's label, outside the schema: a node's channel.
+    /// The history the kernel keeps between evaluations, as it is at power-on: a flip-flop's last clock, then the data
+    /// inputs it last sampled. Each element keeps its own (Element::kernelState()), which a reset puts back to this.
+    QList<Status> kernelState;
 
     /// For a KernelKind::Input type: whether output \a port of \a element is on, read from its parameters.
     bool (*sourceLevel)(const Element &element, int port) = nullptr;

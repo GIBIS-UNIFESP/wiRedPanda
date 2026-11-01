@@ -12,10 +12,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display7.h"
-#include "App/Element/GraphicElements/DLatch.h"
-#include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/IC.h"
@@ -433,7 +430,7 @@ void TestElementContextMenu::testMorphSubmenuMemoryTwoInputEmptiesSubmenu()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *dLatch = new DLatch();
+    auto *dLatch = ElementFactory::buildElement(ElementType::DLatch);
     scene->receiveCommand(new AddItemsCommand({dLatch}, scene));
     dLatch->setSelected(true);
 
@@ -450,7 +447,7 @@ void TestElementContextMenu::testMorphSubmenuMemoryFourInput()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *dff = new DFlipFlop();
+    auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     scene->receiveCommand(new AddItemsCommand({dff}, scene));
     dff->setSelected(true);
 
@@ -466,7 +463,7 @@ void TestElementContextMenu::testMorphSubmenuMemoryFiveInput()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *jkff = new JKFlipFlop();
+    auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
     scene->receiveCommand(new AddItemsCommand({jkff}, scene));
     jkff->setSelected(true);
 

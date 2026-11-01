@@ -28,12 +28,19 @@ private slots:
     void testSRFlipFlopWithOneOfSAndROpen();
     void testTFlipFlopWithTOpen();
 
-    // resetSimState() tests (only the 4 asynchronous-preset/clear flip-flops override it;
-    // DLatch/SRLatch have no edge-detection state to restore)
+    // resetSimState() tests: the four flip-flops keep an edge-detection history, which a reset returns to power-on's;
+    // the latches keep none
     void testDFlipFlopResetSimState();
     void testJKFlipFlopResetSimState();
     void testSRFlipFlopResetSimState();
     void testTFlipFlopResetSimState();
+
+    // A flip-flop's kernel history (Element::kernelState()): an edge latches the data of the evaluation before, the
+    // power-on history is its descriptor's, and a reset, a save and a restore carry it
+    void testDFlipFlopLatchesTheDBeforeTheEdge();
+    void testFirstEvaluationWithTheClockHighIsAnEdge_data();
+    void testFirstEvaluationWithTheClockHighIsAnEdge();
+    void testFlipFlopHistoryFollowsResetSaveAndRestore();
 
     // A presenter draws the picture of the theme it is handed, never the current one's; the body is every theme's
     void testAThemedBodyIsDrawnInTheThemeHanded();

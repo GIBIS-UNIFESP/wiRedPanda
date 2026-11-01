@@ -9,7 +9,6 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
@@ -66,7 +65,7 @@ void TestElementProperties::testInputSizeConstraints()
 void TestElementProperties::testInputSizeFixed()
 {
     // DFlipFlop: inputs [4, 4] (fixed)
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
 
     QCOMPARE(dff.inputSize(), 4);
     QCOMPARE(dff.minInputSize(), 4);

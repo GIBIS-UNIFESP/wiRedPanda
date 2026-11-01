@@ -14,14 +14,9 @@
 #include <QTemporaryDir>
 
 #include "App/Core/ThemeManager.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
-#include "App/Element/GraphicElements/DLatch.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/SRFlipFlop.h"
-#include "App/Element/GraphicElements/SRLatch.h"
-#include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
@@ -32,7 +27,7 @@
 
 void TestSequentialLogic::testDFlipFlop()
 {
-    DFlipFlop elm;
+    Element elm{ElementType::DFlipFlop};
     QCOMPARE(elm.inputSize(), 4);
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 4);
@@ -44,7 +39,7 @@ void TestSequentialLogic::testDFlipFlop()
 
 void TestSequentialLogic::testDLatch()
 {
-    DLatch elm;
+    Element elm{ElementType::DLatch};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 2);
@@ -56,7 +51,7 @@ void TestSequentialLogic::testDLatch()
 
 void TestSequentialLogic::testJKFlipFlop()
 {
-    JKFlipFlop elm;
+    Element elm{ElementType::JKFlipFlop};
     QCOMPARE(elm.inputSize(), 5);
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 5);
@@ -68,7 +63,7 @@ void TestSequentialLogic::testJKFlipFlop()
 
 void TestSequentialLogic::testSRFlipFlop()
 {
-    SRFlipFlop elm;
+    Element elm{ElementType::SRFlipFlop};
     QCOMPARE(elm.inputSize(), 5);
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 5);
@@ -80,7 +75,7 @@ void TestSequentialLogic::testSRFlipFlop()
 
 void TestSequentialLogic::testSRLatch()
 {
-    SRLatch elm;
+    Element elm{ElementType::SRLatch};
     QCOMPARE(elm.inputSize(), 2);
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 2);
@@ -92,7 +87,7 @@ void TestSequentialLogic::testSRLatch()
 
 void TestSequentialLogic::testTFlipFlop()
 {
-    TFlipFlop elm;
+    Element elm{ElementType::TFlipFlop};
     QCOMPARE(elm.inputSize(), 4);
     QCOMPARE(elm.outputSize(), 2);
     QCOMPARE(elm.minInputSize(), 4);
@@ -112,7 +107,7 @@ void TestSequentialLogic::testDFlipFlopBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swD, swClk;
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swD, &swClk, &dff, &ledQ, &ledNQ);
@@ -153,7 +148,7 @@ void TestSequentialLogic::testDLatchBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swD, swEnable;
-    DLatch dlatch;
+    Element dlatch{ElementType::DLatch};
     Led ledQ, ledNQ;
 
     builder.add(&swD, &swEnable, &dlatch, &ledQ, &ledNQ);
@@ -196,7 +191,7 @@ void TestSequentialLogic::testJKFlipFlopBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swJ, swClk, swK;
-    JKFlipFlop jkff;
+    Element jkff{ElementType::JKFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swJ, &swClk, &swK, &jkff, &ledQ, &ledNQ);
@@ -249,7 +244,7 @@ void TestSequentialLogic::testSRFlipFlopBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swS, swClk, swR;
-    SRFlipFlop srff;
+    Element srff{ElementType::SRFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swS, &swClk, &swR, &srff, &ledQ, &ledNQ);
@@ -296,7 +291,7 @@ void TestSequentialLogic::testSRLatchBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swS, swR;
-    SRLatch srlatch;
+    Element srlatch{ElementType::SRLatch};
     Led ledQ, ledNQ;
 
     builder.add(&swS, &swR, &srlatch, &ledQ, &ledNQ);
@@ -344,7 +339,7 @@ void TestSequentialLogic::testTFlipFlopBehavior()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swT, swClk;
-    TFlipFlop tff;
+    Element tff{ElementType::TFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swT, &swClk, &tff, &ledQ, &ledNQ);
@@ -387,7 +382,7 @@ void TestSequentialLogic::testSRFlipFlopWithOneOfSAndROpen()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swClk, swS, swR, swPreset;
-    SRFlipFlop setOnly, resetOnly;
+    Element setOnly{ElementType::SRFlipFlop}, resetOnly{ElementType::SRFlipFlop};
     Led ledSet, ledReset;
 
     builder.add(&swClk, &swS, &swR, &swPreset, &setOnly, &resetOnly, &ledSet, &ledReset);
@@ -430,7 +425,7 @@ void TestSequentialLogic::testTFlipFlopWithTOpen()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swClk, swPreset, swClear;
-    TFlipFlop tff;
+    Element tff{ElementType::TFlipFlop};
     Led ledQ;
 
     builder.add(&swClk, &swPreset, &swClear, &tff, &ledQ);
@@ -466,7 +461,7 @@ void TestSequentialLogic::testTFlipFlopWithTOpen()
 // no BeWavedDolphin test circuit happens to include a flip-flop, so these exercise it
 // directly: drive Q away from its power-on default, reset, and confirm both the output
 // AND the edge-detection state came back cleanly (a subsequent real clock edge still
-// behaves correctly, proving the internal m_simLastXxx bookkeeping wasn't left corrupt).
+// behaves correctly, proving the kernel's history (Element::kernelState()) wasn't left corrupt).
 //
 // Each test drives an input change (setOn(false) on the data-like input) right after
 // resetSimState(), exactly as WaveformSimulator::sweep() always does immediately after
@@ -481,7 +476,7 @@ void TestSequentialLogic::testDFlipFlopResetSimState()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swD, swClk;
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swD, &swClk, &dff, &ledQ, &ledNQ);
@@ -518,7 +513,7 @@ void TestSequentialLogic::testJKFlipFlopResetSimState()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swJ, swClk, swK;
-    JKFlipFlop jkff;
+    Element jkff{ElementType::JKFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swJ, &swClk, &swK, &jkff, &ledQ, &ledNQ);
@@ -557,7 +552,7 @@ void TestSequentialLogic::testSRFlipFlopResetSimState()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swS, swClk, swR;
-    SRFlipFlop srff;
+    Element srff{ElementType::SRFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swS, &swClk, &swR, &srff, &ledQ, &ledNQ);
@@ -596,7 +591,7 @@ void TestSequentialLogic::testTFlipFlopResetSimState()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swT, swClk;
-    TFlipFlop tff;
+    Element tff{ElementType::TFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swT, &swClk, &tff, &ledQ, &ledNQ);
@@ -625,6 +620,120 @@ void TestSequentialLogic::testTFlipFlopResetSimState()
     TestUtils::clockCycle(sim, &swClk);
     QCOMPARE(TestUtils::inputStatus(&ledQ), Status::Active);
     QCOMPARE(TestUtils::inputStatus(&ledNQ), Status::Inactive);
+}
+
+// ============================================================================
+// Kernel History Tests
+// ============================================================================
+
+void TestSequentialLogic::testDFlipFlopLatchesTheDBeforeTheEdge()
+{
+    // The edge latches the D its flip-flop sampled at the evaluation before, not the D of the edge's own evaluation:
+    // the zero setup time. A D that rises with the clock is latched at the next edge.
+    Element dff{ElementType::DFlipFlop};
+    ElementArray sources{ElementType::InputVcc, 4}; // D, Clock, ~Preset, ~Clear
+    TestUtils::initElm(dff);
+    for (int port = 0; port < sources.size(); ++port) {
+        TestUtils::initSrc(sources[port]);
+        dff.connectPredecessor(port, &sources[port], 0);
+    }
+    sources[2].setOutputValue(Status::Active);
+    sources[3].setOutputValue(Status::Active);
+
+    sources[0].setOutputValue(Status::Inactive);
+    sources[1].setOutputValue(Status::Inactive);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Inactive);
+
+    sources[0].setOutputValue(Status::Active);
+    sources[1].setOutputValue(Status::Active);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Inactive);
+    QCOMPARE(dff.outputValue(1), Status::Active);
+
+    sources[1].setOutputValue(Status::Inactive);
+    dff.updateLogic();
+    sources[1].setOutputValue(Status::Active);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Active);
+    QCOMPARE(dff.outputValue(1), Status::Inactive);
+}
+
+void TestSequentialLogic::testFirstEvaluationWithTheClockHighIsAnEdge_data()
+{
+    QTest::addColumn<ElementType>("type");
+    QTest::addColumn<Status>("q");
+
+    // The power-on history holds a low clock and the data the old flip-flops started with: a D flip-flop's high D,
+    // a T flip-flop's high T and a JK flip-flop's high J and K, so a clock high at the first evaluation latches a
+    // high Q from those, whatever the data inputs are; an SR flip-flop's S and R start low and keep its Q
+    QTest::newRow("D") << ElementType::DFlipFlop << Status::Active;
+    QTest::newRow("T") << ElementType::TFlipFlop << Status::Active;
+    QTest::newRow("JK") << ElementType::JKFlipFlop << Status::Active;
+    QTest::newRow("SR") << ElementType::SRFlipFlop << Status::Inactive;
+}
+
+void TestSequentialLogic::testFirstEvaluationWithTheClockHighIsAnEdge()
+{
+    QFETCH(ElementType, type);
+    QFETCH(Status, q);
+
+    // The clock is the second input and the overrides, ~Preset and ~Clear, the last two; every other input is data
+    Element flipFlop{type};
+    TestUtils::initElm(flipFlop);
+    ElementArray sources{ElementType::InputVcc, flipFlop.inputSize()};
+    for (int port = 0; port < sources.size(); ++port) {
+        TestUtils::initSrc(sources[port]);
+        const bool high = (port == 1) || (port >= sources.size() - 2);
+        sources[port].setOutputValue(high ? Status::Active : Status::Inactive);
+        flipFlop.connectPredecessor(port, &sources[port], 0);
+    }
+
+    flipFlop.updateLogic();
+    QCOMPARE(flipFlop.outputValue(0), q);
+    QCOMPARE(flipFlop.outputValue(1), (q == Status::Active) ? Status::Inactive : Status::Active);
+}
+
+void TestSequentialLogic::testFlipFlopHistoryFollowsResetSaveAndRestore()
+{
+    Element dff{ElementType::DFlipFlop};
+    ElementArray sources{ElementType::InputVcc, 4}; // D, Clock, ~Preset, ~Clear
+    TestUtils::initElm(dff);
+    for (int port = 0; port < sources.size(); ++port) {
+        TestUtils::initSrc(sources[port]);
+        dff.connectPredecessor(port, &sources[port], 0);
+    }
+    sources[2].setOutputValue(Status::Active);
+    sources[3].setOutputValue(Status::Active);
+
+    sources[0].setOutputValue(Status::Active);
+    sources[1].setOutputValue(Status::Inactive);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Inactive);
+
+    // A save before an edge, restored after it, takes back the history with the outputs, so the edge comes again
+    QVector<Status> saved;
+    dff.saveSimState(saved);
+    sources[1].setOutputValue(Status::Active);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Active);
+
+    int cursor = 0;
+    dff.restoreSimState(saved, cursor);
+    QCOMPARE(cursor, saved.size());
+    QCOMPARE(dff.outputValue(0), Status::Inactive);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Active);
+
+    // A reset takes the history back to power-on's, whose low clock makes the clock still high an edge again, and
+    // whose high D it latches although D is now low
+    sources[0].setOutputValue(Status::Inactive);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Active);
+    dff.resetSimState();
+    QCOMPARE(dff.outputValue(0), Status::Inactive);
+    dff.updateLogic();
+    QCOMPARE(dff.outputValue(0), Status::Active);
 }
 
 // ============================================================================
@@ -663,8 +772,12 @@ QImage drawnIn(const Element &element, const ThemeAttributes &theme)
 QList<std::function<Element *()>> themedTypes()
 {
     return {
-        [] { return new DFlipFlop; }, [] { return new JKFlipFlop; }, [] { return new SRFlipFlop; },
-        [] { return new TFlipFlop; }, [] { return new DLatch; }, [] { return new SRLatch; },
+        [] { return ElementFactory::buildElement(ElementType::DFlipFlop); },
+        [] { return ElementFactory::buildElement(ElementType::JKFlipFlop); },
+        [] { return ElementFactory::buildElement(ElementType::SRFlipFlop); },
+        [] { return ElementFactory::buildElement(ElementType::TFlipFlop); },
+        [] { return ElementFactory::buildElement(ElementType::DLatch); },
+        [] { return ElementFactory::buildElement(ElementType::SRLatch); },
     };
 }
 

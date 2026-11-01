@@ -40,6 +40,10 @@ public:
     /// output count is unchanged: a rebuild keeps the outputs of an element it keeps.
     void initVectors(int inputCount, int outputCount, const QVector<OutputPort *> &outputPorts, bool keepOutputs);
 
+    /// The history the element's kernel keeps between evaluations (ElementTypeDescriptor::kernelState).
+    QVector<Status> &kernelState() { return m_kernelState; }
+    const QVector<Status> &kernelState() const { return m_kernelState; }
+
     /// Resets each output slot to its port's power-on default (Unknown coerced to Inactive).
     void reset(const QVector<OutputPort *> &outputPorts);
 
@@ -133,6 +137,7 @@ private:
     /// m_deferCommit is true, setOutputValue() writes here so peers keep reading
     /// the pre-tick value until commitDeferredOutputs() publishes the snapshot.
     QVector<Status> m_staged;
+    QVector<Status> m_kernelState; ///< ElementTypeDescriptor::kernelState, as the element's evaluations left it.
     bool m_outputChanged = false;
     bool m_deferCommit = false;
 };

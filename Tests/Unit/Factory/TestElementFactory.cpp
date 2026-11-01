@@ -467,6 +467,16 @@ void TestElementFactory::testEachKernelIsComputedByItsLogicOrDrivesItself()
                 QVERIFY2((port->defaultValue() == Status::Active) || (port->defaultValue() == Status::Inactive), key);
             }
         }
+
+        // A flip-flop's kernel keeps its last clock and the data inputs it last sampled, which its logic reads by
+        // place; no other kind keeps a history
+        const QMap<KernelKind, qsizetype> history{
+            {KernelKind::DFlipFlop, 2},
+            {KernelKind::TFlipFlop, 2},
+            {KernelKind::JKFlipFlop, 3},
+            {KernelKind::SRFlipFlop, 3},
+        };
+        QCOMPARE(ElementTypeDescriptor::of(type).kernelState.size(), history.value(kind, 0));
     }
 }
 

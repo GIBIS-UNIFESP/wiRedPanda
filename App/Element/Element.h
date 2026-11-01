@@ -488,8 +488,7 @@ public:
     /**
      * \brief Resets all simulation-visible state to power-on defaults.
      * \details The base implementation resets each output slot to its port's
-     * defaultStatus().  Sequential elements (flip-flops, latches) override this
-     * to also clear their internal edge-detection variables (m_simLastClk, etc.)
+     * defaultStatus(), and the kernel's history (kernelState()) to its type's power-on history,
      * so that BeWavedDolphin can start every sweep from a known, reproducible state.
      */
     virtual void resetSimState();
@@ -508,8 +507,8 @@ public:
     /**
      * \brief Appends this element's full simulation state to \a out.
      * \details The exact counterpart of resetSimState(): whatever a subclass clears there, it
-     * must save here and put back in restoreSimState(). The base handles the output values;
-     * sequential elements add their edge-detection history, and IC recurses into its internals.
+     * must save here and put back in restoreSimState(). The base handles the output values, then
+     * the kernel's history (a flip-flop's edge detection); IC recurses into its internals.
      * Used to make a BeWavedDolphin sweep state-neutral for the live circuit -- the sweep resets
      * everything so its own results are reproducible, and must hand the user's circuit back
      * exactly as it found it.
@@ -647,6 +646,10 @@ public:
      * \details Used by Mux and Demux to convert select-line signals into a data-port index.
      */
     int decodeSelectValue(int offset, int count) const { return m_sim.decodeSelectValue(offset, count); }
+
+    /// The history the kernel keeps between evaluations (ElementTypeDescriptor::kernelState): a flip-flop's last clock,
+    /// then the data inputs it last sampled.
+    QVector<Status> &kernelState() { return m_sim.kernelState(); }
 
     // --- Theme ---
 

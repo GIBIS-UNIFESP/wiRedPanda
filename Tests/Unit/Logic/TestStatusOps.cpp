@@ -7,14 +7,8 @@
 
 #include "App/Core/StatusOps.h"
 #include "App/Element/GraphicElements/Demux.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
-#include "App/Element/GraphicElements/DLatch.h"
-#include "App/Element/GraphicElements/JKFlipFlop.h"
 #include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/SRFlipFlop.h"
-#include "App/Element/GraphicElements/SRLatch.h"
-#include "App/Element/GraphicElements/TFlipFlop.h"
 #include "App/Element/GraphicElements/TruthTable.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -692,7 +686,7 @@ void TestStatusOps::test3InputOrWithUnknown()
 
 void TestStatusOps::testDFlipFlopUnknownInputHolds()
 {
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Element d{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element prst{ElementType::InputVcc};
@@ -716,13 +710,13 @@ void TestStatusOps::testDFlipFlopUnknownInputHolds()
 
 void TestStatusOps::testDFlipFlopUnknownClockNoEdge()
 {
-    // DFlipFlop::updateLogic()'s early-return path resets m_simLastClk to Unknown whenever any
+    // The D flip-flop kernel's early-return path resets its last clock to Unknown whenever any
     // input (clk included) goes Unknown/Error, specifically so a later recovery with the clock
     // already Active can't fabricate a rising edge from stale "last clock was Inactive" state.
     // Drive the clock directly from Unknown to Active (skipping Inactive) and confirm D is NOT
-    // spuriously latched -- a buggy implementation that failed to reset m_simLastClk would
+    // spuriously latched -- a buggy implementation that failed to reset the last clock would
     // incorrectly treat this as a rising edge and resolve Q to D's value.
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Element d{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element prst{ElementType::InputVcc};
@@ -749,7 +743,7 @@ void TestStatusOps::testDFlipFlopUnknownClockNoEdge()
     QCOMPARE(dff.outputValue(0), S::Unknown);
     QCOMPARE(dff.outputValue(1), S::Unknown);
 
-    // Clock jumps straight from Unknown to Active, skipping Inactive. If m_simLastClk had
+    // Clock jumps straight from Unknown to Active, skipping Inactive. If the last clock had
     // stayed stale at Inactive, this would look like a rising edge and Q would resolve to
     // D (Active). It must not: Q stays Unknown since no real edge was observed.
     clk.setOutputValue(S::Active);
@@ -767,7 +761,7 @@ void TestStatusOps::testDFlipFlopUnknownClockNoEdge()
 
 void TestStatusOps::testJKFlipFlopUnknownPresetClearNoTrigger()
 {
-    JKFlipFlop jkff;
+    Element jkff{ElementType::JKFlipFlop};
     Element j{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element k{ElementType::InputVcc};
@@ -812,7 +806,7 @@ void TestStatusOps::testJKFlipFlopUnknownPresetClearNoTrigger()
 
 void TestStatusOps::testTFlipFlopUnknownInput()
 {
-    TFlipFlop tff;
+    Element tff{ElementType::TFlipFlop};
     Element t{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element prst{ElementType::InputVcc};
@@ -847,7 +841,7 @@ void TestStatusOps::testTFlipFlopUnknownInput()
 
 void TestStatusOps::testSRFlipFlopUnknownPresetClear()
 {
-    SRFlipFlop srff;
+    Element srff{ElementType::SRFlipFlop};
     Element s{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element r{ElementType::InputVcc};
@@ -887,7 +881,7 @@ void TestStatusOps::testSRFlipFlopUnknownPresetClear()
 
 void TestStatusOps::testDLatchUnknownInput()
 {
-    DLatch latch; Element d{ElementType::InputVcc}, en{ElementType::InputVcc};
+    Element latch{ElementType::DLatch}; Element d{ElementType::InputVcc}, en{ElementType::InputVcc};
     initElm(latch); initSrc(d); initSrc(en);
     latch.connectPredecessor(0, &d, 0);
     latch.connectPredecessor(1, &en, 0);
@@ -914,7 +908,7 @@ void TestStatusOps::testDLatchUnknownInput()
 
 void TestStatusOps::testSRLatchUnknownInput()
 {
-    SRLatch latch; Element s{ElementType::InputVcc}, r{ElementType::InputVcc};
+    Element latch{ElementType::SRLatch}; Element s{ElementType::InputVcc}, r{ElementType::InputVcc};
     initElm(latch); initSrc(s); initSrc(r);
     latch.connectPredecessor(0, &s, 0);
     latch.connectPredecessor(1, &r, 0);
@@ -940,7 +934,7 @@ void TestStatusOps::testSRLatchUnknownInput()
 
 void TestStatusOps::testUpdateInputsBlocksUnknown()
 {
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Element d{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element prst{ElementType::InputVcc};
@@ -963,7 +957,7 @@ void TestStatusOps::testUpdateInputsBlocksUnknown()
 
 void TestStatusOps::testUpdateInputsBlocksError()
 {
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Element d{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element prst{ElementType::InputVcc};

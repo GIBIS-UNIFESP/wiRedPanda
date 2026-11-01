@@ -7,12 +7,10 @@
 
 #include "App/Core/Priorities.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/SRLatch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"

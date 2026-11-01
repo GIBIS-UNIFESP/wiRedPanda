@@ -5,7 +5,6 @@
 
 #include <QtTest>
 
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::initSrc;
@@ -323,10 +322,10 @@ void TestElementLogicErrors::testBoolOverloadMapsToStatus()
 void TestElementLogicErrors::testFlipFlopNoSpuriousEdgeAfterInvalidInputs()
 {
     // Regression test (F12): when simUpdateInputs() failed, the flip-flops
-    // kept m_simLastClk from before the invalid period. If the clock rose
+    // kept their last clock from before the invalid period. If the clock rose
     // *while* inputs were invalid, recovery saw clk=Active with a stale
     // lastClk=Inactive and fabricated a rising edge, latching stale data.
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Element d{ElementType::InputVcc};
     Element clk{ElementType::InputVcc};
     Element prst{ElementType::InputVcc};

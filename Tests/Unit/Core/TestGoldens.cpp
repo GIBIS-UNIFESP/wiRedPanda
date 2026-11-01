@@ -21,7 +21,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Demux.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Mux.h"
@@ -475,7 +474,7 @@ void TestGoldens::testPixmapIdentity()
     gate.setRotation(90);
     QCOMPARE(SnapshotAccess::pixmapIdentity(&gate), upright);
 
-    DFlipFlop flipFlop;
+    Element flipFlop{ElementType::DFlipFlop};
     const QString unrotated = SnapshotAccess::pixmapIdentity(&flipFlop);
     QVERIFY2(!unrotated.endsWith(":oriented"), qPrintable(unrotated));
     flipFlop.setRotation(90);

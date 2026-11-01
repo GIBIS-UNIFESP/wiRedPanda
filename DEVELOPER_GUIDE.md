@@ -443,14 +443,13 @@ QGraphicsObject
         │     ├── InputButton     (momentary press)
         │     ├── InputRotary     (multi-position rotary switch)
         │     └── Clock           (frequency-driven square wave)
-        ├── DFlipFlop, SRLatch... (sequential logic)
         ├── Led, Buzzer, Display  (output elements)
         ├── Mux, Demux            (multiplexing)
         ├── IC                    (sub-circuit / integrated circuit)
         └── Node, Text            (structural/annotation)
 ```
 
-The gates, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a gate, `KernelLogic` computes.
+The gates, the flip-flops and the latches, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a gate, a flip-flop or a latch, `KernelLogic` computes.
 
 ### Element: The Base Class
 
@@ -673,45 +672,49 @@ All other combinational gates (`Or`, `Not`, `Xor`, `Nand`, `Nor`, `Xnor`) follow
 
 ### Anatomy of a Sequential Element
 
-Sequential elements like flip-flops store internal state and respond to clock edges:
+Sequential elements like flip-flops store internal state and respond to clock edges. Like a gate, a flip-flop is an
+`Element` of its type: its descriptor gives its ports (`inputAttributes`/`outputAttributes`) and the history its kernel
+keeps (`kernelState`), and its logic is its kernel's, in `KernelLogic`.
 
-**D Flip-Flop** (`DFlipFlop.cpp`, simplified):
+**D Flip-Flop** (`DFlipFlop.cpp`'s descriptor, and `KernelLogic.cpp`'s kernel, simplified):
 
 ```cpp
-void DFlipFlop::updateLogic() {
-    if (!simUpdateInputs()) return;          // Strict: needs ALL inputs valid
+// In the descriptor: the kernel's history at power-on, its last clock and its last D
+descriptor.kernelState = {Status::Inactive, Status::Active};
 
-    Status q0 = simOutputs().at(0);          // Current Q
-    Status q1 = simOutputs().at(1);          // Current ~Q
-    const Status D    = simInputs().at(0);   // Data input
-    const Status clk  = simInputs().at(1);   // Clock input
-    const Status prst = simInputs().at(2);   // Async preset (active-low)
-    const Status clr  = simInputs().at(3);   // Async clear (active-low)
-
-    // Rising edge detection
-    if (clk == Status::Active && m_simLastClk == Status::Inactive) {
-        q0 = m_simLastValue;                 // Latch D on rising edge
-        q1 = (m_simLastValue == Status::Active) ? Status::Inactive : Status::Active;
+// In KernelLogic.cpp
+void dFlipFlop(Element &element)
+{
+    QVector<Status> &kept = element.kernelState();     // last clock, last D
+    if (!element.simUpdateInputs()) {                   // Strict: needs ALL inputs valid
+        kept[0] = Status::Unknown;                      // No edge from stale state on recovery
+        return;
     }
+    Status q0 = element.simOutputs().at(0);             // Current Q
+    Status q1 = element.simOutputs().at(1);             // Current ~Q
+    const Status d = element.simInputs().at(0);         // Data input
+    const Status clk = element.simInputs().at(1);       // Clock input
 
-    // Asynchronous overrides (active-low, jointly evaluated)
-    if (prst == Status::Inactive || clr == Status::Inactive) {
-        q0 = (prst == Status::Inactive) ? Status::Active : Status::Inactive;
-        q1 = (clr == Status::Inactive) ? Status::Active : Status::Inactive;
+    // Rising edge: latch the D sampled at the previous evaluation
+    if ((clk == Status::Active) && (kept[0] == Status::Inactive)) {
+        q0 = kept[1];
+        q1 = (kept[1] == Status::Active) ? Status::Inactive : Status::Active;
     }
-
-    m_simLastClk = clk;
-    m_simLastValue = D;
-    setOutputValue(0, q0);
-    setOutputValue(1, q1);
+    // Asynchronous overrides, ~Preset and ~Clear (active-low, jointly evaluated)
+    applyOverrides(element.simInputs().at(2), element.simInputs().at(3), q0, q1);
+    kept[0] = clk;
+    kept[1] = d;
+    element.setOutputValue(0, q0);
+    element.setOutputValue(1, q1);
 }
 ```
 
 Key differences from combinational gates:
 
 - Uses `simUpdateInputs()` (strict) instead of `simUpdateInputsAllowUnknown()`.
-- Stores `m_simLastClk` and `m_simLastValue` across cycles for edge detection.
-- Has custom port layout via `updatePortsProperties()` (Clock pin at bottom-left, Preset at top, etc.).
+- Keeps its last clock and data inputs across cycles for edge detection, in `Element::kernelState()`, which the base
+  `resetSimState()`, `saveSimState()` and `restoreSimState()` reset, save and restore after the outputs.
+- Has its own port layout, from its descriptor's attributes (Clock pin at bottom-left, Preset at top, etc.).
 
 ### Anatomy of an Input Element
 
@@ -1273,7 +1276,7 @@ void TestMyFlipFlop::testDFlipFlop()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swD, swClk;
-    DFlipFlop dff;
+    Element dff{ElementType::DFlipFlop};
     Led ledQ, ledNQ;
 
     builder.add(&swD, &swClk, &dff, &ledQ, &ledNQ);
@@ -1622,7 +1625,7 @@ The project uses **Conventional Commits**:
 
 1. **Read one gate end-to-end**: Start with `And.cpp`'s `ElementInfo<ElementType::And>` specialization → its kernel's logic in `KernelLogic.cpp` → `StatusOps::statusAndAll()`.
 2. **Compare with other gates**: `Not.cpp`, `Or.cpp`, `Xor.cpp` and their kernels — notice the pattern.
-3. **Read a sequential element**: `DFlipFlop.cpp` — understand edge detection and state storage.
+3. **Read a sequential element**: `DFlipFlop.cpp` and its kernel in `KernelLogic.cpp` — understand edge detection and the history it keeps.
 4. **Read a test**: `TestLogicGates.cpp` — see how `CircuitBuilder` and `TestUtils` work.
 5. **Trace the simulation loop**: Read `Simulation::update()` to see the five phases.
 

@@ -16,7 +16,6 @@
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -122,7 +121,7 @@ void TestPort::testDefaultSetWhileConnectedLeavesTheInputOnItsWire()
 {
     // ~Preset is optional with an Active default; its driver reads Inactive.
     Element driver{ElementType::And};
-    DFlipFlop flipFlop;
+    Element flipFlop{ElementType::DFlipFlop};
     flipFlop.setPos(150, 0);
     auto *preset = flipFlop.inputPort(2);
     auto conn = std::make_unique<Connection>();

@@ -39,6 +39,7 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     , m_parameters(m_descriptor.parameters)
 {
     const ElementTypeDescriptor &descriptor = m_descriptor;
+    m_sim.kernelState() = descriptor.kernelState;
     m_appearance.seed(descriptor.defaultAppearances());
     m_elementGroup = descriptor.group;
     m_maxInputSize = descriptor.maxInputSize;
@@ -941,6 +942,7 @@ void Element::updateLogic()
 void Element::resetSimState()
 {
     m_sim.reset(m_ports.outputs());
+    m_sim.kernelState() = m_descriptor.kernelState;
 }
 
 void Element::saveSimState(QVector<Status> &out) const
@@ -948,6 +950,8 @@ void Element::saveSimState(QVector<Status> &out) const
     for (int i = 0; i < static_cast<int>(m_sim.outputSize()); ++i) {
         out.append(m_sim.outputValue(i));
     }
+    // Then the kernel's history, after the outputs, which restoreSimState() reads back in the same order
+    out.append(m_sim.kernelState());
 }
 
 void Element::restoreSimState(const QVector<Status> &in, int &cursor)
@@ -957,6 +961,12 @@ void Element::restoreSimState(const QVector<Status> &in, int &cursor)
             return; // LCOV_EXCL_LINE -- save/restore are always paired over the same element set
         }
         m_sim.setOutputValue(i, in.at(cursor++));
+    }
+    for (Status &kept : m_sim.kernelState()) {
+        if (cursor >= in.size()) {
+            return; // LCOV_EXCL_LINE -- save/restore are always paired over the same element set
+        }
+        kept = in.at(cursor++);
     }
 }
 

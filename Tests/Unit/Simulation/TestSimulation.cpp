@@ -15,7 +15,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
@@ -489,7 +488,7 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
             CircuitBuilder inner(definition.scene());
             auto *innerData = new InputSwitch();
             auto *innerClock = new InputSwitch();
-            auto *flipFlop = new DFlipFlop();
+            auto *flipFlop = ElementFactory::buildElement(ElementType::DFlipFlop);
             auto *innerQ = new Led();
             innerData->setLabel("D");
             innerClock->setLabel("Clock");
@@ -508,7 +507,7 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
         builder.connect(clock, 0, ic, "Clock");
         builder.connect(ic, "Q", led, 0);
     } else {
-        auto *flipFlop = new DFlipFlop();
+        auto *flipFlop = ElementFactory::buildElement(ElementType::DFlipFlop);
         builder.add(flipFlop);
         builder.connect(data, 0, flipFlop, 0);
         builder.connect(clock, 0, flipFlop, 1);

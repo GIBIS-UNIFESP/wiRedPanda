@@ -1,11 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/SRLatch.h"
-
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Wiring/Port.h"
 
 template<>
 struct ElementInfo<ElementType::SRLatch> {
@@ -30,65 +28,29 @@ struct ElementInfo<ElementType::SRLatch> {
         descriptor.titleText = QT_TRANSLATE_NOOP("SRLatch", "SR-LATCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("SRLatch", "SR-Latch");
         descriptor.trContext = "SRLatch";
+        descriptor.inputAttributes = [](const Element &, const int index) {
+            // SR latch: no clock, no asynchronous overrides — simplest bistable element.
+            // Both inputs are required (Set=1 → Q=1, Reset=1 → Q=0, both=1 is forbidden).
+            static const QList<PortAttributes> attributes{
+                {.name = "Set", .position = QPointF(0, 16)},
+                {.name = "Reset", .position = QPointF(0, 48)},
+            };
+            return Element::attributesAt(attributes, index);
+        };
+        descriptor.outputAttributes = [](const Element &, const int index) {
+            // Initial state: Q=0, ~Q=1
+            static const QList<PortAttributes> attributes{
+                {.name = "Q", .defaultStatus = Status::Inactive, .position = QPointF(64, 16)},
+                {.name = "~Q", .defaultStatus = Status::Active, .position = QPointF(64, 48)},
+            };
+            return Element::attributesAt(attributes, index);
+        };
         return descriptor;
     }
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new SRLatch(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-SRLatch::SRLatch(QGraphicsItem *parent)
-    : Element(ElementType::SRLatch, parent)
-{
-    // The ports take their places, names, requirements and defaults from this type's attributes
-    updatePortsProperties();
-}
-
-std::optional<Element::PortAttributes> SRLatch::inputAttributes(const int index) const
-{
-    // SR latch: no clock, no asynchronous overrides — simplest bistable element.
-    // Both inputs are required (Set=1 → Q=1, Reset=1 → Q=0, both=1 is forbidden).
-    static const QList<PortAttributes> attributes{
-        {.name = "Set", .position = QPointF(0, 16)},
-        {.name = "Reset", .position = QPointF(0, 48)},
-    };
-    return attributesAt(attributes, index);
-}
-
-std::optional<Element::PortAttributes> SRLatch::outputAttributes(const int index) const
-{
-    // Initial state: Q=0, ~Q=1
-    static const QList<PortAttributes> attributes{
-        {.name = "Q", .defaultStatus = Status::Inactive, .position = QPointF(64, 16)},
-        {.name = "~Q", .defaultStatus = Status::Active, .position = QPointF(64, 48)},
-    };
-    return attributesAt(attributes, index);
-}
-
-void SRLatch::updateLogic()
-{
-    if (!simUpdateInputs()) {
-        return;
-    }
-    Status q0 = simOutputs().at(0);
-    Status q1 = simOutputs().at(1);
-    const Status S = simInputs().at(0);
-    const Status R = simInputs().at(1);
-
-    if (S == Status::Active && R == Status::Active) {
-        q0 = Status::Inactive;
-        q1 = Status::Inactive;
-    } else if (S == Status::Active) {
-        q0 = Status::Active;
-        q1 = Status::Inactive;
-    } else if (R == Status::Active) {
-        q0 = Status::Inactive;
-        q1 = Status::Active;
-    }
-
-    setOutputValue(0, q0);
-    setOutputValue(1, q1);
-}

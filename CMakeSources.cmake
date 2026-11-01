@@ -102,22 +102,16 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Buzzer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Clock.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Demux.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/DFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Display14.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Display16.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Display7.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/DLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputSwitch.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/JKFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Led.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Mux.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Node.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/SRFlipFlop.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/SRLatch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Text.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TFlipFlop.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/TruthTable.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h

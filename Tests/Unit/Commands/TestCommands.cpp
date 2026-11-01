@@ -19,10 +19,8 @@
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display7.h"
-#include "App/Element/GraphicElements/DLatch.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -315,7 +313,7 @@ void TestCommands::testFlipTextPixmapVariant()
     // Memory elements bake their pin letters (D, E, Q...) into the SVG. Flipping must swap in a
     // text-corrected pixmap variant (so the glyphs stay upright after the item-level mirror),
     // while a text-free element keeps its base pixmap (the item transform alone handles it).
-    DLatch latch;
+    Element latch{ElementType::DLatch};
     const QImage baseImage = displayedImage(latch);
     QVERIFY(!baseImage.isNull());
 
@@ -338,7 +336,7 @@ void TestCommands::testRotateTextPixmapVariant()
 {
     // Same idea as flipping, for rotation: a rotated memory element must swap in a pixmap whose
     // baked-in labels are counter-rotated, so the pin letters stay upright while the body rotates.
-    DLatch latch;
+    Element latch{ElementType::DLatch};
     const QImage baseImage = displayedImage(latch);
     QVERIFY(!baseImage.isNull());
 
@@ -362,7 +360,7 @@ void TestCommands::testFlipRotateTextPixmapVariant()
     // The combined rotate+flip state is the one orientation case whose correction order matters
     // (the glyph carries Rotate(-angle) then the flip). Verify the combined variant is distinct
     // from base, rotate-only and flip-only, and round-trips back through each state to the base.
-    DLatch latch;
+    Element latch{ElementType::DLatch};
     const QImage baseImage = displayedImage(latch);
     QVERIFY(!baseImage.isNull());
 
@@ -376,7 +374,7 @@ void TestCommands::testFlipRotateTextPixmapVariant()
     QVERIFY2(rotateFlip != rotateOnly, "Rotated+flipped must differ from rotate-only");
 
     // ...and from a flip-only latch (flipped but not rotated).
-    DLatch flipOnly;
+    Element flipOnly{ElementType::DLatch};
     flipOnly.setFlippedX(true);
     QVERIFY2(rotateFlip != displayedImage(flipOnly), "Rotated+flipped must differ from flip-only");
 
@@ -1121,7 +1119,7 @@ void TestCommands::testUpdateCommandKeepsAWiredPresetOnItsWire()
     auto *scene = workspace.scene();
     CircuitBuilder builder(scene);
     auto *preset = new InputSwitch();
-    auto *flipFlop = new DFlipFlop();
+    auto *flipFlop = ElementFactory::buildElement(ElementType::DFlipFlop);
     builder.add(preset, flipFlop);
     builder.connect(preset, 0, flipFlop, 2);
     auto *sim = builder.initSimulation();

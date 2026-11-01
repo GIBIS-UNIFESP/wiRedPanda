@@ -34,7 +34,6 @@
 #include "App/BeWavedDolphin/DolphinZoom.h"
 #include "App/Core/Application.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/DFlipFlop.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -225,7 +224,7 @@ void TestBewavedDolphinGui::testRunLeavesLiveSequentialStateUnchanged()
     auto *scene = ws.scene();
     auto *data = new InputSwitch();
     auto *clk = new InputSwitch();
-    auto *dff = new DFlipFlop();
+    auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *led = new Led();
     scene->addItem(data);
     scene->addItem(clk);

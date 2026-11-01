@@ -9,9 +9,8 @@
 void ElementSimState::reset(const QVector<OutputPort *> &outputPorts)
 {
     // Reset each output slot to the port's power-on default so that the next
-    // BeWavedDolphin sweep starts from a known, reproducible state.
-    // Subclasses with internal edge-detection variables (flip-flops) override
-    // Element::resetSimState() to also clear those fields.
+    // BeWavedDolphin sweep starts from a known, reproducible state. The kernel's history is
+    // Element::resetSimState()'s, which takes it from the type's descriptor.
     for (int i = 0; i < m_outputs.size(); ++i) {
         const Status def = (i < outputPorts.size())
                                ? outputPorts.at(i)->defaultValue()
