@@ -627,6 +627,21 @@ user's choice between workable options).
   draws the text itself, and comes with it in plan 9 (P9.7). A box measured otherwise would not be the text drawn, and
   would move the bounds, the label editor and the label goldens. Basis: read on the branch (its metric was its label
   layer's); P3.14b, 2026-10-31.
+- **P3.D12. The volume is a double end to end:** the float accessors go and a writer's double is kept as it is, but a
+  value that is exactly a float, as every earlier version kept the volume and its files hold it widened (the default
+  0.35 as 0.3499999940395355), is taken as that float's shortest decimal (0.35), the value the user set. The rule is
+  the spec's, so it reaches every stream an older version wrote (a file, an IC's file, a clipboard or a drag from an
+  older instance) and every writer. It moves only a double that is exactly a float whose shortest decimal (the float's
+  own shortest round-trip form, not the double's) is no float (0.30000001192092896 to 0.3); a double that is no float
+  (0.8) and one exact both ways (0.5, 0.375) are kept, and the decimal it gives is kept in turn, so it is idempotent and
+  a file read and saved again is byte for byte. Its one cost, accepted: a writer sending such a float's digits on
+  purpose (MCP's float32 noise) gets the decimal. No format revision: an older version reads a newer file's volume with
+  `toFloat()` as the same float as before, and opening a newer revision would keep it from saving the file. A volume
+  that is not finite (infinity, NaN) is refused, as the frequency's is: a file's loads as the default. The bound
+  to [0, 1] is MCP's until P3.19 puts it in the spec. Supersedes §3.6's "the volume takes the nearest float", P3.10's
+  rule. Basis: the user's ruling, 2026-11-01 ("if done properly, it can handle migrating data from existing files"),
+  asked after P3.18a found the editor's float cast redundant with the spec's; the rule on the value in place of a
+  revision found while doing it (P3.29).
 
 ## 7. Risks
 
