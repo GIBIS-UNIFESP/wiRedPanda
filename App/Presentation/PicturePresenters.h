@@ -22,6 +22,10 @@ public:
     /// Draws the picture \a element shows, then what its type draws over it and beyond (paintOverlay()).
     void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override;
 
+    /// Returns the key of the picture \a element shows, the same whatever type shows it; a type that draws over it adds
+    /// what it draws.
+    AppearanceKey appearanceKey(const Element &element) const override;
+
     /// Returns the rectangle the picture \a element shows takes, at the origin, the same in every theme; empty while it
     /// shows none.
     static QRectF pictureRect(const Element &element);
@@ -57,6 +61,9 @@ public:
 /// The presenter of InputRotary: a mark for every position around the dial, and the arrow at the selected one.
 class RotaryPresenter final : public PicturePresenter
 {
+public:
+    AppearanceKey appearanceKey(const Element &element) const override;
+
 protected:
     void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;
 };
@@ -70,6 +77,7 @@ class NodePresenter final : public PicturePresenter
 {
 public:
     BodyShape measure(const Element &element) const override;
+    AppearanceKey appearanceKey(const Element &element) const override;
 
     /// Below the node's small body.
     LabelPlacement label(const Element &element) const override;
@@ -91,6 +99,7 @@ public:
     explicit SegmentDisplayPresenter(QVector<int> segments);
 
     BodyShape measure(const Element &element) const override;
+    AppearanceKey appearanceKey(const Element &element) const override;
 
 protected:
     void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;
@@ -108,6 +117,7 @@ class TextPresenter final : public PicturePresenter
 {
 public:
     BodyShape measure(const Element &element) const override;
+    AppearanceKey appearanceKey(const Element &element) const override;
 
 protected:
     void paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const override;

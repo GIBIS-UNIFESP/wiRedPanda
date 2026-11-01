@@ -10,9 +10,12 @@
 #include <utility>
 #include <vector>
 
+#include <QByteArray>
+#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QImage>
 #include <QMetaEnum>
 #include <QPainter>
@@ -28,6 +31,7 @@
 #include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
+#include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Port.h"
@@ -584,6 +588,62 @@ QImage drawAtlas(const BodyCase &bodyCase)
     return atlas;
 }
 
+/// What a body draws in its element's own coordinates: the pixels it draws, cropped to them, and where they start.
+struct LocalDrawing {
+    QPoint origin;
+    QImage pixels;
+    bool bounded = true; ///< Whether it lies within the element's bounds, give or take the pixel antialiasing reaches.
+
+    /// Names the drawing by its place and pixels.
+    QByteArray digest() const
+    {
+        QCryptographicHash hash(QCryptographicHash::Sha256);
+        for (const int value : {origin.x(), origin.y(), pixels.width(), pixels.height()}) {
+            hash.addData(QByteArrayView(reinterpret_cast<const char *>(&value), sizeof(value)));
+        }
+        hash.addData(QByteArrayView(reinterpret_cast<const char *>(pixels.constBits()), pixels.sizeInBytes()));
+        return hash.result();
+    }
+
+    friend bool operator==(const LocalDrawing &, const LocalDrawing &) = default;
+};
+
+/// Draws \a element's body as its presenter draws it in \a theme, without its selection, at its own origin.
+LocalDrawing drawLocally(const Element *element, const ThemeAttributes &theme)
+{
+    const QRect bounds = element->boundingRect().toAlignedRect();
+    const QRect canvas = bounds.adjusted(-kMargin, -kMargin, kMargin, kMargin);
+    QImage image(canvas.size(), QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    painter.translate(-canvas.topLeft());
+    ElementPresenter::of(element->elementType()).paintBody(painter, *element, BodyContext{theme});
+    painter.end();
+
+    int left = image.width();
+    int right = -1;
+    int top = image.height();
+    int bottom = -1;
+    for (int y = 0; y < image.height(); ++y) {
+        const auto *line = reinterpret_cast<const QRgb *>(image.constScanLine(y));
+        for (int x = 0; x < image.width(); ++x) {
+            if (qAlpha(line[x]) != 0) {
+                left = std::min(left, x);
+                right = std::max(right, x);
+                top = std::min(top, y);
+                bottom = std::max(bottom, y);
+            }
+        }
+    }
+    if (right < 0) {
+        return {};
+    }
+    const QRect drawn(QPoint(left, top), QPoint(right, bottom));
+    const bool bounded = bounds.adjusted(-1, -1, 1, 1).contains(drawn.translated(canvas.topLeft()));
+    return {canvas.topLeft() + drawn.topLeft(), image.copy(drawn), bounded};
+}
+
 } // namespace ElementBodySnapshotDetail
 
 using namespace ElementBodySnapshotDetail;
@@ -685,4 +745,66 @@ void TestElementBodySnapshot::testPixelsMatchGoldens()
 
     const QString mismatch = TestUtils::compareWithGoldenImage(atlasGolden(caseName + suffix + ".png"), drawAtlas(*found));
     QVERIFY2(mismatch.isEmpty(), qPrintable(mismatch));
+}
+
+void TestElementBodySnapshot::testAppearanceKeysFollowTheDrawnBody()
+{
+    const CustomPictures custom;
+    QVERIFY(custom.isValid());
+
+    for (const Theme theme : {Theme::Light, Theme::Dark}) {
+        ThemeAttributes attributes;
+        attributes.setTheme(theme);
+        // The first body drawn under each key, and the key of each drawing in each orientation
+        QHash<AppearanceKey, std::pair<LocalDrawing, QString>> drawingOfKey;
+        QHash<std::pair<int, QByteArray>, std::pair<AppearanceKey, QString>> keyOfDrawing;
+        for (const auto &bodyCase : bodyCases(custom)) {
+            // A scene per case, which the sources wired to the inputs are left in
+            WorkSpace workspace;
+            Scene *scene = workspace.scene();
+            const auto orientations = TestUtils::orientations();
+            for (const auto &state : bodyCase.states) {
+                for (int index = 0; index < orientations.size(); ++index) {
+                    const auto &orientation = orientations.at(index);
+                    const QString where = QString("%1 %2 rot=%3 flipX=%4 flipY=%5 theme=%6")
+                                              .arg(bodyCase.name, state.name, QString::number(orientation.rotation),
+                                                   QString::number(orientation.flipX), QString::number(orientation.flipY),
+                                                   QString::number(static_cast<int>(theme)));
+                    const auto element = configure(scene, bodyCase, state, orientation);
+                    const auto twin = configure(scene, bodyCase, state, orientation);
+                    const ElementPresenter &presenter = ElementPresenter::of(element->elementType());
+                    const AppearanceKey key = presenter.appearanceKey(*element);
+                    const LocalDrawing drawing = drawLocally(element.get(), attributes);
+                    // A body draws within its element's bounds, which what is drawn from its key covers
+                    QVERIFY2(drawing.bounded, qPrintable(where));
+
+                    // An element in the same state has the same key; its selection and its place are not part of it
+                    QVERIFY2(presenter.appearanceKey(*twin) == key, qPrintable(where));
+                    element->setSelected(true);
+                    element->setPos(37, 11);
+                    QVERIFY2(presenter.appearanceKey(*element) == key, qPrintable(where));
+
+                    // Every body drawn under one key is the same
+                    const auto drawn = drawingOfKey.constFind(key);
+                    if (drawn == drawingOfKey.constEnd()) {
+                        drawingOfKey.insert(key, {drawing, where});
+                    } else {
+                        QVERIFY2(drawn->first == drawing, qPrintable(where + " draws otherwise than " + drawn->second));
+                    }
+
+                    // A body drawn the same in one orientation has one key; an equivalent orientation, a turn by 180
+                    // degrees for both flips, may draw it alike under another
+                    const auto keyed = keyOfDrawing.constFind({index, drawing.digest()});
+                    if (keyed == keyOfDrawing.constEnd()) {
+                        keyOfDrawing.insert({index, drawing.digest()}, {key, where});
+                    } else {
+                        QVERIFY2(keyed->first == key, qPrintable(where + " draws as " + keyed->second + " under another key"));
+                    }
+
+                    scene->removeItem(twin.get());
+                    scene->removeItem(element.get());
+                }
+            }
+        }
+    }
 }

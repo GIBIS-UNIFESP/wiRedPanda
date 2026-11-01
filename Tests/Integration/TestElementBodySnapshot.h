@@ -27,4 +27,5 @@ private slots:
     void testGeometryMatchesGolden();
     void testPixelsMatchGoldens_data();
     void testPixelsMatchGoldens();
+    void testAppearanceKeysFollowTheDrawnBody();
 };

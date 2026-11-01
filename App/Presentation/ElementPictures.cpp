@@ -216,9 +216,8 @@ Orientation orientationOf(const Element &element)
     if (!element.rotatesGraphic() || !(element.isFlippedX() || element.isFlippedY() || (element.rotation() != 0.0))) {
         return {};
     }
-    // Canonicalized to [0,360) so equivalent rotations (e.g. -90 and 270, which render identically) share one
-    // variant -- MCP can request any angle and rotate-left produces negatives.
-    return {std::fmod(std::fmod(element.rotation(), 360.0) + 360.0, 360.0), element.isFlippedX(), element.isFlippedY()};
+    // MCP can ask for any angle, and rotating left gives negative ones
+    return {ElementPictures::canonicalTurn(element.rotation()), element.isFlippedX(), element.isFlippedY()};
 }
 
 /// Returns the picture \a id names as \a theme shows it: its Dark sibling in the Dark theme, when it has one.
@@ -369,6 +368,16 @@ std::optional<PictureId> ElementPictures::load(const QString &path) const
     return id;
 }
 
+qreal ElementPictures::canonicalTurn(const qreal degrees)
+{
+    return std::fmod(std::fmod(degrees, 360.0) + 360.0, 360.0);
+}
+
+bool ElementPictures::isLabelled(const PictureId id)
+{
+    return ElementPicturesDetail::library().pictures.at(static_cast<size_t>(id)).labelled;
+}
+
 qsizetype ElementPictures::variantCount(const PictureId id)
 {
     return ElementPicturesDetail::library().pictures.at(static_cast<size_t>(id)).variants.size();
@@ -398,6 +407,20 @@ const PictureVariant *ElementPictures::shown(const Element &element, const Theme
         return nullptr;
     }
     return &variantOf(library().pictures.at(static_cast<size_t>(themedId(*id, theme))), orientationOf(element));
+}
+
+std::optional<ShownPicture> ElementPictures::shownPicture(const Element &element) const
+{
+    using namespace ElementPicturesDetail;
+
+    const int slot = ElementPresenter::of(element.elementType()).pictureSlot(element);
+    const std::optional<PictureId> id = element.appearance().picture(slot);
+    if (!id) {
+        return std::nullopt;
+    }
+    // A picture without labels is one variant in every orientation (variantOf())
+    const bool labelled = library().pictures.at(static_cast<size_t>(*id)).labelled;
+    return ShownPicture{*id, labelled && (orientationOf(element) != Orientation{})};
 }
 
 void ElementPictures::draw(QPainter &painter, const PictureVariant &variant)

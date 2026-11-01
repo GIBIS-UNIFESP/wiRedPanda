@@ -884,6 +884,7 @@ add_test(NAME TestElementHandler COMMAND test_wiredpanda TestElementHandler WORK
 add_test(NAME TestElementLabel COMMAND test_wiredpanda TestElementLabel WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogic COMMAND test_wiredpanda TestElementLogic WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementLogicErrors COMMAND test_wiredpanda TestElementLogicErrors WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestAppearanceKey COMMAND test_wiredpanda TestAppearanceKey WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementPainter COMMAND test_wiredpanda TestElementPainter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementPictures COMMAND test_wiredpanda TestElementPictures WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestElementPresenters COMMAND test_wiredpanda TestElementPresenters WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1139,7 +1140,7 @@ foreach(TEST TestArduino TestElementBodySnapshot TestFeedback TestFiles TestIC T
 endforeach()
 
 # Element and Component Unit Tests - Unit category
-foreach(TEST TestBewavedDolphinGui TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
+foreach(TEST TestBewavedDolphinGui TestAppearanceKey TestAudioBox TestBuzzer TestClock TestClocksAdvanced TestComponents TestDisplays
         TestElementAdvanced TestElementAppearance TestElementChanges TestElementLabel TestElementPainter TestElementPictures
         TestElementPresenters TestElementProperties TestElementSerializer TestFeatures TestGeometry TestIcons
         TestInputElements TestInputRotary TestLED TestLogicGates TestMultiplexing TestParameters TestSequentialLogic
@@ -1250,7 +1251,8 @@ set(ALL_TESTS
     TestExerciseEngine TestTourEngine
     TestSimulationUnit TestWorkspaceUnit
     TestICFixtureLayout TestPerfProbe
-    TestModelIncludeCheck TestParameters TestElementChanges TestElementPainter TestElementPresenters TestElementPictures)
+    TestModelIncludeCheck TestParameters TestElementChanges TestElementPainter TestElementPresenters TestElementPictures
+    TestAppearanceKey)
 foreach(TEST ${ALL_TESTS})
     set_tests_properties(${TEST} PROPERTIES FIXTURES_SETUP "non_gui_complete")
 endforeach()

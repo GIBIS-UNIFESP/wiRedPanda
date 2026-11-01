@@ -25,7 +25,7 @@ private slots:
     void testAnAudioOutputShowsWhetherItPlays_data();
     void testAnAudioOutputShowsWhetherItPlays();
     void testAnLedShowsTheSlotLitAtItsLastRefresh();
-    void testThemedPicturesMatchInSize();
+    void testThemedPicturesMatchInSizeAndLabels();
     void testOnlyALightResourceIsThemed();
     void testTypePictureIsTheCurrentThemes();
     void testAPreviewIsTheThemesPicture();

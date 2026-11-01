@@ -26,6 +26,10 @@ public:
     /// Draws \a element's footprint (paintFootprint()) with the painter's origin at the footprint's top-left.
     void paintBody(QPainter &painter, const Element &element, const BodyContext &context) const override;
 
+    /// Returns the key of a body drawn over \a element's footprint: its type and footprint; a type whose body reads
+    /// more adds it.
+    AppearanceKey appearanceKey(const Element &element) const override;
+
 protected:
     /// Draws \a element's body in \a footprint, which lies at the origin, with antialiasing on. The footprint is drawn as
     /// measured, never converted to whole numbers: a cast of one that is not finite to an int is undefined.
@@ -50,6 +54,8 @@ protected:
 class TruthTablePresenter final : public FootprintPresenter
 {
 public:
+    AppearanceKey appearanceKey(const Element &element) const override;
+
     /// Below the footprint.
     LabelPlacement label(const Element &element) const override;
 
@@ -63,6 +69,8 @@ protected:
 class ICPresenter final : public FootprintPresenter
 {
 public:
+    AppearanceKey appearanceKey(const Element &element) const override;
+
     /// Below the footprint, turned 90 degrees to stand along the side of the chip, as a package's name does.
     LabelPlacement label(const Element &element) const override;
 

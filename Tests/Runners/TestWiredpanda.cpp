@@ -150,6 +150,7 @@
 #include "Tests/Unit/Core/TestSettings.h"
 #include "Tests/Unit/Core/TestUpdateChecker.h"
 // unit/elements
+#include "Tests/Unit/Elements/TestAppearanceKey.h"
 #include "Tests/Unit/Elements/TestAudioBox.h"
 #include "Tests/Unit/Elements/TestDemux.h"
 #include "Tests/Unit/Elements/TestDisplay.h"
@@ -400,6 +401,7 @@ int main(int argc, char **argv)
         {"TestApplication", []() -> QObject * { return new TestApplication; }},
         {"TestDragDropPayload", []() -> QObject * { return new TestDragDropPayload; }},
         {"TestNotifyCatch", []() -> QObject * { return new TestNotifyCatch; }},
+        {"TestAppearanceKey", []() -> QObject * { return new TestAppearanceKey; }},
         {"TestAudioBox", []() -> QObject * { return new TestAudioBox; }},
         {"TestBuzzer", []() -> QObject * { return new TestBuzzer; }},
         {"TestDemux", []() -> QObject * { return new TestDemux; }},

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 
 #include <QPixmap>
 
@@ -25,6 +26,13 @@ struct PictureVariant {
     QPixmap pixmap;                         ///< The raster: the picture as loaded, or an SVG drawn with its labels counter-oriented.
     std::shared_ptr<QSvgRenderer> renderer; ///< An SVG's vector renderer, its labels counter-oriented as the raster's; null for a raster file.
     bool oriented = false;                  ///< Whether the raster is a counter-oriented variant rather than the picture as loaded.
+};
+
+/// The picture an element shows, as its appearance key names it: its id in the Light theme, which names the one each
+/// theme shows (ElementPictures::themed()), and whether its labels are counter-oriented for the element's orientation.
+struct ShownPicture {
+    PictureId id;
+    bool oriented = false;
 };
 
 /**
@@ -56,6 +64,9 @@ public:
     /// System is drawn as Light.
     const PictureVariant *shown(const Element &element, Theme theme) const;
 
+    /// Returns the picture \a element shows, named as its appearance key names it; nothing while it shows none.
+    std::optional<ShownPicture> shownPicture(const Element &element) const;
+
     /// Draws \a variant at the origin with \a painter: an SVG from its vector renderer (crisp at any zoom), a raster
     /// file from its pixmap.
     static void draw(QPainter &painter, const PictureVariant &variant);
@@ -71,6 +82,10 @@ public:
      */
     static QString themed(const QString &path, Theme theme);
 
+    /// Returns \a degrees brought into [0, 360), the turn a picture's labels are counter-oriented for, so that
+    /// equivalent turns (-90 and 270) share one variant; an appearance key names a turn as this gives it.
+    static qreal canonicalTurn(qreal degrees);
+
     /// Returns the picture the palette and the menus show for \a type, in the current theme; null for
     /// ElementType::Unknown and for a type with no picture (IC).
     static QPixmap typePicture(ElementType type);
@@ -84,6 +99,9 @@ private:
     friend class TestElementPictures;
 
     ElementPictures() = default;
+
+    /// Returns whether the picture \a id has labels, which each orientation shows counter-oriented.
+    static bool isLabelled(PictureId id);
 
     /// Returns how many orientations of the picture \a id have a variant kept.
     static qsizetype variantCount(PictureId id);

@@ -87,6 +87,14 @@ void FootprintPresenter::paintBody(QPainter &painter, const Element &element, co
     painter.restore();
 }
 
+AppearanceKey FootprintPresenter::appearanceKey(const Element &element) const
+{
+    AppearanceKey key;
+    key.type = element.elementType();
+    key.footprint = element.body().body;
+    return key;
+}
+
 void MuxPresenter::paintFootprint(QPainter &painter, const Element &element, const QRectF &footprint) const
 {
     Q_UNUSED(element)
@@ -97,6 +105,14 @@ void DemuxPresenter::paintFootprint(QPainter &painter, const Element &element, c
 {
     Q_UNUSED(element)
     FootprintPresentersDetail::drawTrapezoid(painter, 8, footprint.height() - 10, false);
+}
+
+AppearanceKey TruthTablePresenter::appearanceKey(const Element &element) const
+{
+    // The icon is counter-oriented
+    AppearanceKey key = FootprintPresenter::appearanceKey(element);
+    key.setOrientation(element);
+    return key;
 }
 
 LabelPlacement TruthTablePresenter::label(const Element &element) const
@@ -136,6 +152,15 @@ void TruthTablePresenter::paintFootprint(QPainter &painter, const Element &eleme
     QRectF shadowRect(finalRect.bottomLeft(), finalRect.bottomRight());
     shadowRect.adjust(0, -3, 0, 0);
     painter.drawRoundedRect(shadowRect, 3, 3);
+}
+
+AppearanceKey ICPresenter::appearanceKey(const Element &element) const
+{
+    // The mascot is counter-oriented, and the body tinted while the definition is embedded
+    AppearanceKey key = FootprintPresenter::appearanceKey(element);
+    key.setOrientation(element);
+    key.state = element.isEmbedded() ? 1 : 0;
+    return key;
 }
 
 LabelPlacement ICPresenter::label(const Element &element) const

@@ -7,6 +7,7 @@
 #include <utility>
 
 #include <QHash>
+#include <QHashFunctions>
 #include <QSizeF>
 #include <QString>
 
@@ -61,6 +62,31 @@ QHash<ElementType, const ElementPresenter *> &registry()
 }
 
 } // namespace ElementPresenterDetail
+
+void AppearanceKey::setOrientation(const Element &element)
+{
+    // The turn a picture's variant is built for (-90 and 270 draw the same)
+    rotation = ElementPictures::canonicalTurn(element.rotation());
+    flipX = element.isFlippedX();
+    flipY = element.isFlippedY();
+}
+
+bool operator==(const AppearanceKey &a, const AppearanceKey &b)
+{
+    // QRectF compares its coordinates fuzzily; a key compares them exactly, as qHash() hashes them
+    return (a.type == b.type) && (a.picture == b.picture) && (a.state == b.state)
+        && (a.footprint.x() == b.footprint.x()) && (a.footprint.y() == b.footprint.y())
+        && (a.footprint.width() == b.footprint.width()) && (a.footprint.height() == b.footprint.height())
+        && (a.rotation == b.rotation) && (a.flipX == b.flipX) && (a.flipY == b.flipY) && (a.text == b.text);
+}
+
+size_t qHash(const AppearanceKey &key, const size_t seed)
+{
+    // Qt hashes a -0 coordinate as 0, which it equals
+    const qint64 picture = key.picture ? static_cast<qint64>(*key.picture) : -1;
+    return qHashMulti(seed, static_cast<int>(key.type), picture, key.state, key.footprint.x(), key.footprint.y(),
+                      key.footprint.width(), key.footprint.height(), key.rotation, key.flipX, key.flipY, key.text);
+}
 
 int ElementPresenter::pictureSlot(const Element &element) const
 {

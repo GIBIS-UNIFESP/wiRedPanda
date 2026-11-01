@@ -369,10 +369,11 @@ void TestElementPictures::testAnLedShowsTheSlotLitAtItsLastRefresh()
     QVERIFY(ElementPicturesTestDetail::shows(led, QSize(96, 80)));
 }
 
-void TestElementPictures::testThemedPicturesMatchInSize()
+void TestElementPictures::testThemedPicturesMatchInSizeAndLabels()
 {
-    // A body is measured on the Light picture its element names and drawn in either theme's: every built-in picture
-    // with a Dark sibling is the sibling's size
+    // A body is measured on the Light picture its element names and drawn in either theme's, and keyed by whether the
+    // Light one has labels to counter-orient: every built-in picture with a Dark sibling is the sibling's size, and
+    // has labels if the sibling has
     int pairs = 0;
     QDirIterator resources(QStringLiteral(":/"), QDir::Files, QDirIterator::Subdirectories);
     while (resources.hasNext()) {
@@ -385,6 +386,11 @@ void TestElementPictures::testThemedPicturesMatchInSize()
         const QSize lightSize = QPixmap(light).size();
         QVERIFY2(lightSize.isValid(), qPrintable(light));
         QVERIFY2(QPixmap(dark).size() == lightSize, qPrintable(QStringLiteral("%1 and %2").arg(light, dark)));
+        const std::optional<PictureId> lightId = ElementPictures::instance().load(light);
+        const std::optional<PictureId> darkId = ElementPictures::instance().load(dark);
+        QVERIFY2(lightId && darkId, qPrintable(QStringLiteral("%1 and %2").arg(light, dark)));
+        QVERIFY2(ElementPictures::isLabelled(*lightId) == ElementPictures::isLabelled(*darkId),
+                 qPrintable(QStringLiteral("%1 and %2").arg(light, dark)));
     }
     // The six latches and flip-flops, at least
     QVERIFY2(pairs >= 6, qPrintable(QString::number(pairs)));

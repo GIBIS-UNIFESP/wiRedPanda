@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <optional>
 #include <utility>
 
 #include <QCoreApplication>
@@ -149,6 +150,18 @@ void PicturePresenter::paintBody(QPainter &painter, const Element &element, cons
     paintOverlay(painter, element, context);
 }
 
+AppearanceKey PicturePresenter::appearanceKey(const Element &element) const
+{
+    AppearanceKey key;
+    if (const std::optional<ShownPicture> shown = ElementPictures::instance().shownPicture(element)) {
+        key.picture = shown->id;
+        if (shown->oriented) {
+            key.setOrientation(element);
+        }
+    }
+    return key;
+}
+
 QRectF PicturePresenter::pictureRect(const Element &element)
 {
     // The picture the element names: a theme's sibling is the size of the Light one, so the body is every theme's
@@ -183,6 +196,15 @@ LabelPlacement AudioPresenter::label(const Element &element) const
 int LedPresenter::pictureSlot(const Element &element) const
 {
     return element.param<int>(ParamId::Lit);
+}
+
+AppearanceKey RotaryPresenter::appearanceKey(const Element &element) const
+{
+    // How many positions the dial marks, and the one the arrow points at
+    AppearanceKey key = PicturePresenter::appearanceKey(element);
+    key.type = element.elementType();
+    key.state = static_cast<quint32>(element.outputSize()) | (static_cast<quint32>(element.param<int>(ParamId::Position)) << 8);
+    return key;
 }
 
 void RotaryPresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
@@ -240,6 +262,24 @@ BodyShape SegmentDisplayPresenter::measure(const Element &element) const
     return {picture.united(QRectF(0, 0, 64, 64)), picture.center()};
 }
 
+AppearanceKey SegmentDisplayPresenter::appearanceKey(const Element &element) const
+{
+    AppearanceKey key = PicturePresenter::appearanceKey(element);
+    quint32 lit = 0;
+    const int inputs = std::min(static_cast<int>(m_segments.size()), element.inputSize());
+    for (int input = 0; input < inputs; ++input) {
+        if (element.inputPort(input)->status() == Status::Active) {
+            lit |= 1U << input;
+        }
+    }
+    // The colour shows only in the lit segments, above which it is packed
+    if (lit != 0) {
+        key.type = element.elementType();
+        key.state = lit | (static_cast<quint32>(Element::colorNameToIndex(element.color())) << 24);
+    }
+    return key;
+}
+
 void SegmentDisplayPresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
 {
     Q_UNUSED(context)
@@ -263,6 +303,18 @@ BodyShape NodePresenter::measure(const Element &element) const
     const QRectF picture = pictureRect(element);
     const auto mode = static_cast<WirelessMode>(element.param<int>(ParamId::Wireless));
     return {picture, picture.center(), PicturePresentersDetail::wirelessIndicatorRect(mode)};
+}
+
+AppearanceKey NodePresenter::appearanceKey(const Element &element) const
+{
+    AppearanceKey key = PicturePresenter::appearanceKey(element);
+    const int mode = element.param<int>(ParamId::Wireless);
+    if (static_cast<WirelessMode>(mode) != WirelessMode::None) {
+        // The mode places the indicator, the level carried colours it
+        key.type = element.elementType();
+        key.state = static_cast<quint32>(mode) | (static_cast<quint32>(static_cast<quint8>(element.param<int>(ParamId::Carried))) << 8);
+    }
+    return key;
 }
 
 LabelPlacement NodePresenter::label(const Element &element) const
@@ -307,6 +359,17 @@ BodyShape TextPresenter::measure(const Element &element) const
     QTextLayout layout(textHint(), textHintFont());
     const QRectF hint = LabelMetrics::layOut(layout).translated(kHintPlace);
     return {picture.united(element.labelBoundingRect()).united(hint), picture.center()};
+}
+
+AppearanceKey TextPresenter::appearanceKey(const Element &element) const
+{
+    // The label is drawn apart from the body; an empty one's hint is drawn in it
+    AppearanceKey key = PicturePresenter::appearanceKey(element);
+    if (element.label().isEmpty()) {
+        key.type = element.elementType();
+        key.text = PicturePresentersDetail::textHint();
+    }
+    return key;
 }
 
 void TextPresenter::paintOverlay(QPainter &painter, const Element &element, const BodyContext &context) const
