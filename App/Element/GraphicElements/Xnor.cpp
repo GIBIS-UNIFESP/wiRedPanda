@@ -23,6 +23,7 @@ struct ElementInfo<Xnor> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::Xnor;
         descriptor.pixmapPath = QStringLiteral(":/Components/Logic/xnor.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Xnor", "XNOR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Xnor", "Xnor");

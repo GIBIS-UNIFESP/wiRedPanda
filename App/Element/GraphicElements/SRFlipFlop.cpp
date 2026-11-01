@@ -23,6 +23,7 @@ struct ElementInfo<SRFlipFlop> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::SRFlipFlop;
         // The Light theme's picture; presentation shows its Dark sibling in the Dark theme (ElementPictures::themed())
         descriptor.pixmapPath = QStringLiteral(":/Components/Memory/Light/SR-flipflop.svg");
         descriptor.defaultAppearances = QStringList({descriptor.pixmapPath});

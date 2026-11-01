@@ -27,6 +27,9 @@ struct ElementInfo<InputButton> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::Input;
+        descriptor.kernelParameters = {ParamId::On};
+        descriptor.sourceLevel = ElementInput::onLevel;
         descriptor.pixmapPath = QStringLiteral(":/Components/Input/buttonOff.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputButton", "PUSH BUTTON");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputButton", "Push Button");

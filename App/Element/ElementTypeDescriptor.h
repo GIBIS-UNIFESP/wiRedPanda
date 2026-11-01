@@ -21,9 +21,37 @@
 class QDataStream;
 struct SerializationContext;
 
+/// What the simulation core computes for an element of the type; the parameters it reads are the descriptor's
+/// kernelParameters. Every type but an IC has one kernel; a type the core does not compute has None.
+enum class KernelKind : quint8 {
+    None,       ///< Not computed: an output, which reads its inputs, or a decoration.
+    Instance,   ///< An IC: the core flattens its definition into the circuit.
+    Constant,   ///< A constant source: its output ports' defaults.
+    Input,      ///< A source the user operates: the levels ElementTypeDescriptor::sourceLevel reads.
+    Clock,      ///< A clock source: its frequency, phase delay and lock.
+    And,        ///< The gates fold their inputs.
+    Or,
+    Nand,
+    Nor,
+    Xor,
+    Xnor,
+    Not,
+    Node,       ///< A buffer, which is also a wireless Tx or Rx by its mode, on the channel its label names; an empty
+                ///< label leaves it unpaired.
+    Mux,        ///< Data inputs, then select lines.
+    Demux,      ///< The data input, then select lines.
+    TruthTable, ///< Its table, a column of rows per output.
+    DLatch,     ///< The memory kernels sample their data at their control inputs' levels or edges.
+    SRLatch,
+    DFlipFlop,
+    TFlipFlop,
+    JKFlipFlop,
+    SRFlipFlop,
+};
+
 /**
  * \struct ElementTypeDescriptor
- * \brief What one element type is: its group, names, ports, pictures and capabilities.
+ * \brief What one element type is: its group, names, ports, pictures, simulation kernel and capabilities.
  *
  * \details Each element .cpp adds its type's descriptor through its ElementInfo<T>
  * specialization's describe(); of(), add() and has() are the registry of every
@@ -47,6 +75,15 @@ struct ElementTypeDescriptor {
     const char *titleText = nullptr;     ///< Untranslated title shown in the element palette (QT_TRANSLATE_NOOP).
     const char *translatedName = nullptr; ///< Untranslated element name used for tooltips (QT_TRANSLATE_NOOP).
     const char *trContext = nullptr;     ///< Translation context string for QCoreApplication::translate().
+
+    // --- Simulation ---
+
+    KernelKind kernel = KernelKind::None; ///< What the simulation core computes for an element of the type.
+    QList<ParamId> kernelParameters;      ///< The parameters the kernel reads, each one in the type's schema.
+    bool kernelReadsLabel = false; ///< Whether the kernel reads the element's label, outside the schema: a node's channel.
+
+    /// For a KernelKind::Input type: whether output \a port of \a element is on, read from its parameters.
+    bool (*sourceLevel)(const Element &element, int port) = nullptr;
 
     // --- Parameters ---
 

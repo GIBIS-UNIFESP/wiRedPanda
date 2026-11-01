@@ -15,6 +15,12 @@ ParamSpec ElementInput::lockSpec()
     return {.id = ParamId::Locked, .defaultValue = false, .key = "locked"};
 }
 
+bool ElementInput::onLevel(const Element &element, const int port)
+{
+    Q_UNUSED(port)
+    return element.param<bool>(ParamId::On);
+}
+
 void ElementInput::setOn(const bool value, const int port)
 {
     Q_UNUSED(port)

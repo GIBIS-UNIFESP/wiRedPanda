@@ -11,6 +11,16 @@
 #include "App/IO/VersionInfo.h"
 #include "App/Wiring/Port.h"
 
+namespace InputRotaryDetail {
+
+/// Whether output \a port of \a element is on: the one its position selects.
+bool positionLevel(const Element &element, const int port)
+{
+    return element.param<int>(ParamId::Position) == port;
+}
+
+} // namespace InputRotaryDetail
+
 template<>
 struct ElementInfo<InputRotary> {
     static constexpr ElementConstraints constraints{
@@ -27,6 +37,9 @@ struct ElementInfo<InputRotary> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::Input;
+        descriptor.kernelParameters = {ParamId::Position};
+        descriptor.sourceLevel = InputRotaryDetail::positionLevel;
         descriptor.pixmapPath = QStringLiteral(":/Components/Input/rotary_icon.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputRotary", "ROTARY SWITCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputRotary", "Rotary Switch");

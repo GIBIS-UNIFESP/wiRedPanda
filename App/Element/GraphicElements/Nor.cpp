@@ -23,6 +23,7 @@ struct ElementInfo<Nor> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::Nor;
         descriptor.pixmapPath = QStringLiteral(":/Components/Logic/nor.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Nor", "NOR");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Nor", "Nor");

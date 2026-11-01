@@ -42,6 +42,12 @@ public:
     /// The spec of an input's lock (ParamId::Locked), which every input has.
     static ParamSpec lockSpec();
 
+    // --- Simulation ---
+
+    /// Whether output \a port of \a element is on: its level (ParamId::On), which a switch's or a button's one port
+    /// drives; the simulation core reads it as the type's ElementTypeDescriptor::sourceLevel.
+    static bool onLevel(const Element &element, int port);
+
     // --- State Queries ---
 
     /// Returns \c true if the element is locked against user interaction (ParamId::Locked).

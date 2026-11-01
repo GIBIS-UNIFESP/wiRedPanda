@@ -3,9 +3,12 @@
 
 #include "Tests/Unit/Factory/TestElementFactory.h"
 
+#include <algorithm>
 #include <memory>
+#include <utility>
 
 #include <QList>
+#include <QMap>
 #include <QMetaEnum>
 #include <QSet>
 #include <QString>
@@ -14,8 +17,10 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Scene/Scene.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestElementFactory::initTestCase()
@@ -339,6 +344,128 @@ void TestElementFactory::testAllElementTypesRegistered()
         // Verify factory creator is registered
         QVERIFY2(ElementFactory::hasCreator(type),
                  qPrintable(QString("Missing factory creator for %1").arg(metaEnum.key(i))));
+    }
+}
+
+void TestElementFactory::testEachTypeNamesItsKernel_data()
+{
+    QTest::addColumn<ElementType>("type");
+    QTest::addColumn<int>("kernel");
+    QTest::addColumn<QList<int>>("parameters");
+    QTest::addColumn<bool>("readsLabel");
+
+    const auto ids = [](const std::initializer_list<ParamId> list) {
+        QList<int> result;
+        for (const auto id : list) {
+            result.append(static_cast<int>(id));
+        }
+        return result;
+    };
+    const QMap<ElementType, std::pair<KernelKind, QList<int>>> kernels{
+        {ElementType::And, {KernelKind::And, {}}},
+        {ElementType::AudioBox, {KernelKind::None, {}}},
+        {ElementType::Buzzer, {KernelKind::None, {}}},
+        {ElementType::Clock, {KernelKind::Clock, ids({ParamId::Frequency, ParamId::Delay, ParamId::Locked})}},
+        {ElementType::DFlipFlop, {KernelKind::DFlipFlop, {}}},
+        {ElementType::DLatch, {KernelKind::DLatch, {}}},
+        {ElementType::Demux, {KernelKind::Demux, {}}},
+        {ElementType::Display14, {KernelKind::None, {}}},
+        {ElementType::Display16, {KernelKind::None, {}}},
+        {ElementType::Display7, {KernelKind::None, {}}},
+        {ElementType::IC, {KernelKind::Instance, {}}},
+        {ElementType::InputButton, {KernelKind::Input, ids({ParamId::On})}},
+        {ElementType::InputGnd, {KernelKind::Constant, {}}},
+        {ElementType::InputRotary, {KernelKind::Input, ids({ParamId::Position})}},
+        {ElementType::InputSwitch, {KernelKind::Input, ids({ParamId::On})}},
+        {ElementType::InputVcc, {KernelKind::Constant, {}}},
+        {ElementType::JKFlipFlop, {KernelKind::JKFlipFlop, {}}},
+        {ElementType::Led, {KernelKind::None, {}}},
+        {ElementType::Line, {KernelKind::None, {}}},
+        {ElementType::Mux, {KernelKind::Mux, {}}},
+        {ElementType::Nand, {KernelKind::Nand, {}}},
+        {ElementType::Node, {KernelKind::Node, ids({ParamId::Wireless})}},
+        {ElementType::Nor, {KernelKind::Nor, {}}},
+        {ElementType::Not, {KernelKind::Not, {}}},
+        {ElementType::Or, {KernelKind::Or, {}}},
+        {ElementType::SRFlipFlop, {KernelKind::SRFlipFlop, {}}},
+        {ElementType::SRLatch, {KernelKind::SRLatch, {}}},
+        {ElementType::TFlipFlop, {KernelKind::TFlipFlop, {}}},
+        {ElementType::Text, {KernelKind::None, {}}},
+        {ElementType::TruthTable, {KernelKind::TruthTable, ids({ParamId::Table})}},
+        {ElementType::Xnor, {KernelKind::Xnor, {}}},
+        {ElementType::Xor, {KernelKind::Xor, {}}},
+    };
+
+    // Every registered type is in the table, so a new type is given its kernel here
+    const QMetaEnum metaEnum = QMetaEnum::fromType<ElementType>();
+    for (int i = 0; i < metaEnum.keyCount(); ++i) {
+        const auto type = static_cast<ElementType>(metaEnum.value(i));
+        if (ElementTypeDescriptor::has(type)) {
+            QVERIFY2(kernels.contains(type), metaEnum.key(i));
+            const auto &[kernel, parameters] = kernels.value(type);
+            // A wireless node pairs with the nodes its label names
+            QTest::newRow(metaEnum.key(i)) << type << static_cast<int>(kernel) << parameters << (type == ElementType::Node);
+        }
+    }
+}
+
+void TestElementFactory::testEachTypeNamesItsKernel()
+{
+    QFETCH(ElementType, type);
+    QFETCH(int, kernel);
+    QFETCH(QList<int>, parameters);
+    QFETCH(bool, readsLabel);
+
+    const auto &descriptor = ElementTypeDescriptor::of(type);
+    QCOMPARE(static_cast<int>(descriptor.kernel), kernel);
+    QList<int> read;
+    for (const auto id : descriptor.kernelParameters) {
+        read.append(static_cast<int>(id));
+    }
+    QCOMPARE(read, parameters);
+    QCOMPARE(descriptor.kernelReadsLabel, readsLabel);
+    QCOMPARE(descriptor.sourceLevel != nullptr, descriptor.kernel == KernelKind::Input);
+
+    // Each parameter the kernel reads is one the type has
+    for (const auto id : descriptor.kernelParameters) {
+        QVERIFY(std::any_of(descriptor.parameters.cbegin(), descriptor.parameters.cend(),
+                            [id](const ParamSpec &spec) { return spec.id == id; }));
+    }
+
+    // A type whose elements have outputs computes them, an IC through its definition; one without computes nothing
+    const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
+    QCOMPARE(descriptor.kernel != KernelKind::None, (element->outputSize() > 0) || (type == ElementType::IC));
+}
+
+void TestElementFactory::testAnInputsSourceLevelComesFromItsParameters()
+{
+    // The level of each port is the one the element drives it with and answers for, which the core has to reproduce
+    const auto agrees = [](const Element &element, const int port, const bool on) {
+        const auto *input = qobject_cast<const ElementInput *>(&element);
+        const bool driven = element.outputPort(port)->status() == Status::Active;
+        return input && (ElementTypeDescriptor::of(element.elementType()).sourceLevel(element, port) == on)
+            && (driven == on) && (input->isOn(port) == on);
+    };
+
+    // A switch's and a button's port follows its level
+    for (const auto type : {ElementType::InputSwitch, ElementType::InputButton}) {
+        const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
+        QVERIFY(agrees(*element, 0, false));
+        QVERIFY(element->setParam(ParamId::On, true));
+        QVERIFY(agrees(*element, 0, true));
+        QVERIFY(element->setParam(ParamId::On, false));
+        QVERIFY(agrees(*element, 0, false));
+    }
+
+    // A rotary switch's ports are on one at a time, at its position
+    const auto rotary = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
+    rotary->setOutputSize(4);
+    QCOMPARE(rotary->outputSize(), 4);
+    for (const int position : {2, 0, 3}) {
+        QVERIFY(rotary->setParam(ParamId::Position, position));
+        for (int port = 0; port < rotary->outputSize(); ++port) {
+            QVERIFY2(agrees(*rotary, port, port == position), qPrintable(QStringLiteral("%1 at %2").arg(port).arg(position)));
+        }
     }
 }
 

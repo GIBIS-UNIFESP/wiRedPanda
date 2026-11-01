@@ -23,6 +23,7 @@ struct ElementInfo<JKFlipFlop> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::JKFlipFlop;
         // The Light theme's picture; presentation shows its Dark sibling in the Dark theme (ElementPictures::themed())
         descriptor.pixmapPath = QStringLiteral(":/Components/Memory/Light/JK-flipflop.svg");
         descriptor.defaultAppearances = QStringList({descriptor.pixmapPath});

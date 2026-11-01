@@ -33,6 +33,11 @@ private slots:
     // Completeness Tests (1 test)
     void testAllElementTypesRegistered();
 
+    // Simulation kernels
+    void testEachTypeNamesItsKernel_data();
+    void testEachTypeNamesItsKernel();
+    void testAnInputsSourceLevelComesFromItsParameters();
+
     // Unregistered type
     void testDescriptorForUnknownTypeIsEmpty();
     void testTranslatedNameForUnknownType();

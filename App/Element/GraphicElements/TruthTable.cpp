@@ -29,6 +29,8 @@ struct ElementInfo<TruthTable> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::TruthTable;
+        descriptor.kernelParameters = {ParamId::Table};
         descriptor.pixmapPath = QStringLiteral(":/Components/Logic/truthtable-rotated.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("TruthTable", "TRUTH TABLE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("TruthTable", "Truth Table");

@@ -25,6 +25,9 @@ struct ElementInfo<Node> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::Node;
+        descriptor.kernelParameters = {ParamId::Wireless};
+        descriptor.kernelReadsLabel = true;
         descriptor.pixmapPath = QStringLiteral(":/Components/Logic/node.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Node", "NODE");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Node", "Node");

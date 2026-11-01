@@ -30,6 +30,8 @@ struct ElementInfo<Clock> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::Clock;
+        descriptor.kernelParameters = {ParamId::Frequency, ParamId::Delay, ParamId::Locked};
         descriptor.pixmapPath = QStringLiteral(":/Components/Input/clock1.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");

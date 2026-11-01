@@ -25,6 +25,7 @@ struct ElementInfo<Mux> {
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
+        descriptor.kernel = KernelKind::Mux;
         descriptor.pixmapPath = QStringLiteral(":/Components/Logic/mux.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Mux", "MULTIPLEXER");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Mux", "Mux");
