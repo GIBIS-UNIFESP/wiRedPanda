@@ -16,12 +16,12 @@
 #include "App/Element/GraphicElements/InputGND.h"
 #include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/PropertyDescriptor.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/UI/SelectionCapabilities.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -284,27 +284,14 @@ void TestWirelessNode::testHasWirelessModeFalseForNonNode()
     QVERIFY(!elm->hasWirelessMode());
 }
 
-void TestWirelessNode::testEditablePropertiesContainsWirelessMode()
+void TestWirelessNode::testEditorShowsTheWirelessModeOnlyForANode()
 {
-    // Node::editableProperties() must include a WirelessMode descriptor.
-    // Non-Node elements must NOT include it.
-    auto nodeElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    QVERIFY(nodeElm != nullptr);
+    // The editor's wireless mode field follows the schema's flag: a node shows it, a gate does not
+    const std::unique_ptr<Element> node(ElementFactory::buildElement(ElementType::Node));
+    QVERIFY(computeCapabilities({node.get()}).hasWirelessMode);
 
-    bool nodeHasIt = false;
-    for (const auto &desc : nodeElm->editableProperties()) {
-        if (desc.type == PropertyDescriptor::Type::WirelessModeSelector) {
-            nodeHasIt = true;
-            break;
-        }
-    }
-    QVERIFY(nodeHasIt);
-
-    auto andElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(andElm != nullptr);
-    for (const auto &desc : andElm->editableProperties()) {
-        QVERIFY(desc.type != PropertyDescriptor::Type::WirelessModeSelector);
-    }
+    const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
+    QVERIFY(!computeCapabilities({gate.get()}).hasWirelessMode);
 }
 
 // ============================================================================

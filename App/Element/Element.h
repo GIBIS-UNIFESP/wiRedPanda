@@ -28,7 +28,6 @@
 #include "App/Element/ElementSimState.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/LabelMeasure.h"
-#include "App/Element/PropertyDescriptor.h"
 
 struct SerializationContext;
 struct SerializationOptions;
@@ -341,14 +340,6 @@ public:
 
     /// Sets the phase delay to \a delay (ParamId::Delay), as its spec takes it.
     void setDelay(const double delay);
-
-    /**
-     * \brief Returns the list of editable properties this element exposes in the ElementEditor.
-     * \details Derived from the descriptor's flags and the parameters the element offers; no override needed in
-     * subclasses.
-     * \return Ordered list of PropertyDescriptors for all supported property types.
-     */
-    QList<PropertyDescriptor> editableProperties() const;
 
     // --- Appearance Management ---
 

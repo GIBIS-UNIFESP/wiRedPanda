@@ -842,22 +842,6 @@ void Element::setVolume(const double vol)
     setParam(ParamId::Volume, vol);
 }
 
-QList<PropertyDescriptor> Element::editableProperties() const
-{
-    QList<PropertyDescriptor> props;
-    if (hasLabel())      props.append({PropertyDescriptor::Type::Label});
-    if (hasColors())     props.append({PropertyDescriptor::Type::Color});
-    if (hasFrequency())  props.append({PropertyDescriptor::Type::Frequency});
-    if (hasDelay())      props.append({PropertyDescriptor::Type::Delay});
-    if (hasAudioBox())   props.append({PropertyDescriptor::Type::AudioBox});
-    if (hasVolume())     props.append({PropertyDescriptor::Type::Volume});
-    if (hasTrigger())    props.append({PropertyDescriptor::Type::Trigger});
-    if (hasTruthTable()) props.append({PropertyDescriptor::Type::TruthTable});
-    if (canChangeAppearance())    props.append({PropertyDescriptor::Type::Appearance});
-    if (hasWirelessMode())  props.append({PropertyDescriptor::Type::WirelessModeSelector});
-    return props;
-} // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QList<PropertyDescriptor>, never reached after the return above.
-
 bool Element::canChangeAppearance() const
 {
     return m_descriptor.canChangeAppearance;

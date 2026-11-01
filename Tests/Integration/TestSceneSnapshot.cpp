@@ -33,6 +33,7 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/MainWindow.h"
+#include "App/UI/SelectionCapabilities.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "MCP/Server/Handlers/ElementHandler.h"
@@ -591,7 +592,7 @@ void TestSceneSnapshot::testEverySnapPathGoldenHasAPath()
 
 void TestSceneSnapshot::testPropertyKindsMatchGolden()
 {
-    // Every creatable type with the property kinds its element offers the editor, in the order it lists them.
+    // Every creatable type with the property fields the editor shows for its element alone, from the schema's flags.
     QStringList lines;
     for (const ElementType type : TestUtils::dumpedTypes()) {
         if (!ElementFactory::hasCreator(type)) {
@@ -600,8 +601,8 @@ void TestSceneSnapshot::testPropertyKindsMatchGolden()
         }
         const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
         QStringList kinds;
-        for (const auto &property : element->editableProperties()) {
-            kinds << TestUtils::snapshotPropertyKind(property.type);
+        for (const TestUtils::PropertyKind kind : TestUtils::propertyKinds(computeCapabilities({element.get()}))) {
+            kinds << TestUtils::snapshotPropertyKind(kind);
         }
         lines << QString("T %1 props=%2").arg(TestUtils::snapshotType(type), kinds.join(','));
     }

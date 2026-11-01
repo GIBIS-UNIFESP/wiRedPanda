@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <utility>
 
 #include <QBuffer>
 #include <QDataStream>
@@ -33,6 +34,7 @@
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/UI/SelectionCapabilities.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace TestUtils {
@@ -194,19 +196,42 @@ QString snapshotType(const ElementType type)
     return QVariant::fromValue(type).toString();
 }
 
-QString snapshotPropertyKind(const PropertyDescriptor::Type type)
+QList<PropertyKind> propertyKinds(const SelectionCapabilities &caps)
 {
-    switch (type) {
-    case PropertyDescriptor::Type::Label:                return "Label";
-    case PropertyDescriptor::Type::Color:                return "Color";
-    case PropertyDescriptor::Type::Frequency:            return "Frequency";
-    case PropertyDescriptor::Type::Delay:                return "Delay";
-    case PropertyDescriptor::Type::AudioBox:             return "AudioBox";
-    case PropertyDescriptor::Type::Trigger:              return "Trigger";
-    case PropertyDescriptor::Type::TruthTable:           return "TruthTable";
-    case PropertyDescriptor::Type::Appearance:           return "Appearance";
-    case PropertyDescriptor::Type::Volume:               return "Volume";
-    case PropertyDescriptor::Type::WirelessModeSelector: return "WirelessModeSelector";
+    const std::pair<bool, PropertyKind> fields[] = {
+        {caps.hasLabel, PropertyKind::Label},
+        {caps.hasColors, PropertyKind::Color},
+        {caps.hasFrequency, PropertyKind::Frequency},
+        {caps.hasDelay, PropertyKind::Delay},
+        {caps.hasAudioBox, PropertyKind::AudioBox},
+        {caps.hasVolume, PropertyKind::Volume},
+        {caps.hasTrigger, PropertyKind::Trigger},
+        {caps.hasTruthTable, PropertyKind::TruthTable},
+        {caps.canChangeAppearance, PropertyKind::Appearance},
+        {caps.hasWirelessMode, PropertyKind::WirelessModeSelector},
+    };
+    QList<PropertyKind> kinds;
+    for (const auto &[shown, kind] : fields) {
+        if (shown) {
+            kinds << kind;
+        }
+    }
+    return kinds;
+}
+
+QString snapshotPropertyKind(const PropertyKind kind)
+{
+    switch (kind) {
+    case PropertyKind::Label:                return "Label";
+    case PropertyKind::Color:                return "Color";
+    case PropertyKind::Frequency:            return "Frequency";
+    case PropertyKind::Delay:                return "Delay";
+    case PropertyKind::AudioBox:             return "AudioBox";
+    case PropertyKind::Volume:               return "Volume";
+    case PropertyKind::Trigger:              return "Trigger";
+    case PropertyKind::TruthTable:           return "TruthTable";
+    case PropertyKind::Appearance:           return "Appearance";
+    case PropertyKind::WirelessModeSelector: return "WirelessModeSelector";
     }
     return "Unknown";
 }

@@ -24,7 +24,7 @@ private slots:
     void testLabelUsedAsChannelName();
     void testLabelPreservedAfterModeChange();
     void testHasWirelessModeFalseForNonNode();
-    void testEditablePropertiesContainsWirelessMode();
+    void testEditorShowsTheWirelessModeOnlyForANode();
 
     // Port visibility edge cases (3 tests)
     void testPortVisibilityTxMode();

@@ -176,7 +176,6 @@ wiRedPanda/
 │   │   ├── ElementFactory.cpp/h            #     Factory singleton
 │   │   ├── ElementInfo.h                   #     Self-registration template
 │   │   ├── ElementTypeDescriptor.cpp/h     #     Element type descriptors and capabilities
-│   │   ├── PropertyDescriptor.h            #     Property system
 │   │   ├── IC.cpp/h                        #     Integrated circuit (sub-circuit) element
 │   │   ├── ICLoader.cpp/h                  #     Loads an IC's sub-circuit from file or embedded blob
 │   │   ├── ICRenderer.cpp/h                #     Builds an IC's hover-preview pixmap

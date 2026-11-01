@@ -42,6 +42,7 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
+#include "App/UI/SelectionCapabilities.h"
 #include "App/Wiring/Connection.h"
 #include "Tests/Common/Goldens.h"
 #include "Tests/Common/ICTestHelpers.h"
@@ -106,30 +107,30 @@ QT_WARNING_POP
 // IC::loadFile()/loadFromBlob() accepts this as real IC file content.
 using ICTestHelpers::minimalPandaBytes;
 
-// What `element` holds for the property kind `type`, as the editor's golden records it: files by name, since the
+// What `element` holds for the property field `kind`, as the editor's golden records it: files by name, since the
 // golden's files live in a temporary directory.
-QString editedValue(const Element *element, const PropertyDescriptor::Type type)
+QString editedValue(const Element *element, const TestUtils::PropertyKind kind)
 {
-    switch (type) {
-    case PropertyDescriptor::Type::Label:
+    switch (kind) {
+    case TestUtils::PropertyKind::Label:
         return TestUtils::snapshotQuoted(element->label());
-    case PropertyDescriptor::Type::Color:
+    case TestUtils::PropertyKind::Color:
         return element->color();
-    case PropertyDescriptor::Type::Frequency:
+    case TestUtils::PropertyKind::Frequency:
         return TestUtils::snapshotNumber(element->frequency());
-    case PropertyDescriptor::Type::Delay:
+    case TestUtils::PropertyKind::Delay:
         return TestUtils::snapshotNumber(element->delay());
-    case PropertyDescriptor::Type::AudioBox:
+    case TestUtils::PropertyKind::AudioBox:
         return TestUtils::snapshotQuoted(QFileInfo(element->audio()).fileName());
-    case PropertyDescriptor::Type::Trigger:
+    case TestUtils::PropertyKind::Trigger:
         return TestUtils::snapshotQuoted(element->trigger().toString());
-    case PropertyDescriptor::Type::TruthTable:
+    case TestUtils::PropertyKind::TruthTable:
         return "-";
-    case PropertyDescriptor::Type::Appearance:
+    case TestUtils::PropertyKind::Appearance:
         return SnapshotAccess::pixmapIdentity(element);
-    case PropertyDescriptor::Type::Volume:
+    case TestUtils::PropertyKind::Volume:
         return TestUtils::snapshotNumber(element->volume());
-    case PropertyDescriptor::Type::WirelessModeSelector:
+    case TestUtils::PropertyKind::WirelessModeSelector:
         return QVariant::fromValue(element->wirelessMode()).toString();
     }
     return {};
@@ -1743,8 +1744,8 @@ void TestElementEditor::testWritesMatchGolden()
             lines << QString("%1 %2").arg(QLatin1String(TestUtils::kNoCreator), TestUtils::snapshotType(type));
             continue;
         }
-        const auto properties = std::unique_ptr<Element>(ElementFactory::buildElement(type))->editableProperties();
-        for (const auto &property : properties) {
+        const std::unique_ptr<Element> fresh(ElementFactory::buildElement(type));
+        for (const TestUtils::PropertyKind kind : TestUtils::propertyKinds(computeCapabilities({fresh.get()}))) {
             WorkSpace workspace;
             auto *element = ElementFactory::buildElement(type);
             workspace.scene()->addItem(element);
@@ -1753,23 +1754,23 @@ void TestElementEditor::testWritesMatchGolden()
             workspace.scene()->clearSelection();
             element->setSelected(true);
 
-            const QString before = editedValue(element, property.type);
+            const QString before = editedValue(element, kind);
             auto *undoStack = workspace.scene()->undoStack();
             const int commandsBefore = undoStack->count();
             QString written;
-            switch (property.type) {
-            case PropertyDescriptor::Type::Label:
+            switch (kind) {
+            case TestUtils::PropertyKind::Label:
                 written = "Edited";
                 editor.findChild<QLineEdit *>("lineEditElementLabel")->setText(written);
                 break;
-            case PropertyDescriptor::Type::Color: {
+            case TestUtils::PropertyKind::Color: {
                 auto *combo = editor.findChild<QComboBox *>("comboBoxColor");
                 const int index = (combo->currentIndex() + 1) % combo->count();
                 written = combo->itemText(index);
                 combo->setCurrentIndex(index);
                 break;
             }
-            case PropertyDescriptor::Type::Frequency: {
+            case TestUtils::PropertyKind::Frequency: {
                 auto *spinBox = editor.findChild<QDoubleSpinBox *>("doubleSpinBoxFrequency");
                 const double value = (spinBox->value() < spinBox->maximum()) ? spinBox->value() + spinBox->singleStep()
                                                                              : spinBox->value() - spinBox->singleStep();
@@ -1777,30 +1778,30 @@ void TestElementEditor::testWritesMatchGolden()
                 spinBox->setValue(value);
                 break;
             }
-            case PropertyDescriptor::Type::Delay:
-            case PropertyDescriptor::Type::Volume: {
-                const bool delay = (property.type == PropertyDescriptor::Type::Delay);
+            case TestUtils::PropertyKind::Delay:
+            case TestUtils::PropertyKind::Volume: {
+                const bool delay = (kind == TestUtils::PropertyKind::Delay);
                 auto *slider = editor.findChild<QSlider *>(delay ? "sliderDelay" : "sliderVolume");
                 const int value = (slider->value() < slider->maximum()) ? slider->value() + 1 : slider->value() - 1;
                 written = QString::number(value);
                 slider->setValue(value);
                 break;
             }
-            case PropertyDescriptor::Type::AudioBox: {
+            case TestUtils::PropertyKind::AudioBox: {
                 ScopedFileDialogStub dialogStub;
                 dialogStub.stub.openResult = audioPath;
                 written = QFileInfo(audioPath).fileName();
                 editor.audioBox();
                 break;
             }
-            case PropertyDescriptor::Type::Trigger:
+            case TestUtils::PropertyKind::Trigger:
                 written = "q";
                 editor.findChild<QLineEdit *>("lineEditTrigger")->setText(written);
                 break;
-            case PropertyDescriptor::Type::TruthTable:
+            case TestUtils::PropertyKind::TruthTable:
                 written = "-";
                 break;
-            case PropertyDescriptor::Type::Appearance: {
+            case TestUtils::PropertyKind::Appearance: {
                 // A multi-state element's appearance goes through its state tiles, which only a shown editor offers.
                 showAndActivate(&editor);
                 ScopedFileDialogStub dialogStub;
@@ -1809,7 +1810,7 @@ void TestElementEditor::testWritesMatchGolden()
                 editor.updateElementAppearance();
                 break;
             }
-            case PropertyDescriptor::Type::WirelessModeSelector: {
+            case TestUtils::PropertyKind::WirelessModeSelector: {
                 auto *combo = editor.findChild<QComboBox *>("comboBoxWirelessMode");
                 written = combo->itemText(static_cast<int>(WirelessMode::Tx));
                 combo->setCurrentIndex(static_cast<int>(WirelessMode::Tx));
@@ -1822,8 +1823,8 @@ void TestElementEditor::testWritesMatchGolden()
                 pushed << TestUtils::snapshotQuoted(undoStack->command(command)->text());
             }
             lines << QString("T %1 %2 wrote=%3 before=%4 after=%5 pushed=[%6]")
-                         .arg(TestUtils::snapshotType(type), TestUtils::snapshotPropertyKind(property.type),
-                              TestUtils::snapshotQuoted(written), before, editedValue(element, property.type),
+                         .arg(TestUtils::snapshotType(type), TestUtils::snapshotPropertyKind(kind),
+                              TestUtils::snapshotQuoted(written), before, editedValue(element, kind),
                               pushed.join(','));
         }
     }

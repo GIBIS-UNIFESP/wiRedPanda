@@ -26,13 +26,13 @@
 #include "App/Core/Application.h"
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
-#include "App/Element/PropertyDescriptor.h"
 #include "App/Scene/Scene.h"
 
 class CircuitBuilder;
 class IC;
 class Port;
 class WorkSpace;
+struct SelectionCapabilities;
 
 namespace TestUtils {
 
@@ -98,8 +98,25 @@ QString snapshotStatus(Status status);
 /// Names \a type as its enumerator is spelled.
 QString snapshotType(ElementType type);
 
-/// Names the editable property kind \a type as its enumerator is spelled.
-QString snapshotPropertyKind(PropertyDescriptor::Type type);
+/// A property field the element editor shows, as plan 1's property goldens name it.
+enum class PropertyKind {
+    Label,
+    Color,
+    Frequency,
+    Delay,
+    AudioBox,
+    Volume,
+    Trigger,
+    TruthTable,
+    Appearance,
+    WirelessModeSelector,
+};
+
+/// The property fields the element editor shows for a selection with \a caps, from its flags, in the goldens' order.
+QList<PropertyKind> propertyKinds(const SelectionCapabilities &caps);
+
+/// Names the property field \a kind as its enumerator is spelled.
+QString snapshotPropertyKind(PropertyKind kind);
 
 /// A quarter turn and the two flips the goldens cross.
 struct Orientation {
