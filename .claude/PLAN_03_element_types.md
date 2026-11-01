@@ -638,7 +638,7 @@ user's choice between workable options).
   purpose (MCP's float32 noise) gets the decimal. No format revision: an older version reads a newer file's volume with
   `toFloat()` as the same float as before, and opening a newer revision would keep it from saving the file. A volume
   that is not finite (infinity, NaN) is refused, as the frequency's is: a file's loads as the default. The bound
-  to [0, 1] is MCP's until P3.19 puts it in the spec. Supersedes §3.6's "the volume takes the nearest float", P3.10's
+  to [0, 1] is the spec's range, which MCP takes (P3.19a). Supersedes §3.6's "the volume takes the nearest float", P3.10's
   rule. Basis: the user's ruling, 2026-11-01 ("if done properly, it can handle migrating data from existing files"),
   asked after P3.18a found the editor's float cast redundant with the spec's; the rule on the value in place of a
   revision found while doing it (P3.29).
