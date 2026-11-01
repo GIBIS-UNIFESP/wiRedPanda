@@ -3,10 +3,9 @@
 
 #include "Tests/Unit/Logic/TestElementLogic.h"
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -226,7 +225,7 @@ void TestElementLogic::testMux()
     QFETCH(bool, sel);
     QFETCH(bool, expected);
 
-    Mux elm; initElm(elm);
+    Element elm{ElementType::Mux}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
     elm.connectPredecessor(2, m_inputs.at(2), 0);
@@ -260,7 +259,7 @@ void TestElementLogic::testDemux()
     QFETCH(bool, out0);
     QFETCH(bool, out1);
 
-    Demux elm; initElm(elm);
+    Element elm{ElementType::Demux}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
     elm.connectPredecessor(1, m_inputs.at(1), 0);
 

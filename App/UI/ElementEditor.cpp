@@ -843,7 +843,7 @@ void ElementEditor::truthTable()
     // Only a single TruthTable element is supported at a time.
     auto *truthtable = m_elements[0];
     if (truthtable->elementType() != ElementType::TruthTable) {
-        return; // LCOV_EXCL_LINE — m_caps.hasTruthTable is AND-merged across the selection and only TruthTable::hasTruthTable() ever returns true, so hasTruthTable implies m_elements[0] is a truth table.
+        return; // LCOV_EXCL_LINE — m_caps.hasTruthTable is AND-merged across the selection and only a truth table has the table (ParamId::Table), so hasTruthTable implies m_elements[0] is a truth table.
     }
 
     // --- Build / refresh table ---

@@ -18,11 +18,11 @@
 #include <QTextStream>
 
 #include "App/CodeGen/SystemVerilogCodeGen.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -1413,8 +1413,8 @@ void TestSystemVerilogExport::testTruthTablesCompileAndSimulate()
     CircuitBuilder builder(scene);
     auto *swA = new InputSwitch();
     auto *swB = new InputSwitch();
-    auto *andTable = new TruthTable();
-    auto *orXorTable = new TruthTable();
+    auto *andTable = ElementFactory::buildElement(ElementType::TruthTable);
+    auto *orXorTable = ElementFactory::buildElement(ElementType::TruthTable);
     orXorTable->setOutputSize(2);
     auto *ledAnd = new Led();
     auto *ledOr = new Led();
@@ -1433,17 +1433,17 @@ void TestSystemVerilogExport::testTruthTablesCompileAndSimulate()
     builder.connect(orXorTable, 0, ledOr, 0);
     builder.connect(orXorTable, 1, ledXor, 0);
     // Row r is the inputs read as a number; output k's rows start at bit 256 * k.
-    QBitArray andBits = andTable->key();
+    QBitArray andBits = andTable->param<QBitArray>(ParamId::Table);
     andBits.setBit(3, true);
-    andTable->setkey(andBits);
-    QBitArray orXorBits = orXorTable->key();
+    andTable->setParam(ParamId::Table, andBits);
+    QBitArray orXorBits = orXorTable->param<QBitArray>(ParamId::Table);
     for (const int row : {1, 2, 3}) {
         orXorBits.setBit(row, true);
     }
     for (const int row : {1, 2}) {
         orXorBits.setBit(256 + row, true);
     }
-    orXorTable->setkey(orXorBits);
+    orXorTable->setParam(ParamId::Table, orXorBits);
 
     QTemporaryDir dir;
     QVERIFY(dir.isValid());

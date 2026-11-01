@@ -7,7 +7,7 @@
 #include <QStyleOptionGraphicsItem>
 
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/Demux.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -15,7 +15,7 @@
 void TestDemux::testDemuxOutputSize()
 {
     WorkSpace workspace;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     workspace.scene()->addItem(demux);
     int defaultSize = demux->outputSize();
     QVERIFY(defaultSize > 0);
@@ -31,7 +31,7 @@ void TestDemux::testDemuxRouting()
 
     auto *data = new InputSwitch;
     auto *sel = new InputSwitch;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     builder.add(data, sel, demux);
     builder.connect(data, 0, demux, 0);
     builder.connect(sel, 0, demux, 1);
@@ -54,7 +54,7 @@ void TestDemux::testDemuxRouting()
 void TestDemux::testDemuxPainting()
 {
     WorkSpace workspace;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     workspace.scene()->addItem(demux);
 
     QPixmap pixmap(128, 128);
@@ -70,7 +70,7 @@ void TestDemux::testDemuxPainting()
 void TestDemux::testDemuxPaintingSelected()
 {
     WorkSpace workspace;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     workspace.scene()->addItem(demux);
     demux->setSelected(true);
 
@@ -86,23 +86,21 @@ void TestDemux::testDemuxPaintingSelected()
 
 void TestDemux::testDemuxSetInputSizeIsNoOp()
 {
-    // Demux derives its input count from setOutputSize() (1 data + log2(outputs) select
-    // lines); setInputSize() is overridden as a deliberate no-op so a caller can't desync
-    // that invariant. The override is reachable via generic Element* callers (e.g.
-    // Commands.cpp's port-resize command), not just direct Demux:: calls -- exercise it
-    // that way so the virtual dispatch itself is what's under test.
-    Demux demux;
+    // A Demux's inputs follow its outputs (1 data + log2(outputs) select lines,
+    // ElementTypeDescriptor::inputsForOutputs), so setInputSize() refuses even a size within
+    // the type's input range, which a generic caller (the port-resize command, a morph) can ask for.
+    Element demux{ElementType::Demux};
     const int before = demux.inputSize();
+    QVERIFY(before + 1 <= demux.maxInputSize());
 
-    auto *elm = static_cast<Element *>(&demux);
-    elm->setInputSize(before + 5);
+    demux.setInputSize(before + 1);
 
     QCOMPARE(demux.inputSize(), before);
 }
 
 void TestDemux::testDemuxDisconnectedInputsAreUnknown()
 {
-    Demux demux;
+    Element demux{ElementType::Demux};
     TestUtils::initElm(demux);
     demux.updateLogic();
 
@@ -127,7 +125,7 @@ void TestDemux::testDemuxOutOfRangeSelect()
         builder.add(sw);
     }
 
-    Demux demux;
+    Element demux{ElementType::Demux};
     demux.setOutputSize(5);
     builder.add(&dataIn, &demux);
 
@@ -156,7 +154,7 @@ void TestDemux::testDemuxBigPivotsAtBoundingRectCenter()
     // footprint centre, not the (0,0)-anchored raw pixmap centre that only happens to
     // coincide with it for small instances.
     WorkSpace workspace;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     workspace.scene()->addItem(demux);
     demux->setOutputSize(8); // max output size -> tallest body
 
@@ -168,7 +166,7 @@ void TestDemux::testDemuxBigPivotsAtBoundingRectCenter()
 void TestDemux::testDemuxBigRotationDoesNotDriftInScene()
 {
     WorkSpace workspace;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     workspace.scene()->addItem(demux);
     demux->setOutputSize(8);
 
@@ -183,7 +181,7 @@ void TestDemux::testDemuxBigRotationDoesNotDriftInScene()
 void TestDemux::testDemuxBigFlipDoesNotDriftInScene()
 {
     WorkSpace workspace;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     workspace.scene()->addItem(demux);
     demux->setOutputSize(8);
 

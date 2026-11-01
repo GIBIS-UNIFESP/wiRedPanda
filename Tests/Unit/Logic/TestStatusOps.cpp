@@ -6,10 +6,8 @@
 #include <QTest>
 
 #include "App/Core/StatusOps.h"
-#include "App/Element/GraphicElements/Demux.h"
-#include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "Tests/Common/TestUtils.h"
 
 using S = Status;
@@ -460,7 +458,7 @@ void TestStatusOps::testErrorPropagationThroughChain()
 
 void TestStatusOps::testMuxUnknownSelectLine()
 {
-    Mux mux;  // Default 3 inputs: data0, data1, select
+    Element mux{ElementType::Mux};  // Default 3 inputs: data0, data1, select
     Element data0{ElementType::InputVcc}, data1{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(mux); initSrc(data0); initSrc(data1); initSrc(sel);
     mux.connectPredecessor(0, &data0, 0);
@@ -487,7 +485,7 @@ void TestStatusOps::testMuxUnknownSelectLine()
 
 void TestStatusOps::testDemuxUnknownSelectLine()
 {
-    Demux demux;  // Default 2 outputs: out0, out1
+    Element demux{ElementType::Demux};  // Default 2 outputs: out0, out1
     Element data{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(demux); initSrc(data); initSrc(sel);
     demux.connectPredecessor(0, &data, 0);
@@ -515,7 +513,7 @@ void TestStatusOps::testDemuxUnknownSelectLine()
 
 void TestStatusOps::testMuxUnknownDataInput()
 {
-    Mux mux;
+    Element mux{ElementType::Mux};
     Element data0{ElementType::InputVcc}, data1{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(mux); initSrc(data0); initSrc(data1); initSrc(sel);
     mux.connectPredecessor(0, &data0, 0);
@@ -543,7 +541,7 @@ void TestStatusOps::testMuxUnknownDataInput()
 
 void TestStatusOps::testDemuxUnknownDataInput()
 {
-    Demux demux;
+    Element demux{ElementType::Demux};
     Element data{ElementType::InputVcc}, sel{ElementType::InputVcc};
     initElm(demux); initSrc(data); initSrc(sel);
     demux.connectPredecessor(0, &data, 0);
@@ -567,12 +565,12 @@ void TestStatusOps::testDemuxUnknownDataInput()
 void TestStatusOps::testTruthTableUnknownInput()
 {
     // 2-input, 1-output truth table implementing AND
-    TruthTable tt;
+    Element tt{ElementType::TruthTable};
     tt.setInputSize(2);
     tt.setOutputSize(1);
     QBitArray key(256, false);
     key.setBit(3);  // Row 11 (both inputs Active) → output Active
-    tt.setkey(key);
+    tt.setParam(ParamId::Table, key);
     Element in0{ElementType::InputVcc}, in1{ElementType::InputVcc};
     initElm(tt); initSrc(in0); initSrc(in1);
     tt.connectPredecessor(0, &in0, 0);

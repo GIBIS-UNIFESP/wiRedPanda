@@ -38,6 +38,7 @@ private slots:
     void testEachTypeNamesItsKernel();
     void testEachKernelIsComputedByItsLogicOrDrivesItself();
     void testAnInputsSourceLevelComesFromItsParameters();
+    void testInputsThatFollowTheOutputsStayInTheirRange();
 
     // Appearance slots
     void testAnOlderFilesPositionsReadAsTheSlotsTheyNamed_data();

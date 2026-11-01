@@ -19,11 +19,10 @@
 #include <QUndoStack>
 
 #include "App/Core/Application.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -410,7 +409,7 @@ void TestGoldens::testPortCountsAndOrientationPasses()
     Element gate{ElementType::And};
     TestUtils::applyPortCounts(&gate, 3, 1);
     QCOMPARE(gate.inputSize(), 3);
-    Demux demux;
+    Element demux{ElementType::Demux};
     TestUtils::applyPortCounts(&demux, 7, 4);
     QCOMPARE(demux.outputSize(), 4);
     QCOMPARE(demux.inputSize(), 3);
@@ -481,7 +480,7 @@ void TestGoldens::testPixmapIdentity()
     const QString rotated = SnapshotAccess::pixmapIdentity(&flipFlop);
     QVERIFY2(rotated.endsWith(":oriented"), qPrintable(rotated));
 
-    Mux mux;
+    Element mux{ElementType::Mux};
     QCOMPARE(SnapshotAccess::pixmapIdentity(&mux), QString("footprint"));
 }
 

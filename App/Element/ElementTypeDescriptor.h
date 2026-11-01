@@ -122,6 +122,10 @@ struct ElementTypeDescriptor {
     /// Reads the keys an older map holds in place of a parameter's (the buzzer's note name).
     std::function<void(Element &element, const QMap<QString, QVariant> &map)> readOlderKeys{};
 
+    /// Run at the end of every load of an element of the type, its ports and parameters read: throws a Pandaception for
+    /// a state the type cannot hold (a Demux's inputs that disagree with its outputs).
+    std::function<void(const Element &element)> checkLoad{};
+
     /// Applied at the end of every load of the type's parameters, whatever the file held (a switch drives the level it
     /// has, a rotary its selection).
     std::function<void(Element &element)> loaded{};
@@ -143,6 +147,13 @@ struct ElementTypeDescriptor {
     std::function<std::optional<PortAttributes>(const Element &element, int index)> inputAttributes{};
     /// As inputAttributes, for output port \a index.
     std::function<std::optional<PortAttributes>(const Element &element, int index)> outputAttributes{};
+    /// For a type whose inputs follow its outputs (a Demux: its data input and the select lines its outputs need), the
+    /// inputs \a outputs take. Setting the outputs sets the inputs with them, and the inputs are never set alone; its
+    /// checkLoad refuses a file whose counts disagree.
+    int (*inputsForOutputs)(int outputs) = nullptr;
+    /// Whether the body is measured from the port counts (a Mux, a Demux, a truth table), so a layout of the ports
+    /// measures it again.
+    bool bodyFollowsPorts = false;
 
     // --- Appearance configuration ---
 

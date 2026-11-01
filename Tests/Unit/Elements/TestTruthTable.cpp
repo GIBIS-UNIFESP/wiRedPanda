@@ -12,7 +12,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QTest>
 
-#include "App/Element/GraphicElements/TruthTable.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -22,7 +23,7 @@
 
 void TestTruthTable::testConstructorInitialization()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Verify element type
     QCOMPARE(truthTable.elementType(), ElementType::TruthTable);
@@ -48,7 +49,7 @@ void TestTruthTable::testConstructorInitialization()
 
 void TestTruthTable::testInputPortNames()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Verify input ports are named A, B, C, ... up to available ports
     for (int i = 0; i < truthTable.inputSize(); ++i) {
@@ -63,7 +64,7 @@ void TestTruthTable::testInputPortNames()
 
 void TestTruthTable::testOutputPortNames()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Verify output ports are named S0, S1, S2, ... based on index
     for (int i = 0; i < truthTable.outputSize(); ++i) {
@@ -78,7 +79,7 @@ void TestTruthTable::testOutputPortNames()
 
 void TestTruthTable::testPortConfiguration()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     int inputCount = truthTable.inputSize();
     int outputCount = truthTable.outputSize();
@@ -112,10 +113,10 @@ void TestTruthTable::testPortConfiguration()
 
 void TestTruthTable::testKeyInitialization()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Verify key is initialized to a QBitArray
-    const QBitArray &key = truthTable.key();
+    const QBitArray &key = truthTable.param<QBitArray>(ParamId::Table);
     QVERIFY(key.size() > 0);
 
     // Default key should be filled with 0s
@@ -126,7 +127,7 @@ void TestTruthTable::testKeyInitialization()
 
 void TestTruthTable::testSetKey()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Create a test key
     QBitArray testKey(16);
@@ -135,11 +136,11 @@ void TestTruthTable::testSetKey()
     testKey.setBit(15, true);
 
     // Set the key
-    truthTable.setkey(testKey);
+    truthTable.setParam(ParamId::Table, testKey);
 
     // Verify the supplied bits were kept; the key itself is padded back to
     // the 2048-bit class invariant (see testSetKeyEnforcesSizeInvariant).
-    const QBitArray &retrievedKey = truthTable.key();
+    const QBitArray &retrievedKey = truthTable.param<QBitArray>(ParamId::Table);
     QCOMPARE(retrievedKey.size(), 2048);
     QVERIFY(retrievedKey.at(0) == true);
     QVERIFY(retrievedKey.at(5) == true);
@@ -148,59 +149,59 @@ void TestTruthTable::testSetKey()
 
 void TestTruthTable::testSetKeyEnforcesSizeInvariant()
 {
-    // Regression test (F2): updateLogic() indexes the key at 256*output + row
+    // Regression test (F2): the kernel indexes the key at 256*output + row
     // (up to bit 2047) and ToggleTruthTableOutputCommand toggles bits in
     // place, so the key must always hold exactly 2048 bits. A crafted/corrupt
-    // .panda file can carry a shorter (or longer) array — setkey() is the
-    // single mutation point and must restore the invariant, padding with
+    // .panda file can carry a shorter (or longer) array — the parameter's spec
+    // takes every value set and must restore the invariant, padding with
     // zeros and preserving the supplied bits.
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     QBitArray shortKey(16);
     shortKey.setBit(0, true);
     shortKey.setBit(15, true);
-    truthTable.setkey(shortKey);
+    truthTable.setParam(ParamId::Table, shortKey);
 
-    QCOMPARE(truthTable.key().size(), 2048);
-    QVERIFY(truthTable.key().at(0));
-    QVERIFY(truthTable.key().at(15));
+    QCOMPARE(truthTable.param<QBitArray>(ParamId::Table).size(), 2048);
+    QVERIFY(truthTable.param<QBitArray>(ParamId::Table).at(0));
+    QVERIFY(truthTable.param<QBitArray>(ParamId::Table).at(15));
     for (int i = 16; i < 2048; ++i) {
-        QVERIFY(!truthTable.key().at(i));
+        QVERIFY(!truthTable.param<QBitArray>(ParamId::Table).at(i));
     }
 
     QBitArray longKey(4096, true);
-    truthTable.setkey(longKey);
-    QCOMPARE(truthTable.key().size(), 2048);
+    truthTable.setParam(ParamId::Table, longKey);
+    QCOMPARE(truthTable.param<QBitArray>(ParamId::Table).size(), 2048);
 }
 
 void TestTruthTable::testKeyAccess()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
-    // Verify bits set through setkey() persist
-    QBitArray key = truthTable.key();
+    // Verify bits set through the parameter persist
+    QBitArray key = truthTable.param<QBitArray>(ParamId::Table);
     key.setBit(0, true);
     key.setBit(10, true);
-    truthTable.setkey(key);
+    truthTable.setParam(ParamId::Table, key);
 
-    const QBitArray &key2 = truthTable.key();
+    const QBitArray &key2 = truthTable.param<QBitArray>(ParamId::Table);
     QVERIFY(key2.at(0) == true);
     QVERIFY(key2.at(10) == true);
 }
 
 void TestTruthTable::testKeyBitArray()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
-    QBitArray bits = truthTable.key();
+    QBitArray bits = truthTable.param<QBitArray>(ParamId::Table);
 
     // Verify we can work with the bit array
     int bitsToSet = 5;
     for (int i = 0; i < bitsToSet; ++i) {
         bits.setBit(static_cast<qsizetype>(i) * 100, true);
     }
-    truthTable.setkey(bits);
-    const QBitArray &key = truthTable.key();
+    truthTable.setParam(ParamId::Table, bits);
+    const QBitArray &key = truthTable.param<QBitArray>(ParamId::Table);
 
     // Verify bits were set
     for (int i = 0; i < bitsToSet; ++i) {
@@ -218,7 +219,7 @@ void TestTruthTable::testKeyBitArray()
 
 void TestTruthTable::testUpdatePortsProperties()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Call update to refresh port properties
     truthTable.updatePortsProperties();
@@ -239,7 +240,7 @@ void TestTruthTable::testUpdatePortsProperties()
 
 void TestTruthTable::testInputPortPositioning()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Verify input ports have valid positions
     for (int i = 0; i < truthTable.inputSize(); ++i) {
@@ -261,7 +262,7 @@ void TestTruthTable::testInputPortPositioning()
 
 void TestTruthTable::testOutputPortPositioning()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Verify output ports have valid positions
     for (int i = 0; i < truthTable.outputSize(); ++i) {
@@ -287,14 +288,14 @@ void TestTruthTable::testOutputPortPositioning()
 
 void TestTruthTable::testSaveKey()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
 
     // Set a specific key
     QBitArray testKey(256);
     testKey.setBit(0, true);
     testKey.setBit(100, true);
     testKey.setBit(255, true);
-    truthTable.setkey(testKey);
+    truthTable.setParam(ParamId::Table, testKey);
 
     // Save to stream
     QByteArray data;
@@ -309,19 +310,19 @@ void TestTruthTable::testSaveKey()
 void TestTruthTable::testLoadKeyVersion42()
 {
     // Create and save truth table with key
-    TruthTable truthTable1;
+    Element truthTable1{ElementType::TruthTable};
 
     QBitArray testKey(256);
     testKey.setBit(50, true);
     testKey.setBit(150, true);
-    truthTable1.setkey(testKey);
+    truthTable1.setParam(ParamId::Table, testKey);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     truthTable1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load into new truth table with version 4.2
-    TruthTable truthTable2;
+    Element truthTable2{ElementType::TruthTable};
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -329,7 +330,7 @@ void TestTruthTable::testLoadKeyVersion42()
     truthTable2.load(loadStream, context);
 
     // Verify key was loaded correctly
-    const QBitArray &loadedKey = truthTable2.key();
+    const QBitArray &loadedKey = truthTable2.param<QBitArray>(ParamId::Table);
     QVERIFY(loadedKey.at(50) == true);
     QVERIFY(loadedKey.at(150) == true);
 }
@@ -337,18 +338,18 @@ void TestTruthTable::testLoadKeyVersion42()
 void TestTruthTable::testLoadKeyOldVersion()
 {
     // Test loading with version < 4.2 (should skip key loading)
-    TruthTable truthTable1;
+    Element truthTable1{ElementType::TruthTable};
 
     QBitArray testKey(256);
     testKey.setBit(75, true);
-    truthTable1.setkey(testKey);
+    truthTable1.setParam(ParamId::Table, testKey);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     truthTable1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load with old version (< 4.2)
-    TruthTable truthTable2;
+    Element truthTable2{ElementType::TruthTable};
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -358,7 +359,7 @@ void TestTruthTable::testLoadKeyOldVersion()
 
     // Key should remain at default (all zeros) for old versions
     // because load() returns early when version < 4.2
-    QCOMPARE(truthTable2.key().count(true), 0);
+    QCOMPARE(truthTable2.param<QBitArray>(ParamId::Table).count(true), 0);
 }
 
 // ============================================================================
@@ -369,7 +370,7 @@ void TestTruthTable::testRotationKeepsTheFootprint()
 {
     // The body is the footprint, which grows with the port count, and turns about its centre. Rotating must not
     // measure it again as the fixed 64×64 picture, or the body is drawn at the wrong size.
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
     truthTable.setInputSize(8);
 
     // Inputs sit at x=0 and outputs at x=64 at any port count, so the body stays symmetric
@@ -397,7 +398,7 @@ void TestTruthTable::testRotatedIconStaysUpright()
     // fractional footprint centre maps back onto the pixel grid — a 90° mapping lands on
     // half-pixels and antialiasing legitimately differs.)
     QGraphicsScene scene;
-    auto *truthTable = new TruthTable(); // the scene takes ownership
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable); // the scene takes ownership
     scene.addItem(truthTable);
 
     QPoint uprightCenter;
@@ -416,7 +417,7 @@ void TestTruthTable::testRotatedIconStaysUpright()
 void TestTruthTable::testPaintingSelected()
 {
     QGraphicsScene scene;
-    auto *truthTable = new TruthTable();
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable);
     scene.addItem(truthTable);
     truthTable->setSelected(true);
 
@@ -434,7 +435,7 @@ void TestTruthTable::testMouseDoubleClickRequestsEditor()
 {
     // The scene opens a truth table's editor on a double-click of it, and edits no label
     Scene scene;
-    auto *truthTable = new TruthTable;
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable);
     scene.addItem(truthTable);
     QSignalSpy spy(&scene, &Scene::openTruthTableRequested);
 
@@ -451,7 +452,7 @@ void TestTruthTable::testMouseDoubleClickRequestsEditor()
 
 void TestTruthTable::testDisconnectedInputsAreUnknown()
 {
-    TruthTable truthTable;
+    Element truthTable{ElementType::TruthTable};
     TestUtils::initElm(truthTable);
     truthTable.updateLogic();
 
@@ -466,7 +467,7 @@ void TestTruthTable::testBigPivotsAtBoundingRectCenter()
     // footprint centre, not the (0,0)-anchored raw pixmap centre that only happens to
     // coincide with it for small instances.
     QGraphicsScene scene;
-    auto *truthTable = new TruthTable(); // the scene takes ownership
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable); // the scene takes ownership
     scene.addItem(truthTable);
     truthTable->setInputSize(8); // max input size -> tallest body
 
@@ -478,7 +479,7 @@ void TestTruthTable::testBigPivotsAtBoundingRectCenter()
 void TestTruthTable::testBigRotationDoesNotDriftInScene()
 {
     QGraphicsScene scene;
-    auto *truthTable = new TruthTable();
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable);
     scene.addItem(truthTable);
     truthTable->setInputSize(8);
 
@@ -493,7 +494,7 @@ void TestTruthTable::testBigRotationDoesNotDriftInScene()
 void TestTruthTable::testBigFlipDoesNotDriftInScene()
 {
     QGraphicsScene scene;
-    auto *truthTable = new TruthTable();
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable);
     scene.addItem(truthTable);
     truthTable->setInputSize(8);
 

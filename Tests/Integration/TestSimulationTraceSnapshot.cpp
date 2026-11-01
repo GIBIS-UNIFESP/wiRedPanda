@@ -23,7 +23,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -194,13 +193,13 @@ QStringList elementRun(const ElementType type, const int inputs, const int outpu
                              .arg(ElementFactory::typeToText(type), QString::number(element->inputSize()),
                                   QString::number(element->outputSize()), mode);
 
-    if (auto *table = qobject_cast<TruthTable *>(element)) {
+    if (element->elementType() == ElementType::TruthTable) {
         Lcg bits(seedOf(name + " key"));
-        QBitArray key(table->key().size());
+        QBitArray key(element->param<QBitArray>(ParamId::Table).size());
         for (qsizetype bit = 0; bit < key.size(); ++bit) {
             key.setBit(bit, bits.nextBit());
         }
-        table->setkey(key);
+        element->setParam(ParamId::Table, key);
     }
     element->setPos(400, 0);
     scene->addItem(element);

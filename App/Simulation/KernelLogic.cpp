@@ -5,6 +5,8 @@
 
 #include <utility>
 
+#include <QBitArray>
+
 #include "App/Core/StatusOps.h"
 #include "App/Element/Element.h"
 
@@ -233,6 +235,88 @@ void srLatch(Element &element)
     element.setOutputValue(1, q1);
 }
 
+// The routing kernels read their select lines as a number, input 0 of them the least significant bit
+// (Element::decodeSelectValue()). Any select line Unknown or Error makes the routing indeterminate, and so does a value
+// that addresses no data input or output, possible whenever their count is not a power of two: what is routed then is
+// Unknown, not a select line read back as data or an index past the ports.
+
+void mux(Element &element)
+{
+    if (!element.simUpdateInputsAllowUnknown()) {
+        return;
+    }
+    const int selectLines = KernelLogic::muxSelectLines(element.inputSize());
+    const int dataInputs = element.inputSize() - selectLines;
+    for (int i = 0; i < selectLines; ++i) {
+        const Status select = element.simInputs().at(dataInputs + i);
+        if ((select == Status::Unknown) || (select == Status::Error)) {
+            element.setOutputValue(select);
+            return;
+        }
+    }
+
+    const int selected = element.decodeSelectValue(dataInputs, selectLines);
+    element.setOutputValue((selected < dataInputs) ? element.simInputs().at(selected) : Status::Unknown);
+}
+
+void demux(Element &element)
+{
+    if (!element.simUpdateInputsAllowUnknown()) {
+        return;
+    }
+    const int outputs = element.outputSize();
+    const int selectLines = KernelLogic::demuxSelectLines(outputs);
+    for (int i = 0; i < selectLines; ++i) {
+        const Status select = element.simInputs().at(1 + i);
+        if ((select == Status::Unknown) || (select == Status::Error)) {
+            for (int output = 0; output < outputs; ++output) {
+                element.setOutputValue(output, select);
+            }
+            return;
+        }
+    }
+
+    const int selected = element.decodeSelectValue(1, selectLines);
+    const Status data = element.simInputs().at(0);
+    for (int output = 0; output < outputs; ++output) {
+        if (selected >= outputs) {
+            element.setOutputValue(output, Status::Unknown);
+        } else {
+            element.setOutputValue(output, (output == selected) ? data : Status::Inactive);
+        }
+    }
+}
+
+void truthTable(Element &element)
+{
+    if (!element.simUpdateInputsAllowUnknown()) {
+        return;
+    }
+
+    // Any input Unknown or Error leaves the row undetermined
+    for (const Status input : element.simInputs()) {
+        if ((input == Status::Unknown) || (input == Status::Error)) {
+            for (int output = 0; output < element.outputSize(); ++output) {
+                element.setOutputValue(output, input);
+            }
+            return;
+        }
+    }
+
+    // The row is the inputs read MSB-first (input 0 the most significant bit). The table holds a full column of rows,
+    // one per pattern of the most inputs the type takes (its descriptor's, as the table's size is), for each output in
+    // turn
+    quint32 row = 0;
+    for (const Status input : element.simInputs()) {
+        row = (row << 1) | ((input == Status::Active) ? 1U : 0U);
+    }
+    const qsizetype rows = qsizetype{1} << element.descriptor().maxInputSize;
+    const QBitArray &table = element.param<QBitArray>(ParamId::Table);
+    for (int output = 0; output < element.outputSize(); ++output) {
+        element.setOutputValue(output, table.at((rows * output) + static_cast<qsizetype>(row)));
+    }
+}
+
 } // namespace KernelLogicDetail
 
 KernelLogic::Logic KernelLogic::of(const KernelKind kind)
@@ -253,11 +337,12 @@ KernelLogic::Logic KernelLogic::of(const KernelKind kind)
     case KernelKind::JKFlipFlop: return &KernelLogicDetail::jkFlipFlop;
     case KernelKind::SRFlipFlop: return &KernelLogicDetail::srFlipFlop;
 
-    // Computed by their families' subclasses until those go (P3.23)
+    case KernelKind::Mux:        return &KernelLogicDetail::mux;
+    case KernelKind::Demux:      return &KernelLogicDetail::demux;
+    case KernelKind::TruthTable: return &KernelLogicDetail::truthTable;
+
+    // Computed by its family's subclass until that goes (P3.23)
     case KernelKind::Node:
-    case KernelKind::Mux:
-    case KernelKind::Demux:
-    case KernelKind::TruthTable:
         return nullptr;
 
     // Not computed by logic: the sources drive their outputs themselves, and an IC is computed by its own subclass
@@ -274,4 +359,22 @@ KernelLogic::Logic KernelLogic::of(const KernelKind kind)
 bool KernelLogic::isSource(const KernelKind kind)
 {
     return (kind == KernelKind::Constant) || (kind == KernelKind::Input) || (kind == KernelKind::Clock);
+}
+
+int KernelLogic::muxSelectLines(const int inputs)
+{
+    int lines = 1;
+    while ((1 << lines) < inputs - lines) {
+        ++lines;
+    }
+    return lines;
+}
+
+int KernelLogic::demuxSelectLines(const int outputs)
+{
+    int lines = 1;
+    while ((1 << lines) < outputs) {
+        ++lines;
+    }
+    return lines;
 }

@@ -6,15 +6,16 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestMux::testMuxInputSize()
 {
     WorkSpace workspace;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     workspace.scene()->addItem(mux);
     QVERIFY(mux->inputSize() > 0);
 }
@@ -30,7 +31,7 @@ void TestMux::testMuxSelection()
     auto *data0 = new InputSwitch;
     auto *data1 = new InputSwitch;
     auto *sel = new InputSwitch;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     builder.add(data0, data1, sel, mux);
     builder.connect(data0, 0, mux, 0);
     builder.connect(data1, 0, mux, 1);
@@ -53,7 +54,7 @@ void TestMux::testMuxSelection()
 void TestMux::testMuxPainting()
 {
     WorkSpace workspace;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     workspace.scene()->addItem(mux);
 
     QPixmap pixmap(128, 128);
@@ -69,7 +70,7 @@ void TestMux::testMuxPainting()
 void TestMux::testMuxPaintingSelected()
 {
     WorkSpace workspace;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     workspace.scene()->addItem(mux);
     mux->setSelected(true);
 
@@ -125,7 +126,7 @@ void TestMux::testMuxOutOfRangeSelect()
         builder.add(sw);
     }
 
-    Mux mux;
+    Element mux{ElementType::Mux};
     mux.setInputSize(totalInputs);
     builder.add(&mux);
 
@@ -158,7 +159,7 @@ void TestMux::testMuxBigPivotsAtBoundingRectCenter()
     // footprint centre, not the (0,0)-anchored raw pixmap centre that only happens to
     // coincide with it for small instances.
     WorkSpace workspace;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     workspace.scene()->addItem(mux);
     mux->setInputSize(11); // max input size -> tallest body
 
@@ -173,7 +174,7 @@ void TestMux::testMuxBigPivotsAtBoundingRectCenter()
 void TestMux::testMuxBigRotationDoesNotDriftInScene()
 {
     WorkSpace workspace;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     workspace.scene()->addItem(mux);
     mux->setInputSize(11);
 
@@ -188,7 +189,7 @@ void TestMux::testMuxBigRotationDoesNotDriftInScene()
 void TestMux::testMuxBigFlipDoesNotDriftInScene()
 {
     WorkSpace workspace;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     workspace.scene()->addItem(mux);
     mux->setInputSize(11);
 

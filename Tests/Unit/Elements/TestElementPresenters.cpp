@@ -27,7 +27,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Text.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/Presentation/ElementPresenter.h"
@@ -229,7 +228,7 @@ void TestElementPresenters::testEachTypePlacesItsLabel()
     QCOMPARE(shapeOf(ElementType::AudioBox).anchor, QPointF(64, 34));
 
     // Below the footprint of a truth table, and of an IC, whose name turns to stand along the chip
-    TruthTable table;
+    Element table{ElementType::TruthTable};
     QCOMPARE(table.labelShape().anchor, QPointF(30, table.renderBodyBounds().bottom() + 5));
     QCOMPARE(table.labelShape().rotation, 0);
     IC ic;

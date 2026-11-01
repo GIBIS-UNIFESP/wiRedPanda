@@ -55,7 +55,6 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Presentation/ElementPresenter.h"
@@ -251,15 +250,15 @@ void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QS
                 break;
             }
             case 10: { // ToggleTruthTableOutputCommand, on a truth table added first when the circuit holds none
-                TruthTable *tt = nullptr;
+                Element *tt = nullptr;
                 for (auto *e : elems) {
                     if (e->elementType() == ElementType::TruthTable) {
-                        tt = static_cast<TruthTable *>(e);
+                        tt = e;
                         break;
                     }
                 }
                 if (!tt) {
-                    tt = static_cast<TruthTable *>(ElementFactory::buildElement(ElementType::TruthTable));
+                    tt = ElementFactory::buildElement(ElementType::TruthTable);
                     try {
                         scene->receiveCommand(new AddItemsCommand({tt}, scene));
                     } catch (...) {
@@ -268,7 +267,8 @@ void applyRandomCommands(WorkSpace &workspace, FuzzedDataProvider &fdp, const QS
                     }
                 }
                 // Inside the key, as both callers bound it; one outside is a broken invariant, an assertion
-                const int pos = fdp.ConsumeIntegralInRange<int>(0, static_cast<int>(tt->key().size()) - 1);
+                const int keyBits = static_cast<int>(tt->param<QBitArray>(ParamId::Table).size());
+                const int pos = fdp.ConsumeIntegralInRange<int>(0, keyBits - 1);
                 scene->receiveCommand(new ToggleTruthTableOutputCommand(tt, pos, scene));
                 break;
             }

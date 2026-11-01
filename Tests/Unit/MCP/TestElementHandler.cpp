@@ -28,7 +28,6 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -1486,7 +1485,7 @@ void TestElementHandler::testHandleToggleTruthTableOutputRejectsOutOfRangePositi
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "TruthTable");
-    auto *truthTable = dynamic_cast<TruthTable *>(elementById(window, id));
+    Element *truthTable = elementById(window, id);
     const int maxPosition = 256 * truthTable->outputSize();
 
     const QJsonObject response = handler.handleCommand("toggle_truth_table_output", {{"element_id", id}, {"position", maxPosition}}, 1);
@@ -1499,12 +1498,12 @@ void TestElementHandler::testHandleToggleTruthTableOutputTogglesRealCell()
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "TruthTable");
-    auto *truthTable = dynamic_cast<TruthTable *>(elementById(window, id));
+    const Element *truthTable = elementById(window, id);
 
-    const bool before = truthTable->key().testBit(0);
+    const bool before = truthTable->param<QBitArray>(ParamId::Table).testBit(0);
     const QJsonObject response = handler.handleCommand("toggle_truth_table_output", {{"element_id", id}, {"position", 0}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(truthTable->key().testBit(0), !before);
+    QCOMPARE(truthTable->param<QBitArray>(ParamId::Table).testBit(0), !before);
 }
 
 // ============================================================================

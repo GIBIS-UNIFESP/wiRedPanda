@@ -15,6 +15,7 @@
 #include <QTemporaryDir>
 
 #include "App/Core/Enums.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
@@ -26,7 +27,6 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -698,7 +698,7 @@ void TestCommands::testChangeOutputSizeCommand()
     auto *undoStack = scene->undoStack();
 
     // Add a TruthTable element (supports 1-8 outputs)
-    auto *truthTable = new TruthTable();
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable);
     QList<QGraphicsItem *> items{truthTable};
     scene->receiveCommand(new AddItemsCommand(items, scene));
 
@@ -1149,35 +1149,35 @@ void TestCommands::testToggleTruthTableOutputCommandBounds()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *truthTable = new TruthTable();
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{truthTable}, scene));
 
     // A valid position toggles normally (and undo toggles it back).
     scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, 5, scene));
-    QVERIFY(truthTable->key().at(5));
+    QVERIFY(truthTable->param<QBitArray>(ParamId::Table).at(5));
     scene->undoStack()->undo();
-    QVERIFY(!truthTable->key().at(5));
+    QVERIFY(!truthTable->param<QBitArray>(ParamId::Table).at(5));
 
     // The top edge of the valid range (2047, the last of 2048 bits) must also succeed,
     // not just an arbitrary interior position.
     scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, 2047, scene));
-    QVERIFY(truthTable->key().at(2047));
+    QVERIFY(truthTable->param<QBitArray>(ParamId::Table).at(2047));
     scene->undoStack()->undo();
-    QVERIFY(!truthTable->key().at(2047));
+    QVERIFY(!truthTable->param<QBitArray>(ParamId::Table).at(2047));
 
 #ifdef QT_NO_DEBUG
     // A position outside the key is a broken invariant (both callers bound it): the command changes nothing, and the
     // stack drops it
     for (const int position : {2048, 99999, -1}) {
         const int index = scene->undoStack()->index();
-        const auto key = truthTable->key();
+        const auto key = truthTable->param<QBitArray>(ParamId::Table);
         try {
             scene->receiveCommand(new ToggleTruthTableOutputCommand(truthTable, position, scene));
         } catch (const std::exception &e) {
             QFAIL(qPrintable(QString("position %1 threw: %2").arg(position).arg(e.what())));
         }
         QCOMPARE(scene->undoStack()->index(), index);
-        QCOMPARE(truthTable->key(), key);
+        QCOMPARE(truthTable->param<QBitArray>(ParamId::Table), key);
     }
 
     // So is an element that is no truth table (both callers check its type): the stack drops the command

@@ -11,8 +11,8 @@
 #include <QStatusBar>
 #include <QTableWidget>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Scene/ICRegistry.h"
@@ -124,7 +124,7 @@ void TestSceneUiBinder::testBindConnectsOpenTruthTableRequestedToElementEditor()
     WorkSpace tab;
     f.binder->bind(&tab);
 
-    auto *tt = static_cast<TruthTable *>(ElementFactory::buildElement(ElementType::TruthTable));
+    auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     tab.scene()->addItem(tt);
     tt->setSelected(true);
     QCoreApplication::processEvents(); // let ElementEditor::selectionChanged() pick it up

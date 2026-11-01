@@ -704,6 +704,38 @@ void TestElementFactory::testAnInputsSourceLevelComesFromItsParameters()
     }
 }
 
+void TestElementFactory::testInputsThatFollowTheOutputsStayInTheirRange()
+{
+    // A type whose inputs follow its outputs takes them from its outputs alone, so every output count it allows gives
+    // an input count it allows, and its minimums agree, which an element is built with
+    int following = 0;
+    for (const auto type : buildableElementTypes()) {
+        const ElementTypeDescriptor &descriptor = ElementTypeDescriptor::of(type);
+        if (!descriptor.inputsForOutputs) {
+            continue;
+        }
+        ++following;
+        const QString name = ElementFactory::typeToText(type);
+        const auto minInputs = static_cast<int>(descriptor.minInputSize);
+        const auto maxInputs = static_cast<int>(descriptor.maxInputSize);
+        const auto minOutputs = static_cast<int>(descriptor.minOutputSize);
+        const auto maxOutputs = static_cast<int>(descriptor.maxOutputSize);
+        QVERIFY2(descriptor.inputsForOutputs(minOutputs) == minInputs, qPrintable(name));
+        for (int outputs = minOutputs; outputs <= maxOutputs; ++outputs) {
+            const int inputs = descriptor.inputsForOutputs(outputs);
+            const QString where = QString("%1 at %2").arg(name).arg(outputs);
+            QVERIFY2((inputs >= minInputs) && (inputs <= maxInputs), qPrintable(where));
+        }
+
+        // An element follows the rule from its construction on
+        const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
+        QCOMPARE(element->inputSize(), descriptor.inputsForOutputs(element->outputSize()));
+        element->setOutputSize(maxOutputs);
+        QCOMPARE(element->inputSize(), descriptor.inputsForOutputs(maxOutputs));
+    }
+    QCOMPARE(following, 1); // the Demux
+}
+
 void TestElementFactory::testDescriptorForUnknownTypeIsEmpty()
 {
     // A type with no descriptor is a broken invariant: an assertion, and in a release build an empty descriptor, no

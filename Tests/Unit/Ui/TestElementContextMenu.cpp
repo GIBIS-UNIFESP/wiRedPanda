@@ -9,12 +9,12 @@
 #include <QMenu>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
@@ -515,7 +515,7 @@ void TestElementContextMenu::testMorphSubmenuGroupWithNoMorphTargetsRemovesSubme
     // left as an empty submenu.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *mux = new Mux();
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     scene->receiveCommand(new AddItemsCommand({mux}, scene));
     mux->setSelected(true);
 

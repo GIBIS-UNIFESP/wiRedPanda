@@ -3,13 +3,12 @@
 
 #include "Tests/Unit/Elements/TestMultiplexing.h"
 
-#include "App/Element/GraphicElements/Demux.h"
-#include "App/Element/GraphicElements/Mux.h"
+#include "App/Element/Element.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestMultiplexing::testMux()
 {
-    Mux elm;
+    Element elm{ElementType::Mux};
     QCOMPARE(elm.inputSize(), 3);      // Starts at minimum (1 data + 2 select for 2:1)
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 3);
@@ -19,7 +18,7 @@ void TestMultiplexing::testMux()
 
 void TestMultiplexing::testDemux()
 {
-    Demux elm;
+    Element elm{ElementType::Demux};
     QCOMPARE(elm.inputSize(), 2);      // Starts at minimum (1 data + 1 select)
     QCOMPARE(elm.outputSize(), 2);     // Starts at minimum (2 outputs for 1-to-2)
     QCOMPARE(elm.minInputSize(), 2);
@@ -35,7 +34,7 @@ void TestMultiplexing::testDemux()
 
 void TestMultiplexing::testMuxVariableSizes()
 {
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Test default minimum size
     QCOMPARE(mux.inputSize(), 3);
@@ -86,7 +85,7 @@ void TestMultiplexing::testMuxVariableSizes()
 
 void TestMultiplexing::testMuxPortNaming()
 {
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Test port names at minimum size (3 inputs: 2 data + 1 select)
     QCOMPARE(mux.inputPort(0)->name(), QString("In0"));
@@ -114,7 +113,7 @@ void TestMultiplexing::testMuxPortNaming()
 
 void TestMultiplexing::testMuxEdgeCases()
 {
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Test output size is always 1 and cannot be changed
     QCOMPARE(mux.outputSize(), 1);
@@ -165,7 +164,7 @@ void TestMultiplexing::testMuxEdgeCases()
 
 void TestMultiplexing::testMuxBoundaryValues()
 {
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Test at minimum size boundary
     QCOMPARE(mux.inputSize(), mux.minInputSize());
@@ -208,7 +207,7 @@ void TestMultiplexing::testMuxBoundaryValues()
 
 void TestMultiplexing::testDemuxVariableSizes()
 {
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Test default minimum size (1-to-2)
     QCOMPARE(demux.inputSize(), 2);
@@ -262,7 +261,7 @@ void TestMultiplexing::testDemuxVariableSizes()
 
 void TestMultiplexing::testDemuxPortNaming()
 {
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Test port names at minimum size (2 inputs, 2 outputs)
     QCOMPARE(demux.inputPort(0)->name(), QString("In"));
@@ -302,7 +301,7 @@ void TestMultiplexing::testDemuxPortNaming()
 
 void TestMultiplexing::testDemuxEdgeCases()
 {
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Test single data input constraint
     QCOMPARE(demux.inputSize(), 2);  // 1 data + 1 select minimum
@@ -368,7 +367,7 @@ void TestMultiplexing::testDemuxEdgeCases()
 
 void TestMultiplexing::testDemuxBoundaryValues()
 {
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Test at minimum size boundary
     QCOMPARE(demux.inputSize(), demux.minInputSize());

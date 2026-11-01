@@ -12,18 +12,16 @@
 #include <QTemporaryDir>
 
 #include "App/CodeGen/ArduinoCodeGen.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/Goldens.h"
@@ -113,7 +111,7 @@ void TestArduinoCodeGenUnit::testMuxCircuit()
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *swSel = new InputSwitch;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     auto *led = new Led;
 
     builder.add(sw1, sw2, swSel, mux, led);
@@ -144,7 +142,7 @@ void TestArduinoCodeGenUnit::testDemuxCircuit()
 
     auto *swData = new InputSwitch;
     auto *swSel = new InputSwitch;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     auto *led1 = new Led;
     auto *led2 = new Led;
 
@@ -196,7 +194,7 @@ void TestArduinoCodeGenUnit::testTruthTableMultiOutput()
 
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
-    auto *tt = new TruthTable;
+    auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     tt->setOutputSize(2);
     auto *led0 = new Led;
     auto *led1 = new Led;
@@ -208,11 +206,11 @@ void TestArduinoCodeGenUnit::testTruthTableMultiOutput()
     builder.connect(tt, 1, led1, 0);
 
     // Output 0 = AND (row 3 only), output 1 = OR (rows 1..3).
-    QBitArray bits = tt->key();
+    QBitArray bits = tt->param<QBitArray>(ParamId::Table);
     for (const qsizetype bit : {3, 256 + 1, 256 + 2, 256 + 3}) {
         bits.setBit(bit, true);
     }
-    tt->setkey(bits);
+    tt->setParam(ParamId::Table, bits);
 
     QTemporaryDir dir;
     QString path = dir.path() + "/tt_multi.ino";
@@ -399,17 +397,17 @@ void TestArduinoCodeGenUnit::testTruthTableInputTiedToVccResolvesToHigh()
 
     auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
     auto *sw = new InputSwitch;
-    auto *tt = new TruthTable;
+    auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     auto *led = new Led;
 
     builder.add(vcc, sw, tt, led);
     builder.connect(vcc, 0, tt, 0); // always-HIGH input
     builder.connect(sw, 0, tt, 1);
     builder.connect(tt, 0, led, 0);
-    QBitArray bits = tt->key();
+    QBitArray bits = tt->param<QBitArray>(ParamId::Table);
     bits.setBit(2, true);
     bits.setBit(3, true);
-    tt->setkey(bits);
+    tt->setParam(ParamId::Table, bits);
 
     QTemporaryDir dir;
     const QString path = dir.path() + "/tt_vcc_input.ino";
@@ -465,7 +463,7 @@ void TestArduinoCodeGenUnit::testDemuxWithFourOutputsUsesTwoSelectLines()
     auto *swData = new InputSwitch;
     auto *swSel0 = new InputSwitch;
     auto *swSel1 = new InputSwitch;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     demux->setOutputSize(4);
     auto *led0 = new Led;
     auto *led1 = new Led;

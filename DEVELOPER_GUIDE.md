@@ -444,12 +444,11 @@ QGraphicsObject
         │     ├── InputRotary     (multi-position rotary switch)
         │     └── Clock           (frequency-driven square wave)
         ├── Led, Buzzer, Display  (output elements)
-        ├── Mux, Demux            (multiplexing)
         ├── IC                    (sub-circuit / integrated circuit)
         └── Node, Text            (structural/annotation)
 ```
 
-The gates, the flip-flops and the latches, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a gate, a flip-flop or a latch, `KernelLogic` computes.
+The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for all but a constant and Line, `KernelLogic` computes.
 
 ### Element: The Base Class
 

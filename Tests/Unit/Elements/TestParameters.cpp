@@ -14,6 +14,7 @@
 #include <QTest>
 
 #include "App/Core/Common.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
@@ -27,7 +28,6 @@
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/Parameters.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Versions.h"
@@ -557,17 +557,17 @@ void TestParameters::testATruthTablesBitsAreAlwaysAWholeTable()
 {
     // Every table holds 2048 bits, 256 rows for each of 8 outputs: a shorter one is padded with zeros, a longer one
     // truncated, the bits given kept
-    TruthTable table;
+    Element table{ElementType::TruthTable};
     QBitArray bits(16);
     bits.setBit(0, true);
     bits.setBit(15, true);
     QVERIFY(table.setParam(ParamId::Table, bits));
-    QCOMPARE(table.key().size(), 2048);
-    QCOMPARE(table.key().count(true), 2);
-    QVERIFY(table.key().at(0) && table.key().at(15));
+    QCOMPARE(table.param<QBitArray>(ParamId::Table).size(), 2048);
+    QCOMPARE(table.param<QBitArray>(ParamId::Table).count(true), 2);
+    QVERIFY(table.param<QBitArray>(ParamId::Table).at(0) && table.param<QBitArray>(ParamId::Table).at(15));
 
-    table.setkey(QBitArray(4096, true));
-    QCOMPARE(table.key(), QBitArray(2048, true));
+    table.setParam(ParamId::Table, QBitArray(4096, true));
+    QCOMPARE(table.param<QBitArray>(ParamId::Table), QBitArray(2048, true));
 
     // The same table again is no change
     QVERIFY(!table.setParam(ParamId::Table, QBitArray(2048, true)));
@@ -586,7 +586,7 @@ void TestParameters::testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey()
     clock.setFrequency(4.0);
     QCOMPARE(savedMap(clock, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{{"frequency", 4.0}}));
 
-    TruthTable table;
+    Element table{ElementType::TruthTable};
     QCOMPARE(savedMap(table, SerializationPurpose::PortableFile).keys(), QStringList{"key"});
 
     AudioBox box;

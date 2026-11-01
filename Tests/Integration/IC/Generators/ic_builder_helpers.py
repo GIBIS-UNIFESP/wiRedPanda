@@ -197,7 +197,7 @@ class RegisterFileBuilder(ICBuilderBase):
         """Select among `sources` (element ids, each read via its default output
         port) using `addr_lines` (address-bit element ids, LSB-first) via a tree
         of raw Muxes, each capped at 8 data inputs (Mux.maxInputSize=11 total
-        ports, and calculateSelectLines(11)==3 select lines -> 8 data lines is
+        ports, and KernelLogic::muxSelectLines(11)==3 select lines -> 8 data lines is
         the largest single Mux stage that stays within that hard cap). Returns
         (final_mux_element_id, total_vertical_span) -- the span is level 0's
         real rendered row height (queried via create_element_with_size/

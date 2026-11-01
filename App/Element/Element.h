@@ -144,6 +144,9 @@ public:
     /// Returns the type identifier for this element.
     ElementType elementType() const;
 
+    /// Returns the descriptor of the element's type.
+    const ElementTypeDescriptor &descriptor() const { return m_descriptor; }
+
     // --- Port Access ---
 
     /// Returns the input port at \a index (default 0).
@@ -599,11 +602,15 @@ public:
 
     // --- Setters (Port & Logic Configuration) ---
 
-    /// Adjusts the number of input ports to \a size, adding or removing ports as needed.
-    virtual void setInputSize(const int size);
+    /// Adjusts the number of input ports to \a size, adding or removing ports as needed; a size out of the type's range
+    /// changes nothing, and so does any size for a type whose inputs follow its outputs
+    /// (ElementTypeDescriptor::inputsForOutputs).
+    void setInputSize(const int size);
 
-    /// Adjusts the number of output ports to \a size, adding or removing ports as needed.
-    virtual void setOutputSize(const int size);
+    /// Adjusts the number of output ports to \a size, adding or removing ports as needed, and the inputs with them for
+    /// a type whose inputs follow its outputs, as one change of the ports; a size out of the type's range changes
+    /// nothing.
+    void setOutputSize(const int size);
 
     /// Replaces the input port vector with \a inputs.
     void setInputs(const QVector<InputPort *> &inputs);

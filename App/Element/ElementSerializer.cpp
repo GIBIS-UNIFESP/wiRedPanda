@@ -96,6 +96,11 @@ void Element::loadState(QDataStream &stream, SerializationContext &context)
 {
     ElementSerializer::load(*this, stream, context);
     ElementSerializer::loadParameters(*this, stream, context);
+
+    // The type refuses a state it cannot hold, which only a file can give it
+    if (m_descriptor.checkLoad) {
+        m_descriptor.checkLoad(*this);
+    }
 }
 
 // ========== save / load ==========

@@ -19,10 +19,8 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
-#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
@@ -130,28 +128,28 @@ using TestElementSerializerHelpers::writePicture;
 void TestElementSerializer::testLoadRefusesPortCountsAboveTheTypeMaximum()
 {
     // A truth table's key holds exactly its maximum rows and columns, so one port more reads past it when simulated
-    TruthTable atMaximum;
+    Element atMaximum{ElementType::TruthTable};
     QVERIFY(loadsWithPorts(atMaximum, atMaximum.maxInputSize(), atMaximum.maxOutputSize()));
     QCOMPARE(atMaximum.inputSize(), 8);
     QCOMPARE(atMaximum.outputSize(), 8);
 
-    TruthTable oneInputMore;
+    Element oneInputMore{ElementType::TruthTable};
     QVERIFY(!loadsWithPorts(oneInputMore, oneInputMore.maxInputSize() + 1, oneInputMore.maxOutputSize()));
-    TruthTable oneOutputMore;
+    Element oneOutputMore{ElementType::TruthTable};
     QVERIFY(!loadsWithPorts(oneOutputMore, oneOutputMore.maxInputSize(), oneOutputMore.maxOutputSize() + 1));
 }
 
 void TestElementSerializer::testLoadRefusesDemuxInputsItsOutputsDoNotNeed()
 {
     // A Demux has its data input and the select lines its outputs need: 2 inputs for 2 outputs, 3 for 4, 4 for 8
-    Demux eightOutputs;
+    Element eightOutputs{ElementType::Demux};
     QVERIFY(loadsWithPorts(eightOutputs, 4, 8));
-    Demux fourOutputs;
+    Element fourOutputs{ElementType::Demux};
     QVERIFY(loadsWithPorts(fourOutputs, 3, 4));
 
-    Demux missingSelectLines;
+    Element missingSelectLines{ElementType::Demux};
     QVERIFY(!loadsWithPorts(missingSelectLines, 2, 8));
-    Demux surplusInputs;
+    Element surplusInputs{ElementType::Demux};
     QVERIFY(!loadsWithPorts(surplusInputs, 4, 2));
 }
 

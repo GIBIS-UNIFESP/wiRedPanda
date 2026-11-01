@@ -1,15 +1,14 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Demux.h"
-
-#include <cmath>
+#include <algorithm>
 
 #include "App/Core/Common.h"
 #include "App/Core/Constants.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
-#include "App/Wiring/Port.h"
+#include "App/Simulation/KernelLogic.h"
 
 template<>
 struct ElementInfo<ElementType::Demux> {
@@ -23,6 +22,16 @@ struct ElementInfo<ElementType::Demux> {
     };
     static_assert(validate(constraints));
 
+    /// The body's height for \a element's outputs, a multiple of 16 of at least 64: tall enough to fit the output ports
+    /// with padding.
+    static int bodyHeight(const Element &element)
+    {
+        const int step = Constants::gridSize / 2; // 8
+        const int outputPortsSpan = (element.outputSize() - 1) * step * 2;
+        const int height = (std::max)(64, outputPortsSpan + step * 6);
+        return ((height + 15) / 16) * 16;
+    }
+
     static ElementTypeDescriptor describe()
     {
         auto descriptor = descriptorFromConstraints(constraints);
@@ -32,155 +41,54 @@ struct ElementInfo<ElementType::Demux> {
         descriptor.translatedName = QT_TRANSLATE_NOOP("Demux", "Demux");
         descriptor.trContext = "Demux";
         descriptor.appearanceSlots = {{"body", ":/Components/Logic/demux.svg"}};
+        descriptor.inputAttributes = [](const Element &element, const int index) -> std::optional<PortAttributes> {
+            const int step = Constants::gridSize / 2; // 8
+            const int height = bodyHeight(element);
+
+            // The data input on the left, centred
+            if (index == 0) {
+                return PortAttributes{.name = "In", .position = QPointF(16, height / 2)};
+            }
+
+            // Select lines at the bottom, spaced by gridSize to avoid overlap
+            const int select = index - 1;
+            if (select >= KernelLogic::demuxSelectLines(element.outputSize())) {
+                return std::nullopt;
+            }
+            return PortAttributes{.name = QString("S%1").arg(select),
+                                  .position = QPointF(32 + (select * step * 2), height - step)};
+        };
+        descriptor.outputAttributes = [](const Element &element, const int index) {
+            const int step = Constants::gridSize / 2; // 8
+
+            // Outputs on the right, centred vertically
+            const int y = (bodyHeight(element) / 2) - ((element.outputSize() - 1) * step) + (index * step * 2);
+            return PortAttributes{.name = QString("Out%1").arg(index), .position = QPointF(48, y)};
+        };
+        descriptor.bodyFollowsPorts = true;
+        // The data input, then the select lines the outputs need
+        descriptor.inputsForOutputs = [](const int outputs) { return 1 + KernelLogic::demuxSelectLines(outputs); };
+        descriptor.checkLoad = [](const Element &element) {
+            // The loader takes the port lists as the file gives them, and the kernel reads every select line the
+            // outputs need; a save always writes exactly those inputs
+            const int expectedInputs = 1 + KernelLogic::demuxSelectLines(element.outputSize());
+            if (element.inputSize() != expectedInputs) {
+                throw PANDACEPTION_WITH_CONTEXT(
+                    "Demux",
+                    QT_TRANSLATE_NOOP("Demux",
+                                      "%1 with %2 input ports for %3 outputs, where it has %4 — stream may be corrupt"),
+                    element.translatedName(),
+                    QString::number(element.inputSize()),
+                    QString::number(element.outputSize()),
+                    QString::number(expectedInputs));
+            }
+        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Demux(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Demux::Demux(QGraphicsItem *parent)
-    : Element(ElementType::Demux, parent)
-{
-    updatePortsProperties();
-}
-
-void Demux::setInputSize(const int size)
-{
-    // Input size is derived from output size and cannot be set directly
-    // This is a private override to prevent accidental calls
-    Q_UNUSED(size)
-    // Do nothing - this method should not be called
-}
-
-void Demux::setOutputSize(const int size)
-{
-    // Validate size is within bounds
-    if ((size < minOutputSize()) || (size > maxOutputSize())) {
-        return;  // Silently ignore invalid sizes, stays at current size
-    }
-
-    // Calculate required input ports: 1 data + log2(size) select lines
-    const int numSelectLines = calculateSelectLines(size);
-    int requiredInputs = 1 + numSelectLines;
-
-    const ChangeBatch batch(*this, ElementChange::Ports);
-
-    // Update output size FIRST to ensure outputSize() reflects new value
-    // This prevents layoutPorts() from using stale output count
-    Element::setOutputSize(size);
-
-    // Then, update input size to match the select lines needed
-    // This will trigger layoutPorts() with both input and output sizes correct
-    Element::setInputSize(requiredInputs);
-}
-
-void Demux::layoutPorts()
-{
-    Element::layoutPorts();
-    pictureReplaced();
-}
-
-int Demux::bodyHeight() const
-{
-    const int step = Constants::gridSize / 2; // 8
-
-    // Tall enough to fit all output ports with padding, snapped to a multiple of 16
-    const int outputPortsSpan = (outputSize() - 1) * step * 2;
-    const int elementHeight = (std::max)(64, outputPortsSpan + step * 6);
-    return ((elementHeight + 15) / 16) * 16;
-}
-
-std::optional<Element::PortAttributes> Demux::inputAttributes(const int index) const
-{
-    const int step = Constants::gridSize / 2; // 8
-    const int elementHeight = bodyHeight();
-
-    // The data input on the left, centred
-    if (index == 0) {
-        return PortAttributes{.name = "In", .position = QPointF(16, elementHeight / 2)};
-    }
-
-    // Select lines at the bottom, spaced by gridSize to avoid overlap
-    const int select = index - 1;
-    if (select >= calculateSelectLines(outputSize())) {
-        return std::nullopt;
-    }
-    return PortAttributes{.name = QString("S%1").arg(select), .position = QPointF(32 + (select * step * 2), elementHeight - step)};
-}
-
-std::optional<Element::PortAttributes> Demux::outputAttributes(const int index) const
-{
-    const int step = Constants::gridSize / 2; // 8
-
-    // Outputs on the right, centred vertically
-    const int y = (bodyHeight() / 2) - ((outputSize() - 1) * step) + (index * step * 2);
-    return PortAttributes{.name = QString("Out%1").arg(index), .position = QPointF(48, y)};
-}
-
-void Demux::updateLogic()
-{
-    if (!simUpdateInputsAllowUnknown()) {
-        return;
-    }
-
-    const Status data = simInputs().at(0);
-
-    // Calculate select lines from current output count
-    const int numSelectLines = calculateSelectLines(outputSize());
-
-    // If any select line is Unknown/Error, all outputs are indeterminate
-    for (int i = 0; i < numSelectLines; i++) {
-        const Status sel = simInputs().at(1 + i);
-        if (sel == Status::Unknown || sel == Status::Error) {
-            for (int j = 0; j < outputSize(); j++) {
-                setOutputValue(j, sel);
-            }
-            return;
-        }
-    }
-
-    const int selectValue = decodeSelectValue(1, numSelectLines);
-
-    // Mirror Mux: a select value that addresses no output (possible whenever
-    // the output count is not a power of two) is indeterminate routing — all
-    // outputs become Unknown instead of silently dropping the data.
-    if (selectValue >= outputSize()) {
-        for (int i = 0; i < outputSize(); i++) {
-            setOutputValue(i, Status::Unknown);
-        }
-        return;
-    }
-
-    for (int i = 0; i < outputSize(); i++) {
-        setOutputValue(i, (i == selectValue) ? data : Status::Inactive);
-    }
-}
-
-void Demux::loadState(QDataStream &stream, SerializationContext &context)
-{
-    Element::loadState(stream, context);
-
-    // The loader takes the port lists as the file gives them, and updateLogic() reads every
-    // select line the outputs need; a save always writes exactly those inputs.
-    const int expectedInputs = 1 + calculateSelectLines(outputSize());
-    if (inputSize() != expectedInputs) {
-        throw PANDACEPTION("%1 with %2 input ports for %3 outputs, where it has %4 — stream may be corrupt",
-                           translatedName(),
-                           QString::number(inputSize()),
-                           QString::number(outputSize()),
-                           QString::number(expectedInputs));
-    }
-}
-
-int Demux::calculateSelectLines(int dataCount)
-{
-    int k = 1;
-    while ((1 << k) < dataCount) {
-        k++;
-    }
-    return k;
-}

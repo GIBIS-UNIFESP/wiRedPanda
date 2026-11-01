@@ -6,10 +6,10 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
@@ -123,10 +123,10 @@ inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* inst
 
     // Create 8 D flip-flops for IR storage
     QVector<Element *> irStorage;
-    QVector<Mux *> irMuxes;
+    QVector<Element *> irMuxes;
     for (int i = 0; i < 8; i++) {
         irStorage.append(ElementFactory::buildElement(ElementType::DFlipFlop));
-        irMuxes.append(new Mux());
+        irMuxes.append(ElementFactory::buildElement(ElementType::Mux));
     }
 
     // Add all elements
@@ -323,12 +323,12 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
     QVector<Element *> andGates;
     QVector<Element *> orGates;
     QVector<Element *> xorGates;
-    QVector<Mux *> resultMuxes;
+    QVector<Element *> resultMuxes;
     for (int i = 0; i < 8; i++) {
         andGates.append(ElementFactory::buildElement(ElementType::And));
         orGates.append(ElementFactory::buildElement(ElementType::Or));
         xorGates.append(ElementFactory::buildElement(ElementType::Xor));
-        resultMuxes.append(new Mux());
+        resultMuxes.append(ElementFactory::buildElement(ElementType::Mux));
     }
 
     // Ripple-carry adder logic:
@@ -337,7 +337,7 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
     // Support for subtraction: SUB = ADD with inverted B (2's complement)
 
     QVector<Element *> notB;          // NOT(B) for subtraction
-    QVector<Mux *> bMux;          // Select between B and NOT(B)
+    QVector<Element *> bMux;          // Select between B and NOT(B)
     QVector<Element *> adderXor;      // A XOR (B or NOT B) for sum generation
     QVector<Element *> adderAnd1;     // A AND (B or NOT B) for carry generation
     QVector<Element *> adderXor2;     // (A XOR B) for carry with cin
@@ -348,7 +348,7 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
 
     for (int i = 0; i < 8; i++) {
         notB.append(ElementFactory::buildElement(ElementType::Not));
-        bMux.append(new Mux());
+        bMux.append(ElementFactory::buildElement(ElementType::Mux));
         adderXor.append(ElementFactory::buildElement(ElementType::Xor));
         adderAnd1.append(ElementFactory::buildElement(ElementType::And));
         adderXor2.append(ElementFactory::buildElement(ElementType::Xor));
@@ -605,7 +605,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
 
     // Create 3 D flip-flops for state (FETCH=0, DECODE=1, EXECUTE=2, WRITEBACK=3, HALT=4)
     QVector<Element *> stateReg;
-    QVector<Mux *> stateMuxes;
+    QVector<Element *> stateMuxes;
 
     // State increment logic: need XOR/AND gates for ripple-carry increment
     // State goes 0→1→2→3→4→0 (wraps after 4 transitions)
@@ -614,7 +614,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
 
     for (int i = 0; i < 3; i++) {
         stateReg.append(ElementFactory::buildElement(ElementType::DFlipFlop));
-        stateMuxes.append(new Mux());
+        stateMuxes.append(ElementFactory::buildElement(ElementType::Mux));
         incrementXor.append(ElementFactory::buildElement(ElementType::Xor));
         carryAnd.append(ElementFactory::buildElement(ElementType::And));
     }
@@ -1032,11 +1032,11 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
     }
 
     // Read muxes: 8:1 mux per bit per read port
-    QVector<Mux *> readMuxesA;
-    QVector<Mux *> readMuxesB;
+    QVector<Element *> readMuxesA;
+    QVector<Element *> readMuxesB;
     for (int b = 0; b < 8; b++) {
-        readMuxesA.append(new Mux());
-        readMuxesB.append(new Mux());
+        readMuxesA.append(ElementFactory::buildElement(ElementType::Mux));
+        readMuxesB.append(ElementFactory::buildElement(ElementType::Mux));
         builder.add(readMuxesA[b], readMuxesB[b]);
         readMuxesA[b]->setInputSize(11);  // 8 data inputs + 3 select lines
         readMuxesB[b]->setInputSize(11);

@@ -14,18 +14,16 @@
 #include <QTemporaryDir>
 
 #include "App/CodeGen/SystemVerilogCodeGen.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -164,7 +162,7 @@ void TestSystemVerilogCodeGenUnit::testMuxCircuit()
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
     auto *swSel = new InputSwitch;
-    auto *mux = new Mux;
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     auto *led = new Led;
 
     builder.add(sw1, sw2, swSel, mux, led);
@@ -196,7 +194,7 @@ void TestSystemVerilogCodeGenUnit::testDemuxCircuit()
 
     auto *swData = new InputSwitch;
     auto *swSel = new InputSwitch;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     auto *led1 = new Led;
     auto *led2 = new Led;
 
@@ -263,7 +261,7 @@ void TestSystemVerilogCodeGenUnit::testTruthTableMultiOutput()
 
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
-    auto *tt = new TruthTable;
+    auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     tt->setOutputSize(2);
     auto *led0 = new Led;
     auto *led1 = new Led;
@@ -275,11 +273,11 @@ void TestSystemVerilogCodeGenUnit::testTruthTableMultiOutput()
     builder.connect(tt, 1, led1, 0);
 
     // Output 0 = AND (row 3 only), output 1 = OR (rows 1..3).
-    QBitArray bits = tt->key();
+    QBitArray bits = tt->param<QBitArray>(ParamId::Table);
     for (const qsizetype bit : {3, 256 + 1, 256 + 2, 256 + 3}) {
         bits.setBit(bit, true);
     }
-    tt->setkey(bits);
+    tt->setParam(ParamId::Table, bits);
 
     QTemporaryDir dir;
     QString path = dir.path() + "/tt_multi.sv";
@@ -727,7 +725,7 @@ void TestSystemVerilogCodeGenUnit::testDemuxWithFourOutputsUsesTwoSelectLines()
     auto *swData = new InputSwitch;
     auto *swSel0 = new InputSwitch;
     auto *swSel1 = new InputSwitch;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     demux->setOutputSize(4);
 
     builder.add(swData, swSel0, swSel1, demux);

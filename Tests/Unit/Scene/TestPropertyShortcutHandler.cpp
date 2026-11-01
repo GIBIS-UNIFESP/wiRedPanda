@@ -3,6 +3,7 @@
 
 #include "Tests/Unit/Scene/TestPropertyShortcutHandler.h"
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
@@ -12,7 +13,6 @@
 #include "App/Element/GraphicElements/Display7.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -287,7 +287,7 @@ void TestPropertyShortcutHandler::testAudioBoxMainPropertyIsNoOp()
 void TestPropertyShortcutHandler::testTruthTableOutputSizeSecondaryProperty()
 {
     WorkSpace workspace;
-    auto *tt = new TruthTable;
+    auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     workspace.scene()->addItem(tt);
     const int originalOutputs = tt->outputSize();
 

@@ -63,8 +63,10 @@ Element::Element(ElementType type, QGraphicsItem *parent)
     const ChangeBatch construction(*this);
 
     qCDebug(four) << "Including input and output ports.";
-    Element::setInputSize(static_cast<int>(descriptor.minInputSize));
-    Element::setOutputSize(static_cast<int>(descriptor.minOutputSize));
+    // The inputs first, then the outputs, each at the type's minimum, which agree for a type whose inputs follow its
+    // outputs (TestElementFactory)
+    setPortSize(static_cast<int>(descriptor.minInputSize), true);
+    setPortSize(static_cast<int>(descriptor.minOutputSize), false);
 
     updatePortsProperties();
     Element::updateTheme();
@@ -501,6 +503,10 @@ void Element::layoutPorts()
 
     layOut(m_ports.inputs(), 0, [this](const int index) { return inputAttributes(index); });
     layOut(m_ports.outputs(), 64, [this](const int index) { return outputAttributes(index); });
+
+    if (m_descriptor.bodyFollowsPorts) {
+        pictureReplaced();
+    }
 }
 
 std::optional<Element::PortAttributes> Element::inputAttributes(const int index) const
@@ -898,6 +904,10 @@ void Element::setPortSize(const int size, const bool isInput)
 
 void Element::setInputSize(const int size)
 {
+    // A type whose inputs follow its outputs takes them from setOutputSize() alone
+    if (m_descriptor.inputsForOutputs) {
+        return;
+    }
     setPortSize(size, true);
 }
 
@@ -908,7 +918,18 @@ int Element::outputSize() const
 
 void Element::setOutputSize(const int size)
 {
+    if (!m_descriptor.inputsForOutputs) {
+        setPortSize(size, false);
+        return;
+    }
+    if ((size < minOutputSize()) || (size > maxOutputSize())) {
+        return;
+    }
+
+    // The outputs first, so the layout the inputs' change runs sees both counts
+    const ChangeBatch batch(*this, ElementChange::Ports);
     setPortSize(size, false);
+    setPortSize(m_descriptor.inputsForOutputs(size), true);
 }
 
 double Element::frequency() const

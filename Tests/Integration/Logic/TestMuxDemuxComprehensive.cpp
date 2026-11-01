@@ -3,10 +3,9 @@
 
 #include "Tests/Integration/Logic/TestMuxDemuxComprehensive.h"
 
-#include "App/Element/GraphicElements/Demux.h"
+#include "App/Element/Element.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
@@ -59,7 +58,7 @@ void TestMUXDEMUXComprehensive::testMux2to1()
 
     InputSwitch in0, in1, sel;
     Led out;
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     builder.add(&in0, &in1, &sel, &out, &mux);
 
@@ -122,7 +121,7 @@ void TestMUXDEMUXComprehensive::testMux4to1()
     for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
     InputSwitch sel0, sel1;
     Led out;
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Resize mux to 4-to-1 (6 ports: 4 data + 2 select)
     mux.setInputSize(6);
@@ -177,7 +176,7 @@ void TestMUXDEMUXComprehensive::testMux8to1()
     QVector<InputSwitch *> selectLines(3);
     for (int i = 0; i < 3; ++i) selectLines[i] = new InputSwitch();
     Led out;
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Resize mux to 8-to-1 (11 ports: 8 data + 3 select)
     mux.setInputSize(11);
@@ -253,7 +252,7 @@ void TestMUXDEMUXComprehensive::testMuxSelectLineTransitions()
     for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
     InputSwitch sel0, sel1;
     Led out;
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Resize mux to 4-to-1 (6 ports: 4 data + 2 select)
     mux.setInputSize(6);
@@ -330,7 +329,7 @@ void TestMUXDEMUXComprehensive::testMuxCascaded()
     builder.add(&sel0, &sel1);
 
     // First stage: 2 muxes (each 2-to-1)
-    Mux muxA, muxB;
+    Element muxA{ElementType::Mux}, muxB{ElementType::Mux};
     builder.add(&muxA, &muxB);
 
     builder.connect(dataIn[0], 0, &muxA, 0);
@@ -342,7 +341,7 @@ void TestMUXDEMUXComprehensive::testMuxCascaded()
     builder.connect(&sel0, 0, &muxB, 2);
 
     // Second stage: 1 mux (2-to-1) selecting between the two stage-1 muxes
-    Mux muxFinal;
+    Element muxFinal{ElementType::Mux};
     Led out;
     builder.add(&muxFinal, &out);
 
@@ -393,7 +392,7 @@ void TestMUXDEMUXComprehensive::testMuxDataInputPatterns()
     for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
     InputSwitch sel0, sel1;
     Led out;
-    Mux mux;
+    Element mux{ElementType::Mux};
 
     // Resize mux to 4-to-1 (6 ports: 4 data + 2 select)
     mux.setInputSize(6);
@@ -455,7 +454,7 @@ void TestMUXDEMUXComprehensive::testDemux1to2()
 
     InputSwitch in, sel;
     Led out0, out1;
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     builder.add(&in, &sel, &out0, &out1, &demux);
 
@@ -498,7 +497,7 @@ void TestMUXDEMUXComprehensive::testDemux1to4()
     for (int i = 0; i < 2; ++i) selectLines[i] = new InputSwitch();
     QVector<Led *> outs(4);
     for (int i = 0; i < 4; ++i) outs[i] = new Led();
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Resize demux to 1-to-4 (4 outputs) BEFORE adding to builder
     demux.setOutputSize(4);
@@ -560,7 +559,7 @@ void TestMUXDEMUXComprehensive::testDemux1to8()
     for (int i = 0; i < 3; ++i) selectLines[i] = new InputSwitch();
     QVector<Led *> outs(8);
     for (int i = 0; i < 8; ++i) outs[i] = new Led();
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Resize demux to 1-to-8 (8 outputs)
     demux.setOutputSize(8);
@@ -626,7 +625,7 @@ void TestMUXDEMUXComprehensive::testDemuxDataInputVariations()
     for (int i = 0; i < 2; ++i) selectLines[i] = new InputSwitch();
     QVector<Led *> outs(4);
     for (int i = 0; i < 4; ++i) outs[i] = new Led();
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Resize demux to 1-to-4 (4 outputs) BEFORE adding to builder
     demux.setOutputSize(4);
@@ -690,7 +689,7 @@ void TestMUXDEMUXComprehensive::testDemuxSelectTransitions()
     for (int i = 0; i < 2; ++i) selectLines[i] = new InputSwitch();
     QVector<Led *> outs(4);
     for (int i = 0; i < 4; ++i) outs[i] = new Led();
-    Demux demux;
+    Element demux{ElementType::Demux};
 
     // Resize demux to 1-to-4 (4 outputs) BEFORE adding to builder
     demux.setOutputSize(4);
@@ -801,8 +800,8 @@ void TestMUXDEMUXComprehensive::testMuxDemuxChained()
     builder.add(&demuxSel0, &demuxSel1);
 
     // Mux and Demux
-    Mux mux;
-    Demux demux;
+    Element mux{ElementType::Mux};
+    Element demux{ElementType::Demux};
 
     // Resize mux and demux BEFORE adding to builder
     mux.setInputSize(6);

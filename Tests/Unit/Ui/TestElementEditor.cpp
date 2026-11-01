@@ -25,17 +25,15 @@
 #include <QUndoStack>
 #include <QVariant>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/AudioBox.h"
 #include "App/Element/GraphicElements/Buzzer.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
-#include "App/Element/GraphicElements/Mux.h"
 #include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Scene/ICRegistry.h"
@@ -884,7 +882,7 @@ void TestElementEditor::testApplyCapabilitiesMixedFrequencyShowsPlaceholder()
 void TestElementEditor::testApplyCapabilitiesMuxShowsDataInputOptions()
 {
     WorkSpace workspace;
-    auto *mux = new Mux();
+    auto *mux = ElementFactory::buildElement(ElementType::Mux);
     workspace.scene()->addItem(mux);
 
     ElementEditor editor(&workspace);
@@ -912,7 +910,7 @@ void TestElementEditor::testApplyCapabilitiesMuxShowsDataInputOptions()
 void TestElementEditor::testApplyCapabilitiesDemuxShowsOutputOptions()
 {
     WorkSpace workspace;
-    auto *demux = new Demux();
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     workspace.scene()->addItem(demux);
 
     ElementEditor editor(&workspace);
@@ -1490,7 +1488,7 @@ void TestElementEditor::testInputLockedSetsLockState()
 void TestElementEditor::testTruthTablePopulatesTableAndShows()
 {
     WorkSpace workspace;
-    auto *tt = new TruthTable();
+    auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     workspace.scene()->addItem(tt);
 
     ElementEditor editor(&workspace);
@@ -1512,7 +1510,7 @@ void TestElementEditor::testTruthTablePopulatesTableAndShows()
 void TestElementEditor::testSetTruthTablePropositionTogglesOutputBit()
 {
     WorkSpace workspace;
-    auto *tt = new TruthTable();
+    auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     workspace.scene()->addItem(tt);
 
     ElementEditor editor(&workspace);
@@ -1524,12 +1522,12 @@ void TestElementEditor::testSetTruthTablePropositionTogglesOutputBit()
 
     const int row = 0;
     const int outputColumn = tt->inputSize();
-    const bool bitBefore = tt->key().at(row);
+    const bool bitBefore = tt->param<QBitArray>(ParamId::Table).at(row);
     QCOMPARE(editor.m_table->item(row, outputColumn)->text(), bitBefore ? QStringLiteral("1") : QStringLiteral("0"));
 
     editor.setTruthTableProposition(row, outputColumn);
 
-    QCOMPARE(tt->key().at(row), !bitBefore);
+    QCOMPARE(tt->param<QBitArray>(ParamId::Table).at(row), !bitBefore);
     QCOMPARE(editor.m_table->item(row, outputColumn)->text(), (!bitBefore) ? QStringLiteral("1") : QStringLiteral("0"));
 }
 

@@ -18,17 +18,16 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/BodyMeasure.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Demux.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Text.h"
-#include "App/Element/GraphicElements/TruthTable.h"
 #include "App/Element/IC.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
@@ -277,22 +276,13 @@ QList<Operation> operations(const QString &image, const QString &audio)
              }
              return false;
          }},
-        {"truth table bit", Change::Parameter, [](Element &element, Scene &) {
-             auto *truthTable = qobject_cast<TruthTable *>(&element);
-             if (!truthTable) {
-                 return false;
-             }
-             truthTable->setKeyBit(0, !truthTable->key().testBit(0));
-             return true;
-         }},
         {"truth table", Change::Parameter, [](Element &element, Scene &) {
-             auto *truthTable = qobject_cast<TruthTable *>(&element);
-             if (!truthTable) {
+             if (element.elementType() != ElementType::TruthTable) {
                  return false;
              }
-             QBitArray key = truthTable->key();
+             QBitArray key = element.param<QBitArray>(ParamId::Table);
              key.setBit(1, !key.testBit(1));
-             truthTable->setkey(key);
+             element.setParam(ParamId::Table, key);
              return true;
          }},
         {"wireless mode", Change::Parameter | Change::Ports, [](Element &element, Scene &) {
@@ -413,7 +403,7 @@ void TestElementChanges::testALayoutReportsTheLabelOnlyWhenItMoves()
     Scene scene;
     ElementChangesTestDetail::Recorder recorder(scene);
     auto *gate = ElementFactory::buildElement(ElementType::And);
-    auto *table = new TruthTable;
+    auto *table = ElementFactory::buildElement(ElementType::TruthTable);
     scene.addItem(gate);
     scene.addItem(table);
     const int gateId = gate->id();
@@ -440,7 +430,7 @@ void TestElementChanges::testEachChangeIsReportedOnce()
     ElementChangesTestDetail::Recorder recorder(scene);
     auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *clock = new Clock;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     scene.addItem(gate);
     scene.addItem(clock);
     scene.addItem(demux);
@@ -503,7 +493,7 @@ void TestElementChanges::testBoundsThatMoveAreReportedAsBody()
     ElementChangesTestDetail::Recorder recorder(scene);
     auto *text = new Text;
     auto *input = new InputSwitch;
-    auto *demux = new Demux;
+    auto *demux = ElementFactory::buildElement(ElementType::Demux);
     scene.addItem(text);
     scene.addItem(input);
     scene.addItem(demux);

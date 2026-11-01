@@ -24,11 +24,19 @@ namespace KernelLogic {
 /// Sets \a element's outputs from its inputs.
 using Logic = void (*)(Element &element);
 
-/// Returns the logic of \a kind, or nullptr for a kind that has none: a source, None or Instance, and, until their
-/// families' subclasses go (P3.23), the kinds whose subclasses still compute them.
+/// Returns the logic of \a kind, or nullptr for a kind that has none: a source, None or Instance, and, until its
+/// family's subclass goes (P3.23), the node, which its subclass still computes.
 Logic of(KernelKind kind);
 
 /// Returns whether \a kind is a source: its elements drive their outputs themselves, not through logic.
 bool isSource(KernelKind kind);
+
+/// Returns the select lines a multiplexer with \a inputs ports reads: the fewest, k, that address the other inputs
+/// (2^k >= inputs - k), which are its data.
+int muxSelectLines(int inputs);
+
+/// Returns the select lines a demultiplexer with \a outputs ports reads: the fewest, k, that address them (2^k >=
+/// outputs).
+int demuxSelectLines(int outputs);
 
 } // namespace KernelLogic
