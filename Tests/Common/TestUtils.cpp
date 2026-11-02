@@ -53,6 +53,14 @@ void setupTestEnvironment()
         qputenv("QT_IM_MODULES", "none");
     }
 #endif
+    // Write the log to the process's own streams, never clobbering an explicit choice. Qt sends a process's output
+    // elsewhere when it decides no terminal is attached -- on Windows a process without a console window, as Windows
+    // CI and an agent's shell start it, prints nothing to stdout or stderr: ctest shows no output, and a test that
+    // reads the output of a test run it starts finds none. Set here, it holds for every run, CI's included, and for
+    // the processes a test starts, which inherit it.
+    if (!qEnvironmentVariableIsSet("QT_FORCE_STDERR_LOGGING")) {
+        qputenv("QT_FORCE_STDERR_LOGGING", "1");
+    }
     // Redirect QSettings to a per-process temporary directory. Settings uses
     // IniFormat/UserScope, so without this every test that touches Settings::
     // (recent files, theme, language, autosave lists) reads and WRITES the

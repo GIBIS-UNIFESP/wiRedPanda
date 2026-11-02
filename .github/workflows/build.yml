@@ -150,8 +150,6 @@ jobs:
     - name: Test
       timeout-minutes: 10
       shell: bash
-      env:
-        QT_FORCE_STDERR_LOGGING: 1
       run: |
         if [ "$RUNNER_OS" = "Linux" ]; then ulimit -c unlimited; fi
         ctest --preset release -V -LE gui
@@ -169,8 +167,6 @@ jobs:
     - name: Test (GUI, headless)
       if: runner.os == 'Linux'
       timeout-minutes: 10
-      env:
-        QT_FORCE_STDERR_LOGGING: 1
       run: |
         ulimit -c unlimited
         ctest --preset release -V -L gui -FS non_gui_complete
@@ -199,7 +195,6 @@ jobs:
       timeout-minutes: 10
       continue-on-error: true
       env:
-        QT_FORCE_STDERR_LOGGING: 1
         QT_QPA_PLATFORM: offscreen
       run: |
         ctest --preset release -V -L gui -FS non_gui_complete
@@ -342,7 +337,7 @@ jobs:
           cmake -S /src -B /work -G Ninja -DCMAKE_BUILD_TYPE=Release
           cmake --build /work
           cd /work
-          export QT_QPA_PLATFORM=offscreen QT_FORCE_STDERR_LOGGING=1
+          export QT_QPA_PLATFORM=offscreen
           # core_pattern (see the host-side comment above this docker run
           # invocation) is already configured before this container started --
           # only the cores/ subdirectory it resolves into needs creating here.

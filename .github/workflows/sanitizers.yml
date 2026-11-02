@@ -110,7 +110,6 @@ jobs:
     - name: Test
       timeout-minutes: 15
       env:
-        QT_FORCE_STDERR_LOGGING: 1
         ASAN_OPTIONS: abort_on_error=1:halt_on_error=1
         # LSan suppresses third-party leaks (PulseAudio via Qt Multimedia, etc.)
         # so real application leaks still surface.  Application leaks must be
@@ -134,7 +133,6 @@ jobs:
       timeout-minutes: 15
       continue-on-error: true
       env:
-        QT_FORCE_STDERR_LOGGING: 1
         ASAN_OPTIONS: abort_on_error=1:halt_on_error=1
         LSAN_OPTIONS: suppressions=${{ github.workspace }}/Tests/lsan_suppressions.txt
         UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
