@@ -11,7 +11,6 @@
 #include <QVector>
 
 class Element;
-class ElementInput;
 class Scene;
 
 /**
@@ -47,7 +46,7 @@ struct Row {
 
 /// The input/output elements (label-sorted) and the row layout for a waveform table.
 struct Signals {
-    QVector<ElementInput *> inputs;  ///< Input elements, sorted by label.
+    QVector<Element *> inputs;  ///< Input elements, sorted by label.
     QVector<Element *> outputs;      ///< Output elements, sorted by label.
     int inputPorts = 0;                     ///< Total input rows; derived from \a rows.
     QStringList inputLabels;                ///< Row label per input port (indexed for multi-port).

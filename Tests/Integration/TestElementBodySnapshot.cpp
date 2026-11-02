@@ -28,7 +28,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/IC.h"
 #include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Scene.h"
@@ -204,10 +203,10 @@ QList<BodyState> defaultOnly()
 
 QList<BodyState> switchable(const CustomPictures &custom)
 {
-    return {{"off", [](Element *e) { static_cast<ElementInput *>(e)->setOn(false); }},
-            {"on", [](Element *e) { static_cast<ElementInput *>(e)->setOn(true); }},
+    return {{"off", [](Element *e) { e->setOn(false); }},
+            {"on", [](Element *e) { e->setOn(true); }},
             {"on custom.png", [&custom](Element *e) {
-                 static_cast<ElementInput *>(e)->setOn(true);
+                 e->setOn(true);
                  e->setAppearance(false, custom.png());
              }}};
 }
@@ -281,12 +280,12 @@ QList<BodyState> rotaryStates(const CustomPictures &custom)
     for (const auto &[outputs, position] : std::as_const(positions)) {
         states.append({QString("out=%1 at=%2").arg(outputs).arg(position), [outputs, position](Element *e) {
                            e->setOutputSize(outputs);
-                           static_cast<ElementInput *>(e)->setOn(true, position);
+                           e->setOn(true, position);
                        }});
     }
     states.append({"out=4 at=1 custom.png", [&custom](Element *e) {
                        e->setOutputSize(4);
-                       static_cast<ElementInput *>(e)->setOn(true, 1);
+                       e->setOn(true, 1);
                        e->setAppearance(false, custom.png());
                    }});
     return states;

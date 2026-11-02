@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/UI/SelectionCapabilities.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -177,9 +176,8 @@ void TestSelectionCapabilities::testCanMorphFalseAcrossUnrelatedGroups()
 
 void TestSelectionCapabilities::testSameCheckStateAndSameOutputValueForInputElements()
 {
-    auto *sw1 = qobject_cast<ElementInput *>(ElementFactory::buildElement(ElementType::InputSwitch));
-    auto *sw2 = qobject_cast<ElementInput *>(ElementFactory::buildElement(ElementType::InputSwitch));
-    QVERIFY(sw1 && sw2);
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
 
     sw1->setLocked(false);
     sw2->setLocked(false);

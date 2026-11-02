@@ -149,6 +149,44 @@ bool Element::hasWirelessMode() const
     return offersParam(ParamId::Wireless);
 }
 
+bool Element::isOn(const int port) const
+{
+    return m_descriptor.sourceLevel && m_descriptor.sourceLevel(*this, port);
+}
+
+void Element::setOn(const bool level, const int port)
+{
+    if (m_descriptor.setLevel) {
+        m_descriptor.setLevel(*this, level, port);
+    }
+}
+
+bool Element::isLocked() const
+{
+    return hasParam(ParamId::Locked) && param<bool>(ParamId::Locked);
+}
+
+void Element::setLocked(const bool locked)
+{
+    setParam(ParamId::Locked, locked);
+}
+
+void Element::showSourceLevels()
+{
+    const QVector<OutputPort *> &ports = outputs();
+    for (int port = 0; port < ports.size(); ++port) {
+        ports.at(port)->setStatus(isOn(port) ? Status::Active : Status::Inactive);
+    }
+}
+
+void Element::updateSourceOutputs()
+{
+    const int ports = std::min(outputSize(), static_cast<int>(simOutputSize()));
+    for (int port = 0; port < ports; ++port) {
+        setOutputValue(port, isOn(port));
+    }
+}
+
 bool Element::offersParam(const ParamId id) const
 {
     const ParamSpec *spec = m_parameters.spec(id);
@@ -188,17 +226,39 @@ bool Element::setParam(const ParamId id, const ParamValue &value)
     // one (a button's press) changes only the picture, which the element reports itself.
     const ChangeBatch batch(*this, (spec->key != nullptr) ? ElementChanges(ElementChange::Parameter) : ElementChanges());
     const ParamValue previous = m_parameters.set(id, std::move(*taken));
-    if (spec->showsPicture) {
-        pictureReplaced();
-    }
-    if (spec->repaints) {
-        pictureChanged();
-    }
-    if (spec->laysOutPorts) {
-        updatePortsProperties();
-    }
+    showParam(*spec);
     parameterChanged(id, previous);
     return true;
+}
+
+void Element::restoreParam(const ParamId id, ParamValue value)
+{
+    const ParamSpec *spec = m_parameters.spec(id);
+    Q_ASSERT_X(spec != nullptr, "Element::restoreParam()", "a parameter the type does not have");
+    if ((spec == nullptr) || (value == m_parameters.value(id))) {
+        return;
+    }
+    // No change of the circuit is reported, which would otherwise repaint the picture
+    const ChangeBatch batch(*this);
+    m_parameters.set(id, std::move(value));
+    showParam(*spec);
+    pictureChanged();
+}
+
+void Element::showParam(const ParamSpec &spec)
+{
+    if (spec.showsPicture) {
+        pictureReplaced();
+    }
+    if (spec.repaints) {
+        pictureChanged();
+    }
+    if (spec.laysOutPorts) {
+        updatePortsProperties();
+    }
+    if (spec.drivesOutputs) {
+        showSourceLevels();
+    }
 }
 
 void Element::parameterChanged(const ParamId id, const ParamValue &previous)
@@ -488,6 +548,10 @@ void Element::updatePortsProperties()
 {
     const ChangeBatch batch(*this, ElementChange::Ports);
     layoutPorts();
+    // The ports an input adds or keeps show what it drives
+    if (m_descriptor.sourceLevel) {
+        showSourceLevels();
+    }
 }
 
 void Element::load(QDataStream &stream, SerializationContext &context)

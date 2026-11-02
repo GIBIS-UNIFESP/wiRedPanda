@@ -167,7 +167,7 @@ private:
     /// Returns the output element vector.
     const QVector<Element *>& outputElements() const { return m_outputs; }
     /// Returns the input element vector.
-    const QVector<ElementInput *>& inputElements() const { return m_inputs; }
+    const QVector<Element *>& inputElements() const { return m_inputs; }
     /// Returns the current simulation length (number of columns).
     int length() const { return m_length; }
 
@@ -251,7 +251,7 @@ private:
     QTableView *m_signalTableView  = new QTableView(); ///< The waveform table, shown as the central widget.
     SignalDelegate *m_delegate     = nullptr;         ///< Custom delegate rendering waveform cells.
     QVector<Element *> m_outputs;              ///< Output elements mapped to waveform rows.
-    QVector<ElementInput *> m_inputs;          ///< Input elements mapped to waveform rows.
+    QVector<Element *> m_inputs;          ///< Input elements mapped to waveform rows.
     QVector<Status> m_oldInputValues;                 ///< Saved input values for restoreInputs().
     Scene *m_externalScene         = nullptr;         ///< The circuit scene being simulated.
     Simulation *m_simulation       = nullptr;         ///< Simulation engine used for waveform runs.

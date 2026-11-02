@@ -2421,7 +2421,7 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
                                                      {rotary, ElementProperty::parameter(ParamId::Position), 2}},
                                                     scene).command);
     QVERIFY(inputSwitch->isOn());
-    QCOMPARE(rotary->outputValue(), 2);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 2);
     scene->receiveCommand(SetPropertyCommand::apply({inputSwitch, rotary}, ElementProperty::parameter(ParamId::Locked), true, scene).command);
     QVERIFY(inputSwitch->isLocked());
     QVERIFY(rotary->isLocked());
@@ -2431,7 +2431,7 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
     QVERIFY(!rotary->isLocked());
     scene->undoStack()->undo();
     QVERIFY(!inputSwitch->isOn());
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 }
 
 void TestCommands::testSetPropertyCommandSetsSeveralPropertiesAsOneStep()

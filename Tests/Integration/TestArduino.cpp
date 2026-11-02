@@ -25,7 +25,6 @@ QString TestArduino::s_cliCachePath;
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/Element.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Core/Priorities.h"
@@ -3049,16 +3048,15 @@ void TestArduino::testGeneratedSketchMatchesEngineOnRippleCounter()
     // --- Engine reference ---
     auto *sim = scene->simulation();
     QVERIFY(sim->initialize());
-    auto *clkIn = qobject_cast<ElementInput *>(clk);
-    clkIn->setOn(false, 0);
+    clk->setOn(false);
     sim->update();
     QStringList engineTrace;
     for (int edge = 0; edge < 4; ++edge) {
-        clkIn->setOn(true, 0);
+        clk->setOn(true);
         sim->update();
         engineTrace << QString("%1%2").arg(static_cast<int>(ff1->outputValue(0)))
                                       .arg(static_cast<int>(ff2->outputValue(0)));
-        clkIn->setOn(false, 0);
+        clk->setOn(false);
         sim->update();
         engineTrace << QString("%1%2").arg(static_cast<int>(ff1->outputValue(0)))
                                       .arg(static_cast<int>(ff2->outputValue(0)));

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/ElementInput.h"
+#include "App/Element/Element.h"
 
 /**
  * \class InputRotary
@@ -16,7 +16,7 @@
  * \details Each mouse click advances the active output by one.  Only the
  * currently selected port is driven logic-1; all others remain logic-0.
  */
-class InputRotary : public ElementInput
+class InputRotary : public Element
 {
     Q_OBJECT
 
@@ -26,34 +26,8 @@ public:
     /// Constructs the rotary switch with optional \a parent.
     explicit InputRotary(QGraphicsItem *parent = nullptr);
 
-    // --- State Queries ---
-
-    /// Returns \c true if output port \a port is the currently active selection.
-    bool isOn(const int port = 0) const override;
-
-    /// Returns the number of selectable output ports.
-    int outputSize() const override;
-
-    /// Returns the index of the currently active output port.
-    int outputValue() const override;
-
-    // --- State Setters ---
-
-    /// Resets the selection to port 0 (logic-0 on all ports).
-    void setOff() override;
-
-    /// Activates port 0 (no-op if already at 0).
-    void setOn() override;
-
-    /**
-     * \brief Sets the active port to \a port when \a value is true.
-     * \param value When true, activates \a port.
-     * \param port  Port index to activate.
-     */
-    void setOn(const bool value, const int port = 0) override;
-
     /// \reimp Also returns the selection to port 0. The selection (ParamId::Position) is the rotary's
-    /// simulation state too -- isOn() reads it and updateOutputs() republishes it every tick -- so
+    /// simulation state too -- isOn() reads it and updateSourceOutputs() republishes it every tick -- so
     /// without this a BeWavedDolphin sweep inherits whatever position the user last left on the
     /// canvas, and its "reset for reproducibility" pass has no effect on this element.
     void resetSimState() override;
@@ -62,10 +36,6 @@ public:
     /// saves and restores those; what it cannot know is that they are republished from
     /// the selection on the next tick, which would overwrite them.
     void restoreSimState(const QVector<Status> &in, int &cursor) override;
-
-    /// \reimp A rotary selects exactly one active port, so a low cell is implicit: only a
-    /// high \a value writes (selecting \a port); a low one is a no-op.
-    void setWaveformValue(const bool value, const int port = 0) override;
 
     // --- Visual ---
 
@@ -81,11 +51,4 @@ protected:
 
     /// Lays the ports out, then redraws the dial for the new output count.
     void layoutPorts() override;
-
-    /// \reimp Shows a new selection (ParamId::Position) on the dial and the outputs.
-    void parameterChanged(ParamId id, const ParamValue &previous) override;
-
-private:
-    /// Shows the selection on the dial and drives the outputs with it, the selected one Active.
-    void showSelection();
 };

@@ -21,7 +21,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
@@ -255,11 +254,10 @@ QList<Operation> operations(const QString &image, const QString &audio)
              return element.outputSize() != before;
          }},
         {"lock", Change::Parameter, [](Element &element, Scene &) {
-             auto *input = qobject_cast<ElementInput *>(&element);
-             if (!input) {
+             if (!element.hasParam(ParamId::Locked)) {
                  return false;
              }
-             input->setLocked(!input->isLocked());
+             element.setLocked(!element.isLocked());
              return true;
          }},
         {"level", Change::Parameter, [](Element &element, Scene &) {

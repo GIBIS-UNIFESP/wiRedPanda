@@ -438,13 +438,15 @@ This is the most important subsystem of the project. All circuit components (log
 ```text
 QGraphicsObject
   └── Element                     (abstract base — all circuit components)
-        ├── ElementInput          (abstract — user-interactive inputs)
-        │     ├── InputSwitch     (toggle on/off)
-        │     ├── InputButton     (momentary press)
-        │     ├── InputRotary     (multi-position rotary switch)
-        │     └── Clock           (frequency-driven square wave)
+        ├── InputSwitch           (toggle on/off)
+        ├── InputButton           (momentary press)
+        ├── InputRotary           (multi-position rotary switch)
+        ├── Clock                 (frequency-driven square wave)
         └── IC                    (sub-circuit / integrated circuit)
 ```
+
+The inputs the user operates share no base class: the element answers for their levels (`isOn()`, `setOn()`), which
+their descriptors read and set (`sourceLevel`, `setLevel`), and the lock (`isLocked()`, `setLocked()`).
 
 The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND), the node, the text and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
 
@@ -794,7 +796,7 @@ The simulation (`App/Simulation/Simulation.cpp`) runs on a **1ms QTimer** tick. 
 ```mermaid
 flowchart TD
     timer(["QTimer (1 ms)"])
-    step1["1. updateOutputs()
+    step1["1. updateSourceOutputs()
     Update inputs: clocks, buttons, switches"]
     step2["2. updateLogic()
     Process elements in topological order:
@@ -1725,7 +1727,7 @@ Ordered by difficulty:
 | `App/Core/ThemeManager.h`             | Theme system (light/dark/system)                      |
 | `App/Core/Priorities.h`               | Topological sorting and feedback detection            |
 | `App/Element/Element.h`               | Base class for all elements                           |
-| `App/Element/ElementInput.h`          | Base class for input elements                         |
+| `App/Element/InputLevel.h`            | The inputs' shared level and lock parameters          |
 | `App/Element/ElementInfo.h`           | Self-registration template and constraints            |
 | `App/Element/ElementFactory.h`        | Factory for creating elements by type                 |
 | `App/Element/ElementTypeDescriptor.h` | Element type descriptors (icons, names, capabilities) |

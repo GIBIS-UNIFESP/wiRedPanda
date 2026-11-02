@@ -5,7 +5,6 @@
 
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
-#include "App/Element/ElementInput.h"
 
 SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
 {
@@ -16,7 +15,6 @@ SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
     }
 
     auto *firstElement = elements.constFirst();
-    auto *firstInput   = qobject_cast<ElementInput *>(firstElement);
 
     // Start all flags true; AND-reduce over the selection below.
     c.hasAudioBox = c.hasColors = c.hasDelay = c.hasElements = true;
@@ -58,10 +56,9 @@ SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
         c.hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         c.maxCurrentOutputSize = (std::min)(c.maxCurrentOutputSize, elm->outputSize());
 
-        if (auto *elmInput = qobject_cast<ElementInput *>(elm);
-                elmInput && (group == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
-            c.hasSameOutputValue &= (elmInput->outputValue() == firstInput->outputValue());
-            c.sameCheckState     &= (elmInput->isLocked()    == firstInput->isLocked());
+        if ((group == ElementGroup::Input) && (firstElement->elementGroup() == ElementGroup::Input)) {
+            c.hasSameOutputValue &= (inputValue(*elm) == inputValue(*firstElement));
+            c.sameCheckState     &= (elm->isLocked()  == firstElement->isLocked());
         }
 
         c.hasSameTrigger &= (elm->trigger()      == firstElement->trigger());
@@ -102,4 +99,9 @@ SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
     }
 
     return c;
+}
+
+int inputValue(const Element &element)
+{
+    return element.hasParam(ParamId::Position) ? element.param<int>(ParamId::Position) : static_cast<int>(element.isOn());
 }

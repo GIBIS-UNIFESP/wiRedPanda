@@ -356,8 +356,9 @@ void ElementSerializer::loadParameters(Element &element, QDataStream &stream, co
         }
     }
 
-    if (descriptor.loaded) {
-        descriptor.loaded(element);
+    // Every load drives an input's levels on its outputs, unchanged ones and those of ports the load added included
+    if (descriptor.sourceLevel) {
+        element.showSourceLevels();
     }
 }
 

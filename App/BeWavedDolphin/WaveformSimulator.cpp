@@ -9,7 +9,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
-#include "App/Element/ElementInput.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Simulation/SimulationBlocker.h"
@@ -22,7 +21,7 @@ WaveformSimulator::WaveformSimulator(Scene *externalScene, Simulation *simulatio
 {
 }
 
-QVector<Status> WaveformSimulator::captureInputs(const QVector<ElementInput *> &inputs, const int inputPorts)
+QVector<Status> WaveformSimulator::captureInputs(const QVector<Element *> &inputs, const int inputPorts)
 {
     QVector<Status> oldValues(inputPorts);
     int oldIndex = 0;
@@ -38,7 +37,7 @@ QVector<Status> WaveformSimulator::captureInputs(const QVector<ElementInput *> &
     return oldValues;
 } // LCOV_EXCL_LINE -- compiler-generated QVector cleanup for an exception path captureInputs() never takes
 
-void WaveformSimulator::restoreInputs(const QVector<ElementInput *> &inputs, const QVector<Status> &saved)
+void WaveformSimulator::restoreInputs(const QVector<Element *> &inputs, const QVector<Status> &saved)
 {
     qCDebug(zero) << "Restoring old values to inputs, prior to simulation.";
 
@@ -63,18 +62,8 @@ void WaveformSimulator::restoreInputs(const QVector<ElementInput *> &inputs, con
                 continue;
             }
 
-            const bool oldValue = (savedStatus == Status::Active);
-            if (input->outputSize() > 1) {
-                // Multi-port inputs (e.g. InputRotary) are one-hot: selecting any port
-                // deselects the others, so calling setOn() for every port in sequence would
-                // just leave the last one selected regardless of what was captured. Only the
-                // port that was actually active needs to be (re-)selected.
-                if (oldValue) {
-                    input->setOn(oldValue, port);
-                }
-            } else {
-                input->setOn(oldValue);
-            }
+            // A rotary, one-hot, takes only the port that was selected; the low ones are no selection
+            input->setOn(savedStatus == Status::Active, port);
         }
     }
 }
@@ -134,11 +123,8 @@ void WaveformSimulator::sweep(const QVector<DolphinModelBuilder::Row> &rows, con
             if (descriptor.kind != DolphinModelBuilder::RowKind::Input) {
                 continue;
             }
-            // Each input applies the cell value its own way (e.g. a rotary ignores lows).
-            auto *input = qobject_cast<ElementInput *>(descriptor.element);
-            if (input) {
-                input->setWaveformValue(readInput(row, column), descriptor.port);
-            }
+            // Each input applies the cell value its own way (a rotary ignores lows)
+            descriptor.element->setOn(readInput(row, column), descriptor.port);
         }
 
         qCDebug(four) << "Updating the values of the circuit logic based on current input values.";

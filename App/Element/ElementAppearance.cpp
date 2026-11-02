@@ -243,11 +243,10 @@ void ElementAppearance::setAppearanceAt(const int index, const QString &fileName
 
 void ElementAppearance::setAlternativeAppearanceAt(const int index, const QString &path)
 {
-    // Unreachable: every call site passes a provably in-range index -- ElementInput
-    // (static_cast<int>(isOn()), always 0/1 for its always-2-slot appearance list),
-    // InputRotary (hardcoded 0), Element::applyAppearance() (the descriptor's shownSlot, an
-    // LED's within its 26 slots), and ElementSerializer's two appearance-name loaders (which
-    // already throw on an out-of-range index *before* ever reaching this call).
+    // Unreachable: every call site passes a provably in-range index -- InputRotary (hardcoded 0),
+    // Element::applyAppearance() (the descriptor's shownSlot: an input's level, 0 or 1, in its two
+    // slots, or an LED's within its 26 slots), and ElementSerializer's two appearance-name loaders
+    // (which already throw on an out-of-range index *before* ever reaching this call).
     if (index < 0 || index >= m_alternativeAppearances.size()) { // LCOV_EXCL_LINE
         return; // LCOV_EXCL_LINE
     }

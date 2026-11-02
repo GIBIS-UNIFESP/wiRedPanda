@@ -5,6 +5,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/InputLevel.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 #include "App/Wiring/Port.h"
@@ -15,6 +16,15 @@ namespace InputRotaryDetail {
 bool positionLevel(const Element &element, const int port)
 {
     return element.param<int>(ParamId::Position) == port;
+}
+
+/// Selects output \a port of \a element on a high \a level; a low one is no selection, since the rotary selects one
+/// output at a time and deselects the others itself.
+void selectOnLevel(Element &element, const bool level, const int port)
+{
+    if (level) {
+        element.setParam(ParamId::Position, port);
+    }
 }
 
 } // namespace InputRotaryDetail
@@ -38,6 +48,7 @@ struct ElementInfo<ElementType::InputRotary> {
         descriptor.kernel = KernelKind::Input;
         descriptor.kernelParameters = {ParamId::Position};
         descriptor.sourceLevel = InputRotaryDetail::positionLevel;
+        descriptor.setLevel = InputRotaryDetail::selectOnLevel;
         descriptor.pixmapPath = QStringLiteral(":/Components/Input/rotary_icon.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputRotary", "ROTARY SWITCH");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputRotary", "Rotary Switch");
@@ -45,7 +56,7 @@ struct ElementInfo<ElementType::InputRotary> {
         // The arrow over the selected position is drawn by the presenter; an older file's second position named it
         descriptor.appearanceSlots = {{"body", ":/Components/Input/rotary.svg"}};
         descriptor.appearancePositions = {"body", "arrow"};
-        // A selection out of the outputs' range is the first output, as a file's loads
+        // A selection out of the outputs' range is the first output, as a file's loads; the outputs drive it
         descriptor.parameters = {
             {
                 .id = ParamId::Position,
@@ -55,8 +66,9 @@ struct ElementInfo<ElementType::InputRotary> {
                     const int position = std::get<int>(value);
                     return ((position >= 0) && (position < element.outputSize())) ? value : ParamValue(0);
                 },
+                .drivesOutputs = true,
             },
-            ElementInput::lockSpec(),
+            InputLevel::lockSpec(),
         };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // Before 4.1 the selection was a bare int, then from 3.1 the lock a bare bool
@@ -73,11 +85,6 @@ struct ElementInfo<ElementType::InputRotary> {
         descriptor.pressOperation = [](Element &element) {
             element.setParam(ParamId::Position, (element.param<int>(ParamId::Position) + 1) % element.outputSize());
         };
-        // Every load drives the selection on the outputs, those the load added included
-        descriptor.loaded = [](Element &element) {
-            auto &rotary = static_cast<InputRotary &>(element);
-            rotary.setOn(true, rotary.outputValue());
-        };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 
@@ -89,21 +96,17 @@ struct ElementInfo<ElementType::InputRotary> {
 };
 
 InputRotary::InputRotary(QGraphicsItem *parent)
-    : ElementInput(ElementType::InputRotary, parent)
+    : Element(ElementType::InputRotary, parent)
 {
+    // The base's layout, in its constructor, cannot reach this class's: the dial's ports go around it
     updatePortsProperties();
-
-    // The dial starts at position 0, which drives HIGH while every other
-    // position drives LOW: push those definite levels to the output ports,
-    // which otherwise stay at the undriven Unknown default.
-    InputRotary::setOn(true, 0);
 }
 
 void InputRotary::refresh()
 {
     // Guard against a stale selection if output size was reduced (e.g. via undo)
-    if (outputValue() >= InputRotary::outputSize()) {
-        storeParam(ParamId::Position, 0);
+    if (param<int>(ParamId::Position) >= outputSize()) {
+        restoreParam(ParamId::Position, 0);
     }
 
     pictureChanged();
@@ -150,57 +153,10 @@ std::optional<Element::PortAttributes> InputRotary::outputAttributes(const int i
     return PortAttributes{.name = QString::number(index + 1), .position = QPointF(32, index * 16)};
 }
 
-bool InputRotary::isOn(const int port) const
-{
-    return (outputValue() == port);
-}
-
-void InputRotary::setOff()
-{
-}
-
-void InputRotary::setOn()
-{
-    // Advance the dial one position forward, wrapping around to 0 after the last port
-    const int port = (outputValue() + 1) % outputSize();
-    InputRotary::setOn(true, port);
-}
-
-void InputRotary::setOn(const bool value, const int port)
-{
-    // value is ignored — the rotary is not a simple toggle; the selected port determines state.
-    // The spec takes a port out of range, in either direction, as the first (load() feeds this
-    // raw values from the file, and a negative position would otherwise leave no port selected).
-    // The selection is shown also when it is the one the dial has, so a new dial drives its
-    // outputs with definite levels.
-    Q_UNUSED(value)
-    if (!setParam(ParamId::Position, port)) {
-        showSelection();
-    }
-}
-
-void InputRotary::parameterChanged(const ParamId id, const ParamValue &previous)
-{
-    ElementInput::parameterChanged(id, previous);
-    if (id == ParamId::Position) {
-        showSelection();
-    }
-}
-
-void InputRotary::showSelection()
-{
-    pictureChanged();
-
-    // Exactly one output port is Active (the selected position); all others are Inactive
-    for (int index = 0; index < outputSize(); ++index) {
-        outputPort(index)->setStatus((outputValue() == index) ? Status::Active : Status::Inactive);
-    }
-}
-
 void InputRotary::resetSimState()
 {
     Element::resetSimState();
-    storeParam(ParamId::Position, 0);
+    restoreParam(ParamId::Position, 0);
 }
 
 void InputRotary::restoreSimState(const QVector<Status> &in, int &cursor)
@@ -208,24 +164,15 @@ void InputRotary::restoreSimState(const QVector<Status> &in, int &cursor)
     Element::restoreSimState(in, cursor);
 
     // The base restores the one-hot output values, but isOn() answers from the selection and
-    // ElementInput::updateOutputs() pushes that onto the outputs on the very next tick --
+    // updateSourceOutputs() pushes that onto the outputs on the very next tick --
     // so without this the restore is undone before anything reads it. Derive the selection back
     // out of the outputs rather than smuggling an int through a QVector<Status>, whose enum has
     // no fixed underlying type and no room for a port index.
     for (int i = 0; i < outputSize(); ++i) {
-        if (Element::outputValue(i) == Status::Active) {
-            storeParam(ParamId::Position, i);
+        if (outputValue(i) == Status::Active) {
+            restoreParam(ParamId::Position, i);
             break;
         }
-    }
-}
-
-void InputRotary::setWaveformValue(const bool value, const int port)
-{
-    // Only a high cell selects this port; a low cell is implicit (writing it would wrongly
-    // re-select that port, since setOn ignores the value and selects by port index).
-    if (value) {
-        setOn(true, port);
     }
 }
 
@@ -239,14 +186,4 @@ void InputRotary::applyAppearance(const bool defaultAppearance, const QString &f
 
     m_appearance.setUsingDefaultAppearance(defaultAppearance);
     m_appearance.appearanceChanged();
-}
-
-int InputRotary::outputSize() const
-{
-    return static_cast<int>(outputs().size());
-}
-
-int InputRotary::outputValue() const
-{
-    return param<int>(ParamId::Position);
 }

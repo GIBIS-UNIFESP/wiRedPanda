@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "App/Element/ElementInput.h"
+#include "App/Element/Element.h"
 
 /**
  * \class InputSwitch
@@ -16,7 +16,7 @@
  * \details A single mouse click alternates the output between logic-0 and logic-1.
  * The state is persisted to the .panda file.
  */
-class InputSwitch : public ElementInput
+class InputSwitch : public Element
 {
     Q_OBJECT
 
@@ -25,22 +25,6 @@ public:
 
     /// Constructs the element with optional \a parent.
     explicit InputSwitch(QGraphicsItem *parent = nullptr);
-
-    // --- State Queries ---
-
-    /// Returns \c true if output port \a port is driven logic-high.
-    bool isOn(const int port = 0) const override;
-
-    // --- State Setters ---
-
-    /// Drives all output ports logic-low (toggles; see implementation).
-    void setOff() override;
-
-    /// Sets the switch to the on (logic-1) state (toggles; see implementation).
-    void setOn() override;
-
-    // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
-    using ElementInput::setOn;
 
     /// \reimp
     QList<std::pair<int, QString>> appearanceStates() const override;

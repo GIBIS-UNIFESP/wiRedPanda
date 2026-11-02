@@ -101,8 +101,8 @@ void TestLevel2Decoder2To4::testAddressDecoder2to4()
 
     auto &f = *s_level2Decoder2to4;
 
-    f.addressBits[0]->setOff();
-    f.addressBits[1]->setOff();
+    f.addressBits[0]->setOn(false);
+    f.addressBits[1]->setOn(false);
     f.sim->update();
 
     f.addressBits[0]->setOn((addressValue >> 0) & 1);

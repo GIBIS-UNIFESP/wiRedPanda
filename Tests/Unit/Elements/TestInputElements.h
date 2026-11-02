@@ -11,18 +11,18 @@ class TestInputElements : public QObject
 
 private slots:
     /// A sweep resets every element for reproducibility, and InputRotary must take part.
-    /// m_currentPort is not an output value, and updateOutputs() republishes it onto the outputs
-    /// every tick, so a reset that misses it is overwritten before anything reads it. A default
-    /// all-zero waveform table cannot correct that either -- setWaveformValue() is deliberately a
-    /// no-op for a low cell -- which would leave every column running at whatever position the
-    /// user last left on the canvas.
+    /// Its selection (ParamId::Position) is not an output value, and updateSourceOutputs() republishes
+    /// it onto the outputs every tick, so a reset that misses it is overwritten before anything reads
+    /// it. A default all-zero waveform table cannot correct that either -- a low level selects
+    /// nothing -- which would leave every column running at whatever position the user last left on
+    /// the canvas.
     void testRotarySelectionIsResetAndRestoredWithSimState();
 
     // InputSwitch Tests
     void testInputSwitchConstructor();
     void testInputSwitchInitialState();
-    void testInputSwitchSetOnToggle();
-    void testInputSwitchSetOffToggle();
+    void testInputSwitchPressToggles();
+    void testInputSwitchSetOnSetsTheLevel();
     void testInputSwitchIsOn();
     void testInputSwitchPortStatus();
     void testInputSwitchSaveState();

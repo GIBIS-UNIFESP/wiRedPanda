@@ -9,7 +9,7 @@
 
 #include <chrono>
 
-#include "App/Element/ElementInput.h"
+#include "App/Element/Element.h"
 
 /**
  * \class Clock
@@ -19,7 +19,7 @@
  * initial phase delay.  The clock is the only element driven by wall-clock time
  * rather than the synchronous simulation cycle.
  */
-class Clock : public ElementInput
+class Clock : public Element
 {
     Q_OBJECT
 
@@ -47,20 +47,8 @@ public:
 
     // --- State Queries ---
 
-    /// Returns \c true if the clock output is currently logic-high.
-    bool isOn(const int port = 0) const override;
     /// Returns a summary string of the clock's current frequency and delay settings.
     QString genericProperties() override;
-
-    // --- State Setters ---
-
-    /// Drives all output ports logic-high.
-    void setOn() override;
-    /// Drives all output ports logic-low.
-    void setOff() override;
-
-    // Bring the base setOn(bool, int) overload into scope (hidden by setOn() above).
-    using ElementInput::setOn;
 
     // --- Simulation ---
 

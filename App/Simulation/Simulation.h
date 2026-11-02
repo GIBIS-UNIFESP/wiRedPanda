@@ -19,7 +19,6 @@
 
 class Clock;
 class Element;
-class ElementInput;
 class InputPort;
 class OutputPort;
 class SimulationHost;
@@ -29,7 +28,7 @@ class SimulationHost;
  * \brief Manages the digital circuit simulation loop.
  *
  * \details The simulation runs a 1 ms periodic QTimer.  On each tick it:
- * 1. Updates all ElementInput outputs (including clocks).
+ * 1. Updates the outputs of every input the user operates (clocks included).
  * 2. Calls updateLogic() on all elements in priority order.
  * 3. Propagates values through connections to output elements.
  *
@@ -189,7 +188,7 @@ private:
     bool m_hasPausedAt = false;
     QVector<Clock *> m_clocks;
     QVector<Element *> m_outputs;
-    QVector<ElementInput *> m_inputs;
+    QVector<Element *> m_inputs;
 
     // --- Members: Host & state ---
 

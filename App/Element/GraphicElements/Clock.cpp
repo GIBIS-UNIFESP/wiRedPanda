@@ -9,6 +9,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/InputLevel.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 
@@ -32,6 +33,9 @@ struct ElementInfo<ElementType::Clock> {
         auto descriptor = descriptorFromConstraints(constraints);
         descriptor.kernel = KernelKind::Clock;
         descriptor.kernelParameters = {ParamId::Frequency, ParamId::Delay, ParamId::Locked};
+        descriptor.sourceLevel = InputLevel::onLevel;
+        descriptor.setLevel = InputLevel::setOnLevel;
+        descriptor.shownSlot = InputLevel::levelSlot;
         descriptor.pixmapPath = QStringLiteral(":/Components/Input/clock1.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("Clock", "CLOCK SIGNAL");
         descriptor.translatedName = QT_TRANSLATE_NOOP("Clock", "Clock");
@@ -42,8 +46,8 @@ struct ElementInfo<ElementType::Clock> {
         };
         // A clock's level follows the simulation's time: no state of the circuit
         descriptor.parameters = {
-            ElementInput::levelSpec(nullptr),
-            ElementInput::lockSpec(),
+            InputLevel::levelSpec(nullptr),
+            InputLevel::lockSpec(),
             {
                 // A frequency so high that the half-period rounds to zero is refused too
                 .id = ParamId::Frequency,
@@ -99,11 +103,8 @@ struct ElementInfo<ElementType::Clock> {
 };
 
 Clock::Clock(QGraphicsItem *parent)
-    : ElementInput(ElementType::Clock, parent)
+    : Element(ElementType::Clock, parent)
 {
-    // Frequency, interval, delay, and locked state are all covered by member
-    // initializers; only the output state needs behavior, not initialization:
-    Clock::setOff(); // start LOW; resetClock() will start HIGH when simulation begins
 }
 
 void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
@@ -140,25 +141,9 @@ void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
     }
 }
 
-bool Clock::isOn(const int port) const
-{
-    Q_UNUSED(port)
-    return param<bool>(ParamId::On);
-}
-
-void Clock::setOff()
-{
-    Clock::setOn(false);
-}
-
-void Clock::setOn()
-{
-    Clock::setOn(true);
-}
-
 void Clock::parameterChanged(const ParamId id, const ParamValue &previous)
 {
-    ElementInput::parameterChanged(id, previous);
+    Element::parameterChanged(id, previous);
     if (id == ParamId::Frequency) {
         m_interval = halfPeriod(frequency());
     }
@@ -167,7 +152,7 @@ void Clock::parameterChanged(const ParamId id, const ParamValue &previous)
 void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
 {
     // Start clocks in the HIGH state; the first transition happens after one interval
-    setOn();
+    setOn(true);
     // The delay is a fraction of the period (-1 to 1).
     // Negative delays advance the clock (trigger earlier), positive delays delay it.
     // Shifting m_startTime backward by the delay fraction effectively phase-shifts the waveform.

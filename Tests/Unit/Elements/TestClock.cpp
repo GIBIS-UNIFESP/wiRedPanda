@@ -237,7 +237,7 @@ void TestClock::testSetOn()
     Clock clock;
 
     // setOn sets to true
-    clock.setOn();
+    clock.setOn(true);
     QVERIFY(clock.isOn());
 
     // Output port should be Active
@@ -249,11 +249,11 @@ void TestClock::testSetOff()
     Clock clock;
 
     // Set to ON first
-    clock.setOn();
+    clock.setOn(true);
     QVERIFY(clock.isOn());
 
-    // setOff sets to false
-    clock.setOff();
+    // A low level sets it off
+    clock.setOn(false);
     QVERIFY(!clock.isOn());
 
     // Output port should be Inactive
@@ -270,7 +270,7 @@ void TestClock::testIsOn()
     QVERIFY(!clock.isOn(-1));
 
     // After setOn
-    clock.setOn();
+    clock.setOn(true);
     QVERIFY(clock.isOn());
     QVERIFY(clock.isOn(0));
     QVERIFY(clock.isOn(99));  // Port parameter ignored
@@ -284,11 +284,11 @@ void TestClock::testPortStatus()
     QCOMPARE(clock.outputPort(0)->status(), Status::Inactive);
 
     // After setOn
-    clock.setOn();
+    clock.setOn(true);
     QCOMPARE(clock.outputPort(0)->status(), Status::Active);
 
-    // After setOff
-    clock.setOff();
+    // After a low level
+    clock.setOn(false);
     QCOMPARE(clock.outputPort(0)->status(), Status::Inactive);
 }
 

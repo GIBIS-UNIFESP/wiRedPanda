@@ -19,7 +19,6 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/KernelLogic.h"
@@ -427,7 +426,10 @@ void TestElementFactory::testEachTypeNamesItsKernel()
     }
     QCOMPARE(read, parameters);
     QCOMPARE(descriptor.kernelReadsLabel, readsLabel);
-    QCOMPARE(descriptor.sourceLevel != nullptr, descriptor.kernel == KernelKind::Input);
+    // An input the user operates, a clock among them, drives its outputs from its levels and sets them
+    const bool operated = (descriptor.kernel == KernelKind::Input) || (descriptor.kernel == KernelKind::Clock);
+    QCOMPARE(descriptor.sourceLevel != nullptr, operated);
+    QCOMPARE(descriptor.setLevel != nullptr, operated);
 
     // Each parameter the kernel reads is one the type has
     for (const auto id : descriptor.kernelParameters) {
@@ -676,14 +678,14 @@ void TestElementFactory::testAnInputsSourceLevelComesFromItsParameters()
 {
     // The level of each port is the one the element drives it with and answers for, which the core has to reproduce
     const auto agrees = [](const Element &element, const int port, const bool on) {
-        const auto *input = qobject_cast<const ElementInput *>(&element);
         const bool driven = element.outputPort(port)->status() == Status::Active;
-        return input && (ElementTypeDescriptor::of(element.elementType()).sourceLevel(element, port) == on)
-            && (driven == on) && (input->isOn(port) == on);
+        return (element.elementGroup() == ElementGroup::Input)
+            && (ElementTypeDescriptor::of(element.elementType()).sourceLevel(element, port) == on) && (driven == on)
+            && (element.isOn(port) == on);
     };
 
-    // A switch's and a button's port follows its level
-    for (const auto type : {ElementType::InputSwitch, ElementType::InputButton}) {
+    // A switch's, a button's and a clock's port follows its level
+    for (const auto type : {ElementType::InputSwitch, ElementType::InputButton, ElementType::Clock}) {
         const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
         QVERIFY(agrees(*element, 0, false));
         QVERIFY(element->setParam(ParamId::On, true));

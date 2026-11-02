@@ -21,7 +21,6 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -645,9 +644,12 @@ QJsonObject ElementHandler::handleSetInputValue(const QJsonObject &params, const
     }
     const bool value = params.value("value").toBool();
 
-    auto *inputElement = dynamic_cast<ElementInput *>(element);
-    if (inputElement) {
-        inputElement->setOn(value);
+    // A rotary selects one output at a time: it has no level to set
+    if (element->elementType() == ElementType::InputRotary) {
+        return createErrorResponse("A rotary switch selects one output and takes no input value", requestId, JsonRpcError::ValidationError);
+    }
+    if (element->elementGroup() == ElementGroup::Input) {
+        element->setOn(value);
 
         Scene *scene = currentScene();
         if (scene && scene->simulation()) {
@@ -683,13 +685,12 @@ QJsonObject ElementHandler::handleGetOutputValue(const QJsonObject &params, cons
 
     QJsonObject result;
 
-    auto *inputElement = dynamic_cast<ElementInput *>(element);
-    if (inputElement) {
+    if (element->elementGroup() == ElementGroup::Input) {
         // An input's own state, which drives its port once the simulation runs
         if (!validatePortRange(element, portIndex, true, "port", errorMsg)) {
             return createErrorResponse(errorMsg, requestId, JsonRpcError::ValidationError);
         }
-        const bool on = inputElement->isOn(portIndex);
+        const bool on = element->isOn(portIndex);
         result["value"] = on;
         result["status"] = statusName(on ? Status::Active : Status::Inactive);
     } else {

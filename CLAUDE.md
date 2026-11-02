@@ -178,8 +178,6 @@ a new site is classified there (below a boundary, an expected condition, a broke
   FNV-1a; two random draws in one expression need an explicit order; fonts differ per platform (Noto, DejaVu and
   Liberation Sans all pass, or the font-dependent value is masked); `QDrag::exec()` cannot be driven, so drops are sent
   as events; clipboard tests hold the `clipboard` resource lock.
-- `InputSwitch::setOff()` and the no-argument `setOn()` both toggle, by design (a switch toggles its latched state);
-  only `setOn(bool)` sets a level. A test that "clears" a switch with `setOff()` turns an off switch on.
 - Goldens regenerate when `GENERATE_EXPECTED_SNAPSHOTS` is set, even to an empty value, so nothing that runs the suite
   may export it.
 - QtTest's watchdog aborts a slot after 300 s and its stack dump can hang the process; long slots run with
@@ -237,7 +235,7 @@ over matched settle windows.
 
 - **Fixed Update Cycle**: 1ms intervals via QTimer for consistent simulation steps
 - **Sequential Update Phases** per cycle:
-  1. Update input elements (`updateOutputs()`)
+  1. Update input elements (`updateSourceOutputs()`)
   2. Update all logic elements (`updateLogic()`)
   3. Update connections (`updatePort()`)
   4. Update output elements

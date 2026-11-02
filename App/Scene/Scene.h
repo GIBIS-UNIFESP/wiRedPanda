@@ -556,8 +556,6 @@ private:
     bool nudgeSelection(QKeyEvent *event);
     /// Returns the element \a item belongs to, \a item itself or the element of a port or label: null for none.
     [[nodiscard]] static Element *elementOf(QGraphicsItem *item);
-    /// Returns whether \a element is locked, so takes no operation from the mouse or its trigger key.
-    [[nodiscard]] static bool isLocked(const Element &element);
     /**
      * \brief Operates the element that took the press \a event, which Qt has dispatched, as one undoable change.
      * \details Records the element holding the mouse as the one that last held it; a left press of it, unless it is

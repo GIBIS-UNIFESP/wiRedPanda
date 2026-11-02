@@ -34,7 +34,6 @@ private slots:
     void testSaveLoadPreservesState();
 
     // State management tests
-    void testSetOffDoesNothing();
     void testMultipleSetOn();
     void testPortStatusAfterSetOn();
 
@@ -50,9 +49,11 @@ private slots:
     // Painting
     void testPainting();
 
-    // setWaveformValue()
-    void testSetWaveformValueTrueSelectsPort();
-    void testSetWaveformValueFalseIsNoOp();
+    // A level, a waveform's cell among them
+    void testAHighLevelSelectsThePort();
+    void testALowLevelSelectsNothing();
+    void testANewSelectionRepaintsTheDial();
+    void testAResetAndARestoreOfTheSimulationShowTheSelection();
 
     // mousePressEvent()
     void testMousePressAdvancesPort();

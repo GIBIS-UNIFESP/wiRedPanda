@@ -5,6 +5,7 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/InputLevel.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
 
@@ -27,7 +28,9 @@ struct ElementInfo<ElementType::InputButton> {
         auto descriptor = descriptorFromConstraints(constraints);
         descriptor.kernel = KernelKind::Input;
         descriptor.kernelParameters = {ParamId::On};
-        descriptor.sourceLevel = ElementInput::onLevel;
+        descriptor.sourceLevel = InputLevel::onLevel;
+        descriptor.setLevel = InputLevel::setOnLevel;
+        descriptor.shownSlot = InputLevel::levelSlot;
         descriptor.pixmapPath = QStringLiteral(":/Components/Input/buttonOff.svg");
         descriptor.titleText = QT_TRANSLATE_NOOP("InputButton", "PUSH BUTTON");
         descriptor.translatedName = QT_TRANSLATE_NOOP("InputButton", "Push Button");
@@ -37,7 +40,7 @@ struct ElementInfo<ElementType::InputButton> {
             {"on", ":/Components/Input/buttonOn.svg"},
         };
         // A button is held only while pressed: its level is no state of the circuit
-        descriptor.parameters = {ElementInput::levelSpec(nullptr), ElementInput::lockSpec()};
+        descriptor.parameters = {InputLevel::levelSpec(nullptr), InputLevel::lockSpec()};
         // Momentary: down on a press, up on its release, unlike a switch, which latches
         descriptor.pressOperation = [](Element &element) { element.setParam(ParamId::On, true); };
         descriptor.releaseOperation = [](Element &element) { element.setParam(ParamId::On, false); };
@@ -60,25 +63,8 @@ struct ElementInfo<ElementType::InputButton> {
 };
 
 InputButton::InputButton(QGraphicsItem *parent)
-    : ElementInput(ElementType::InputButton, parent)
+    : Element(ElementType::InputButton, parent)
 {
-    InputButton::setOff();
-}
-
-bool InputButton::isOn(const int port) const
-{
-    Q_UNUSED(port)
-    return param<bool>(ParamId::On);
-}
-
-void InputButton::setOff()
-{
-    InputButton::setOn(false);
-}
-
-void InputButton::setOn()
-{
-    InputButton::setOn(true);
 }
 
 QList<std::pair<int, QString>> InputButton::appearanceStates() const

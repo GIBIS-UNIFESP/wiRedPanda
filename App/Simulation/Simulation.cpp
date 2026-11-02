@@ -106,7 +106,7 @@ void Simulation::update()
     // Phase 1: propagate user-controlled inputs (switches, buttons, etc.)
     for (auto *inputElm : inputs) {
         if (inputElm) {
-            inputElm->updateOutputs();
+            inputElm->updateSourceOutputs();
         }
     }
 
@@ -511,10 +511,7 @@ bool Simulation::initialize()
             }
 
             if (element->elementGroup() == ElementGroup::Input) {
-                auto *input = qobject_cast<ElementInput *>(element);
-                if (input) {
-                    m_inputs.append(input);
-                }
+                m_inputs.append(element);
             }
 
             if (element->elementGroup() == ElementGroup::Output) {

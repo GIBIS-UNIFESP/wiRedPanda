@@ -1625,7 +1625,7 @@ void Scene::operateTriggered(const QKeyEvent *event, const Operation operation)
     QList<Element *> triggered;
     for (auto *element : unsortedElements()) {
         if (element->hasTrigger() && !element->trigger().isEmpty() && element->trigger().matches(event->key())
-            && !isLocked(*element) && element->hasOperation(operation)) {
+            && !element->isLocked() && element->hasOperation(operation)) {
             triggered.append(element);
         }
     }
@@ -1677,7 +1677,7 @@ void Scene::operatePress(const QGraphicsSceneMouseEvent *event)
 {
     m_lastHolder = elementOf(mouseGrabberItem());
     Element *element = m_lastHolder;
-    if ((event->button() != Qt::LeftButton) || !element || isLocked(*element)) {
+    if ((event->button() != Qt::LeftButton) || !element || element->isLocked()) {
         return;
     }
     // What the press does, such as a switch toggling, is one undoable change
@@ -1695,11 +1695,6 @@ Element *Scene::elementOf(QGraphicsItem *item)
         }
     }
     return nullptr;
-}
-
-bool Scene::isLocked(const Element &element)
-{
-    return element.hasParam(ParamId::Locked) && element.param<bool>(ParamId::Locked);
 }
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -1730,7 +1725,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!m_interaction.mouseRelease(event)) {
         // Qt gives the release to the element holding the mouse, wherever the pointer is
-        if (auto *holder = elementOf(mouseGrabberItem()); holder && (event->button() == Qt::LeftButton) && !isLocked(*holder) && holder->hasOperation(Operation::Release)) {
+        if (auto *holder = elementOf(mouseGrabberItem()); holder && (event->button() == Qt::LeftButton) && !holder->isLocked() && holder->hasOperation(Operation::Release)) {
             recordOperation({holder}, [holder] { holder->operate(Operation::Release); });
         }
         // Qt hovers again on the release of the last button, of an item that held the mouse

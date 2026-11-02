@@ -13,7 +13,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -188,7 +187,7 @@ void TestWirePixelSnapshot::testClockedFixtureWiresMatchGoldens()
     int clocks = 0;
     for (auto *element : scene->unsortedElements()) {
         if (element->elementType() == ElementType::Clock) {
-            static_cast<ElementInput *>(element)->setLocked(true);
+            element->setLocked(true);
             ++clocks;
         }
     }

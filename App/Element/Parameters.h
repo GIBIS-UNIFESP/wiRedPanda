@@ -107,6 +107,10 @@ struct ParamSpec {
     /// Whether the type's port attributes follow the value (a node's wireless mode), so a new one applies them again
     /// and the ports are reported changed.
     bool laysOutPorts = false;
+
+    /// Whether the value is a level the element drives on its outputs (an input's level or selection), so a new one
+    /// sets each output port from the type's ElementTypeDescriptor::sourceLevel.
+    bool drivesOutputs = false;
 };
 
 /**

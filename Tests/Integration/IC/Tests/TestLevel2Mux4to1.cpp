@@ -103,8 +103,8 @@ void TestLevel2MUX4To1::testMultiplexer4to1()
     for (int i = 0; i < 4; ++i) {
         f.inputs[i]->setOn(i % 2 == 0);
     }
-    f.selectBit0->setOff();
-    f.selectBit1->setOff();
+    f.selectBit0->setOn(false);
+    f.selectBit1->setOn(false);
     f.sim->update();
 
     if (selectValue == -1) {

@@ -137,6 +137,31 @@ public:
     /// Returns \c true if this element offers a wireless routing mode (ParamId::Wireless).
     bool hasWirelessMode() const;
 
+    // --- Inputs the user operates ---
+
+    /// Whether output \a port of an input the user operates is on (ElementTypeDescriptor::sourceLevel): a switch's, a
+    /// button's or a clock's level, or whether a rotary selects \a port; off for any other type.
+    bool isOn(int port = 0) const;
+
+    /// Drives output \a port of an input the user operates with \a level (ElementTypeDescriptor::setLevel): a switch's,
+    /// a button's or a clock's level; a rotary, which selects one output at a time, selects \a port on a high level and
+    /// ignores a low one. Nothing for any other type.
+    void setOn(bool level, int port = 0);
+
+    /// Returns \c true if the input is locked (ParamId::Locked), so takes no operation from the mouse or its trigger key;
+    /// false for a type without a lock.
+    bool isLocked() const;
+
+    /// Locks or unlocks the input against the user (ParamId::Locked).
+    void setLocked(bool locked);
+
+    /// Sets each output port of an input the user operates from its levels (ElementTypeDescriptor::sourceLevel): as it
+    /// is built, at each layout and at each new level, so the ports show what it drives before the simulation runs.
+    void showSourceLevels();
+
+    /// Drives the simulation's outputs of an input the user operates from its levels, at each update.
+    void updateSourceOutputs();
+
     // --- Element Type & Identity ---
 
     /// Returns the group this element belongs to.
@@ -735,10 +760,11 @@ protected:
     /// ports). Called by setParam(); nothing by default.
     virtual void parameterChanged(ParamId id, const ParamValue &previous);
 
-    /// Stores \a value, of its kind, as parameter \a id as it is: no rule, no follow-up. For a value the element keeps
-    /// in step with its simulation state (a rotary's selection restored with its outputs), which is no change of the
-    /// circuit.
-    void storeParam(const ParamId id, ParamValue value) { m_parameters.set(id, std::move(value)); }
+    /// Puts back \a value, of its kind, as parameter \a id as it is, no rule applied: a value the element keeps in step
+    /// with its simulation state (a rotary's selection, reset or restored with its outputs). It shows as setParam()
+    /// shows a new value (showParam()), and repaints the picture, but it is no change of the circuit, which neither the
+    /// undo stack nor a file sees.
+    void restoreParam(ParamId id, ParamValue value);
 
     // --- Qt Event Handling ---
 
@@ -797,6 +823,11 @@ protected:
     QGraphicsSimpleTextItem *m_label = new QGraphicsSimpleTextItem(this); ///< Child text item that displays the label and optional trigger shortcut.
 
 private:
+    /// Shows a new value of the parameter \a spec describes, as its flags say: a new picture (ParamSpec::showsPicture),
+    /// a repaint (ParamSpec::repaints), the ports laid out (ParamSpec::laysOutPorts), the outputs driven
+    /// (ParamSpec::drivesOutputs).
+    void showParam(const ParamSpec &spec);
+
     Q_DISABLE_COPY_MOVE(Element)
 
     /// Reaches ports/orientation/appearance/context-directory state to implement save()/loadState();

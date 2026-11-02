@@ -101,7 +101,7 @@ struct RegFile8x8Fixture {
         sim->update();
         clockCycle(sim, clock);
         sim->update();
-        writeEnable->setOff();
+        writeEnable->setOn(false);
         sim->update();
     }
 

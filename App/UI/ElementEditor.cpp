@@ -21,7 +21,6 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -345,7 +344,6 @@ void ElementEditor::applyCapabilitiesToUi()
 {
     const auto &c      = m_caps;
     auto *firstElement = m_elements.constFirst();
-    auto *firstInput   = qobject_cast<ElementInput *>(firstElement);
 
     /* Element type title */
     m_ui->groupBox->setTitle(ElementFactory::typeToTitleText(c.elementType));
@@ -474,7 +472,7 @@ void ElementEditor::applyCapabilitiesToUi()
         }
     }
     if (prepareCombo(m_ui->comboBoxValue, c.hasLatchedValue, c.hasSameOutputValue, m_manyOV)) {
-        m_ui->comboBoxValue->setCurrentText(QString::number(firstInput->outputValue()));
+        m_ui->comboBoxValue->setCurrentText(QString::number(inputValue(*firstElement)));
     }
 
     /* Input locked */
@@ -483,7 +481,7 @@ void ElementEditor::applyCapabilitiesToUi()
         // When a multi-selection has mixed lock states, show a partially-checked
         // state rather than incorrectly representing all as locked or unlocked.
         if (c.sameCheckState) {
-            m_ui->checkBoxLocked->setCheckState(firstInput->isLocked() ? Qt::Checked : Qt::Unchecked);
+            m_ui->checkBoxLocked->setCheckState(firstElement->isLocked() ? Qt::Checked : Qt::Unchecked);
         } else {
             m_ui->checkBoxLocked->setCheckState(Qt::PartiallyChecked);
         }

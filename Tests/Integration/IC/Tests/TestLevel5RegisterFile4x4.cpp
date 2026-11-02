@@ -100,7 +100,7 @@ struct RegFile4x4Fixture {
         sim->update();
         clockCycle(sim, clock);
         sim->update();
-        writeEnable->setOff();
+        writeEnable->setOn(false);
         sim->update();
     }
 
@@ -231,7 +231,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readmux()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
     } else {
         // Write all registers with pattern 0,1,2,3
@@ -255,7 +255,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readmux()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         // VERIFY WRITE: Check that all registers have their written values
@@ -326,7 +326,7 @@ void TestLevel5RegisterFile4X4::testRegisterFile4x4_debug_readaddr()
     f.clock->setOn(false);
     f.sim->update();
 
-    f.writeEnable->setOff();
+    f.writeEnable->setOn(false);
     f.sim->update();
 
     f.readAddr[0]->setOn((readAddr >> 0) & 1);
@@ -490,7 +490,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         for (int regIdx = 0; regIdx < 4; ++regIdx) {
@@ -525,7 +525,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -558,7 +558,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -578,7 +578,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.writeEnable->setOn(true);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
         f.writeEnable->setOn(true);
         f.sim->update();
@@ -588,7 +588,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -613,7 +613,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -640,7 +640,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -663,7 +663,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.sim->update();
@@ -695,7 +695,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -720,7 +720,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.writeAddr[0]->setOn(true);
@@ -743,7 +743,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(true);
@@ -768,7 +768,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -790,7 +790,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
 
         f.clock->setOn(true);
         f.sim->update();
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
         f.clock->setOn(false);
         f.sim->update();
@@ -823,7 +823,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -852,7 +852,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         for (int reg = 0; reg < 4; ++reg) {
@@ -881,7 +881,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         for (int reg = 0; reg < 4; ++reg) {
@@ -910,7 +910,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         for (int reg = 0; reg < 4; ++reg) {
@@ -941,7 +941,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         for (int reg = 0; reg < 4; ++reg) {
@@ -973,7 +973,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -1001,7 +1001,7 @@ void TestLevel5RegisterFile4X4::testMemoryTiming()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         // Different read orders based on test number
@@ -1077,7 +1077,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         for (int regIdx = 0; regIdx < 2; ++regIdx) {
@@ -1107,7 +1107,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
             f.sim->update();
         }
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -1136,14 +1136,14 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
 
         f.clock->setOn(true);
         f.sim->update();
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
         f.writeEnable->setOn(true);
         f.sim->update();
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);
@@ -1171,7 +1171,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         // Empirically (confirmed via this exact sequence): the write commits using the
@@ -1207,7 +1207,7 @@ void TestLevel5RegisterFile4X4::testRegisterFileTimingEdges()
         f.clock->setOn(false);
         f.sim->update();
 
-        f.writeEnable->setOff();
+        f.writeEnable->setOn(false);
         f.sim->update();
 
         f.readAddr[0]->setOn(false);

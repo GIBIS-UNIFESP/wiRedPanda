@@ -416,7 +416,7 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     conn2->setEndPort(and2->inputPort(0));
 
     // Turn on switch to make output Active
-    sw->setOn();
+    sw->setOn(true);
     QCOMPARE(sw->outputPort()->status(), Status::Active);
 
     // Calculate serial IDs for all ports (see Port::makeSerialId())

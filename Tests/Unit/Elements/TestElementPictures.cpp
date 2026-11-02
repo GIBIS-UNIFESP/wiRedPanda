@@ -24,7 +24,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementAppearance.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Presentation/ElementPictures.h"
@@ -432,19 +431,17 @@ void TestElementPictures::testALevelShowsItsSlot()
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
 
     const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
-    auto *input = qobject_cast<ElementInput *>(element.get());
-    QVERIFY(input != nullptr);
-    const QSize off = ElementPicturesTestDetail::shownSize(*input);
+    const QSize off = ElementPicturesTestDetail::shownSize(*element);
     QVERIFY(off.isValid());
 
     // The on picture is custom: it shows while the level is on, and the off picture while it is off.
-    input->setOn(true);
-    input->setAppearance(false, path);
-    QVERIFY(ElementPicturesTestDetail::shows(*input, QSize(96, 80)));
-    input->setOn(false);
-    QVERIFY(ElementPicturesTestDetail::shows(*input, off));
-    input->setOn(true);
-    QVERIFY(ElementPicturesTestDetail::shows(*input, QSize(96, 80)));
+    element->setOn(true);
+    element->setAppearance(false, path);
+    QVERIFY(ElementPicturesTestDetail::shows(*element, QSize(96, 80)));
+    element->setOn(false);
+    QVERIFY(ElementPicturesTestDetail::shows(*element, off));
+    element->setOn(true);
+    QVERIFY(ElementPicturesTestDetail::shows(*element, QSize(96, 80)));
 }
 
 void TestElementPictures::testAnAudioOutputShowsWhetherItPlays_data()

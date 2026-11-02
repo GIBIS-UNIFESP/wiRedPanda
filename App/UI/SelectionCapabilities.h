@@ -79,3 +79,7 @@ struct SelectionCapabilities {
  * \return A fully populated SelectionCapabilities; all flags false if \a elements is empty.
  */
 SelectionCapabilities computeCapabilities(const QList<Element *> &elements);
+
+/// The value the editor shows for an input the user operates: a rotary's selection (ParamId::Position), any other
+/// input's level.
+int inputValue(const Element &element);

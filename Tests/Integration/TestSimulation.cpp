@@ -270,13 +270,13 @@ void TestSimulation::testMultiCycleStability()
     auto *simulation = builder.initSimulation();
 
     // Set inputs and run multiple cycles
-    sw1.setOn();
-    sw2.setOn();
+    sw1.setOn(true);
+    sw2.setOn(true);
     simulation->update();
     QCOMPARE(inputStatus(&led), Status::Active);
 
     // Change input and run multiple cycles
-    sw1.setOff();
+    sw1.setOn(false);
     simulation->update();
     QCOMPARE(inputStatus(&led), Status::Inactive);
 }

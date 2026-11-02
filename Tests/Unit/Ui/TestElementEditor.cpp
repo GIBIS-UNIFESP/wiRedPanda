@@ -1417,7 +1417,7 @@ void TestElementEditor::testOutputValueChangedForInputRotary()
 
     combo->setCurrentIndex(idx);
 
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
 }
 
 void TestElementEditor::testOutputValueChangedForRegularInput()
@@ -2037,14 +2037,14 @@ void TestElementEditor::testUndoRestoresTheValueOfAnInput()
     auto *combo = editor.findChild<QComboBox *>("comboBoxValue");
     combo->setCurrentText("1");
     QVERIFY(input->isOn());
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
 
     workspace.scene()->undoStack()->undo();
     QVERIFY(!input->isOn());
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
     workspace.scene()->undoStack()->redo();
     QVERIFY(input->isOn());
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
 }
 
 void TestElementEditor::testEditingAFieldLeavesTheOthers()

@@ -86,6 +86,7 @@ private slots:
     void testHandleSetInputValueRejectsMissingParams();
     void testHandleSetInputValueRejectsUnknownElement();
     void testHandleSetInputValueRejectsNonInputElement();
+    void testHandleSetInputValueRefusesARotary();
     void testHandleSetInputValueSetsRealValue();
 
     void testHandleGetOutputValueRejectsMissingParams();

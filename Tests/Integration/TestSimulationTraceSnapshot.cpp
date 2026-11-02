@@ -19,7 +19,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
@@ -139,12 +138,16 @@ private:
 };
 
 /// Drives \a input one step of \a walk: a rotary selects one of its positions, any other input takes a level.
-void drive(ElementInput *input, Lcg &walk)
+void drive(Element *input, Lcg &walk)
 {
     // Drawn one after the other, not as two arguments of one call, whose order the compiler picks.
     const bool level = walk.nextBit();
     const int position = walk.below(input->outputSize());
-    input->setOn(level, position);
+    if (input->elementType() == ElementType::InputRotary) {
+        input->setOn(true, position);
+    } else {
+        input->setOn(level);
+    }
 }
 
 /// Writes \a steps kStepsPerLine to a line, each line led by its first step's index.
@@ -238,7 +241,7 @@ QStringList elementRun(const ElementType type, const int inputs, const int outpu
     }
 
     Lcg walk(seedOf(name));
-    auto *input = (element->inputSize() == 0) ? dynamic_cast<ElementInput *>(element) : nullptr;
+    auto *input = ((element->inputSize() == 0) && (element->elementGroup() == ElementGroup::Input)) ? element : nullptr;
     if ((wired > 0) || input) {
         for (int index = 0; index < kWalkSteps; ++index) {
             if (input) {
@@ -311,12 +314,11 @@ QString circuitTrace(const QString &filePath, const int steps)
     }
     auto *scene = workspace.scene();
 
-    QList<ElementInput *> inputs;
+    QList<Element *> inputs;
     QList<const Element *> traced;
     for (auto *element : TestUtils::elementsById(scene)) {
-        auto *input = dynamic_cast<ElementInput *>(element);
-        if (input && (element->elementType() != ElementType::Clock)) {
-            inputs << input;
+        if ((element->elementGroup() == ElementGroup::Input) && (element->elementType() != ElementType::Clock)) {
+            inputs << element;
         }
         if ((element->elementGroup() == ElementGroup::Output) || (element->elementType() == ElementType::IC)) {
             traced << element;

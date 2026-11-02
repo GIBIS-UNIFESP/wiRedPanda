@@ -14,7 +14,6 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.cpp
@@ -54,6 +53,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/InputLevel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LabelMeasure.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.cpp
@@ -94,7 +94,6 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementChange.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.h
@@ -107,6 +106,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/InputLevel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LabelMeasure.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.h

@@ -2695,7 +2695,7 @@ void TestScene::testKeyTriggerIgnoresAutoRepeat()
     inputSwitch->setTrigger(QKeySequence(Qt::Key_A));
     scene->addItem(inputSwitch);
 
-    // Known starting state (setOn(bool) sets a definite level; the no-arg setOn() would toggle).
+    // Known starting state.
     inputSwitch->setOn(false);
     QVERIFY(!inputSwitch->isOn());
 

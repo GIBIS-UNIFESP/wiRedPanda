@@ -10,7 +10,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Scene/Scene.h"
 
 namespace DolphinModelBuilder {
@@ -78,7 +77,7 @@ Signals collect(Scene *scene)
         }
 
         if (elm->elementGroup() == ElementGroup::Input) {
-            result.inputs.append(qobject_cast<ElementInput *>(elm));
+            result.inputs.append(elm);
         }
 
         if (elm->elementGroup() == ElementGroup::Output) {
@@ -121,7 +120,7 @@ Signals collect(Scene *scene)
     }
 
     // Rows first -- they are the source of truth; the label lists are projections of them.
-    appendRows(result.rows, result.inputs,  RowKind::Input,  [](const ElementInput *e) { return e->outputSize(); });
+    appendRows(result.rows, result.inputs,  RowKind::Input,  [](const Element *e) { return e->outputSize(); });
     appendRows(result.rows, result.outputs, RowKind::Output, [](const Element *e) { return e->inputSize(); });
 
     result.inputLabels  = labelsOf(result.rows, RowKind::Input);

@@ -66,44 +66,35 @@ void TestInputElements::testInputSwitchInitialState()
     QCOMPARE(inputSwitch.outputPort(0)->status(), Status::Inactive);
 }
 
-void TestInputElements::testInputSwitchSetOnToggle()
+void TestInputElements::testInputSwitchPressToggles()
 {
     InputSwitch inputSwitch;
 
     // Start: OFF
     QVERIFY(!inputSwitch.isOn());
 
-    // setOn() toggles from OFF to ON
-    inputSwitch.setOn();
+    // Each press toggles the latched level: on, off, on
+    inputSwitch.operate(Operation::Press);
     QVERIFY(inputSwitch.isOn());
-
-    // setOn() toggles from ON to OFF
-    inputSwitch.setOn();
+    inputSwitch.operate(Operation::Press);
     QVERIFY(!inputSwitch.isOn());
-
-    // setOn() toggles back to ON
-    inputSwitch.setOn();
+    inputSwitch.operate(Operation::Press);
     QVERIFY(inputSwitch.isOn());
 }
 
-void TestInputElements::testInputSwitchSetOffToggle()
+void TestInputElements::testInputSwitchSetOnSetsTheLevel()
 {
     InputSwitch inputSwitch;
 
-    // Start: OFF
-    QVERIFY(!inputSwitch.isOn());
-
-    // setOff() toggles from OFF to ON
-    inputSwitch.setOff();
+    // A level is set, not toggled: the same level twice leaves it so
+    inputSwitch.setOn(true);
     QVERIFY(inputSwitch.isOn());
-
-    // setOff() toggles from ON to OFF
-    inputSwitch.setOff();
-    QVERIFY(!inputSwitch.isOn());
-
-    // setOff() toggles back to ON
-    inputSwitch.setOff();
+    inputSwitch.setOn(true);
     QVERIFY(inputSwitch.isOn());
+    inputSwitch.setOn(false);
+    QVERIFY(!inputSwitch.isOn());
+    inputSwitch.setOn(false);
+    QVERIFY(!inputSwitch.isOn());
 }
 
 void TestInputElements::testInputSwitchIsOn()
@@ -323,12 +314,12 @@ void TestInputElements::testInputButtonSetOn()
     // Start: OFF
     QVERIFY(!inputButton.isOn());
 
-    // setOn() sets to ON (no toggle)
-    inputButton.setOn();
+    // A high level sets it on
+    inputButton.setOn(true);
     QVERIFY(inputButton.isOn());
 
-    // setOn() again - still ON (no toggle)
-    inputButton.setOn();
+    // Again: still on
+    inputButton.setOn(true);
     QVERIFY(inputButton.isOn());
 }
 
@@ -337,15 +328,15 @@ void TestInputElements::testInputButtonSetOff()
     InputButton inputButton;
 
     // Set to ON first
-    inputButton.setOn();
+    inputButton.setOn(true);
     QVERIFY(inputButton.isOn());
 
-    // setOff() sets to OFF (no toggle)
-    inputButton.setOff();
+    // A low level sets it off
+    inputButton.setOn(false);
     QVERIFY(!inputButton.isOn());
 
-    // setOff() again - still OFF (no toggle)
-    inputButton.setOff();
+    // Again: still off
+    inputButton.setOn(false);
     QVERIFY(!inputButton.isOn());
 }
 
@@ -359,7 +350,7 @@ void TestInputElements::testInputButtonIsOn()
     QVERIFY(!inputButton.isOn(-1));
 
     // After setOn
-    inputButton.setOn();
+    inputButton.setOn(true);
     QVERIFY(inputButton.isOn());
     QVERIFY(inputButton.isOn(0));
     QVERIFY(inputButton.isOn(99));  // Port parameter ignored
@@ -373,11 +364,11 @@ void TestInputElements::testInputButtonPortStatus()
     QCOMPARE(inputButton.outputPort(0)->status(), Status::Inactive);
 
     // After setOn
-    inputButton.setOn();
+    inputButton.setOn(true);
     QCOMPARE(inputButton.outputPort(0)->status(), Status::Active);
 
-    // After setOff
-    inputButton.setOff();
+    // After a low level
+    inputButton.setOn(false);
     QCOMPARE(inputButton.outputPort(0)->status(), Status::Inactive);
 }
 
@@ -399,7 +390,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
 {
     // Create and save InputButton
     auto inputButton1 = std::unique_ptr<InputButton>(new InputButton());
-    inputButton1->setOn();
+    inputButton1->setOn(true);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -428,7 +419,7 @@ void TestInputElements::testInputButtonLoadNewVersion()
 {
     // Create and save InputButton
     auto inputButton1 = std::unique_ptr<InputButton>(new InputButton());
-    inputButton1->setOn();
+    inputButton1->setOn(true);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -451,20 +442,20 @@ void TestInputElements::testInputButtonLoadNewVersion()
 
 void TestInputElements::testInputButtonLockingMechanism()
 {
-    // setOn()/setOff() are the direct/programmatic API and deliberately ignore m_locked --
+    // setOn() is the direct/programmatic API and deliberately ignores the lock --
     // only mousePressEvent()/mouseReleaseEvent()'s interactive paths check the lock. Actually
     // engage the lock here so that claim is demonstrated, not just asserted by a comment.
     InputButton inputButton;
     inputButton.setLocked(true);
     QVERIFY(inputButton.isLocked());
 
-    inputButton.setOff();
+    inputButton.setOn(false);
     QVERIFY(!inputButton.isOn());
 
-    inputButton.setOn();
+    inputButton.setOn(true);
     QVERIFY(inputButton.isOn());
 
-    inputButton.setOff();
+    inputButton.setOn(false);
     QVERIFY(!inputButton.isOn());
 
     inputButton.setLocked(false);
@@ -500,7 +491,7 @@ void TestInputElements::testInputButtonAppearanceChange()
     InputButton inputButton;
 
     // Button is OFF initially
-    inputButton.setOff();
+    inputButton.setOn(false);
 
     // Reset to default appearance (should not crash)
     inputButton.setAppearance(true, "");
@@ -509,7 +500,7 @@ void TestInputElements::testInputButtonAppearanceChange()
     QVERIFY(!inputButton.isOn());
 
     // Turn button ON
-    inputButton.setOn();
+    inputButton.setOn(true);
     QVERIFY(inputButton.isOn());
 
     // Reset to default appearance again
@@ -726,9 +717,9 @@ void TestInputElements::testRotarySelectionIsResetAndRestoredWithSimState()
 
     rotary->setOn(true, 2);                 // as a user click would
     // A live tick is what puts the selection into the SIMULATION outputs; setOn() only writes
-    // m_currentPort and the port statuses. sweep() snapshots after the simulation has been
+    // the selection and the port statuses. sweep() snapshots after the simulation has been
     // running, so this mirrors the real ordering rather than saving an empty state.
-    rotary->updateOutputs();
+    rotary->updateSourceOutputs();
     QVERIFY(rotary->isOn(2));
     QVERIFY(!rotary->isOn(0));
 
@@ -855,14 +846,14 @@ void TestInputElements::testRotaryClickIsOneUndoableCommand()
 
     TestInputElementsHelpers::click(scene, *rotary);
 
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
     QCOMPARE(scene.undoStack()->count(), 1);
     QVERIFY(!scene.undoStack()->isClean());
 
     scene.undoStack()->undo();
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
     scene.undoStack()->redo();
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
 }
 
 void TestInputElements::testRotaryClickThroughAZoomedViewIsOneUndoableCommand()
@@ -882,10 +873,10 @@ void TestInputElements::testRotaryClickThroughAZoomedViewIsOneUndoableCommand()
     const QPoint pixel = view.mapFromScene(rotary->sceneBoundingRect().center());
     QTest::mouseClick(view.viewport(), Qt::LeftButton, Qt::NoModifier, pixel);
 
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
     QCOMPARE(scene.undoStack()->count(), 1);
     scene.undoStack()->undo();
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 }
 
 void TestInputElements::testTriggerKeyIsOneUndoableCommandKeepingTheSelection()
@@ -914,12 +905,12 @@ void TestInputElements::testTriggerKeyIsOneUndoableCommandKeepingTheSelection()
     QVERIFY(!second->isSelected());
 
     TestInputElementsHelpers::sendKey(scene, QEvent::KeyPress, Qt::Key_B);
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
     QCOMPARE(scene.undoStack()->count(), 2);
     QVERIFY(!rotary->isSelected());
 
     scene.undoStack()->undo();
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
     scene.undoStack()->undo();
     QVERIFY(!first->isOn());
     QVERIFY(!second->isOn());

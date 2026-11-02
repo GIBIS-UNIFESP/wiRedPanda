@@ -23,7 +23,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
@@ -376,7 +375,7 @@ void TestElementHandler::testHandleListElementsReturnsRealElements()
     ElementHandler handler(&window, nullptr);
     createElement(handler, "And", 5, 5);
     const int clockId = createClock(handler);
-    createElement(handler, "InputSwitch"); // hasTrigger, ElementInput ("locked")
+    createElement(handler, "InputSwitch"); // hasTrigger, an input ("locked")
     createElement(handler, "Led", 50, 50); // hasColors
     createElement(handler, "Buzzer", 100, 100); // hasVolume
 
@@ -657,8 +656,9 @@ void TestElementHandler::testHandleSetElementPropertiesChangesLockedState()
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch");
-    auto *inputElm = dynamic_cast<ElementInput *>(elementById(window, id));
+    auto *inputElm = elementById(window, id);
     QVERIFY(inputElm);
+    QCOMPARE(inputElm->elementGroup(), ElementGroup::Input);
     QVERIFY(!inputElm->isLocked());
 
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"locked", true}}, 1);
@@ -1057,13 +1057,31 @@ void TestElementHandler::testHandleSetInputValueRejectsNonInputElement()
     QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
 }
 
+void TestElementHandler::testHandleSetInputValueRefusesARotary()
+{
+    // A rotary selects one output and has no level: either value is refused, and its selection stays
+    MainWindow window;
+    ElementHandler handler(&window, nullptr);
+    const int id = createElement(handler, "InputRotary");
+    auto *rotary = elementById(window, id);
+    QVERIFY(rotary);
+    QVERIFY(rotary->setParam(ParamId::Position, 1));
+    for (const bool value : {true, false}) {
+        const QJsonObject response = handler.handleCommand("set_input_value", {{"element_id", id}, {"value", value}}, 1);
+        QVERIFY2(response.contains("error"), qPrintable(QJsonDocument(response).toJson()));
+        QCOMPARE(response["error"].toObject()["code"].toInt(), JsonRpcError::ValidationError);
+        QCOMPARE(rotary->param<int>(ParamId::Position), 1);
+    }
+}
+
 void TestElementHandler::testHandleSetInputValueSetsRealValue()
 {
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch");
-    auto *inputElm = dynamic_cast<ElementInput *>(elementById(window, id));
+    auto *inputElm = elementById(window, id);
     QVERIFY(inputElm);
+    QCOMPARE(inputElm->elementGroup(), ElementGroup::Input);
     QVERIFY(!inputElm->isOn());
 
     const QJsonObject response = handler.handleCommand("set_input_value", {{"element_id", id}, {"value", true}}, 1);
@@ -1100,7 +1118,7 @@ void TestElementHandler::testHandleGetOutputValueReturnsInputElementValue()
     MainWindow window;
     ElementHandler handler(&window, nullptr);
     const int id = createElement(handler, "InputSwitch");
-    auto *inputElm = dynamic_cast<ElementInput *>(elementById(window, id));
+    auto *inputElm = elementById(window, id);
     inputElm->setOn(true);
 
     const QJsonObject response = handler.handleCommand("get_output_value", {{"element_id", id}}, 1);
@@ -1120,8 +1138,9 @@ void TestElementHandler::testHandleGetOutputValueOfAnInputReportsEachPortsStatus
     };
 
     const int switchId = createElement(handler, "InputSwitch");
-    auto *inputSwitch = dynamic_cast<ElementInput *>(elementById(window, switchId));
+    auto *inputSwitch = elementById(window, switchId);
     QVERIFY(inputSwitch);
+    QCOMPARE(inputSwitch->elementType(), ElementType::InputSwitch);
     inputSwitch->setOn(false);
     QJsonObject response = read(switchId, 0);
     ValidationResult valid = validator.validateResponse(response, "get_output_value");
@@ -1135,8 +1154,9 @@ void TestElementHandler::testHandleGetOutputValueOfAnInputReportsEachPortsStatus
 
     // A rotary is on at one port only: each port reads its own state
     const int rotaryId = createElement(handler, "InputRotary");
-    auto *rotary = dynamic_cast<ElementInput *>(elementById(window, rotaryId));
+    auto *rotary = elementById(window, rotaryId);
     QVERIFY(rotary);
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
     rotary->setOn(true, 1);
     response = read(rotaryId, 1);
     valid = validator.validateResponse(response, "get_output_value");

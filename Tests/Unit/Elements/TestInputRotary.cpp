@@ -6,11 +6,13 @@
 #include <memory>
 
 #include <QDataStream>
+#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeySequence>
 #include <QPainter>
 #include <QPixmap>
 #include <QPointF>
+#include <QSignalSpy>
 #include <QStyleOptionGraphicsItem>
 #include <QTemporaryFile>
 #include <QTest>
@@ -37,7 +39,7 @@ void TestInputRotary::testInitialPortState()
     QVERIFY(rotary != nullptr);
 
     // Initial state should be port 0
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
     QVERIFY(rotary->isOn(0));
 }
 
@@ -50,21 +52,21 @@ void TestInputRotary::testNextPortWrapping()
     const int numPorts = rotary->outputSize();
 
     // Start at port 0
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 
     // Move to next port
-    rotary->setOn();
-    QCOMPARE(rotary->outputValue(), 1);
+    rotary->operate(Operation::Press);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
 
     // Continue advancing
     for (int i = 2; i < numPorts; ++i) {
-        rotary->setOn();
-        QCOMPARE(rotary->outputValue(), i);
+        rotary->operate(Operation::Press);
+        QCOMPARE(rotary->param<int>(ParamId::Position), i);
     }
 
     // Should wrap back to 0
-    rotary->setOn();
-    QCOMPARE(rotary->outputValue(), 0);
+    rotary->operate(Operation::Press);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 }
 
 void TestInputRotary::testSetPortDirect()
@@ -78,7 +80,7 @@ void TestInputRotary::testSetPortDirect()
     // Test setting each port directly
     for (int port = 0; port < numPorts; ++port) {
         rotary->setOn(true, port);
-        QCOMPARE(rotary->outputValue(), port);
+        QCOMPARE(rotary->param<int>(ParamId::Position), port);
         QVERIFY(rotary->isOn(port));
     }
 }
@@ -93,7 +95,7 @@ void TestInputRotary::testSetPortOutOfBounds()
 
     // Set port beyond valid range - should wrap to 0
     rotary->setOn(true, numPorts + 5);
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 }
 
 void TestInputRotary::testSetPortWrapsToZero()
@@ -106,11 +108,11 @@ void TestInputRotary::testSetPortWrapsToZero()
 
     // Set port to exact multiple of size (should wrap to 0)
     rotary->setOn(true, numPorts);
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 
     // Set to 2 * size (should wrap to 0)
     rotary->setOn(true, numPorts * 2);
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 }
 
 // ============================================================================
@@ -124,12 +126,12 @@ void TestInputRotary::testOutputValue()
     QVERIFY(rotary != nullptr);
 
     // Initial output value should be 0
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 
     // Change port and verify output value follows
     // Use port 1 (valid for all rotary configurations)
     rotary->setOn(true, 1);
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
 }
 
 void TestInputRotary::testOutputSize()
@@ -286,7 +288,7 @@ void TestInputRotary::testLoadCurrentPort()
     rotary2->load(loadStream, context);
 
     // Verify port was loaded correctly
-    QCOMPARE(rotary2->outputValue(), 1);
+    QCOMPARE(rotary2->param<int>(ParamId::Position), 1);
 }
 
 void TestInputRotary::testSaveLoadPreservesState()
@@ -315,27 +317,12 @@ void TestInputRotary::testSaveLoadPreservesState()
     rotary2->load(loadStream, context);
 
     // Verify state preserved
-    QCOMPARE(rotary2->outputValue(), testPort);
+    QCOMPARE(rotary2->param<int>(ParamId::Position), testPort);
 }
 
 // ============================================================================
 // State Management Tests
 // ============================================================================
-
-void TestInputRotary::testSetOffDoesNothing()
-{
-    auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
-
-    // Set to port 1
-    rotary->setOn(true, 1);
-    QCOMPARE(rotary->outputValue(), 1);
-
-    // setOff should have no effect on rotary (unlike button)
-    rotary->setOff();
-    QCOMPARE(rotary->outputValue(), 1);
-}
 
 void TestInputRotary::testMultipleSetOn()
 {
@@ -345,10 +332,10 @@ void TestInputRotary::testMultipleSetOn()
 
     const int numPorts = rotary->outputSize();
 
-    // Call setOn() multiple times, should cycle through ports
+    // Select each port in turn
     for (int expectedPort = 0; expectedPort < numPorts; ++expectedPort) {
         rotary->setOn(true, expectedPort);
-        QCOMPARE(rotary->outputValue(), expectedPort);
+        QCOMPARE(rotary->param<int>(ParamId::Position), expectedPort);
     }
 }
 
@@ -395,7 +382,7 @@ void TestInputRotary::testInputRotary()
     QVERIFY(inputRotary != nullptr);
 
     // Test initial state (should start at position 0)
-    QCOMPARE(inputRotary->outputValue(), 0);
+    QCOMPARE(inputRotary->param<int>(ParamId::Position), 0);
 
     // Test output size
     int initialSize = inputRotary->outputSize();
@@ -414,7 +401,7 @@ void TestInputRotary::testInputRotary()
     inputRotary->setOutputSize(3);
     QVERIFY(inputRotary->outputSize() == 3);
     inputRotary->setOn(true, 2);
-    QCOMPARE(inputRotary->outputValue(), 2);
+    QCOMPARE(inputRotary->param<int>(ParamId::Position), 2);
 
     // Verify only port 2 is now ON
     for (int i = 0; i < 3; ++i) {
@@ -427,7 +414,7 @@ void TestInputRotary::testInputRotary()
         QCOMPARE(inputRotary->outputSize(), size);
 
         // Verify starting at 0
-        QCOMPARE(inputRotary->outputValue(), 0);
+        QCOMPARE(inputRotary->param<int>(ParamId::Position), 0);
 
         // Verify only position 0 is ON
         for (int i = 0; i < size; ++i) {
@@ -443,7 +430,7 @@ void TestInputRotary::testInputRotary()
     QVERIFY(inputRotary->isLocked());
 
     inputRotary->setOn(true, 2);
-    QCOMPARE(inputRotary->outputValue(), 2);
+    QCOMPARE(inputRotary->param<int>(ParamId::Position), 2);
 
     inputRotary->setLocked(false);
     QVERIFY(!inputRotary->isLocked());
@@ -508,25 +495,100 @@ void TestInputRotary::testPainting()
     QVERIFY2(TestUtils::pixmapHasInk(pixmap), "InputRotary paint() must draw visible pixels");
 }
 
-void TestInputRotary::testSetWaveformValueTrueSelectsPort()
-{
-    WorkSpace workspace;
-    auto *rotary = new InputRotary;
-    workspace.scene()->addItem(rotary);
-
-    rotary->setWaveformValue(true, 1);
-    QCOMPARE(rotary->outputValue(), 1);
-}
-
-void TestInputRotary::testSetWaveformValueFalseIsNoOp()
+void TestInputRotary::testAHighLevelSelectsThePort()
 {
     WorkSpace workspace;
     auto *rotary = new InputRotary;
     workspace.scene()->addItem(rotary);
 
     rotary->setOn(true, 1);
-    rotary->setWaveformValue(false, 3); // a low cell must not re-select port 3
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
+}
+
+void TestInputRotary::testALowLevelSelectsNothing()
+{
+    WorkSpace workspace;
+    auto *rotary = new InputRotary;
+    workspace.scene()->addItem(rotary);
+
+    rotary->setOn(true, 1);
+    rotary->setOn(false, 3); // a low level, a waveform's low cell among them, must not select port 3
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
+}
+
+namespace TestInputRotaryHelpers {
+
+/// Whether a QGraphicsScene::changed signal \a spy holds repainted \a point.
+bool repainted(const QSignalSpy &spy, const QPointF point)
+{
+    for (const QList<QVariant> &signal : spy) {
+        for (const QRectF &rect : signal.at(0).value<QList<QRectF>>()) {
+            if (rect.contains(point)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+} // namespace TestInputRotaryHelpers
+
+void TestInputRotary::testANewSelectionRepaintsTheDial()
+{
+    // The presenter draws the arrow over the selected output, so a new selection repaints the dial: its centre, which
+    // no port covers (the outputs repaint for their new levels). A scene with no view reports what it repaints
+    QGraphicsScene scene;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary); // the scene takes ownership
+    scene.addItem(rotary);
+    QCoreApplication::processEvents();
+    const QPointF centre = rotary->mapToScene(32, 32);
+
+    QSignalSpy repainted(&scene, &QGraphicsScene::changed);
+    for (const int port : {1, 0}) {
+        repainted.clear();
+        rotary->setOn(true, port);
+        QCOMPARE(rotary->param<int>(ParamId::Position), port);
+        QCoreApplication::processEvents();
+        QVERIFY2(TestInputRotaryHelpers::repainted(repainted, centre), "the dial was not repainted");
+    }
+}
+
+void TestInputRotary::testAResetAndARestoreOfTheSimulationShowTheSelection()
+{
+    // A waveform's sweep resets the simulation's state, the selection with it, and restores the live one after: each
+    // shows on the dial and the outputs, though neither is a change of the circuit
+    QGraphicsScene scene;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary); // the scene takes ownership
+    scene.addItem(rotary);
+    rotary->setOutputSize(4);
+    rotary->initSimulationVectors(rotary->inputSize(), rotary->outputSize());
+    rotary->setOn(true, 2);
+    rotary->updateSourceOutputs();
+    QVector<Status> saved;
+    rotary->saveSimState(saved);
+    QCoreApplication::processEvents();
+    const QPointF centre = rotary->mapToScene(32, 32);
+    QSignalSpy repainted(&scene, &QGraphicsScene::changed);
+    const auto shows = [rotary](const int selected) {
+        for (int port = 0; port < rotary->outputSize(); ++port) {
+            if (rotary->outputPort(port)->status() != ((port == selected) ? Status::Active : Status::Inactive)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    rotary->resetSimState();
+    QCoreApplication::processEvents();
+    QVERIFY(shows(0));
+    QVERIFY2(TestInputRotaryHelpers::repainted(repainted, centre), "the reset's selection was not drawn");
+
+    repainted.clear();
+    int cursor = 0;
+    rotary->restoreSimState(saved, cursor);
+    QCoreApplication::processEvents();
+    QVERIFY(shows(2));
+    QVERIFY2(TestInputRotaryHelpers::repainted(repainted, centre), "the restored selection was not drawn");
 }
 
 void TestInputRotary::testMousePressAdvancesPort()
@@ -536,7 +598,7 @@ void TestInputRotary::testMousePressAdvancesPort()
     rotary->setPos(0, 0);
     scene.addItem(rotary);
 
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
     pressEvent.setScenePos(rotary->scenePos());
@@ -544,7 +606,7 @@ void TestInputRotary::testMousePressAdvancesPort()
     pressEvent.setButtons(Qt::LeftButton);
     QCoreApplication::sendEvent(&scene, &pressEvent);
 
-    QCOMPARE(rotary->outputValue(), 1);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 1);
 }
 
 void TestInputRotary::testMousePressWhileLockedDoesNotAdvance()
@@ -558,7 +620,7 @@ void TestInputRotary::testMousePressWhileLockedDoesNotAdvance()
     rotary->setLocked(true);
     scene.addItem(rotary);
 
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 
     QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
     pressEvent.setScenePos(rotary->scenePos());
@@ -566,7 +628,7 @@ void TestInputRotary::testMousePressWhileLockedDoesNotAdvance()
     pressEvent.setButtons(Qt::LeftButton);
     QCoreApplication::sendEvent(&scene, &pressEvent);
 
-    QCOMPARE(rotary->outputValue(), 0);
+    QCOMPARE(rotary->param<int>(ParamId::Position), 0);
 }
 
 void TestInputRotary::testSetAppearanceCustom()
@@ -632,7 +694,7 @@ void TestInputRotary::testLoadOldFormatBareFields()
     rotary.load(readStream, context);
 
     QCOMPARE(readStream.status(), QDataStream::Ok);
-    QCOMPARE(rotary.outputValue(), 1);
+    QCOMPARE(rotary.param<int>(ParamId::Position), 1);
     QVERIFY(rotary.isLocked());
 }
 

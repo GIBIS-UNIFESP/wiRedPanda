@@ -378,19 +378,19 @@ void TestParameters::testARotarysSelectionOutOfRangeIsTheFirst()
     rotary.setOutputSize(4);
 
     QVERIFY(rotary.setParam(ParamId::Position, 3));
-    QCOMPARE(rotary.outputValue(), 3);
+    QCOMPARE(rotary.param<int>(ParamId::Position), 3);
     QCOMPARE(rotary.outputPort(3)->status(), Status::Active);
     QCOMPARE(rotary.outputPort(0)->status(), Status::Inactive);
 
     // Out of range in either direction, as a file can hold, is the first output
     QVERIFY(rotary.setParam(ParamId::Position, 4));
-    QCOMPARE(rotary.outputValue(), 0);
+    QCOMPARE(rotary.param<int>(ParamId::Position), 0);
     QCOMPARE(rotary.outputPort(0)->status(), Status::Active);
     QVERIFY(rotary.setParam(ParamId::Position, 2));
     QVERIFY(rotary.setParam(ParamId::Position, -1));
-    QCOMPARE(rotary.outputValue(), 0);
+    QCOMPARE(rotary.param<int>(ParamId::Position), 0);
     rotary.setOn(true, 7);
-    QCOMPARE(rotary.outputValue(), 0);
+    QCOMPARE(rotary.param<int>(ParamId::Position), 0);
 }
 
 // --- The clock ---
@@ -630,7 +630,7 @@ void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
     InputRotary rotary;
     rotary.setOn(true, 1);
     loadMap(rotary, {{"currentPort", "first"}}, QVersionNumber(4, 1));
-    QCOMPARE(rotary.outputValue(), 1);
+    QCOMPARE(rotary.param<int>(ParamId::Position), 1);
 }
 
 void TestParameters::testAnOlderFilesVolumeIsTheValueItsFloatNamed()

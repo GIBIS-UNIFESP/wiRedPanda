@@ -140,8 +140,8 @@ void TestComponents::testIC()
     // between cycles or an internal counter drifting -- rather than only proving the JK
     // flip-flop resolves correctly from its initial power-on state.
     for (int i = 0; i < 10; ++i) {
-        clkButton->setOff();
-        prstButton->setOff();
+        clkButton->setOn(false);
+        prstButton->setOn(false);
         simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
@@ -151,8 +151,8 @@ void TestComponents::testIC()
 
         // -------------------------------
 
-        clkButton->setOff();
-        prstButton->setOn();
+        clkButton->setOn(false);
+        prstButton->setOn(true);
         simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
@@ -162,7 +162,7 @@ void TestComponents::testIC()
 
         // -------------------------------
 
-        clkButton->setOff();
+        clkButton->setOn(false);
         simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Inactive);
@@ -172,7 +172,7 @@ void TestComponents::testIC()
 
         // -------------------------------
 
-        clkButton->setOn();
+        clkButton->setOn(true);
         simulation.update();
 
         QCOMPARE(ic->inputPort(2)->status(), Status::Active);

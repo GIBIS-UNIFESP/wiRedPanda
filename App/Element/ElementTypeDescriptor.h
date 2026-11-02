@@ -103,8 +103,11 @@ struct ElementTypeDescriptor {
     /// inputs it last sampled. Each element keeps its own (Element::kernelState()), which a reset puts back to this.
     QList<Status> kernelState;
 
-    /// For a KernelKind::Input type: whether output \a port of \a element is on, read from its parameters.
+    /// For an input the user operates (KernelKind::Input or KernelKind::Clock): whether output \a port of \a element is
+    /// on, read from its parameters (Element::isOn()).
     bool (*sourceLevel)(const Element &element, int port) = nullptr;
+    /// For such an input: drives output \a port of \a element with \a level, through its parameters (Element::setOn()).
+    void (*setLevel)(Element &element, bool level, int port) = nullptr;
 
     // --- Parameters ---
 
@@ -129,10 +132,6 @@ struct ElementTypeDescriptor {
     /// Throws a Pandaception naming a file of the element's own that it plays or shows a fallback in place of (the audio
     /// box's sound), after its pictures (Element::reportFailedFiles()); none, the pictures alone.
     std::function<void(const Element &element)> reportFailedFiles{};
-
-    /// Applied at the end of every load of the type's parameters, whatever the file held (a switch drives the level it
-    /// has, a rotary its selection).
-    std::function<void(Element &element)> loaded{};
 
     // --- Operations ---
 

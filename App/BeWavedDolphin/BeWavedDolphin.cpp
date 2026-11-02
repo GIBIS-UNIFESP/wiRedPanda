@@ -31,7 +31,6 @@
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/Settings.h"
 #include "App/Element/Element.h"
-#include "App/Element/ElementInput.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/UI/ClockDialog.h"

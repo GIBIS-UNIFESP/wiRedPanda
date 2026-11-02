@@ -135,7 +135,7 @@ void TestLevel5ClockGatedDecoder::testClockGatedDecoder()
         }
     } else {
         for (int i = 0; i < 3; ++i) {
-            f.addressBits[i]->setOff();
+            f.addressBits[i]->setOn(false);
         }
         f.clockGate->setOn(clockEnable);
         f.writeEnable->setOn(true);
