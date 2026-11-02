@@ -9,9 +9,10 @@ sub-ID of the item it belongs to (`P4.4a`, `P4.4b`, ...) and a line in the log. 
 
 **Branch:** `04-ics-and-format`, from `03-element-types` at `2fe7e07f9` (the creation point; the merge-base with `03-element-types` is `d8f9e8765`), created 2026-11-02. Hashes from before the restack that no longer resolve were replaced by the commit each row names; those replacements are unverified.
 
-**Open:** D7 (row P4.2a) is plan 4 work, not started. D3 (a flaky plan 2 test) and D8 (an intermittent unhandled
-exception, not reproduced) are discarded, as the user directed. D6 is fixed (P4.6). D-S1 and D-C12 are fixed on plan 2
-(P2.105, P2.106).
+**Open:** P4.10 (the bytes key's cost, to be measured under callgrind, which the Windows machine lacks) and P4.11 (carried by
+plan 8's P8.15). D6 is fixed (P4.6, `490983679`), D7 is fixed (P4.2a, `33cc4ceaf`, the nested-file change), D-S1 and D-C12
+are fixed on plan 2 (P2.105, P2.106). D3 (a flaky plan 2 test) and D8 (an intermittent unhandled exception, not
+reproduced) are discarded, as the user directed.
 
 Each row's notes say how its check is shown to fail; "as on the branch" marks a break `gpu-canvas` ran and saw fail.
 
@@ -19,6 +20,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 |---|---|---|---|---|
 | P4.1 | The reload's undo as a failing test on `master`: one input after the undo, the cut wire still cut (§2.1) | done | `6f9f80d1f`, `2713b6bfa`, `a7a538357` | The probe run on plan 1's tip (`952aa6b2c`, the code before plan 2's fixes, with plan 1's MSVC warning flag, C4702, in a throwaway worktree): the one-input undo fails there, as §1.2 says. On plan 2's tip it passes, so plan 2 fixed that case. The reopen defect remains on the tip, marked by a `QEXPECT_FAIL` until P4.6. Edge probes in `TestICRegistry` (the same file): a growing reload, two reloads undone in turn, two instances of one file, undo then redo. Plan 1 fails all four; the tip passes the two instances and the shrinking undo, and fails the growing undo and the second reload's undo, marked until P4.5 |
 | P4.2 | The shared definition, its cache keyed by path and bytes for a file and by bytes for a blob, and the loader reading through `ICFileCache` (§2.2) | todo | | Shown to fail: eviction by insertion order, a failed read kept; a key of path, time and size, which reuses the definition of a file rewritten at the same size within the same millisecond |
+| P4.2a | A change to a file an IC nests reloads the instances that nest it: the scene watches each file-backed IC's nested files, and a reload watches the files it now reads (D7). The outer definition is keyed by its own bytes (§2.2), so a nested file's change leaves it stale until the outer instance reloads: the same staleness §2.2's key exists for | done | `f5d8395a3` | Shown to fail on this branch, each break once, on relwithdebinfo (`ICRegistry.cpp` and this test's body are unchanged since this commit): the nested reload removed from `ICRegistry::onFileChanged` fails `TestICRegistry::testNestedFileChangeReachesTheOuterInstance` at its `definitionChangedSpy.count() == 1` check (0 instead of 1, line 1578 at this commit and 1579 on the tip); the reload's undo cleared right after it fails the same test at its `canUndo()` check (line 1579 at this commit and 1580 on the tip). The expected failure's mark is removed by the fix, and the test passes on the fix, on relwithdebinfo: the function alone (3 passed) and the class `TestICRegistry` (53 passed, 1 skipped, on the tip, which adds a later test) |
 | P4.3 | The preview per definition, rendered on first hover; its guard checks the origin (§2.3) | todo | | Shown to fail: the guard checking the size only (as on the branch); a theme change that keeps previews. Plan 1's preview goldens unchanged |
 | P4.4 | Pin names from the circuit in one rule; the header in file order; no pin name saved in the interface language (§2.4) | todo | | Shown to fail: the header built in stacking order after an undo's reorder (as on the branch); a derived name made explicit. Payload goldens holding IC headers or pin names change, each named |
 | P4.5 | The reload's undo restores the definition in memory (§2.5) | done | `9610a7615` | Shown to fail: the four probes of `TestICRegistry` that the undo of a reload reaches (a growing reload, two reloads undone in turn, a change after an undo, two writes settled to the last), with their expected-failure marks removed, failed on the tip before the fix. The first fix, in the loader and the command, left them failing: `IC::loadState` skipped the reload when the IC's bytes matched the file's current bytes, so the skip also compares the snapshot's bytes (`ICLoader::fileBytes()`). The reopen part is P4.6 |
@@ -87,14 +89,14 @@ reload, two instances of one file, a change after an undo, a reopen after an und
 file, a rename save, a change that goes back to its original, a simulation that runs during a reload, and a nested file.
 The file-watch defects D1 to D4 are fixed on plan 2 (P2.104), and their probes are there.
 
-**Defects found by the probes.** The expected failure that remains is D7; D6 is fixed (P4.6); D-S1 and D-C12 were fixed on plan 2 (`303c92af3`, `10f274328`), and no code mark existed for them here.
+**Defects found by the probes.** Plan 4 leaves no expected failure of its own: D6 is fixed (P4.6), D7 is fixed (`33cc4ceaf`), and D-S1 and D-C12 were fixed on plan 2 (`303c92af3`, `10f274328`); no code mark existed for them here. The one expected failure left in the tests, `TestPortReaders` (`value()` of bits that are not all levels), is outside plan 4.
 
 | ID | Behaviour | Probe | Plan | Status |
 |---|---|---|---|---|
 | D1 to D4 | a rewrite with identical bytes, a touch, a save by rename and a file made again after deletion | plan 2's probes | plan 2 | fixed (P2.104); D3 is flaky (one failure in three `TestICRegistry` runs on the clean tree), discarded, as the user directed |
 | D5 | the undo of a growing reload keeps the added input | expected failures in `TestICRegistry` (the growing undo, two reloads undone in turn, a change after an undo) | plan 4, P4.5 | fixed (P4.5, `d28c93d0e`) |
 | D6 | a reopened document brings the file's new definition back after an undo | expected failure in `TestICRegistry` (the reopen part of the shrinking undo, and the growing reopen) | plan 4, P4.6 | fixed (P4.6, `490983679`); mark removed here |
-| D7 | a nested IC file's change is not reported to the outer instance | expected failure in `TestICRegistry` | plan 4, P4.2a | open, plan 4 work, not started |
+| D7 | a nested IC file's change is not reported to the outer instance | expected failure in `TestICRegistry` (mark removed) | plan 4, P4.2a | fixed (`33cc4ceaf`) |
 | D8 | an intermittent "Caught unhandled exception" | none: reproduced once while the nested-file probe ran, not since | plan 2, if on the reload path | discarded, as the user directed; not reproduced |
 | D-S1 | undoing a waveform fill keeps the columns it added | expected failure in `TestBewavedDolphinGui` | plan 2, P2.105 (`303c92af3`) | fixed on plan 2 (`303c92af3`); no code mark existed here |
 | D-C12 | registering over a name in use loses that name's blob on undo | expected failure in `TestICInline` (two marks) | plan 2, P2.106 (`10f274328`) | fixed on plan 2 (`10f274328`); no code mark existed here |
@@ -174,3 +176,4 @@ per-class runs count. An expected failure that predates this work, `TestPortRead
   it reverted five of those rows on `03-element-types` and on this branch through its conflict resolution; they are
   re-lined on each (`950910817`, and this branch's re-line lands in a later commit). The inventory check passes on this branch.
 - 2026-11-02: P4.6 done (`490983679`): the document keeps a copy of each file-backed IC's definition with the hash of its file; the four cases on open are tested.
+- 2026-11-02: P4.2a done (`33cc4ceaf`): D7, a change to a nested IC file, reloads the instances that nest it; the probe's expected-failure mark is removed.
