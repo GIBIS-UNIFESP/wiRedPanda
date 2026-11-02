@@ -15,8 +15,8 @@
 #include "App/Core/Common.h"
 #include "App/Core/Priorities.h"
 #include "App/Core/SimulationHost.h"
+#include "App/Element/ClockTiming.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/IC.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -98,7 +98,7 @@ void Simulation::update()
 
         for (auto *clock : clocks) {
             if (clock) {
-                clock->updateClock(globalTime);
+                ClockTiming::update(*clock, globalTime);
             }
         }
     }
@@ -385,16 +385,16 @@ void Simulation::start()
     if (m_hasPausedAt) {
         // Resuming after a stop(): the wall clock advanced while paused, so shift each
         // clock's phase reference by the pause duration. This prevents the burst of missed
-        // toggles a stale reference would cause, WITHOUT resetting the clocks — resetClock()
+        // toggles a stale reference would cause, WITHOUT resetting the clocks — ClockTiming::reset()
         // forces the output HIGH and restarts the phase, which would feed a spurious rising
         // edge into every clock-driven circuit on each SimulationBlocker cycle (every
         // UpdateCommand redo/undo, including a plain InputSwitch click). Level and phase
         // survive any pause/resume and any rebuild; only a Restart, or a clock's first
-        // initialize(), gives it a fresh HIGH start via resetClock().
+        // initialize(), gives it a fresh HIGH start via ClockTiming::reset().
         const auto pause = m_now() - m_pausedAt;
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
-                clock->shiftClock(pause);
+                ClockTiming::shift(*clock, pause);
             }
         }
         m_hasPausedAt = false; // consumed; a repeated start() must not double-shift
@@ -405,7 +405,7 @@ void Simulation::start()
         const auto globalTime = m_now();
         for (auto *clock : std::as_const(m_clocks)) {
             if (clock) {
-                clock->resetClock(globalTime);
+                ClockTiming::reset(*clock, globalTime);
             }
         }
     }
@@ -501,12 +501,9 @@ bool Simulation::initialize()
             elements.append(element);
 
             if (element->elementType() == ElementType::Clock) {
-                auto *clock = qobject_cast<Clock *>(element);
-                if (clock) {
-                    m_clocks.append(clock);
-                    if (freshStart || !clock->hasPhase()) {
-                        clock->resetClock(globalTime);
-                    }
+                m_clocks.append(element);
+                if (freshStart || !ClockTiming::hasPhase(*element)) {
+                    ClockTiming::reset(*element, globalTime);
                 }
             }
 

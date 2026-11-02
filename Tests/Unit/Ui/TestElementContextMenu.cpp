@@ -11,7 +11,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Workspace.h"
@@ -411,7 +410,7 @@ void TestElementContextMenu::testMorphSubmenuInputGroup()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand({clock}, scene));
     clock->setSelected(true);
 

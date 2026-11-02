@@ -10,7 +10,8 @@
 #include <QDataStream>
 #include <QTest>
 
-#include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/ClockTiming.h"
+#include "App/Element/Element.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Versions.h"
 #include "App/Wiring/Port.h"
@@ -24,7 +25,7 @@ using namespace std::chrono_literals;
 
 void TestClock::testConstructorInitialization()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Verify element type
     QCOMPARE(clock.elementType(), ElementType::Clock);
@@ -67,7 +68,7 @@ void TestClock::testConstructorInitialization()
 
 void TestClock::testDefaultFrequency()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Default frequency should be 1.0 Hz
     QCOMPARE(clock.frequency(), 1.0);
@@ -75,7 +76,7 @@ void TestClock::testDefaultFrequency()
 
 void TestClock::testSetFrequency()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set various valid frequencies
     clock.setFrequency(2.0);
@@ -90,7 +91,7 @@ void TestClock::testSetFrequency()
 
 void TestClock::testSetFrequencyZero()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set initial frequency
     clock.setFrequency(5.0);
@@ -103,7 +104,7 @@ void TestClock::testSetFrequencyZero()
 
 void TestClock::testSetFrequencyNegative()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set initial frequency
     clock.setFrequency(3.0);
@@ -118,7 +119,7 @@ void TestClock::testSetFrequencyNegative()
 
 void TestClock::testFrequencyPersistence()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set multiple frequencies in sequence
     clock.setFrequency(1.0);
@@ -136,7 +137,7 @@ void TestClock::testFrequencyPersistence()
 
 void TestClock::testFrequencyHighValues()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Test high frequency values
     clock.setFrequency(100.0);
@@ -155,7 +156,7 @@ void TestClock::testFrequencyHighValues()
 
 void TestClock::testDefaultDelay()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Default delay should be 0.0
     QCOMPARE(clock.delay(), 0.0);
@@ -163,7 +164,7 @@ void TestClock::testDefaultDelay()
 
 void TestClock::testSetDelay()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // In-range values pass through verbatim.
     clock.setDelay(1.0);
@@ -190,7 +191,7 @@ void TestClock::testSetDelay()
 
 void TestClock::testSetDelayNegative()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set negative delay - should be accepted
     clock.setDelay(-1.0);
@@ -201,7 +202,7 @@ void TestClock::testSetDelayNegative()
 
 void TestClock::testDelayPersistence()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set multiple delays in sequence
     clock.setDelay(0.5);
@@ -223,7 +224,7 @@ void TestClock::testDelayPersistence()
 
 void TestClock::testInitialState()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Initial state should be OFF (set in constructor)
     QVERIFY(!clock.isOn());
@@ -234,7 +235,7 @@ void TestClock::testInitialState()
 
 void TestClock::testSetOn()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // setOn sets to true
     clock.setOn(true);
@@ -246,7 +247,7 @@ void TestClock::testSetOn()
 
 void TestClock::testSetOff()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set to ON first
     clock.setOn(true);
@@ -262,7 +263,7 @@ void TestClock::testSetOff()
 
 void TestClock::testIsOn()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Port parameter is ignored
     QVERIFY(!clock.isOn(0));
@@ -278,7 +279,7 @@ void TestClock::testIsOn()
 
 void TestClock::testPortStatus()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Initial: Inactive
     QCOMPARE(clock.outputPort(0)->status(), Status::Inactive);
@@ -298,7 +299,7 @@ void TestClock::testPortStatus()
 
 void TestClock::testResetClock()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     clock.setFrequency(1.0);
     clock.setDelay(0.5);
@@ -307,7 +308,7 @@ void TestClock::testResetClock()
     auto now = std::chrono::steady_clock::now();
 
     // Reset clock with delay
-    clock.resetClock(now);
+    ClockTiming::reset(clock, now);
 
     // Should set to ON
     QVERIFY(clock.isOn());
@@ -315,7 +316,7 @@ void TestClock::testResetClock()
 
 void TestClock::testUpdateClock()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     clock.setFrequency(1.0);
 
@@ -323,43 +324,80 @@ void TestClock::testUpdateClock()
     auto now = std::chrono::steady_clock::now();
 
     // Reset clock to initialize timing
-    clock.resetClock(now);
+    ClockTiming::reset(clock, now);
     QVERIFY(clock.isOn());
 
     // Update immediately - should not toggle (not enough time elapsed)
-    clock.updateClock(now);
+    ClockTiming::update(clock, now);
     QVERIFY(clock.isOn());
 
     // Update after 100ms - at 1 Hz half-period is 500ms, so clock should still be ON
     auto later = now + std::chrono::milliseconds(100);
-    clock.updateClock(later);
+    ClockTiming::update(clock, later);
     QVERIFY(clock.isOn());
+}
+
+void TestClock::testALockedClockHoldsItsLevel()
+{
+    // At 10 Hz each level lasts 50 ms: a locked clock holds its level past it, and toggles once unlocked
+    Element clock{ElementType::Clock};
+    clock.setFrequency(10.0);
+    const auto t0 = std::chrono::steady_clock::now();
+    ClockTiming::reset(clock, t0);
+    QVERIFY(clock.isOn());
+
+    clock.setLocked(true);
+    ClockTiming::update(clock, t0 + std::chrono::milliseconds(60));
+    QVERIFY(clock.isOn());
+
+    clock.setLocked(false);
+    ClockTiming::update(clock, t0 + std::chrono::milliseconds(60));
+    QVERIFY(!clock.isOn());
+}
+
+void TestClock::testADelayShiftsTheFirstToggle()
+{
+    // At 10 Hz the period is 100 ms and the first toggle comes 50 ms after a reset: a delay of a quarter period puts it
+    // 25 ms later, and an advance of a quarter 25 ms earlier
+    const auto t0 = std::chrono::steady_clock::now();
+    const auto levelAt = [t0](const double delay, const int ms) {
+        Element clock{ElementType::Clock};
+        clock.setFrequency(10.0);
+        clock.setDelay(delay);
+        ClockTiming::reset(clock, t0);
+        ClockTiming::update(clock, t0 + std::chrono::milliseconds(ms));
+        return clock.isOn();
+    };
+    QVERIFY(levelAt(0.25, 70));
+    QVERIFY(!levelAt(0.25, 80));
+    QVERIFY(levelAt(-0.25, 20));
+    QVERIFY(!levelAt(-0.25, 30));
 }
 
 void TestClock::testUpdateClockLargeBacklogResyncsInsteadOfBursting()
 {
     // Regression: a large elapsed gap (e.g. the OS suspended the process while the
     // simulation's QTimer stayed "active") used to be replayed as one toggle per subsequent
-    // updateClock() call until caught up — for a long-enough gap, thousands of rapid toggles.
-    // updateClock() must instead resync immediately, on the very first call after the gap,
-    // exactly like Simulation::start()'s explicit resetClock() already does for the
+    // ClockTiming::update() call until caught up — for a long-enough gap, thousands of rapid toggles.
+    // ClockTiming::update() must instead resync immediately, on the very first call after the gap,
+    // exactly like Simulation::start()'s explicit ClockTiming::reset() already does for the
     // stop/start case.
-    Clock clock;
+    Element clock{ElementType::Clock};
     clock.setFrequency(1.0); // 500ms half-period
 
     const auto t0 = std::chrono::steady_clock::now();
-    clock.resetClock(t0);
+    ClockTiming::reset(clock, t0);
     QVERIFY(clock.isOn());
 
     // Simulate a huge backlog: far beyond the resync threshold.
     const auto hugeGap = t0 + std::chrono::hours(1);
-    clock.updateClock(hugeGap);
+    ClockTiming::update(clock, hugeGap);
     const bool stateAfterFirstCall = clock.isOn();
 
-    // If updateClock() resynced (the fix), its new internal time reference is now close to
+    // If ClockTiming::update() resynced (the fix), its new internal time reference is now close to
     // hugeGap, so a second call at the SAME timestamp is a no-op. If it instead single-stepped
     // (the pre-fix behavior), it would still be far behind hugeGap and would toggle again.
-    clock.updateClock(hugeGap);
+    ClockTiming::update(clock, hugeGap);
     QCOMPARE(clock.isOn(), stateAfterFirstCall);
 }
 
@@ -369,7 +407,7 @@ void TestClock::testUpdateClockLargeBacklogResyncsInsteadOfBursting()
 
 void TestClock::testSaveFrequencyDelay()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     clock.setFrequency(5.0);
     clock.setDelay(1.5);
@@ -396,7 +434,7 @@ void TestClock::testLoadVersionOld()
     // 2. When format is mismatched, frequency doesn't change from default
 
     // Create and save Clock with current code (QMap format)
-    auto clock1 = std::make_unique<Clock>();
+    auto clock1 = std::make_unique<Element>(ElementType::Clock);
     clock1->setFrequency(2.0);
 
     QByteArray data;
@@ -406,7 +444,7 @@ void TestClock::testLoadVersionOld()
     // Load with old version (1.1 - 4.0) — format mismatch: save wrote QMap but
     // loadOldFormat reads positional fields.  readBoundedString rejects the map
     // count bytes as an oversized string length → PANDACEPTION is the expected result.
-    auto clock2 = std::make_unique<Clock>();
+    auto clock2 = std::make_unique<Element>(ElementType::Clock);
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -423,7 +461,7 @@ void TestClock::testLoadVersionOld()
 void TestClock::testLoadVersionNew()
 {
     // Create and save Clock with both frequency and delay
-    auto clock1 = std::make_unique<Clock>();
+    auto clock1 = std::make_unique<Element>(ElementType::Clock);
     clock1->setFrequency(10.0);
     clock1->setDelay(2.0);
 
@@ -432,7 +470,7 @@ void TestClock::testLoadVersionNew()
     clock1->save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
     // Load with version 4.1 (delay silently discarded for version < 4.3)
-    auto clock2 = std::make_unique<Clock>();
+    auto clock2 = std::make_unique<Element>(ElementType::Clock);
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -450,7 +488,7 @@ void TestClock::testLoadVersionNew()
 void TestClock::testLoadVersionVeryOld()
 {
     // Create Clock
-    auto clock = std::make_unique<Clock>();
+    auto clock = std::make_unique<Element>(ElementType::Clock);
 
     // Create dummy data stream with version < 1.1
     QByteArray data;
@@ -474,7 +512,7 @@ void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
 {
     // Force map.value("delay").toDouble(&ok) to fail by rewriting the saved "delay" entry
     // to a non-numeric QVariant, exercising load()'s "ok" fallback (delayValue = 0.0).
-    auto clock1 = std::make_unique<Clock>();
+    auto clock1 = std::make_unique<Element>(ElementType::Clock);
     clock1->setFrequency(10.0);
     clock1->setDelay(0.5);
 
@@ -498,7 +536,7 @@ void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
         writeStream << propsMap << inputPorts << outputPorts << appearances << clockMap;
     }
 
-    auto clock2 = std::make_unique<Clock>();
+    auto clock2 = std::make_unique<Element>(ElementType::Clock);
     QDataStream loadStream(rewritten);
     QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, Versions::V_4_3, SerializationPurpose::PortableFile};
@@ -514,7 +552,7 @@ void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
 
 void TestClock::testGenericProperties()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Generic properties should return frequency in Hz format. genericProperties() is exactly
     // QString::number(frequency()) + " Hz" -- assert the exact string, not a loose

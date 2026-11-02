@@ -27,7 +27,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
@@ -463,7 +462,7 @@ void TestElementEditor::testContextMenuFrequencyActionFocusesSpinBox()
     QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
 #endif
     WorkSpace workspace;
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
 
     ElementEditor editor(&workspace);
@@ -856,8 +855,8 @@ void TestElementEditor::testApplyCapabilitiesMixedWirelessModeShowsPlaceholder()
 void TestElementEditor::testApplyCapabilitiesMixedFrequencyShowsPlaceholder()
 {
     WorkSpace workspace;
-    auto *clock1 = new Clock();
-    auto *clock2 = new Clock();
+    auto *clock1 = ElementFactory::buildElement(ElementType::Clock);
+    auto *clock2 = ElementFactory::buildElement(ElementType::Clock);
     clock1->setFrequency(1.0);
     clock2->setFrequency(5.0);
     workspace.scene()->addItem(clock1);
@@ -1860,7 +1859,7 @@ void TestElementEditor::testTypingALabelIsOneUndoStep()
 void TestElementEditor::testDraggingASliderIsOneUndoStep()
 {
     WorkSpace workspace;
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
@@ -1929,7 +1928,7 @@ void TestElementEditor::testSliderKeyStepsAreStepsOfTheirOwn()
 void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
 {
     WorkSpace workspace;
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
@@ -2051,8 +2050,8 @@ void TestElementEditor::testEditingAFieldLeavesTheOthers()
 {
     // The selection's delays and volumes differ, so their fields show no value; a label typed in leaves them
     WorkSpace workspace;
-    auto *early = new Clock();
-    auto *late = new Clock();
+    auto *early = ElementFactory::buildElement(ElementType::Clock);
+    auto *late = ElementFactory::buildElement(ElementType::Clock);
     early->setDelay(-0.25);
     late->setDelay(0.25);
     auto *quiet = ElementFactory::buildElement(ElementType::Buzzer);
@@ -2086,8 +2085,8 @@ void TestElementEditor::testMixedDelaysDragIsOneStep()
 {
     // A drag over two clocks with different delays is one undo step: every step of it names both clocks
     WorkSpace workspace;
-    auto *early = new Clock();
-    auto *late = new Clock();
+    auto *early = ElementFactory::buildElement(ElementType::Clock);
+    auto *late = ElementFactory::buildElement(ElementType::Clock);
     late->setDelay(0.125);
     workspace.scene()->addItem(early);
     workspace.scene()->addItem(late);

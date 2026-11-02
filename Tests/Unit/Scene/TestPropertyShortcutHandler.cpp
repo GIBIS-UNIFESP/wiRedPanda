@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/Scene.h"
@@ -47,7 +46,7 @@ void TestPropertyShortcutHandler::testGateInputCountPrev()
 void TestPropertyShortcutHandler::testClockFrequencyNext()
 {
     WorkSpace workspace;
-    auto *clock = new Clock;
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
     double originalFreq = clock->frequency();
 
@@ -62,7 +61,7 @@ void TestPropertyShortcutHandler::testClockFrequencyNext()
 void TestPropertyShortcutHandler::testClockFrequencyPrev()
 {
     WorkSpace workspace;
-    auto *clock = new Clock;
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
     double originalFreq = clock->frequency();
 
@@ -212,8 +211,8 @@ void TestPropertyShortcutHandler::testMultiElementShortcutIsSingleUndoStep()
     // It must now be a single undo step for the whole action, like every other
     // multi-element command in the app (e.g. the "Change wireless mode" macro).
     WorkSpace workspace;
-    auto *clock1 = new Clock;
-    auto *clock2 = new Clock;
+    auto *clock1 = ElementFactory::buildElement(ElementType::Clock);
+    auto *clock2 = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock1);
     workspace.scene()->addItem(clock2);
     const double originalFreq1 = clock1->frequency();

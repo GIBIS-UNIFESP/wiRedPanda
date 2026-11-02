@@ -14,7 +14,6 @@
 #include "App/Core/SimulationHost.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
@@ -74,7 +73,7 @@ void TestSimulationUnit::testAddRemoveClockDuringSimulation()
     sim->update();
 
     // Add a wired Clock while the simulation runs.
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     auto *clockLed = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(clock);
     scene->addItem(clockLed);
@@ -317,7 +316,7 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
     auto *scene = workspace.scene();
     auto *sim = scene->simulation();
 
-    auto *clock = qobject_cast<Clock *>(ElementFactory::buildElement(ElementType::Clock));
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     QVERIFY(clock);
     // 10 Hz ⇒ 50 ms per phase: slow enough that the post-resume assertion below runs well
     // inside the LOW phase, fast enough for the first falling edge to land quickly.
@@ -327,7 +326,7 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
     sim->start();
     QVERIFY(sim->isRunning());
 
-    // Clocks start HIGH (resetClock in initialize()); spin the event loop until the first
+    // Clocks start HIGH (ClockTiming::reset() in initialize()); spin the event loop until the first
     // real falling edge lands so the clock is observably mid-LOW-phase. A plain qWait loop
     // instead of QTRY_VERIFY_WITH_TIMEOUT: Qt 6.8/6.9's QTRY macros expand with a
     // long→int chrono conversion that trips -Werror=conversion on the CI compilers.
@@ -339,7 +338,7 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
     QVERIFY2(!clock->isOn(), "clock never fell within 2 s of starting");
 
     // A SimulationBlocker cycle brackets every UpdateCommand redo/undo — including a plain
-    // InputSwitch click on a running circuit. The resume must preserve the level: resetClock()
+    // InputSwitch click on a running circuit. The resume must preserve the level: ClockTiming::reset()
     // forces the output HIGH, which is an out-of-thin-air rising edge for every clock-driven
     // element, advancing counters without a real edge.
     {
@@ -359,7 +358,7 @@ void TestSimulationUnit::testAGivenTimeSourceStepsTheClocks()
         WorkSpace workspace;
         auto *scene = workspace.scene();
         auto *sim = scene->simulation();
-        auto *clock = new Clock();
+        auto *clock = ElementFactory::buildElement(ElementType::Clock);
         scene->addItem(clock);
 
         std::chrono::steady_clock::time_point now{std::chrono::hours(1)};
@@ -401,7 +400,7 @@ void TestSimulationUnit::testRebuildKeepsClockLevel()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
     auto *sim = scene->simulation();
     // Locked, the clock does not follow wall time; its first build starts it HIGH.
@@ -411,7 +410,7 @@ void TestSimulationUnit::testRebuildKeepsClockLevel()
     clock->setOn(false);
 
     // A structural edit elsewhere rebuilds the simulation; the clock keeps its level, and a clock the edit adds starts.
-    auto *added = new Clock();
+    auto *added = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{added}, scene));
     sim->update();
     QCOMPARE(clock->isOn(), false);
@@ -430,7 +429,7 @@ void TestSimulationUnit::testResumeAfterAPausedRebuildKeepsClockPhase()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *sim = scene->simulation();
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     clock->setFrequency(1.0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
     sim->start();
@@ -439,7 +438,7 @@ void TestSimulationUnit::testResumeAfterAPausedRebuildKeepsClockPhase()
 
     // Three half-periods of pause, under the clock's catch-up limit
     QTest::qWait(1600);
-    auto *added = new Clock();
+    auto *added = ElementFactory::buildElement(ElementType::Clock);
     added->setFrequency(1.0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{added}, scene));
     sim->start();

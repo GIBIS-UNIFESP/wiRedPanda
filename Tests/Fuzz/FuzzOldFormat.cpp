@@ -186,9 +186,9 @@ void writeOldElement(QDataStream &s, FuzzedDataProvider &fdp,
     }
 
     // Element-type-specific fields in old format.
-    // Formats exactly match what the element's loadOldFormat reads:
+    // Formats exactly match what each type's readBeforeMap reads:
     if (etype == ET::Clock && !VI::hasQMapFormat(ver)) {
-        // Clock::load reads: float freq + (if hasLockState) bool m_locked
+        // The clock's readBeforeMap reads: float freq + (if hasLockState) bool locked
         s << fdp.ConsumeFloatingPoint<float>();   // float, NOT double
         if (VI::hasLockState(ver))
             s << fdp.ConsumeBool();               // locked — inside clock section
@@ -365,7 +365,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     } catch (...) {}
 
     // Run simulation ticks.  Old-format files commonly contain Clock elements
-    // (added in V1.1), so start() + update() exercises Clock::updateClock which
+    // (added in V1.1), so start() + update() exercises ClockTiming::update which
     // was dark in all other harnesses.
     auto *sim = workspace.scene()->simulation();
     sim->start();

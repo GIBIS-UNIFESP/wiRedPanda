@@ -16,7 +16,6 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
@@ -389,7 +388,7 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsNormalClockPath()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *clk = new Clock;
+    auto *clk = ElementFactory::buildElement(ElementType::Clock);
     auto *sw1 = new InputSwitch;
     auto *sw2 = new InputSwitch;
 
@@ -453,7 +452,7 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsWithPresetAndClearWired()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *clk = new Clock;
+    auto *clk = ElementFactory::buildElement(ElementType::Clock);
     auto *data = new InputSwitch;
     auto *prst = new InputSwitch;
     auto *clr = new InputSwitch;
@@ -534,7 +533,7 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopWithPresetOnlySensitivityList()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *clk = new Clock;
+    auto *clk = ElementFactory::buildElement(ElementType::Clock);
     auto *data = new InputSwitch;
     auto *prst = new InputSwitch;
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
@@ -570,7 +569,7 @@ void TestSystemVerilogCodeGenUnit::testAsyncControlDrivenByAGateReadsItsVariable
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *clk = new Clock;
+    auto *clk = ElementFactory::buildElement(ElementType::Clock);
     auto *data = new InputSwitch;
     auto *swPrstSrc = new InputSwitch;
     auto *notGate = ElementFactory::buildElement(ElementType::Not);

@@ -21,7 +21,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -424,7 +423,7 @@ void TestElementChanges::testEachChangeIsReportedOnce()
     Scene scene;
     ElementChangesTestDetail::Recorder recorder(scene);
     auto *gate = ElementFactory::buildElement(ElementType::And);
-    auto *clock = new Clock;
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     scene.addItem(gate);
     scene.addItem(clock);
@@ -545,7 +544,7 @@ void TestElementChanges::testThePictureAloneIsNotReported()
 
     // A button's press and a clock's tick are momentary: neither is saved, and neither is reported.
     auto *button = new InputButton;
-    auto *clock = new Clock;
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene.addItem(button);
     scene.addItem(clock);
     recorder.reports.clear();

@@ -686,6 +686,10 @@ public:
     /// then the data inputs it last sampled.
     QVector<Status> &kernelState() { return m_sim.kernelState(); }
 
+    /// A clock's phase (ClockTiming), which the element keeps through a rebuild of the simulation.
+    ElementSimState::ClockPhase &clockPhase() { return m_sim.clockPhase(); }
+    const ElementSimState::ClockPhase &clockPhase() const { return m_sim.clockPhase(); }
+
     // --- Theme ---
 
     /// Takes the current theme's colours for the label and the ports, and repaints the body, which its presenter draws

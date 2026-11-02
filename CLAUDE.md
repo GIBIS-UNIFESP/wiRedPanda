@@ -266,11 +266,11 @@ if (!simUpdateInputsAllowUnknown()) {
 }
 setOutputValue(StatusOps::statusAndAll(simInputs()));  // Zero delay
 
-// Real-time clock timing (Clock::updateOutputs) — advance by exactly one
+// Real-time clock timing (ClockTiming::update) — advance by exactly one
 // half-period so accumulated drift doesn't skew the frequency
-if (elapsed > m_interval) {
-    m_startTime += m_interval;
-    setOn(!m_isOn);
+if (const auto interval = halfPeriodOf(element); elapsed > interval) {
+    phase.start += interval;
+    element.setOn(!element.isOn());
 }
 ```
 

@@ -41,7 +41,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
@@ -3211,7 +3210,7 @@ void TestMainWindowGui::testContextMenuChangeFrequency()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
     clock->setSelected(true);
     QCoreApplication::processEvents();

@@ -14,7 +14,6 @@
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
@@ -259,7 +258,7 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchDeclaresSequentialState()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *clk = new Clock;
+    auto *clk = ElementFactory::buildElement(ElementType::Clock);
     auto *sw = new InputSwitch;
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
@@ -541,7 +540,7 @@ void TestArduinoCodeGenUnit::testClockIntervalFollowsItsFrequency()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *clk = new Clock;
+    auto *clk = ElementFactory::buildElement(ElementType::Clock);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(clk, led);
     builder.connect(clk, 0, led, 0);

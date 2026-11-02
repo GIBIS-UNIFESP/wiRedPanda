@@ -10,6 +10,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/AudioOutput.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ClockTiming.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/DisplaySegments.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
@@ -88,6 +89,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/AudioOutput.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyMeasure.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/BodyPainter.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ClockTiming.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/DisplaySegments.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
@@ -99,7 +101,6 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSerializer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Clock.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputSwitch.h

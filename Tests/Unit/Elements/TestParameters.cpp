@@ -19,7 +19,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -360,7 +359,7 @@ void TestParameters::testANewInputDrivesADefiniteLevel()
     // Each input shows its level also when it is the default, so a new one drives no Unknown
     InputSwitch input;
     InputButton button;
-    Clock clock;
+    Element clock{ElementType::Clock};
     QCOMPARE(input.outputPort()->status(), Status::Inactive);
     QCOMPARE(button.outputPort()->status(), Status::Inactive);
     QCOMPARE(clock.outputPort()->status(), Status::Inactive);
@@ -397,7 +396,7 @@ void TestParameters::testARotarysSelectionOutOfRangeIsTheFirst()
 
 void TestParameters::testAClocksFrequencyAndDelayAreItsRules()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // A frequency is finite and non-zero with a half-period of at least a microsecond; one it does not take leaves
     // the frequency as it was
@@ -578,7 +577,7 @@ void TestParameters::testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey()
 {
     // A portable file omits a default, except the truth table's, and a sound file that is a resource; a snapshot,
     // loaded back into a live element, writes every keyed parameter and no transient one
-    Clock clock;
+    Element clock{ElementType::Clock};
     QCOMPARE(savedMap(clock, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{}));
     QCOMPARE(savedMap(clock, SerializationPurpose::InMemorySnapshot).keys(),
              (QStringList{"delay", "frequency", "locked"}));
@@ -605,7 +604,7 @@ void TestParameters::testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey()
 void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
 {
     // The clock's delay before 4.3 had another meaning and is dropped
-    Clock clock;
+    Element clock{ElementType::Clock};
     loadMap(clock, {{"frequency", 2.0}, {"delay", 0.5}}, QVersionNumber(4, 2));
     QCOMPARE(clock.frequency(), 2.0);
     QCOMPARE(clock.delay(), 0.0);

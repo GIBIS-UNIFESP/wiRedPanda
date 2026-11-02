@@ -1,19 +1,18 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/Clock.h"
-
 #include <algorithm>
-#include <chrono>
 #include <cmath>
 
+#include <QCoreApplication>
+
+#include "App/Element/ClockTiming.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/InputLevel.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-
-using namespace std::chrono_literals;
 
 template<>
 struct ElementInfo<ElementType::Clock> {
@@ -51,18 +50,18 @@ struct ElementInfo<ElementType::Clock> {
             {
                 // A frequency so high that the half-period rounds to zero is refused too
                 .id = ParamId::Frequency,
-                .defaultValue = Clock::kDefaultFrequency,
+                .defaultValue = ClockTiming::kDefaultFrequency,
                 .key = "frequency",
                 .accept = [](const Element &, const ParamValue &value) -> std::optional<ParamValue> {
                     const double frequency = std::get<double>(value);
                     const bool takes = std::isfinite(frequency) && !qFuzzyIsNull(frequency)
-                                       && (Clock::halfPeriod(frequency).count() > 0);
+                                       && (ClockTiming::halfPeriod(frequency).count() > 0);
                     return takes ? std::optional<ParamValue>(value) : std::nullopt;
                 },
             },
             {
                 // A fraction of the period in [-1, 1]: a finite value beyond it would multiply with the period in
-                // resetClock() to a magnitude beyond microseconds::rep, which is undefined on the cast
+                // ClockTiming::reset() to a magnitude beyond microseconds::rep, which is undefined on the cast
                 .id = ParamId::Delay,
                 .defaultValue = 0.0,
                 .key = "delay",
@@ -77,6 +76,12 @@ struct ElementInfo<ElementType::Clock> {
                 // The delay before 4.3 (VersionInfo::hasDelayFix()) had another meaning and is dropped
                 .since = QVersionNumber(4, 3),
             },
+        };
+        descriptor.appearanceStates = [](const Element &) -> QList<std::pair<int, QString>> {
+            return {{0, QCoreApplication::translate("Clock", "Low")}, {1, QCoreApplication::translate("Clock", "High")}};
+        };
+        descriptor.genericProperties = [](const Element &element) {
+            return QString::number(element.param<double>(ParamId::Frequency)) + " Hz";
         };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 1.1 to 4.0 the frequency was a bare float, then from 3.1 the lock a bare bool
@@ -97,89 +102,7 @@ struct ElementInfo<ElementType::Clock> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new Clock(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-Clock::Clock(QGraphicsItem *parent)
-    : Element(ElementType::Clock, parent)
-{
-}
-
-void Clock::updateClock(std::chrono::steady_clock::time_point globalTime)
-{
-    if (isLocked()) {
-        return;
-    }
-
-    const auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(globalTime - m_startTime);
-
-    // A gap this large means the wall clock jumped far ahead without an intervening
-    // Simulation::stop()/start() cycle (which already resyncs via resetClock() — see its call
-    // site) — e.g. the OS suspended the process while the simulation's QTimer stayed "active".
-    // Left to the single-step path below, replaying the backlog would toggle once per
-    // subsequent 1 ms tick until caught up: for a long gap, a burst of thousands of rapid,
-    // unrealistic toggles feeding into any connected sequential logic. Resync immediately
-    // instead, on this very first tick after the gap, so the burst never starts. The threshold
-    // is a fixed wall-clock duration, not a multiple of m_interval — scaling it to the
-    // half-period would fire this path on entirely ordinary jitter for high-frequency clocks
-    // (e.g. a 100 Hz clock's 5 ms interval means even a benign 20+ ms hiccup would look like a
-    // "large" multiple), which is not the gap this guards against.
-    constexpr auto kMaxCatchUpGap = std::chrono::seconds(5);
-    if (elapsed > kMaxCatchUpGap) {
-        resetClock(globalTime);
-        return;
-    }
-
-    // m_interval is the half-period (time per HIGH or LOW phase).
-    // Rather than resetting to globalTime we advance by exactly one interval so
-    // that accumulated drift doesn't skew the clock frequency over time.
-    if (elapsed > m_interval) {
-        m_startTime += m_interval;
-        setOn(!isOn());
-    }
-}
-
-void Clock::parameterChanged(const ParamId id, const ParamValue &previous)
-{
-    Element::parameterChanged(id, previous);
-    if (id == ParamId::Frequency) {
-        m_interval = halfPeriod(frequency());
-    }
-}
-
-void Clock::resetClock(std::chrono::steady_clock::time_point globalTime)
-{
-    // Start clocks in the HIGH state; the first transition happens after one interval
-    setOn(true);
-    // The delay is a fraction of the period (-1 to 1).
-    // Negative delays advance the clock (trigger earlier), positive delays delay it.
-    // Shifting m_startTime backward by the delay fraction effectively phase-shifts the waveform.
-    // Full period is 2 * m_interval (since m_interval is the half-period).
-    const auto fullPeriod = 2 * m_interval;
-    const auto delayMicroseconds = static_cast<std::chrono::microseconds::rep>(-delay() * static_cast<double>(fullPeriod.count()));
-    m_startTime = globalTime;
-    m_startTime -= std::chrono::microseconds(delayMicroseconds);
-    m_hasPhase = true;
-}
-
-void Clock::shiftClock(std::chrono::steady_clock::duration pause)
-{
-    // Resume-after-pause: the wall clock advanced by `pause` while the simulation was
-    // stopped, so move the phase reference forward by the same amount. updateClock() then
-    // sees the same elapsed-within-interval it saw at the moment of the pause — the output
-    // level is untouched (no forced HIGH, no injected edge) and no missed toggles fire in
-    // a burst.
-    m_startTime += pause;
-}
-
-QString Clock::genericProperties()
-{
-    return QString::number(frequency()) + " Hz";
-}
-
-QList<std::pair<int, QString>> Clock::appearanceStates() const
-{
-    return {{0, tr("Low")}, {1, tr("High")}};
-}

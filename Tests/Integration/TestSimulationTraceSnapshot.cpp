@@ -19,7 +19,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -432,7 +431,7 @@ void TestSimulationTraceSnapshot::testClocksHoldWhileStepped()
     // rebuild sets it HIGH and takes longer than its half-period.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     clock->setFrequency(1000.0);
     scene->addItem(clock);
     auto *led = ElementFactory::buildElement(ElementType::Led);

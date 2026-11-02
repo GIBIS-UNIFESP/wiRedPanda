@@ -18,7 +18,6 @@
 #include "App/Element/AudioOutput.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -1594,7 +1593,7 @@ void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
     clock->setFrequency(5.0);
     clock->setDelay(0.25);
@@ -1606,8 +1605,9 @@ void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()
     QCOMPARE(dynamic_cast<Element *>(scene->itemById(id))->elementType(), ElementType::InputSwitch);
 
     scene->undoStack()->undo();
-    auto *restored = dynamic_cast<Clock *>(scene->itemById(id));
+    auto *restored = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(restored);
+    QCOMPARE(restored->elementType(), ElementType::Clock);
     QCOMPARE(restored->frequency(), 5.0);
     QCOMPARE(restored->delay(), 0.25);
     QVERIFY(restored->isLocked());
@@ -2441,7 +2441,7 @@ void TestCommands::testSetPropertyCommandSetsSeveralPropertiesAsOneStep()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, led}, scene));
     const double frequency = clock->frequency();
@@ -2526,7 +2526,7 @@ void TestCommands::testSetPropertyCommandMergedBackIsNoStep()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
     const double frequency = clock->frequency();
     const int commands = undoStack->count();
@@ -2544,8 +2544,8 @@ void TestCommands::testSetPropertyCommandMergesOnlyTheSameChanges()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
-    auto *first = new Clock();
-    auto *second = new Clock();
+    auto *first = ElementFactory::buildElement(ElementType::Clock);
+    auto *second = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{first, second}, scene));
     const int commands = undoStack->count();
 
@@ -2645,7 +2645,7 @@ void TestCommands::testSetPropertyCommandRefusesASecondTxOnAChannel()
     auto *rx = wirelessNode("a", WirelessMode::Rx);
     auto *sharing = wirelessNode("dup", WirelessMode::Tx);
     auto *alsoSharing = wirelessNode("dup", WirelessMode::Tx);
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene->addItem(clock);
     const auto label = ElementProperty::label();
     const auto mode = ElementProperty::parameter(ParamId::Wireless);

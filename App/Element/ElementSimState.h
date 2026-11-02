@@ -8,6 +8,7 @@
 #pragma once
 
 #include <algorithm>
+#include <chrono>
 
 #include <QVector>
 
@@ -30,6 +31,13 @@ class OutputPort;
 class ElementSimState
 {
 public:
+    /// A clock's phase (ClockTiming): when its current half-period started, once a reset has given it one. A rebuild
+    /// of the simulation keeps it, as it keeps the element.
+    struct ClockPhase {
+        std::chrono::steady_clock::time_point start{};
+        bool set = false;
+    };
+
     /// A single simulation-graph edge: which element/output port feeds one input slot.
     struct InputConnection {
         Element *sourceElement = nullptr;
@@ -43,6 +51,10 @@ public:
     /// The history the element's kernel keeps between evaluations (ElementTypeDescriptor::kernelState).
     QVector<Status> &kernelState() { return m_kernelState; }
     const QVector<Status> &kernelState() const { return m_kernelState; }
+
+    /// A clock's phase, which no reset of the outputs touches.
+    ClockPhase &clockPhase() { return m_clockPhase; }
+    const ClockPhase &clockPhase() const { return m_clockPhase; }
 
     /// Resets each output slot to its port's power-on default (Unknown coerced to Inactive).
     void reset(const QVector<OutputPort *> &outputPorts);
@@ -138,6 +150,7 @@ private:
     /// the pre-tick value until commitDeferredOutputs() publishes the snapshot.
     QVector<Status> m_staged;
     QVector<Status> m_kernelState; ///< ElementTypeDescriptor::kernelState, as the element's evaluations left it.
+    ClockPhase m_clockPhase;
     bool m_outputChanged = false;
     bool m_deferCommit = false;
 };

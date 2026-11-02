@@ -21,7 +21,6 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRenderer.h"

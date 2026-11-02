@@ -17,7 +17,6 @@
 #include <QSet>
 #include <QTimer>
 
-class Clock;
 class Element;
 class InputPort;
 class OutputPort;
@@ -186,7 +185,7 @@ private:
     /// new clocks at it, so the resume's shift brings them to the moment the simulation runs again.
     std::chrono::steady_clock::time_point m_pausedAt;
     bool m_hasPausedAt = false;
-    QVector<Clock *> m_clocks;
+    QVector<Element *> m_clocks;
     QVector<Element *> m_outputs;
     QVector<Element *> m_inputs;
 

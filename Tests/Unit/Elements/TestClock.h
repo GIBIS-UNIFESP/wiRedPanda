@@ -39,6 +39,8 @@ private slots:
     // Timing tests
     void testResetClock();
     void testUpdateClock();
+    void testALockedClockHoldsItsLevel();
+    void testADelayShiftsTheFirstToggle();
     void testUpdateClockLargeBacklogResyncsInsteadOfBursting();
 
     // Serialization tests

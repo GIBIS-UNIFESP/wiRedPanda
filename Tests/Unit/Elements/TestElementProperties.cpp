@@ -9,7 +9,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Clock.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -139,7 +138,7 @@ void TestElementProperties::testOutputSizeFixed()
     QCOMPARE(andGate.outputSize(), 1);  // Unchanged
 
     // Clock: outputs [1, 1] (fixed)
-    Clock clock;
+    Element clock{ElementType::Clock};
     QCOMPARE(clock.outputSize(), 1);
 
     clock.setOutputSize(3);
@@ -157,7 +156,7 @@ void TestElementProperties::testOutputSizeFixed()
 void TestElementProperties::testLabelProperty()
 {
     // Use Clock which has label support by default
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Verify label support
     QVERIFY(clock.hasLabel());
@@ -327,7 +326,7 @@ void TestElementProperties::testRotationNormalization()
 
 void TestElementProperties::testFrequencyProperty()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Verify has frequency support
     QVERIFY(clock.hasFrequency());
@@ -356,7 +355,7 @@ void TestElementProperties::testFrequencyProperty()
 
 void TestElementProperties::testFrequencyValidation()
 {
-    Clock clock;
+    Element clock{ElementType::Clock};
 
     // Set valid frequency baseline
     clock.setFrequency(10.0);
@@ -406,7 +405,7 @@ void TestElementProperties::testPropertiesSaveLoad()
     led->setColor("Blue");
     workspace1.scene()->addItem(led);
 
-    auto *clock = new Clock();
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
     clock->setFrequency(50.0);
     clock->setDelay(0.5);
     clock->setLabel("SavedClock");
@@ -430,7 +429,7 @@ void TestElementProperties::testPropertiesSaveLoad()
     // Find elements by type
     Element *loadedAnd = nullptr;
     Element *loadedLed = nullptr;
-    Clock *loadedClock = nullptr;
+    Element *loadedClock = nullptr;
 
     for (auto *elem : elements) {
         if (elem->elementType() == ElementType::And) {
@@ -438,7 +437,7 @@ void TestElementProperties::testPropertiesSaveLoad()
         } else if (elem->elementType() == ElementType::Led) {
             loadedLed = elem;
         } else if (elem->elementType() == ElementType::Clock) {
-            loadedClock = dynamic_cast<Clock *>(elem);
+            loadedClock = elem;
         }
     }
 
