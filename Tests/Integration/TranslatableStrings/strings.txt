@@ -175,8 +175,6 @@ ElementEditor	Appearance
 ElementEditor	Appearance for:
 ElementEditor	Audio
 ElementEditor	Blue
-ElementEditor	C6
-ElementEditor	C7
 ElementEditor	Change appearance to ...
 ElementEditor	Change wireless mode
 ElementEditor	Choose audio file
