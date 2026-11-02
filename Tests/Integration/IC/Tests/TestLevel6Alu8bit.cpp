@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -39,19 +38,19 @@ struct Alu8bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch();
+            auto *a = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(a);
             a->setLabel(QString("A[%1]").arg(i));
             aInputs.append(a);
 
-            auto *b = new InputSwitch();
+            auto *b = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(b);
             b->setLabel(QString("B[%1]").arg(i));
             bInputs.append(b);
         }
 
         for (int i = 0; i < 3; i++) {
-            auto *op = new InputSwitch();
+            auto *op = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(op);
             op->setLabel(QString("OpCode[%1]").arg(i));
             opcodeInputs.append(op);

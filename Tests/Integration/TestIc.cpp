@@ -21,7 +21,6 @@
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICRenderer.h"
 #include "App/IO/Serialization.h"
@@ -422,7 +421,7 @@ void TestIC::testICStatusPropagation()
     CircuitBuilder builder(workspace.scene());
 
     // Create input switch and simple logic to feed it
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
     IC *ic = new IC();
     Element outputLed{ElementType::Led};
 

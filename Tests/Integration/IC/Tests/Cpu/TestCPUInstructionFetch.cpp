@@ -34,18 +34,18 @@ void TestCPUInstructionFetch::testInstructionFetch()
     QFETCH(int, initialPC);
     QFETCH(int, cyclesPerFetch);
     // This is an integration test combining PC + Memory + IR
-    QVector<InputSwitch *> pcLoadVal;
+    QVector<Element *> pcLoadVal;
     QVector<Element *> pcOut;
-    InputSwitch *pcLoad, *pcInc, *pcReset;
-    InputSwitch *clock;
+    Element *pcLoad, *pcInc, *pcReset;
+    Element *clock;
     for (int i = 0; i < 8; i++) {
-        pcLoadVal.append(new InputSwitch());
+        pcLoadVal.append(ElementFactory::buildElement(ElementType::InputSwitch));
         pcOut.append(ElementFactory::buildElement(ElementType::Led));
     }
-    pcLoad = new InputSwitch();
-    pcInc = new InputSwitch();
-    pcReset = new InputSwitch();
-    clock = new InputSwitch();
+    pcLoad = ElementFactory::buildElement(ElementType::InputSwitch);
+    pcInc = ElementFactory::buildElement(ElementType::InputSwitch);
+    pcReset = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     // Build integrated fetch circuit
     std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(pcLoadVal.data(), pcLoad, pcInc, pcReset, clock, pcOut.data()));
     auto *sim = workspace->simulation();

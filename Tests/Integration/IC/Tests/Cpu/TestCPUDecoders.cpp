@@ -30,10 +30,10 @@ void TestCPUDecoders::cleanup()
 
 void TestCPUDecoders::testDecoder3to8()
 {
-    InputSwitch *addr[3];
+    Element *addr[3];
     Element *outputs[8];
     for (int i = 0; i < 3; i++) {
-        addr[i] = new InputSwitch();
+        addr[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     }
     for (int i = 0; i < 8; i++) {
         outputs[i] = ElementFactory::buildElement(ElementType::Led);
@@ -101,10 +101,10 @@ void TestCPUDecoders::testInstructionDecoder4to16()
     QFETCH(int, opcode);
     QFETCH(int, expectedOneHot);
 
-    QVector<InputSwitch *> opcodeBits;
+    QVector<Element *> opcodeBits;
     QVector<Element *> decodedOutput;
     for (int i = 0; i < 4; i++) {
-        opcodeBits.append(new InputSwitch());
+        opcodeBits.append(ElementFactory::buildElement(ElementType::InputSwitch));
     }
     for (int i = 0; i < 16; i++) {
         decodedOutput.append(ElementFactory::buildElement(ElementType::Led));

@@ -37,7 +37,6 @@
 #include "App/Core/Settings.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRenderer.h"
@@ -60,7 +59,7 @@ void TestICUnit::testICLoadFromFile()
 
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
@@ -86,7 +85,7 @@ void TestICUnit::testICPortLabelResolution()
 
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     sw.setLabel("DataIn");
     Element led{ElementType::Led};
     led.setLabel("DataOut");
@@ -115,7 +114,7 @@ void TestICUnit::testICNestedSaveLoad()
 
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
-    InputSwitch innerSw;
+    Element innerSw{ElementType::InputSwitch};
     Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
@@ -124,7 +123,7 @@ void TestICUnit::testICNestedSaveLoad()
 
     WorkSpace outerWorkspace;
     CircuitBuilder outerBuilder(outerWorkspace.scene());
-    InputSwitch outerSw;
+    Element outerSw{ElementType::InputSwitch};
     auto *innerIc = new IC;
     innerIc->loadFile(innerPath, subDir.path());
     Element outerLed{ElementType::Led};
@@ -290,7 +289,7 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
 
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
@@ -382,7 +381,7 @@ void TestICUnit::testAPreviewShowsTheDefaultForAPictureThatIsGone()
 
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
-    InputSwitch innerSw;
+    Element innerSw{ElementType::InputSwitch};
     Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
@@ -408,7 +407,7 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
 
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
-    InputSwitch innerSw;
+    Element innerSw{ElementType::InputSwitch};
     Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
@@ -417,7 +416,7 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
 
     WorkSpace outerWorkspace;
     CircuitBuilder outerBuilder(outerWorkspace.scene());
-    InputSwitch outerSw;
+    Element outerSw{ElementType::InputSwitch};
     auto *innerIc = new IC;
     innerIc->loadFile(innerPath, subDir.path());
     Element outerLed{ElementType::Led};
@@ -463,7 +462,7 @@ void TestICUnit::testLoadGrowsLinearlyInICs()
 
     WorkSpace innerWorkspace;
     CircuitBuilder innerBuilder(innerWorkspace.scene());
-    InputSwitch innerSw;
+    Element innerSw{ElementType::InputSwitch};
     Element innerLed{ElementType::Led};
     innerBuilder.add(&innerSw, &innerLed);
     innerBuilder.connect(&innerSw, 0, &innerLed, 0);
@@ -600,7 +599,7 @@ void TestICUnit::testExecuteShowWithTitleAndPreviewShowsBoth()
     QVERIFY(subDir.isValid());
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
@@ -680,7 +679,8 @@ void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
 
     WorkSpace bigWorkspace;
     CircuitBuilder bigBuilder(bigWorkspace.scene());
-    InputSwitch bigSw1, bigSw2;
+    Element bigSw1{ElementType::InputSwitch};
+    Element bigSw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element bigLed1{ElementType::Led}, bigLed2{ElementType::Led};
     bigBuilder.add(&bigSw1, &bigSw2, &andGate, &bigLed1, &bigLed2);
@@ -693,7 +693,7 @@ void TestICUnit::testReloadWithFewerPortsEvictsStalePortMapKeys()
 
     WorkSpace smallWorkspace;
     CircuitBuilder smallBuilder(smallWorkspace.scene());
-    InputSwitch smallSw;
+    Element smallSw{ElementType::InputSwitch};
     Element smallLed{ElementType::Led};
     smallBuilder.add(&smallSw, &smallLed);
     smallBuilder.connect(&smallSw, 0, &smallLed, 0);
@@ -757,7 +757,7 @@ IC *hoverProbe(WorkSpace &workspace, const QTemporaryDir &dir, const QPointF &po
     if (!QFile::exists(path)) {
         WorkSpace sub;
         CircuitBuilder builder(sub.scene());
-        auto *input = new InputSwitch;
+        auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
         auto *led = ElementFactory::buildElement(ElementType::Led);
         builder.add(input, led);
         builder.connect(input, 0, led, 0);
@@ -855,7 +855,7 @@ void TestICUnit::testHoverLooksThroughOtherElementsToAnIC()
     auto *scene = workspace.scene();
     IC *ic = TestICHoverHelpers::hoverProbe(workspace, dir);
     QVERIFY(ic);
-    auto *other = new InputSwitch;
+    auto *other = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->addItem(other);
     other->setPos(ic->sceneBoundingRect().bottomRight() + QPointF(200, 200));
     QSignalSpy shown(scene, &Scene::icPreviewRequested);
@@ -978,7 +978,7 @@ void TestICUnit::testHoverOverPortRequestsPreviewHide()
     QVERIFY(subDir.isValid());
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
@@ -1024,7 +1024,7 @@ void TestICUnit::testDisplayNameForEmbeddedIc()
     QVERIFY(subDir.isValid());
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
@@ -1116,7 +1116,7 @@ void TestICUnit::testLoadFileDetectsCircularSelfReference()
 
     WorkSpace baseWorkspace;
     CircuitBuilder baseBuilder(baseWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     baseBuilder.add(&sw, &led);
     baseBuilder.connect(&sw, 0, &led, 0);
@@ -1288,7 +1288,7 @@ void TestICUnit::testLoadBoundaryPortsLogsSummaryAtVerbosity()
 
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     subBuilder.add(&sw, &led);
     subBuilder.connect(&sw, 0, &led, 0);
@@ -1322,7 +1322,7 @@ void TestICUnit::testDeserializeAndLoadEnforcesNestingDepthLimit()
 
     WorkSpace leafWorkspace;
     CircuitBuilder leafBuilder(leafWorkspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
     leafBuilder.add(&sw, &led);
     leafBuilder.connect(&sw, 0, &led, 0);

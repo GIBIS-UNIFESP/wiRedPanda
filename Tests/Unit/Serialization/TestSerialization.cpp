@@ -20,7 +20,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -334,7 +333,9 @@ void TestSerialization::testComplexCircuitSaveLoad()
     WorkSpace workspace1;
     CircuitBuilder builder(workspace1.scene());
 
-    InputSwitch sw1, sw2, sw3;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
+    Element sw3{ElementType::InputSwitch};
     Element and1{ElementType::And}, and2{ElementType::And};
     Element orGate{ElementType::Or};
     Element led1{ElementType::Led}, led2{ElementType::Led};
@@ -620,7 +621,7 @@ void TestSerialization::testNonDefaultValuesRoundTrip()
     led->setColor("Green");
     scene1->addItem(led);
 
-    auto *sw = qobject_cast<InputSwitch *>(ElementFactory::buildElement(ElementType::InputSwitch));
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     QVERIFY2(sw != nullptr, "Failed to create InputSwitch");
     sw->setOn(true);
     scene1->addItem(sw);
@@ -635,12 +636,12 @@ void TestSerialization::testNonDefaultValuesRoundTrip()
     loadFromMemory(workspace2, data);
 
     Element *loadedAnd = nullptr, *loadedLed = nullptr, *loadedClock = nullptr;
-    InputSwitch *loadedSw = nullptr;
+    Element *loadedSw = nullptr;
     for (auto *elem : workspace2.scene()->elements()) {
         switch (elem->elementType()) {
         case ElementType::And:         loadedAnd = elem; break;
         case ElementType::Led:         loadedLed = elem; break;
-        case ElementType::InputSwitch: loadedSw = qobject_cast<InputSwitch *>(elem); break;
+        case ElementType::InputSwitch: loadedSw = elem; break;
         case ElementType::Clock:       loadedClock = elem; break;
         default: break;
         }
@@ -1873,7 +1874,7 @@ void TestSerialization::testFuzzRegressionICBlobShrink()
         WorkSpace circuit;
         CircuitBuilder builder(circuit.scene());
         for (int i = 0; i < inputs; ++i) {
-            auto *sw = new InputSwitch();
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
             sw->setPos(0, 64 * i);
             builder.add(sw);
         }
@@ -1890,7 +1891,7 @@ void TestSerialization::testFuzzRegressionICBlobShrink()
     ICTestHelpers::embedIC(ic, circuitWithInputs(3), QStringLiteral("chip"), QString(), host.scene()->icRegistry());
     QCOMPARE(ic->inputSize(), 3);
     for (int i = 0; i < 3; ++i) {
-        auto *sw = new InputSwitch();
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         sw->setPos(-200, 64 * i);
         builder.add(sw);
         builder.connect(sw, 0, ic, i);
@@ -1992,7 +1993,7 @@ void TestSerialization::testFuzzRegressionOldFormatICSkinRef()
     QVERIFY(dir.isValid());
     WorkSpace sub;
     CircuitBuilder subBuilder(sub.scene());
-    auto *subSwitch = new InputSwitch();
+    auto *subSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *subLed = ElementFactory::buildElement(ElementType::Led);
     subLed->setPos(200, 0);
     subBuilder.add(subSwitch, subLed);

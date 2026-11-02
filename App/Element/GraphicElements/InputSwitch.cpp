@@ -1,8 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/InputSwitch.h"
+#include <QCoreApplication>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/InputLevel.h"
@@ -39,6 +40,10 @@ struct ElementInfo<ElementType::InputSwitch> {
             {"off", ":/Components/Input/switchOff.svg"},
             {"on", ":/Components/Input/switchOn.svg"},
         };
+        descriptor.appearanceStates = [](const Element &) -> QList<std::pair<int, QString>> {
+            return {{0, QCoreApplication::translate("InputSwitch", "Off")},
+                    {1, QCoreApplication::translate("InputSwitch", "On")}};
+        };
         descriptor.parameters = {InputLevel::levelSpec("isOn"), InputLevel::lockSpec()};
         descriptor.pressOperation = [](Element &element) {
             element.setParam(ParamId::On, !element.param<bool>(ParamId::On));
@@ -59,17 +64,7 @@ struct ElementInfo<ElementType::InputSwitch> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new InputSwitch(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-InputSwitch::InputSwitch(QGraphicsItem *parent)
-    : Element(ElementType::InputSwitch, parent)
-{
-}
-
-QList<std::pair<int, QString>> InputSwitch::appearanceStates() const
-{
-    return {{0, tr("Off")}, {1, tr("On")}};
-}

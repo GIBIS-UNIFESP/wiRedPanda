@@ -36,17 +36,17 @@ void TestCPUProgramCounter::testProgramCounter()
     QFETCH(int, loadValue);
     QFETCH(int, incrementCount);
     QFETCH(int, expectedResult);
-    QVector<InputSwitch *> loadValueBits;
-    InputSwitch *load, *inc, *reset, *clock;
+    QVector<Element *> loadValueBits;
+    Element *load, *inc, *reset, *clock;
     QVector<Element *> pcBits;
     for (int i = 0; i < 8; i++) {
-        loadValueBits.append(new InputSwitch());
+        loadValueBits.append(ElementFactory::buildElement(ElementType::InputSwitch));
         pcBits.append(ElementFactory::buildElement(ElementType::Led));
     }
-    load = new InputSwitch();
-    inc = new InputSwitch();
-    reset = new InputSwitch();
-    clock = new InputSwitch();
+    load = ElementFactory::buildElement(ElementType::InputSwitch);
+    inc = ElementFactory::buildElement(ElementType::InputSwitch);
+    reset = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), load, inc, reset, clock, pcBits.data()));
     auto *sim = workspace->simulation();
     // Test setup - set initial load values using setOn(bool) instead of setMultiBitInput
@@ -134,17 +134,17 @@ void TestCPUProgramCounter::testProgramCounterPriority()
     QFETCH(bool, inc);
     QFETCH(int, loadValue);
     QFETCH(int, expectedResult);
-    QVector<InputSwitch *> loadValueBits;
-    InputSwitch *loadSwitch, *incSwitch, *resetSwitch, *clock;
+    QVector<Element *> loadValueBits;
+    Element *loadSwitch, *incSwitch, *resetSwitch, *clock;
     QVector<Element *> pcBits;
     for (int i = 0; i < 8; i++) {
-        loadValueBits.append(new InputSwitch());
+        loadValueBits.append(ElementFactory::buildElement(ElementType::InputSwitch));
         pcBits.append(ElementFactory::buildElement(ElementType::Led));
     }
-    loadSwitch = new InputSwitch();
-    incSwitch = new InputSwitch();
-    resetSwitch = new InputSwitch();
-    clock = new InputSwitch();
+    loadSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    incSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    resetSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     std::unique_ptr<WorkSpace> workspace(buildProgramCounter8bit(loadValueBits.data(), loadSwitch, incSwitch, resetSwitch, clock, pcBits.data()));
     auto *sim = workspace->simulation();
     // Set up load value

@@ -16,7 +16,6 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -43,8 +42,8 @@ void TestSystemVerilogCodeGenUnit::testAndGateCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -81,8 +80,8 @@ void TestSystemVerilogCodeGenUnit::testOrNotCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *orGate = ElementFactory::buildElement(ElementType::Or);
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *led = ElementFactory::buildElement(ElementType::Led);
@@ -117,9 +116,9 @@ void TestSystemVerilogCodeGenUnit::testMultiGateChain()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
-    auto *sw3 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw3 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *orGate = ElementFactory::buildElement(ElementType::Or);
     auto *led = ElementFactory::buildElement(ElementType::Led);
@@ -152,9 +151,9 @@ void TestSystemVerilogCodeGenUnit::testMuxCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
-    auto *swSel = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *mux = ElementFactory::buildElement(ElementType::Mux);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -185,8 +184,8 @@ void TestSystemVerilogCodeGenUnit::testDemuxCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *swData = new InputSwitch;
-    auto *swSel = new InputSwitch;
+    auto *swData = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     auto *led1 = ElementFactory::buildElement(ElementType::Led);
     auto *led2 = ElementFactory::buildElement(ElementType::Led);
@@ -252,8 +251,8 @@ void TestSystemVerilogCodeGenUnit::testTruthTableMultiOutput()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     tt->setOutputSize(2);
     auto *led0 = ElementFactory::buildElement(ElementType::Led);
@@ -333,14 +332,14 @@ void TestSystemVerilogCodeGenUnit::testDLatchAndSRLatchCircuits()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *swD = new InputSwitch;
-    auto *swEnable = new InputSwitch;
+    auto *swD = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swEnable = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *dLatch = ElementFactory::buildElement(ElementType::DLatch);
     auto *dLatchQ = ElementFactory::buildElement(ElementType::Led);
     auto *dLatchQBar = ElementFactory::buildElement(ElementType::Led);
 
-    auto *swS = new InputSwitch;
-    auto *swR = new InputSwitch;
+    auto *swS = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swR = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *srLatch = ElementFactory::buildElement(ElementType::SRLatch);
     auto *srLatchQ = ElementFactory::buildElement(ElementType::Led);
     auto *srLatchQBar = ElementFactory::buildElement(ElementType::Led);
@@ -388,8 +387,8 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsNormalClockPath()
     CircuitBuilder builder(workspace.scene());
 
     auto *clk = ElementFactory::buildElement(ElementType::Clock);
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
 
     auto *srff = ElementFactory::buildElement(ElementType::SRFlipFlop);
     auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
@@ -452,9 +451,9 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopsWithPresetAndClearWired()
     CircuitBuilder builder(workspace.scene());
 
     auto *clk = ElementFactory::buildElement(ElementType::Clock);
-    auto *data = new InputSwitch;
-    auto *prst = new InputSwitch;
-    auto *clr = new InputSwitch;
+    auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *prst = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *clr = ElementFactory::buildElement(ElementType::InputSwitch);
 
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
@@ -533,8 +532,8 @@ void TestSystemVerilogCodeGenUnit::testFlipFlopWithPresetOnlySensitivityList()
     CircuitBuilder builder(workspace.scene());
 
     auto *clk = ElementFactory::buildElement(ElementType::Clock);
-    auto *data = new InputSwitch;
-    auto *prst = new InputSwitch;
+    auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *prst = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *q = ElementFactory::buildElement(ElementType::Led);
     auto *qBar = ElementFactory::buildElement(ElementType::Led);
@@ -569,8 +568,8 @@ void TestSystemVerilogCodeGenUnit::testAsyncControlDrivenByAGateReadsItsVariable
     CircuitBuilder builder(workspace.scene());
 
     auto *clk = ElementFactory::buildElement(ElementType::Clock);
-    auto *data = new InputSwitch;
-    auto *swPrstSrc = new InputSwitch;
+    auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swPrstSrc = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *q = ElementFactory::buildElement(ElementType::Led);
@@ -604,8 +603,8 @@ void TestSystemVerilogCodeGenUnit::testOutOfTopologicalOrderGateResolution()
     // it reads the upstream gate's variable, declared before any gate is assigned, so the order does not matter. The
     // elements vector is built directly (bypassing Scene/CircuitBuilder, whose iteration order this test should not
     // depend on) so the order can be set explicitly and reproducibly.
-    auto sw1 = std::make_unique<InputSwitch>();
-    auto sw2 = std::make_unique<InputSwitch>();
+    auto sw1 = std::make_unique<Element>(ElementType::InputSwitch);
+    auto sw2 = std::make_unique<Element>(ElementType::InputSwitch);
     auto andGate = std::make_unique<Element>(ElementType::And);
     auto orGate = std::make_unique<Element>(ElementType::Or);
     auto led = std::make_unique<Element>(ElementType::Led);
@@ -657,7 +656,7 @@ void TestSystemVerilogCodeGenUnit::testDeclareInputsWithNoOutputElements()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw = new InputSwitch;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(sw);
 
     QTemporaryDir dir;
@@ -687,7 +686,7 @@ void TestSystemVerilogCodeGenUnit::testDeclareOutputsWithLabel()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw = new InputSwitch;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setLabel("alarm");
 
@@ -715,9 +714,9 @@ void TestSystemVerilogCodeGenUnit::testDemuxWithFourOutputsUsesTwoSelectLines()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *swData = new InputSwitch;
-    auto *swSel0 = new InputSwitch;
-    auto *swSel1 = new InputSwitch;
+    auto *swData = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel0 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel1 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     demux->setOutputSize(4);
 
@@ -760,12 +759,12 @@ void TestSystemVerilogCodeGenUnit::testIcPortNamesEscapeReservedWordsAndDedup()
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     sw2->setLabel("wire"); // SystemVerilog reserved word -> escaped "p_wire"
-    auto *sw3 = new InputSwitch;
+    auto *sw3 = ElementFactory::buildElement(ElementType::InputSwitch);
     sw3->setLabel("sig");
-    auto *sw4 = new InputSwitch;
+    auto *sw4 = ElementFactory::buildElement(ElementType::InputSwitch);
     sw4->setLabel("sig"); // duplicate label -> dedup suffix "sig_1"
 
     auto *andGate = ElementFactory::buildElement(ElementType::And);
@@ -794,10 +793,10 @@ void TestSystemVerilogCodeGenUnit::testIcPortNamesEscapeReservedWordsAndDedup()
     QCOMPARE(ic->inputSize(), 4);
     QCOMPARE(ic->outputSize(), 3);
 
-    auto swA = std::make_unique<InputSwitch>();
-    auto swB = std::make_unique<InputSwitch>();
-    auto swC = std::make_unique<InputSwitch>();
-    auto swD = std::make_unique<InputSwitch>();
+    auto swA = std::make_unique<Element>(ElementType::InputSwitch);
+    auto swB = std::make_unique<Element>(ElementType::InputSwitch);
+    auto swC = std::make_unique<Element>(ElementType::InputSwitch);
+    auto swD = std::make_unique<Element>(ElementType::InputSwitch);
 
     std::vector<std::unique_ptr<Connection>> conns;
     auto connect = [&](OutputPort *from, InputPort *to) {
@@ -834,8 +833,8 @@ void TestSystemVerilogCodeGenUnit::testOutOfOrderNodeUpstreamResolution()
 {
     // A Node, the pass-through gate, upstream of a gate processed before it: like the AND/OR test above, the gate
     // reads the Node's variable, and the Node's is assigned its own driver.
-    auto sw1 = std::make_unique<InputSwitch>();
-    auto sw2 = std::make_unique<InputSwitch>();
+    auto sw1 = std::make_unique<Element>(ElementType::InputSwitch);
+    auto sw2 = std::make_unique<Element>(ElementType::InputSwitch);
     auto node = std::make_unique<Element>(ElementType::Node);
     auto andGate = std::make_unique<Element>(ElementType::And);
     auto led = std::make_unique<Element>(ElementType::Led);
@@ -924,8 +923,8 @@ void TestSystemVerilogCodeGenUnit::testNandGateCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *nandGate = ElementFactory::buildElement(ElementType::Nand);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -953,7 +952,7 @@ void TestSystemVerilogCodeGenUnit::testNotOfANotReadsItsVariable()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw = new InputSwitch;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *not1 = ElementFactory::buildElement(ElementType::Not);
     auto *not2 = ElementFactory::buildElement(ElementType::Not);
     auto *led = ElementFactory::buildElement(ElementType::Led);
@@ -1003,8 +1002,8 @@ QString generate(const QString &fileName, const std::function<void(CircuitBuilde
 /// An And gate driving an Led from two switches.
 void andGate(CircuitBuilder &builder)
 {
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw1, sw2, gate, led);
@@ -1017,8 +1016,8 @@ void andGate(CircuitBuilder &builder)
 template <ElementType type>
 void display(CircuitBuilder &builder)
 {
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *shown = ElementFactory::buildElement(type);
     builder.add(sw1, sw2, shown);
     builder.connect(sw1, 0, shown, 0);
@@ -1086,7 +1085,7 @@ void TestSystemVerilogCodeGenUnit::testModuleGrowsLinearlyWithDepth()
     const auto moduleSize = [](const int depth) {
         WorkSpace workspace;
         CircuitBuilder builder(workspace.scene());
-        auto *sw = new InputSwitch;
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
         Element *previous = sw;
         for (int i = 0; i < depth; ++i) {

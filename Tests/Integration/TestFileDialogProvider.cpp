@@ -14,7 +14,6 @@
 #include "App/Core/Settings.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
 #include "App/UI/FileDialogProvider.h"
@@ -31,7 +30,7 @@ namespace FileDialogTestHelpers {
 static void createFixture(const QString &path)
 {
     WorkSpace ws;
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     ws.scene()->addItem(sw);
     ws.scene()->addItem(led);
@@ -199,7 +198,7 @@ void TestFileDialogProvider::testSaveFirstTimeUsesProvider()
 
     std::unique_ptr<MainWindow> window(createWindow());
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     window->currentTab()->scene()->addItem(sw);
 
     // Ctrl+S on unsaved project triggers Save dialog
@@ -360,7 +359,7 @@ void TestFileDialogProvider::testWorkspaceSaveIsProviderFree()
     const QString savePath = m_fixtureDir + "/ws_save.panda";
 
     WorkSpace ws;
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     ws.scene()->addItem(sw);
 
     ws.save(savePath);

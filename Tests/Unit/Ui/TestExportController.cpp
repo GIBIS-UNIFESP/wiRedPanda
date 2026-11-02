@@ -12,7 +12,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ExportController.h"
@@ -84,7 +83,7 @@ void TestExportController::testExportToArduinoThrowsOnEmptyScene()
 void TestExportController::testExportToArduinoAppendsExtensionAndGenerates()
 {
     ExportControllerFixture f;
-    f.tab.scene()->addItem(new InputSwitch());
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ExportController controller(f.host);
 
     ScopedFileRemoval cleanup;
@@ -124,7 +123,7 @@ void TestExportController::testExportToSystemVerilogThrowsOnEmptyScene()
 void TestExportController::testExportToSystemVerilogAppendsExtensionAndGenerates()
 {
     ExportControllerFixture f;
-    f.tab.scene()->addItem(new InputSwitch());
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ExportController controller(f.host);
 
     ScopedFileRemoval cleanup;
@@ -147,7 +146,7 @@ void TestExportController::testExportToWaveFormFileThrowsOnEmptyFileName()
 void TestExportController::testExportToWaveFormFileGeneratesAndPrints()
 {
     ExportControllerFixture f;
-    f.tab.scene()->addItem(new InputSwitch());
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     // BewavedDolphin requires at least one output element
     f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     ExportController controller(f.host);
@@ -167,7 +166,7 @@ void TestExportController::testExportToWaveFormFileGeneratesAndPrints()
 void TestExportController::testExportToWaveFormTerminalReadsStdinAndPrints()
 {
     ExportControllerFixture f;
-    f.tab.scene()->addItem(new InputSwitch());
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     // BewavedDolphin requires at least one output element
     f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     ExportController controller(f.host);
@@ -238,7 +237,7 @@ void TestExportController::testExportPdfDialogCancelledIsNoOp()
 void TestExportController::testExportPdfDialogAppendsExtensionAndOpensFile()
 {
     ExportControllerFixture f;
-    f.tab.scene()->addItem(new InputSwitch());
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ExportController controller(f.host);
 
     QTemporaryDir dir;
@@ -289,7 +288,7 @@ void TestExportController::testExportImageDialogCancelledIsNoOp()
 void TestExportController::testExportImageDialogAppendsExtensionAndOpensFile()
 {
     ExportControllerFixture f;
-    f.tab.scene()->addItem(new InputSwitch());
+    f.tab.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ExportController controller(f.host);
 
     QTemporaryDir dir;

@@ -6,7 +6,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,8 +17,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct PriorityMux3to1Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *data[3] = {};
-    InputSwitch *sel[2] = {};
+    Element *data[3] = {};
+    Element *sel[2] = {};
     Element *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -29,11 +28,11 @@ struct PriorityMux3to1Fixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 3; ++i) {
-            data[i] = new InputSwitch();
+            data[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(data[i]);
         }
         for (int i = 0; i < 2; ++i) {
-            sel[i] = new InputSwitch();
+            sel[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(sel[i]);
         }
         output = ElementFactory::buildElement(ElementType::Led);

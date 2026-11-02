@@ -19,7 +19,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -168,7 +167,7 @@ void TestGraphicsView::testZoomToFit()
     view->resize(800, 600);
 
     // A circuit spread across a wide area — larger than the viewport at any zoom-in level.
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     inputSwitch->setPos(0, 0);
     scene->addItem(inputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
@@ -445,7 +444,7 @@ void TestGraphicsView::testZoomToFitIgnoresARubberBandOutsideTheCircuit()
         auto *scene = workspace.scene();
         GraphicsView *view = workspace.view();
         view->resize(800, 600);
-        auto *inputSwitch = new InputSwitch();
+        auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
         scene->addItem(inputSwitch);
         if (dragBand) {
             TestUtils::ScenePointer pointer(scene);
@@ -483,7 +482,7 @@ void TestGraphicsView::testZoomToFitFitsSelectionOnly()
     GraphicsView *view = workspace.view();
     view->resize(800, 600);
 
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     inputSwitch->setPos(0, 0);
     scene->addItem(inputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);

@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -28,9 +27,9 @@ void TestMux::testMuxSelection()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *data0 = new InputSwitch;
-    auto *data1 = new InputSwitch;
-    auto *sel = new InputSwitch;
+    auto *data0 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *data1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sel = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *mux = ElementFactory::buildElement(ElementType::Mux);
     builder.add(data0, data1, sel, mux);
     builder.connect(data0, 0, mux, 0);
@@ -115,14 +114,14 @@ void TestMux::testMuxOutOfRangeSelect()
 
     const int numSelectLines = totalInputs - numDataInputs;
 
-    QVector<InputSwitch *> dataIn(numDataInputs);
+    QVector<Element *> dataIn(numDataInputs);
     for (auto *&sw : dataIn) {
-        sw = new InputSwitch();
+        sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
     }
-    QVector<InputSwitch *> selIn(numSelectLines);
+    QVector<Element *> selIn(numSelectLines);
     for (auto *&sw : selIn) {
-        sw = new InputSwitch();
+        sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
     }
 

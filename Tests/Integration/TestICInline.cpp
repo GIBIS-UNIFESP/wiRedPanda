@@ -28,7 +28,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -700,7 +699,7 @@ void TestICInline::testFlattenBlobCircularReference()
     {
         WorkSpace ws;
         ws.scene()->setContextDir(dir);
-        auto *sw = new InputSwitch();  sw->setPos(96, 144);
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);  sw->setPos(96, 144);
         auto *led = ElementFactory::buildElement(ElementType::Led);         led->setPos(400, 144);
         auto *ic = new IC();
         ic->loadFile(dir + "/circular_b.panda", dir);
@@ -714,7 +713,7 @@ void TestICInline::testFlattenBlobCircularReference()
     {
         WorkSpace ws;
         ws.scene()->setContextDir(dir);
-        auto *sw = new InputSwitch();  sw->setPos(96, 144);
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);  sw->setPos(96, 144);
         auto *led = ElementFactory::buildElement(ElementType::Led);         led->setPos(400, 144);
         auto *ic = new IC();
         ic->loadFile(dir + "/circular_a.panda", dir);
@@ -776,7 +775,8 @@ void TestICInline::testEmbedSimulatesCorrectly()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *ic = new IC();
 
@@ -815,7 +815,8 @@ void TestICInline::testEmbedSimulatesMultiLevel()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *ic = new IC();
 
@@ -916,7 +917,8 @@ void TestICInline::testEmbedExtractWithActiveConnections()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *fileBacked = new IC();
 
@@ -1521,7 +1523,7 @@ void TestICInline::testInlineTabSaveAfterModification()
     QVERIFY(elementsBefore >= 3);
 
     // Add a new InputSwitch
-    auto *newSw = new InputSwitch();
+    auto *newSw = ElementFactory::buildElement(ElementType::InputSwitch);
     newSw->setPos(96, 296);
     child.scene()->addItem(newSw);
 
@@ -1939,7 +1941,7 @@ void TestICInline::testSaveChildICBlobNonEmbeddedTarget()
     int fileBackedId = fileBacked->id();
     QVERIFY(!fileBacked->isEmbedded());
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setPos(200, 200);
     ws.scene()->addItem(sw);
     int swId = sw->id();
@@ -2054,7 +2056,8 @@ void TestICInline::testSaveChildICBlobPortCountWithConnections()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *ic = new IC();
 
@@ -2430,7 +2433,8 @@ void TestICInline::testRemoveEmbeddedICWithConnections()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *ic = new IC();
 
@@ -2508,7 +2512,8 @@ void TestICInline::testRemoveEmbeddedICCrossConnections()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *icAnd = new IC();
     auto *icNot = new IC();
@@ -2610,7 +2615,8 @@ void TestICInline::testPortCountChangeConnectionCleanup()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *ic = new IC();
 
@@ -2831,7 +2837,8 @@ void TestICInline::testSetInlineDataRollbackSimulationWorks()
     ws.scene()->setContextDir(m_fixtureDir);
     auto *reg = ws.scene()->icRegistry();
 
-    InputSwitch swA, swB;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
     Element led{ElementType::Led};
     auto *ic = new IC();
 
@@ -2998,7 +3005,8 @@ void TestICInline::testSimulationRestartTimingDuringSetInlineData()
         ws.scene()->setContextDir(m_fixtureDir);
         auto *reg = ws.scene()->icRegistry();
 
-        InputSwitch swA, swB;
+        Element swA{ElementType::InputSwitch};
+        Element swB{ElementType::InputSwitch};
         Element led{ElementType::Led};
         auto *ic = new IC();
 
@@ -3284,7 +3292,7 @@ void TestICInline::testSelectionCapabilitiesEmbedded()
         std::unique_ptr<IC> ic(new IC());
         ic->setBlobName("test");
         ic->loadFromBlob(blob, m_fixtureDir);
-        InputSwitch sw;
+        Element sw{ElementType::InputSwitch};
 
         auto caps = computeCapabilities({ic.get(), &sw});
         QVERIFY(!caps.isEmbedded);
@@ -3294,7 +3302,7 @@ void TestICInline::testSelectionCapabilitiesEmbedded()
 
 void TestICInline::testSelectionCapabilitiesSingleNonIC()
 {
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto caps = computeCapabilities({&sw});
     QVERIFY(!caps.isEmbedded);
     QVERIFY(!caps.isFileBacked);
@@ -3348,7 +3356,7 @@ void TestICInline::testContextMenuICActionConditions()
 
     // Non-IC → no IC actions
     {
-        InputSwitch sw;
+        Element sw{ElementType::InputSwitch};
         auto caps = computeCapabilities({&sw});
         QVERIFY(!caps.isEmbedded);
         QVERIFY(!caps.isFileBacked);
@@ -3835,8 +3843,8 @@ void TestICInline::testSystemVerilogCodegenEmbeddedIC()
     auto *reg = ws->scene()->icRegistry();
 
     auto *ic = new IC();
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
@@ -3882,10 +3890,10 @@ void TestICInline::testSystemVerilogCodegenTwoEmbeddedSameBlobName()
 
     auto *ic1 = new IC();
     auto *ic2 = new IC();
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
-    auto *sw3 = new InputSwitch();
-    auto *sw4 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw3 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw4 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led1 = ElementFactory::buildElement(ElementType::Led);
     auto *led2 = ElementFactory::buildElement(ElementType::Led);
 
@@ -3941,8 +3949,8 @@ void TestICInline::testSVCodegenReservedWordBlobName()
     auto *reg = ws->scene()->icRegistry();
 
     auto *ic = new IC();
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
@@ -5983,7 +5991,7 @@ void TestICInline::testInlineSavePreservesWiresA15()
     childWs.scene()->addItem(droppedIC);
     QVERIFY(droppedIC->inputSize() > 0);
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setPos(0, 200);
     childWs.scene()->addItem(sw);
 

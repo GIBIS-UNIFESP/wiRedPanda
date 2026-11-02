@@ -9,7 +9,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -21,7 +20,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ShiftRegisterSipoFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *serialIn = nullptr;
+    Element *clk = nullptr, *serialIn = nullptr;
     Element *dataOut[4] = {};
     Simulation *sim = nullptr;
 
@@ -30,8 +29,8 @@ struct ShiftRegisterSipoFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        clk = new InputSwitch();
-        serialIn = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        serialIn = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk, serialIn);
 
         ic = loadBuildingBlockIC("level4_shift_register_sipo.panda");

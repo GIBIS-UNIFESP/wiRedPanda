@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,12 +22,12 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct MultiCycleCpu8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
-    InputSwitch *progWrite = nullptr;
+    Element *clk = nullptr;
+    Element *reset = nullptr;
+    Element *progWrite = nullptr;
     QVector<Element *> progAddr;
     QVector<Element *> progData;
-    InputSwitch *regProgWrite = nullptr;
+    Element *regProgWrite = nullptr;
     QVector<Element *> regProgAddr;
     QVector<Element *> regProgData;
     QVector<Element *> pcLeds;
@@ -45,18 +44,22 @@ struct MultiCycleCpu8bitFixture {
         ic = loadBuildingBlockIC("level9_multi_cycle_cpu_8bit.panda");
         builder.add(ic);
 
-        clk = new InputSwitch(); builder.add(clk);
-        reset = new InputSwitch(); builder.add(reset);
-        progWrite = new InputSwitch(); builder.add(progWrite);
-        regProgWrite = new InputSwitch(); builder.add(regProgWrite);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(clk);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(reset);
+        progWrite = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(progWrite);
+        regProgWrite = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(regProgWrite);
 
         for (int i = 0; i < 8; ++i) {
-            auto *pa = new InputSwitch(); builder.add(pa); progAddr.append(pa);
-            auto *pd = new InputSwitch(); builder.add(pd); progData.append(pd);
-            auto *rpd = new InputSwitch(); builder.add(rpd); regProgData.append(rpd);
+            auto *pa = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(pa); progAddr.append(pa);
+            auto *pd = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(pd); progData.append(pd);
+            auto *rpd = ElementFactory::buildElement(ElementType::InputSwitch);
+            builder.add(rpd);
+            regProgData.append(rpd);
         }
         for (int i = 0; i < 3; ++i) {
-            auto *rpa = new InputSwitch(); builder.add(rpa); regProgAddr.append(rpa);
+            auto *rpa = ElementFactory::buildElement(ElementType::InputSwitch);
+            builder.add(rpa);
+            regProgAddr.append(rpa);
         }
 
         for (int i = 0; i < 8; i++) {

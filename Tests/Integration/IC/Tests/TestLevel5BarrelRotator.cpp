@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -18,9 +17,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct BarrelRotatorFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *dataInputs[4] = {};
-    InputSwitch *rotateAmountInputs[2] = {};
-    InputSwitch *directionInput = nullptr;
+    Element *dataInputs[4] = {};
+    Element *rotateAmountInputs[2] = {};
+    Element *directionInput = nullptr;
     Element *resultOutputs[4] = {};
     Simulation *sim = nullptr;
 
@@ -30,15 +29,15 @@ struct BarrelRotatorFixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 4; ++i) {
-            dataInputs[i] = new InputSwitch();
+            dataInputs[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             resultOutputs[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(dataInputs[i], resultOutputs[i]);
         }
         for (int i = 0; i < 2; ++i) {
-            rotateAmountInputs[i] = new InputSwitch();
+            rotateAmountInputs[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(rotateAmountInputs[i]);
         }
-        directionInput = new InputSwitch();
+        directionInput = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(directionInput);
 
         ic = loadBuildingBlockIC("level5_barrel_rotator.panda");

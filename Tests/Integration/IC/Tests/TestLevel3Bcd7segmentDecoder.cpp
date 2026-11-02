@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Bcd7segFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *bcdInputs[4] = {};
+    Element *bcdInputs[4] = {};
     Element *segmentOutputs[7] = {};
     Simulation *sim = nullptr;
 
@@ -26,7 +25,7 @@ struct Bcd7segFixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 4; ++i) {
-            bcdInputs[i] = new InputSwitch();
+            bcdInputs[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(bcdInputs[i]);
         }
         for (int i = 0; i < 7; ++i) {

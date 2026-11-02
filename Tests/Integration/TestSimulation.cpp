@@ -8,8 +8,6 @@
 #include "App/Core/Priorities.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -24,7 +22,8 @@ void TestSimulation::testTopologicalSorting()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputButton button1, button2;
+    Element button1{ElementType::InputButton};
+    Element button2{ElementType::InputButton};
     Element andItem{ElementType::And};
     Element led{ElementType::Led};
 
@@ -53,7 +52,8 @@ void TestSimulation::testAndGatePropagation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -83,7 +83,8 @@ void TestSimulation::testOrGatePropagation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element orGate{ElementType::Or};
     Element led{ElementType::Led};
 
@@ -112,7 +113,7 @@ void TestSimulation::testNotGatePropagation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element notGate{ElementType::Not};
     Element led{ElementType::Led};
 
@@ -134,7 +135,8 @@ void TestSimulation::testNandGatePropagation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element nandGate{ElementType::Nand};
     Element led{ElementType::Led};
 
@@ -163,7 +165,8 @@ void TestSimulation::testNorGatePropagation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element norGate{ElementType::Nor};
     Element led{ElementType::Led};
 
@@ -192,7 +195,8 @@ void TestSimulation::testXorGatePropagation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element xorGate{ElementType::Xor};
     Element led{ElementType::Led};
 
@@ -222,7 +226,9 @@ void TestSimulation::testCascadedGates()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swA, swB, swC;
+    Element swA{ElementType::InputSwitch};
+    Element swB{ElementType::InputSwitch};
+    Element swC{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element orGate{ElementType::Or};
     Element led{ElementType::Led};
@@ -258,7 +264,8 @@ void TestSimulation::testMultiCycleStability()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -290,7 +297,7 @@ void TestSimulation::testSimulationInitialization()
     // Simulation should not be running initially
     QVERIFY2(!simulation->isRunning(), "Simulation should not be running initially");
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element led{ElementType::Led};
 
     builder.add(&sw, &led);
@@ -326,7 +333,9 @@ void TestSimulation::testElementProcessingOrderConsistency()
 
         // Create a complex circuit with many elements at same position
         // to test stable sorting behavior
-        InputButton button1, button2, button3;
+        Element button1{ElementType::InputButton};
+        Element button2{ElementType::InputButton};
+        Element button3{ElementType::InputButton};
         Element and1{ElementType::And}, and2{ElementType::And};
         Element or1{ElementType::Or};
         Element not1{ElementType::Not};
@@ -400,7 +409,8 @@ void TestSimulation::testSceneInitializationDeterminism()
         auto *scene = workspace.scene();
 
         // Add items in same order to test deterministic element ordering
-        InputButton button1, button2;
+        Element button1{ElementType::InputButton};
+        Element button2{ElementType::InputButton};
         Element andGate{ElementType::And};
         Element led{ElementType::Led};
         Connection conn1, conn2, conn3;
@@ -452,7 +462,8 @@ void TestSimulation::testSimulationOutputReproducibility()
         Simulation simulation(scene);
 
         // Create deterministic test circuit: AND gate with two inputs
-        InputButton button1, button2;
+        Element button1{ElementType::InputButton};
+        Element button2{ElementType::InputButton};
         Element andGate{ElementType::And};
         Element led{ElementType::Led};
 
@@ -529,7 +540,9 @@ void TestSimulation::testSimulationGraphStability()
         auto *scene = workspace.scene();
 
         // Create circuit with complex dependencies
-        InputButton input1, input2, input3;
+        Element input1{ElementType::InputButton};
+        Element input2{ElementType::InputButton};
+        Element input3{ElementType::InputButton};
         Element and1{ElementType::And}, and2{ElementType::And};
         Element or1{ElementType::Or};
         Element not1{ElementType::Not}, not2{ElementType::Not};
@@ -640,7 +653,8 @@ void TestSimulation::testCircuitWithFeedbackLoops()
         Simulation simulation(scene);
 
         // Create NAND-based SR latch circuit (classic feedback example)
-        InputButton setBtn, resetBtn;
+        Element setBtn{ElementType::InputButton};
+        Element resetBtn{ElementType::InputButton};
         Element nand1{ElementType::Nand}, nand2{ElementType::Nand};
         Element qLed{ElementType::Led}, notQLed{ElementType::Led};
 
@@ -756,7 +770,7 @@ void TestSimulation::testWirelessTxRxPropagation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
@@ -790,7 +804,7 @@ void TestSimulation::testWirelessMultiRxFanOut()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx1 = ElementFactory::buildElement(ElementType::Node);
     auto *rx2 = ElementFactory::buildElement(ElementType::Node);
@@ -862,7 +876,7 @@ void TestSimulation::testWirelessInsideIC()
     auto *ic = new IC();
 
     CircuitBuilder builder(ws.scene());
-    InputSwitch outerSw;
+    Element outerSw{ElementType::InputSwitch};
     Element outerLed{ElementType::Led};
 
     builder.add(&outerSw, ic, &outerLed);
@@ -914,7 +928,8 @@ void TestSimulation::testWirelessDuplicateTxIgnored()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     auto *tx1 = ElementFactory::buildElement(ElementType::Node);
     auto *tx2 = ElementFactory::buildElement(ElementType::Node);
     auto *rx  = ElementFactory::buildElement(ElementType::Node);
@@ -967,7 +982,7 @@ void TestSimulation::testWirelessEmptyLabelIgnored()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
@@ -998,7 +1013,7 @@ void TestSimulation::testWirelessLabelMismatchIsolation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
@@ -1029,7 +1044,8 @@ void TestSimulation::testWirelessMultipleIndependentChannels()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     auto *txA = ElementFactory::buildElement(ElementType::Node);
     auto *rxA = ElementFactory::buildElement(ElementType::Node);
     auto *txB = ElementFactory::buildElement(ElementType::Node);
@@ -1108,7 +1124,7 @@ void TestSimulation::testWirelessLabelCaseSensitive()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
@@ -1140,7 +1156,7 @@ void TestSimulation::testWirelessNoneModeNodeDoesNotInterfere()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx   = ElementFactory::buildElement(ElementType::Node);
     auto *rx   = ElementFactory::buildElement(ElementType::Node);
     auto *none = ElementFactory::buildElement(ElementType::Node);
@@ -1171,7 +1187,7 @@ void TestSimulation::testWirelessLabelSetAfterMode()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
@@ -1202,7 +1218,7 @@ void TestSimulation::testWirelessCascadeThroughWire()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *txA = ElementFactory::buildElement(ElementType::Node);
     auto *rxA = ElementFactory::buildElement(ElementType::Node);
     auto *txB = ElementFactory::buildElement(ElementType::Node);
@@ -1236,7 +1252,8 @@ void TestSimulation::testWirelessRxFeedsCombinationalLogic()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element andGate{ElementType::And};
@@ -1279,7 +1296,9 @@ void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2, sw3;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
+    Element sw3{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
@@ -1312,7 +1331,7 @@ void TestSimulation::testWirelessOrphanedRxWithPhysicalWire()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
@@ -1342,7 +1361,8 @@ void TestSimulation::testWirelessOverridesPhysicalWire()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swPhys, swWireless;
+    Element swPhys{ElementType::InputSwitch};
+    Element swWireless{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
@@ -1379,7 +1399,7 @@ void TestSimulation::testWirelessFeedbackLoop()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
@@ -1415,7 +1435,7 @@ void TestSimulation::testWirelessUnicodeLabels()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     auto *tx = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
@@ -1472,7 +1492,8 @@ void TestSimulation::testPartiallyConnectedCircuitIsolation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andWorking{ElementType::And};
     Element led{ElementType::Led};
     Element andIsolated{ElementType::And};  // no connections — will be unknown

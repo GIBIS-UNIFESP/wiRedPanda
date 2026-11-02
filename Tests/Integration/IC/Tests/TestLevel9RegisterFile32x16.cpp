@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -22,8 +21,8 @@ struct RegFile32x16Fixture {
     QVector<Element *> writeAddr;
     QVector<Element *> readAddr1;
     QVector<Element *> dataIn;
-    InputSwitch *we = nullptr;
-    InputSwitch *clk = nullptr;
+    Element *we = nullptr;
+    Element *clk = nullptr;
     QVector<Element *> readData1;
     Simulation *sim = nullptr;
 
@@ -35,15 +34,15 @@ struct RegFile32x16Fixture {
         ic = loadBuildingBlockIC("level9_register_file_32x16.panda");
         builder.add(ic);
 
-        we = new InputSwitch(); builder.add(we);
-        clk = new InputSwitch(); builder.add(clk);
+        we = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(we);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(clk);
 
         for (int i = 0; i < 5; ++i) {
-            auto *w = new InputSwitch(); builder.add(w); writeAddr.append(w);
-            auto *r = new InputSwitch(); builder.add(r); readAddr1.append(r);
+            auto *w = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(w); writeAddr.append(w);
+            auto *r = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(r); readAddr1.append(r);
         }
         for (int i = 0; i < 16; ++i) {
-            auto *d = new InputSwitch(); builder.add(d); dataIn.append(d);
+            auto *d = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(d); dataIn.append(d);
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); readData1.append(led);
         }
 

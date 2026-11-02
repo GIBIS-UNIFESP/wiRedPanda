@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,9 +19,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Alu16bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *opAIn[16] = {};
-    InputSwitch *opBIn[16] = {};
-    InputSwitch *opIn[3] = {};
+    Element *opAIn[16] = {};
+    Element *opBIn[16] = {};
+    Element *opIn[3] = {};
     Element *resultOut[16] = {};
     Element *zeroFlag = nullptr;
     Element *signFlag = nullptr;
@@ -42,13 +41,13 @@ struct Alu16bitFixture {
         builder.add(ic, zeroFlag, signFlag, carryFlag);
 
         for (int i = 0; i < 16; ++i) {
-            opAIn[i] = new InputSwitch();
-            opBIn[i] = new InputSwitch();
+            opAIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            opBIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             resultOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(opAIn[i], opBIn[i], resultOut[i]);
         }
         for (int i = 0; i < 3; ++i) {
-            opIn[i] = new InputSwitch();
+            opIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(opIn[i]);
         }
 

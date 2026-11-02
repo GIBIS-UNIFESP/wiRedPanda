@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,8 +17,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Mux4to1Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *inputs[4] = {};
-    InputSwitch *selectBit0 = nullptr, *selectBit1 = nullptr;
+    Element *inputs[4] = {};
+    Element *selectBit0 = nullptr, *selectBit1 = nullptr;
     Element *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -29,13 +28,13 @@ struct Mux4to1Fixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 4; ++i) {
-            inputs[i] = new InputSwitch();
+            inputs[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             inputs[i]->setOn(i % 2 == 0);  // Inputs: 1, 0, 1, 0
             builder.add(inputs[i]);
         }
 
-        selectBit0 = new InputSwitch();
-        selectBit1 = new InputSwitch();
+        selectBit0 = ElementFactory::buildElement(ElementType::InputSwitch);
+        selectBit1 = ElementFactory::buildElement(ElementType::InputSwitch);
         output = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(selectBit0, selectBit1, output);
@@ -136,14 +135,14 @@ void TestLevel2MUX4To1::testEnableGating()
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
 
-    InputSwitch *data[4] = {};
+    Element *data[4] = {};
     for (auto &d : data) {
-        d = new InputSwitch();
+        d = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(d);
     }
-    auto *s0 = new InputSwitch();
-    auto *s1 = new InputSwitch();
-    auto *en = new InputSwitch();
+    auto *s0 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *s1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *en = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *out = ElementFactory::buildElement(ElementType::Led);
     builder.add(s0, s1, en, out);
 

@@ -4,7 +4,6 @@
 #include "Tests/Unit/Elements/TestLogicGates.h"
 
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestLogicGates::testAnd()
@@ -80,7 +79,8 @@ void TestLogicGates::testAndGateBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -110,7 +110,8 @@ void TestLogicGates::testOrGateBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element orGate{ElementType::Or};
     Element led{ElementType::Led};
 
@@ -140,7 +141,7 @@ void TestLogicGates::testNotGateBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element notGate{ElementType::Not};
     Element led{ElementType::Led};
 
@@ -163,7 +164,8 @@ void TestLogicGates::testNandGateBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element nandGate{ElementType::Nand};
     Element led{ElementType::Led};
 
@@ -193,7 +195,8 @@ void TestLogicGates::testNorGateBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element norGate{ElementType::Nor};
     Element led{ElementType::Led};
 
@@ -223,7 +226,8 @@ void TestLogicGates::testXorGateBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element xorGate{ElementType::Xor};
     Element led{ElementType::Led};
 
@@ -253,7 +257,8 @@ void TestLogicGates::testXnorGateBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element xnorGate{ElementType::Xnor};
     Element led{ElementType::Led};
 

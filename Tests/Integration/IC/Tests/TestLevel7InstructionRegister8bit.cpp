@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -22,9 +21,9 @@ struct InstrRegister8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> dataInputs;
-    InputSwitch *clock = nullptr;
-    InputSwitch *load = nullptr;
-    InputSwitch *reset = nullptr;
+    Element *clock = nullptr;
+    Element *load = nullptr;
+    Element *reset = nullptr;
     QVector<Element *> instrOutputs;
     QVector<Element *> opcodeOutputs;
     QVector<Element *> regaddrOutputs;
@@ -39,12 +38,14 @@ struct InstrRegister8bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *data = new InputSwitch(); builder.add(data); dataInputs.append(data);
+            auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+            builder.add(data);
+            dataInputs.append(data);
         }
 
-        clock = new InputSwitch(); builder.add(clock);
-        load = new InputSwitch(); builder.add(load);
-        reset = new InputSwitch(); builder.add(reset);
+        clock = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(clock);
+        load = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(load);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(reset);
 
         for (int i = 0; i < 8; i++) {
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); instrOutputs.append(led);

@@ -21,8 +21,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
@@ -260,8 +258,8 @@ QList<Operation> operations(const QString &image, const QString &audio)
          }},
         {"level", Change::Parameter, [](Element &element, Scene &) {
              // A switch and a rotary switch save where they are set; a button's press and a clock's tick are momentary.
-             if (auto *inputSwitch = qobject_cast<InputSwitch *>(&element)) {
-                 inputSwitch->setOn(!inputSwitch->isOn());
+             if (element.elementType() == ElementType::InputSwitch) {
+                 element.setOn(!element.isOn());
                  return true;
              }
              if (element.elementType() == ElementType::InputRotary) {
@@ -485,7 +483,7 @@ void TestElementChanges::testBoundsThatMoveAreReportedAsBody()
     Scene scene;
     ElementChangesTestDetail::Recorder recorder(scene);
     auto *text = ElementFactory::buildElement(ElementType::Text);
-    auto *input = new InputSwitch;
+    auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     scene.addItem(text);
     scene.addItem(input);
@@ -542,7 +540,7 @@ void TestElementChanges::testThePictureAloneIsNotReported()
     }
 
     // A button's press and a clock's tick are momentary: neither is saved, and neither is reported.
-    auto *button = new InputButton;
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene.addItem(button);
     scene.addItem(clock);

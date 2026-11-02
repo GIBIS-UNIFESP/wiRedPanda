@@ -13,7 +13,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -149,7 +148,7 @@ void TestWirePixelSnapshot::testSyntheticWiresMatchGoldens()
 
     QList<Connection *> wires;
     for (int index = 0; index < spans.size(); ++index) {
-        auto *source = new InputSwitch();
+        auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
         source->setPos(spans.at(index).from);
         scene->addItem(source);
         auto *sink = ElementFactory::buildElement(ElementType::Led);

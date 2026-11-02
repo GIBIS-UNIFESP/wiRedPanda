@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -19,7 +18,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Register1bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *data = nullptr, *clock = nullptr, *writeEnable = nullptr, *reset = nullptr;
+    Element *data = nullptr, *clock = nullptr, *writeEnable = nullptr, *reset = nullptr;
     Element *q = nullptr, *notQ = nullptr;
     Simulation *sim = nullptr;
 
@@ -28,10 +27,10 @@ struct Register1bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        data = new InputSwitch();
-        clock = new InputSwitch();
-        writeEnable = new InputSwitch();
-        reset = new InputSwitch();
+        data = ElementFactory::buildElement(ElementType::InputSwitch);
+        clock = ElementFactory::buildElement(ElementType::InputSwitch);
+        writeEnable = ElementFactory::buildElement(ElementType::InputSwitch);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
         q = ElementFactory::buildElement(ElementType::Led);
         notQ = ElementFactory::buildElement(ElementType::Led);
 

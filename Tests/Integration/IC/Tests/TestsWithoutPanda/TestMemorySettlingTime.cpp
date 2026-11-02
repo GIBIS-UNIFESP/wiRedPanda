@@ -4,7 +4,6 @@
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestMemorySettlingTime.h"
 
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::inputStatus;
@@ -27,16 +26,16 @@ using TestUtils::inputStatus;
  * address bits plus the control signal.
  */
 struct SingleStageDecoderCircuit {
-    InputSwitch addressBits[6];
-    InputSwitch controlSignal;
+    ElementArray addressBits{ElementType::InputSwitch, 6};
+    Element controlSignal{ElementType::InputSwitch};
     ElementArray outputs{ElementType::Led, 64};
     ElementArray decoders{ElementType::And, 64};
     ElementArray notGates{ElementType::Not, 6};
 };
 
 void buildSingleStageDecoder6bit(WorkSpace* workspace,
-                                 InputSwitch*& address,
-                                 InputSwitch*& control,
+                                 ElementArray *&address,
+                                 Element*& control,
                                  ElementArray *&outputs,
                                  std::unique_ptr<SingleStageDecoderCircuit>& circuit,
                                  Simulation*& sim)
@@ -45,7 +44,7 @@ void buildSingleStageDecoder6bit(WorkSpace* workspace,
 
     circuit = std::make_unique<SingleStageDecoderCircuit>();
 
-    address = circuit->addressBits;
+    address = &circuit->addressBits;
     control = &circuit->controlSignal;
     outputs = &circuit->outputs;
 
@@ -67,8 +66,7 @@ void buildSingleStageDecoder6bit(WorkSpace* workspace,
 
         for (int bit = 0; bit < 6; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
-            Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
-                                         : &circuit->notGates[bit];
+            Element *src = bitSet ? &circuit->addressBits[bit] : &circuit->notGates[bit];
             builder.connect(src, 0, decoder, bit);
         }
         builder.connect(&circuit->controlSignal, 0, decoder, 6);
@@ -91,8 +89,8 @@ void buildSingleStageDecoder6bit(WorkSpace* workspace,
  * a 2-bit decoder whose outputs were not one-hot.
  */
 struct CascadedDecoderCircuit {
-    InputSwitch addressBits[6];
-    InputSwitch controlSignal;
+    ElementArray addressBits{ElementType::InputSwitch, 6};
+    Element controlSignal{ElementType::InputSwitch};
     ElementArray outputs{ElementType::Led, 64};
     ElementArray level1Decoders{ElementType::And, 64};  // low 3 address bits
     ElementArray level2Decoders{ElementType::And, 64};  // level1 + high 3 bits + control
@@ -100,8 +98,8 @@ struct CascadedDecoderCircuit {
 };
 
 void buildCascadedDecoder6bit(WorkSpace* workspace,
-                              InputSwitch*& address,
-                              InputSwitch*& control,
+                              ElementArray *&address,
+                              Element*& control,
                               ElementArray *&outputs,
                               std::unique_ptr<CascadedDecoderCircuit>& circuit,
                               Simulation*& sim)
@@ -110,7 +108,7 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
 
     circuit = std::make_unique<CascadedDecoderCircuit>();
 
-    address = circuit->addressBits;
+    address = &circuit->addressBits;
     control = &circuit->controlSignal;
     outputs = &circuit->outputs;
 
@@ -135,8 +133,7 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
         // Level 1: decode the low three address bits.
         for (int bit = 0; bit < 3; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
-            Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
-                                         : &circuit->notGates[bit];
+            Element *src = bitSet ? &circuit->addressBits[bit] : &circuit->notGates[bit];
             builder.connect(src, 0, l1, bit);
         }
 
@@ -144,8 +141,7 @@ void buildCascadedDecoder6bit(WorkSpace* workspace,
         builder.connect(l1, 0, l2, 0);
         for (int bit = 3; bit < 6; bit++) {
             const bool bitSet = (addr & (1 << bit)) != 0;
-            Element *src = bitSet ? static_cast<Element *>(&circuit->addressBits[bit])
-                                         : &circuit->notGates[bit];
+            Element *src = bitSet ? &circuit->addressBits[bit] : &circuit->notGates[bit];
             builder.connect(src, 0, l2, bit - 2);
         }
         builder.connect(&circuit->controlSignal, 0, l2, 4);
@@ -195,7 +191,8 @@ void TestMemorySettlingTime::testDecoderSettlingTime_singlestage()
 {
     QFETCH(int, addressValue);
 
-    InputSwitch *address, *control;
+    ElementArray *address = nullptr;
+    Element *control = nullptr;
     ElementArray *outputs = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -205,7 +202,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_singlestage()
 
     sim->update();
     for (int bit = 0; bit < 6; bit++) {
-        address[bit].setOn((addressValue >> bit) & 1);
+        (*address)[bit].setOn((addressValue >> bit) & 1);
     }
     control->setOn(true);
     sim->update();
@@ -230,7 +227,8 @@ void TestMemorySettlingTime::testDecoderSettlingTime_cascaded()
 {
     QFETCH(int, addressValue);
 
-    InputSwitch *address, *control;
+    ElementArray *address = nullptr;
+    Element *control = nullptr;
     ElementArray *outputs = nullptr;
 
     auto workspace = std::make_unique<WorkSpace>();
@@ -240,7 +238,7 @@ void TestMemorySettlingTime::testDecoderSettlingTime_cascaded()
 
     sim->update();
     for (int bit = 0; bit < 6; bit++) {
-        address[bit].setOn((addressValue >> bit) & 1);
+        (*address)[bit].setOn((addressValue >> bit) & 1);
     }
     control->setOn(true);
     sim->update();
@@ -268,7 +266,10 @@ void TestMemorySettlingTime::testReadMuxSettlingTime()
     // Both decoder topologies must produce the same one-hot result for a given
     // address. (The old test compared cascaded vs single-stage "settling cycle
     // counts", which are identical in zero-delay mode and so proved nothing.)
-    InputSwitch *addr_ss, *ctrl_ss, *addr_cas, *ctrl_cas;
+    ElementArray *addr_ss = nullptr;
+    ElementArray *addr_cas = nullptr;
+    Element *ctrl_ss = nullptr;
+    Element *ctrl_cas = nullptr;
     ElementArray *out_ss = nullptr;
     ElementArray *out_cas = nullptr;
 
@@ -285,8 +286,8 @@ void TestMemorySettlingTime::testReadMuxSettlingTime()
     sim_ss->update();
     sim_cas->update();
     for (int bit = 0; bit < 6; bit++) {
-        addr_ss[bit].setOn((addressValue >> bit) & 1);
-        addr_cas[bit].setOn((addressValue >> bit) & 1);
+        (*addr_ss)[bit].setOn((addressValue >> bit) & 1);
+        (*addr_cas)[bit].setOn((addressValue >> bit) & 1);
     }
     ctrl_ss->setOn(true);
     ctrl_cas->setOn(true);
@@ -301,7 +302,10 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
 {
     // Verify both decoders decode every tested address correctly (one-hot). The
     // old "average settling time" comparison was tautological in zero-delay mode.
-    InputSwitch *addr_ss, *ctrl_ss, *addr_cas, *ctrl_cas;
+    ElementArray *addr_ss = nullptr;
+    ElementArray *addr_cas = nullptr;
+    Element *ctrl_ss = nullptr;
+    Element *ctrl_cas = nullptr;
     ElementArray *out_ss = nullptr;
     ElementArray *out_cas = nullptr;
 
@@ -324,8 +328,8 @@ void TestMemorySettlingTime::testSettlingTimeBenchmarkSummary()
 
     for (int addr : testAddresses) {
         for (int bit = 0; bit < 6; bit++) {
-            addr_ss[bit].setOn((addr >> bit) & 1);
-            addr_cas[bit].setOn((addr >> bit) & 1);
+            (*addr_ss)[bit].setOn((addr >> bit) & 1);
+            (*addr_cas)[bit].setOn((addr >> bit) & 1);
         }
         sim_ss->update();
         sim_cas->update();

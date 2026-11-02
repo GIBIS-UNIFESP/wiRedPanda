@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
@@ -40,11 +39,11 @@
  * 3. Increment has lower priority: PC = PC + 1
  * 4. Hold (no change): PC unchanged
  */
-inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue[8],
-                                                           InputSwitch* load,
-                                                           InputSwitch* inc,
-                                                           InputSwitch* reset,
-                                                           InputSwitch* clock,
+inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(Element* loadValue[8],
+                                                           Element* load,
+                                                           Element* inc,
+                                                           Element* reset,
+                                                           Element* clock,
                                                            Element* pc[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
@@ -112,9 +111,9 @@ inline std::unique_ptr<WorkSpace> buildProgramCounter8bit(InputSwitch* loadValue
  * - load = 1: IR = instruction
  * - load = 0: IR = hold (no change)
  */
-inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* instruction[8],
-                                                InputSwitch* load,
-                                                InputSwitch* clock,
+inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(Element* instruction[8],
+                                                Element* load,
+                                                Element* clock,
                                                 Element* ir[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
@@ -168,7 +167,7 @@ inline std::unique_ptr<WorkSpace> buildInstructionRegister8bit(InputSwitch* inst
  * 8-12: Control Flow (JMP, BEQ, BNE, BLT, BGE)
  * 13-15: Reserved
  */
-inline std::unique_ptr<WorkSpace> buildInstructionDecoder4to16(InputSwitch* opcode[4],
+inline std::unique_ptr<WorkSpace> buildInstructionDecoder4to16(Element* opcode[4],
                                                 Element* decodedOpcode[16])
 {
     auto workspace = std::make_unique<WorkSpace>();
@@ -232,13 +231,13 @@ inline std::unique_ptr<WorkSpace> buildInstructionDecoder4to16(InputSwitch* opco
  * - BLT (decoder[11]): Branch if negativeFlag = 1
  * - BGE (decoder[12]): Branch if negativeFlag = 0
  */
-inline std::unique_ptr<WorkSpace> buildBranchCondition(InputSwitch* decoderJMP,
-                                        InputSwitch* decoderBEQ,
-                                        InputSwitch* decoderBNE,
-                                        InputSwitch* decoderBLT,
-                                        InputSwitch* decoderBGE,
-                                        InputSwitch* zeroFlag,
-                                        InputSwitch* negativeFlag,
+inline std::unique_ptr<WorkSpace> buildBranchCondition(Element* decoderJMP,
+                                        Element* decoderBEQ,
+                                        Element* decoderBNE,
+                                        Element* decoderBLT,
+                                        Element* decoderBGE,
+                                        Element* zeroFlag,
+                                        Element* negativeFlag,
                                         Element* pcLoad)
 {
     auto workspace = std::make_unique<WorkSpace>();
@@ -306,9 +305,9 @@ inline std::unique_ptr<WorkSpace> buildBranchCondition(InputSwitch* decoderJMP,
 /**
  * @brief Build an 8-bit ALU with multiple operations
  */
-inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
-                                InputSwitch* b[8],
-                                InputSwitch* aluOp[3],
+inline std::unique_ptr<WorkSpace> buildALU8bit(Element* a[8],
+                                Element* b[8],
+                                Element* aluOp[3],
                                 Element* result[8],
                                 Element* zeroFlag,
                                 Element* signFlag,
@@ -590,8 +589,8 @@ inline std::unique_ptr<WorkSpace> buildALU8bit(InputSwitch* a[8],
 /**
  * @brief Build a simple Control Unit FSM (FETCH->DECODE->EXECUTE->WRITEBACK->FETCH)
  */
-inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
-                                    InputSwitch* clock,
+inline std::unique_ptr<WorkSpace> buildControlUnit(Element* reset,
+                                    Element* clock,
                                     Element* state[3],
                                     Element* pcInc,
                                     Element* irLoad,
@@ -787,7 +786,7 @@ inline std::unique_ptr<WorkSpace> buildControlUnit(InputSwitch* reset,
  * Loads pre-built decoder IC from decoder_3to8.panda
  * Returns decoder outputs as LEDs for debugging
  */
-inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
+inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(Element* addr[3],
                                          Element* outputs[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
@@ -853,10 +852,10 @@ inline std::unique_ptr<WorkSpace> buildDecoder3to8Debug(InputSwitch* addr[3],
  * - AND gates to gate the clock signal based on decoder output and write enable
  * - Clock is gated: only asserts when BOTH decoderOut and writeEnable are HIGH
  */
-inline std::unique_ptr<WorkSpace> buildSingleGatedRegister(InputSwitch* writeData[8],
-                                            InputSwitch* decoderOut,
-                                            InputSwitch* writeEnable,
-                                            InputSwitch* clock,
+inline std::unique_ptr<WorkSpace> buildSingleGatedRegister(Element* writeData[8],
+                                            Element* decoderOut,
+                                            Element* writeEnable,
+                                            Element* clock,
                                             Element* readOut[8])
 {
     auto workspace = std::make_unique<WorkSpace>();
@@ -905,10 +904,10 @@ inline std::unique_ptr<WorkSpace> buildSingleGatedRegister(InputSwitch* writeDat
  * - Write-gated clock: flags update only when flagWrite is asserted
  * - Flags are latched on clock rising edge
  */
-inline std::unique_ptr<WorkSpace> buildFlagRegister(InputSwitch* zeroIn,
-                                     InputSwitch* negativeIn,
-                                     InputSwitch* flagWrite,
-                                     InputSwitch* clock,
+inline std::unique_ptr<WorkSpace> buildFlagRegister(Element* zeroIn,
+                                     Element* negativeIn,
+                                     Element* flagWrite,
+                                     Element* clock,
                                      Element* zeroOut,
                                      Element* negativeOut)
 {
@@ -952,12 +951,12 @@ inline std::unique_ptr<WorkSpace> buildFlagRegister(InputSwitch* zeroIn,
 /**
  * @brief Build an 8x8-bit Register Bank with dual-port read
  */
-inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3],
-                                        InputSwitch* writeData[8],
-                                        InputSwitch* writeEnable,
-                                        InputSwitch* clock,
-                                        InputSwitch* readAddrA[3],
-                                        InputSwitch* readAddrB[3],
+inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(Element* writeAddr[3],
+                                        Element* writeData[8],
+                                        Element* writeEnable,
+                                        Element* clock,
+                                        Element* readAddrA[3],
+                                        Element* readAddrB[3],
                                         Element* readDataA[8],
                                         Element* readDataB[8])
 {
@@ -1043,7 +1042,7 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
 
     // Create Vcc and Reset elements for control signals
     Element *vcc = ElementFactory::buildElement(ElementType::InputVcc);
-    InputSwitch *reset = new InputSwitch();
+    Element *reset = ElementFactory::buildElement(ElementType::InputSwitch);
     reset->setLabel("Reset");
     builder.add(vcc, reset);
 
@@ -1135,12 +1134,12 @@ inline std::unique_ptr<WorkSpace> buildRegisterBank8x8(InputSwitch* writeAddr[3]
  * - Single-stage decoder for fast settling (~10 cycles vs ~45 cascaded)
  * - 64:1 read mux using cascaded 8:1 multiplexers (3 levels)
  */
-inline std::unique_ptr<WorkSpace> buildMemoryInterface(InputSwitch* address[8],
-                                        InputSwitch* dataIn[8],
-                                        InputSwitch* memRead,
-                                        InputSwitch* memWrite,
-                                        InputSwitch* memEnable,
-                                        InputSwitch* clock,
+inline std::unique_ptr<WorkSpace> buildMemoryInterface(Element* address[8],
+                                        Element* dataIn[8],
+                                        Element* memRead,
+                                        Element* memWrite,
+                                        Element* memEnable,
+                                        Element* clock,
                                         Element* dataOut[8])
 {
     auto workspace = std::make_unique<WorkSpace>();

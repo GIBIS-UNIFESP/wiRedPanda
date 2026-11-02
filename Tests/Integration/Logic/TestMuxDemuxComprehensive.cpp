@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
@@ -56,7 +55,9 @@ void TestMUXDEMUXComprehensive::testMux2to1()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch in0, in1, sel;
+    Element in0{ElementType::InputSwitch};
+    Element in1{ElementType::InputSwitch};
+    Element sel{ElementType::InputSwitch};
     Element out{ElementType::Led};
     Element mux{ElementType::Mux};
 
@@ -117,9 +118,10 @@ void TestMUXDEMUXComprehensive::testMux4to1()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    QVector<InputSwitch *> dataIn(4);
-    for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
-    InputSwitch sel0, sel1;
+    QVector<Element *> dataIn(4);
+    for (int i = 0; i < 4; ++i) dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element sel0{ElementType::InputSwitch};
+    Element sel1{ElementType::InputSwitch};
     Element out{ElementType::Led};
     Element mux{ElementType::Mux};
 
@@ -171,10 +173,10 @@ void TestMUXDEMUXComprehensive::testMux8to1()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    QVector<InputSwitch *> dataIn(8);
-    for (int i = 0; i < 8; ++i) dataIn[i] = new InputSwitch();
-    QVector<InputSwitch *> selectLines(3);
-    for (int i = 0; i < 3; ++i) selectLines[i] = new InputSwitch();
+    QVector<Element *> dataIn(8);
+    for (int i = 0; i < 8; ++i) dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+    QVector<Element *> selectLines(3);
+    for (int i = 0; i < 3; ++i) selectLines[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     Element out{ElementType::Led};
     Element mux{ElementType::Mux};
 
@@ -248,9 +250,10 @@ void TestMUXDEMUXComprehensive::testMuxSelectLineTransitions()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    QVector<InputSwitch *> dataIn(4);
-    for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
-    InputSwitch sel0, sel1;
+    QVector<Element *> dataIn(4);
+    for (int i = 0; i < 4; ++i) dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element sel0{ElementType::InputSwitch};
+    Element sel1{ElementType::InputSwitch};
     Element out{ElementType::Led};
     Element mux{ElementType::Mux};
 
@@ -317,15 +320,16 @@ void TestMUXDEMUXComprehensive::testMuxCascaded()
     CircuitBuilder builder(workspace.scene());
 
     // Create 4 data inputs
-    QVector<InputSwitch *> dataIn(4);
-    for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
+    QVector<Element *> dataIn(4);
+    for (int i = 0; i < 4; ++i) dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     for (int i = 0; i < 4; ++i) {
         builder.add(dataIn[i]);
         dataIn[i]->setOn(true);
     }
 
     // Create 2 select inputs
-    InputSwitch sel0, sel1;
+    Element sel0{ElementType::InputSwitch};
+    Element sel1{ElementType::InputSwitch};
     builder.add(&sel0, &sel1);
 
     // First stage: 2 muxes (each 2-to-1)
@@ -388,9 +392,10 @@ void TestMUXDEMUXComprehensive::testMuxDataInputPatterns()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    QVector<InputSwitch *> dataIn(4);
-    for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
-    InputSwitch sel0, sel1;
+    QVector<Element *> dataIn(4);
+    for (int i = 0; i < 4; ++i) dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element sel0{ElementType::InputSwitch};
+    Element sel1{ElementType::InputSwitch};
     Element out{ElementType::Led};
     Element mux{ElementType::Mux};
 
@@ -452,7 +457,8 @@ void TestMUXDEMUXComprehensive::testDemux1to2()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch in, sel;
+    Element in{ElementType::InputSwitch};
+    Element sel{ElementType::InputSwitch};
     Element out0{ElementType::Led}, out1{ElementType::Led};
     Element demux{ElementType::Demux};
 
@@ -492,9 +498,9 @@ void TestMUXDEMUXComprehensive::testDemux1to4()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch in;
-    QVector<InputSwitch *> selectLines(2);
-    for (int i = 0; i < 2; ++i) selectLines[i] = new InputSwitch();
+    Element in{ElementType::InputSwitch};
+    QVector<Element *> selectLines(2);
+    for (int i = 0; i < 2; ++i) selectLines[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     QVector<Element *> outs(4);
     for (int i = 0; i < 4; ++i) outs[i] = ElementFactory::buildElement(ElementType::Led);
     Element demux{ElementType::Demux};
@@ -554,9 +560,9 @@ void TestMUXDEMUXComprehensive::testDemux1to8()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch in;
-    QVector<InputSwitch *> selectLines(3);
-    for (int i = 0; i < 3; ++i) selectLines[i] = new InputSwitch();
+    Element in{ElementType::InputSwitch};
+    QVector<Element *> selectLines(3);
+    for (int i = 0; i < 3; ++i) selectLines[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     QVector<Element *> outs(8);
     for (int i = 0; i < 8; ++i) outs[i] = ElementFactory::buildElement(ElementType::Led);
     Element demux{ElementType::Demux};
@@ -620,9 +626,9 @@ void TestMUXDEMUXComprehensive::testDemuxDataInputVariations()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch in;
-    QVector<InputSwitch *> selectLines(2);
-    for (int i = 0; i < 2; ++i) selectLines[i] = new InputSwitch();
+    Element in{ElementType::InputSwitch};
+    QVector<Element *> selectLines(2);
+    for (int i = 0; i < 2; ++i) selectLines[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     QVector<Element *> outs(4);
     for (int i = 0; i < 4; ++i) outs[i] = ElementFactory::buildElement(ElementType::Led);
     Element demux{ElementType::Demux};
@@ -684,9 +690,9 @@ void TestMUXDEMUXComprehensive::testDemuxSelectTransitions()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch in;
-    QVector<InputSwitch *> selectLines(2);
-    for (int i = 0; i < 2; ++i) selectLines[i] = new InputSwitch();
+    Element in{ElementType::InputSwitch};
+    QVector<Element *> selectLines(2);
+    for (int i = 0; i < 2; ++i) selectLines[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     QVector<Element *> outs(4);
     for (int i = 0; i < 4; ++i) outs[i] = ElementFactory::buildElement(ElementType::Led);
     Element demux{ElementType::Demux};
@@ -784,19 +790,21 @@ void TestMUXDEMUXComprehensive::testMuxDemuxChained()
     CircuitBuilder builder(workspace.scene());
 
     // 4 data inputs
-    QVector<InputSwitch *> dataIn(4);
-    for (int i = 0; i < 4; ++i) dataIn[i] = new InputSwitch();
+    QVector<Element *> dataIn(4);
+    for (int i = 0; i < 4; ++i) dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
     for (int i = 0; i < 4; ++i) {
         builder.add(dataIn[i]);
         dataIn[i]->setOn(i == dataInputIndex);
     }
 
     // Mux selects
-    InputSwitch muxSel0, muxSel1;
+    Element muxSel0{ElementType::InputSwitch};
+    Element muxSel1{ElementType::InputSwitch};
     builder.add(&muxSel0, &muxSel1);
 
     // Demux selects
-    InputSwitch demuxSel0, demuxSel1;
+    Element demuxSel0{ElementType::InputSwitch};
+    Element demuxSel1{ElementType::InputSwitch};
     builder.add(&demuxSel0, &demuxSel1);
 
     // Mux and Demux

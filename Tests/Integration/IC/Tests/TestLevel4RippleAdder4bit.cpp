@@ -8,7 +8,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,8 +19,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct RippleAdder4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swA[4] = {}, *swB[4] = {};
-    InputSwitch *carryIn = nullptr;
+    Element *swA[4] = {}, *swB[4] = {};
+    Element *carryIn = nullptr;
     Element *ledSum[4] = {};
     Element *ledCarryOut = nullptr;
     Simulation *sim = nullptr;
@@ -35,8 +34,8 @@ struct RippleAdder4bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 4; ++i) {
-            swA[i] = new InputSwitch();
-            swB[i] = new InputSwitch();
+            swA[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            swB[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             ledSum[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(swA[i], swB[i], ledSum[i]);
             builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
@@ -44,7 +43,7 @@ struct RippleAdder4bitFixture {
             builder.connect(ic, QString("Sum[%1]").arg(i), ledSum[i], 0);
         }
 
-        carryIn = new InputSwitch();
+        carryIn = ElementFactory::buildElement(ElementType::InputSwitch);
         ledCarryOut = ElementFactory::buildElement(ElementType::Led);
         builder.add(carryIn, ledCarryOut);
         builder.connect(carryIn, 0, ic, "CarryIn");

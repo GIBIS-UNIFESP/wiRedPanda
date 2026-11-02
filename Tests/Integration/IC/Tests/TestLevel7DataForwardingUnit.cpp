@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -38,15 +37,15 @@ struct DataForwardingUnitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch(); builder.add(a); dataAInputs.append(a);
-            auto *b = new InputSwitch(); builder.add(b); dataBInputs.append(b);
-            auto *c = new InputSwitch(); builder.add(c); dataCInputs.append(c);
-            auto *d = new InputSwitch(); builder.add(d); dataDInputs.append(d);
+            auto *a = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(a); dataAInputs.append(a);
+            auto *b = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(b); dataBInputs.append(b);
+            auto *c = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(c); dataCInputs.append(c);
+            auto *d = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(d); dataDInputs.append(d);
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); outputLeds.append(led);
         }
 
         for (int i = 0; i < 2; i++) {
-            auto *sw = new InputSwitch(); builder.add(sw); selectInputs.append(sw);
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(sw); selectInputs.append(sw);
         }
 
         for (int i = 0; i < 8; i++) {

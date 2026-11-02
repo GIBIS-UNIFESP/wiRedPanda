@@ -6,7 +6,6 @@
 #include <QFileInfo>
 
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::inputStatus;
@@ -16,7 +15,7 @@ using TestUtils::inputStatus;
 struct Decoder8To256Fixture {
     WorkSpace workspace;
     CircuitBuilder builder;
-    InputSwitch swAddr[8];
+    ElementArray swAddr{ElementType::InputSwitch, 8};
     ElementArray notGates{ElementType::Not, 8};
     ElementArray andGates{ElementType::And, 256};
     ElementArray ledOut{ElementType::Led, 256};

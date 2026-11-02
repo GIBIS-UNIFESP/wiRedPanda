@@ -19,8 +19,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
-#include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/Parameters.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Versions.h"
@@ -339,7 +337,7 @@ void TestParameters::testParameterChangedFollowsEachChangeOnly()
 
 void TestParameters::testAnInputsLevelAndLockAreItsParameters()
 {
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     QVERIFY(input.setParam(ParamId::On, true));
     QVERIFY(input.isOn());
     QCOMPARE(input.outputPort()->status(), Status::Active);
@@ -356,8 +354,8 @@ void TestParameters::testAnInputsLevelAndLockAreItsParameters()
 void TestParameters::testANewInputDrivesADefiniteLevel()
 {
     // Each input shows its level also when it is the default, so a new one drives no Unknown
-    InputSwitch input;
-    InputButton button;
+    Element input{ElementType::InputSwitch};
+    Element button{ElementType::InputButton};
     Element clock{ElementType::Clock};
     QCOMPARE(input.outputPort()->status(), Status::Inactive);
     QCOMPARE(button.outputPort()->status(), Status::Inactive);
@@ -697,7 +695,7 @@ void TestParameters::testAnOlderFilesVolumeSavesAsItsDecimal()
 void TestParameters::testEveryLoadDrivesASwitchsLevelAndARotarysSelection()
 {
     // A load that leaves the level or the selection as it was still drives it, on the outputs the load added too
-    InputSwitch toggle;
+    Element toggle{ElementType::InputSwitch};
     toggle.outputPort(0)->setStatus(Status::Unknown);
     loadMap(toggle, {}, QVersionNumber(4, 1));
     QCOMPARE(toggle.outputPort(0)->status(), Status::Inactive);

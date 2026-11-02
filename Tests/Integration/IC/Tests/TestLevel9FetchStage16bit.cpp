@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -21,15 +20,15 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct FetchStage16bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
-    InputSwitch *pcLoad = nullptr;
-    InputSwitch *pcInc = nullptr;
-    InputSwitch *instrLoad = nullptr;
-    InputSwitch *pcDataIn[8] = {};
-    InputSwitch *progAddr[8] = {};
-    InputSwitch *progData[16] = {};
-    InputSwitch *progWrite = nullptr;
+    Element *clk = nullptr;
+    Element *reset = nullptr;
+    Element *pcLoad = nullptr;
+    Element *pcInc = nullptr;
+    Element *instrLoad = nullptr;
+    Element *pcDataIn[8] = {};
+    Element *progAddr[8] = {};
+    Element *progData[16] = {};
+    Element *progWrite = nullptr;
     Element *pc[8] = {};
     Element *instruction[16] = {};
     Element *rawInstr[16] = {};
@@ -45,25 +44,25 @@ struct FetchStage16bitFixture {
 
         ic = loadBuildingBlockIC("level9_fetch_stage_16bit.panda");
 
-        clk = new InputSwitch();
-        reset = new InputSwitch();
-        pcLoad = new InputSwitch();
-        pcInc = new InputSwitch();
-        instrLoad = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
+        pcLoad = ElementFactory::buildElement(ElementType::InputSwitch);
+        pcInc = ElementFactory::buildElement(ElementType::InputSwitch);
+        instrLoad = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk, reset, pcLoad, pcInc, instrLoad, ic);
 
         for (int i = 0; i < 8; ++i) {
-            pcDataIn[i] = new InputSwitch();
+            pcDataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             pc[i] = ElementFactory::buildElement(ElementType::Led);
-            progAddr[i] = new InputSwitch();
+            progAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(pcDataIn[i], pc[i], progAddr[i]);
         }
-        progWrite = new InputSwitch();
+        progWrite = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(progWrite);
         for (int i = 0; i < 16; ++i) {
             instruction[i] = ElementFactory::buildElement(ElementType::Led);
             rawInstr[i] = ElementFactory::buildElement(ElementType::Led);
-            progData[i] = new InputSwitch();
+            progData[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(instruction[i], rawInstr[i], progData[i]);
         }
         for (int i = 0; i < 5; ++i) {

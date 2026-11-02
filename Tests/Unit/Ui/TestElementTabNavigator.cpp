@@ -9,7 +9,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
@@ -90,8 +89,8 @@ void TestElementTabNavigator::testTabNavigation()
     WorkSpace workspace;
     makeViewLargeEnoughToShowEverything(workspace);
     auto *scene = workspace.scene();
-    auto *left = new InputSwitch();
-    auto *right = new InputSwitch();
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
     left->setPos(0, 0);
     right->setPos(200, 0);
     scene->addItem(left);
@@ -118,8 +117,8 @@ void TestElementTabNavigator::testBacktabNavigation()
     WorkSpace workspace;
     makeViewLargeEnoughToShowEverything(workspace);
     auto *scene = workspace.scene();
-    auto *left = new InputSwitch();
-    auto *right = new InputSwitch();
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
     left->setPos(0, 0);
     right->setPos(200, 0);
     scene->addItem(left);
@@ -147,8 +146,8 @@ void TestElementTabNavigator::testTabWrapAround()
     WorkSpace workspace;
     makeViewLargeEnoughToShowEverything(workspace);
     auto *scene = workspace.scene();
-    auto *left = new InputSwitch();
-    auto *right = new InputSwitch();
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
     left->setPos(0, 0);
     right->setPos(200, 0);
     scene->addItem(left);
@@ -177,8 +176,8 @@ void TestElementTabNavigator::testEventFilterIgnoresNonSingleSelection()
     WorkSpace workspace;
     makeViewLargeEnoughToShowEverything(workspace);
     auto *scene = workspace.scene();
-    auto *left = new InputSwitch();
-    auto *right = new InputSwitch();
+    auto *left = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *right = ElementFactory::buildElement(ElementType::InputSwitch);
     left->setPos(0, 0);
     right->setPos(200, 0);
     scene->addItem(left);
@@ -209,7 +208,7 @@ void TestElementTabNavigator::testEventFilterIgnoresKeyPressWithNoScene()
     WorkSpace workspace;
     makeViewLargeEnoughToShowEverything(workspace);
     auto *scene = workspace.scene();
-    auto *elm = new InputSwitch();
+    auto *elm = ElementFactory::buildElement(ElementType::InputSwitch);
     elm->setPos(0, 0);
     scene->addItem(elm);
 
@@ -236,7 +235,7 @@ void TestElementTabNavigator::testEventFilterIgnoresFocusedElementNotInVisibleEl
     workspace.view()->resize(200, 200);
     QCoreApplication::processEvents();
     auto *scene = workspace.scene();
-    auto *elm = new InputSwitch();
+    auto *elm = ElementFactory::buildElement(ElementType::InputSwitch);
     elm->setPos(1e6, 1e6); // far outside the small view's visible rect
     scene->addItem(elm);
 
@@ -264,7 +263,7 @@ void TestElementTabNavigator::testTabRevertsToOriginalElementWhenNoOtherFieldIsE
     WorkSpace workspace;
     makeViewLargeEnoughToShowEverything(workspace);
     auto *scene = workspace.scene();
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     inputSwitch->setPos(0, 0);
     andGate->setPos(200, 0);

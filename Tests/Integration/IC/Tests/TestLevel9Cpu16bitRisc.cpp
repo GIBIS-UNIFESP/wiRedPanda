@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -22,14 +21,14 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Cpu16bitRiscFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
-    InputSwitch *progAddr[8] = {};
-    InputSwitch *progData[16] = {};
-    InputSwitch *progWrite = nullptr;
-    InputSwitch *regProgAddr[5] = {};
-    InputSwitch *regProgData[16] = {};
-    InputSwitch *regProgWrite = nullptr;
+    Element *clk = nullptr;
+    Element *reset = nullptr;
+    Element *progAddr[8] = {};
+    Element *progData[16] = {};
+    Element *progWrite = nullptr;
+    Element *regProgAddr[5] = {};
+    Element *regProgData[16] = {};
+    Element *regProgWrite = nullptr;
     QVector<Element *> pcLeds;
     QVector<Element *> resultLeds;
     QVector<Element *> instrLeds;
@@ -44,21 +43,21 @@ struct Cpu16bitRiscFixture {
         ic = loadBuildingBlockIC("level9_cpu_16bit_risc.panda");
         builder.add(ic);
 
-        clk = new InputSwitch(); builder.add(clk);
-        reset = new InputSwitch(); builder.add(reset);
-        progWrite = new InputSwitch(); builder.add(progWrite);
-        regProgWrite = new InputSwitch(); builder.add(regProgWrite);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(clk);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(reset);
+        progWrite = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(progWrite);
+        regProgWrite = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(regProgWrite);
         for (int i = 0; i < 8; i++) {
-            progAddr[i] = new InputSwitch(); builder.add(progAddr[i]);
+            progAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(progAddr[i]);
         }
         for (int i = 0; i < 16; i++) {
-            progData[i] = new InputSwitch(); builder.add(progData[i]);
+            progData[i] = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(progData[i]);
         }
         for (int i = 0; i < 5; i++) {
-            regProgAddr[i] = new InputSwitch(); builder.add(regProgAddr[i]);
+            regProgAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(regProgAddr[i]);
         }
         for (int i = 0; i < 16; i++) {
-            regProgData[i] = new InputSwitch(); builder.add(regProgData[i]);
+            regProgData[i] = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(regProgData[i]);
         }
 
         for (int i = 0; i < 8; i++) {

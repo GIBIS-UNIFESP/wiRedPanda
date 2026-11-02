@@ -25,7 +25,6 @@
 #include "App/Element/ElementAppearance.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementTypeDescriptor.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -64,8 +63,8 @@ void TestElementPictures::testElementsShowingOneFileShareItsPicture()
     const QString path = dir.filePath("shared.png");
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(80, 72)));
 
-    InputSwitch first;
-    InputSwitch second;
+    Element first{ElementType::InputSwitch};
+    Element second{ElementType::InputSwitch};
     first.setAppearance(false, path);
     second.setAppearance(false, path);
 
@@ -82,9 +81,9 @@ void TestElementPictures::testAFileChangedOnDiskIsANewVersion()
     const QString path = dir.filePath("edited.png");
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(64, 64)));
 
-    InputSwitch before;
+    Element before{ElementType::InputSwitch};
     before.setAppearance(false, path);
-    InputSwitch other;
+    Element other{ElementType::InputSwitch};
     QVERIFY(ElementPicturesTestDetail::shows(before, QSize(64, 64)));
     const std::optional<PictureId> first = before.appearance().picture(0);
 
@@ -93,7 +92,7 @@ void TestElementPictures::testAFileChangedOnDiskIsANewVersion()
     QVERIFY(QFile::remove(path));
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
     const QSize otherSize = ElementPicturesTestDetail::shownSize(other);
-    InputSwitch after;
+    Element after{ElementType::InputSwitch};
     after.setAppearance(false, path);
 
     QVERIFY(after.appearance().picture(0) != first);
@@ -109,9 +108,9 @@ void TestElementPictures::testADestroyedElementTakesNoNewVersion()
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("shared.png");
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(64, 64)));
-    auto gone = std::make_unique<InputSwitch>();
+    auto gone = std::make_unique<Element>(ElementType::InputSwitch);
     gone->setAppearance(false, path);
-    InputSwitch kept;
+    Element kept{ElementType::InputSwitch};
     kept.setAppearance(false, path);
     gone.reset();
 
@@ -119,7 +118,7 @@ void TestElementPictures::testADestroyedElementTakesNoNewVersion()
     // write to it)
     QVERIFY(QFile::remove(path));
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
-    InputSwitch after;
+    Element after{ElementType::InputSwitch};
     after.setAppearance(false, path);
     QVERIFY(ElementPicturesTestDetail::shows(kept, QSize(96, 80)));
 }
@@ -139,12 +138,12 @@ void TestElementPictures::testOnlyAFileIsWatched()
 
     // An element showing a file is watched once, however many of its slots show it, until it shows another path or
     // is destroyed
-    auto first = std::make_unique<InputSwitch>();
+    auto first = std::make_unique<Element>(ElementType::InputSwitch);
     first->setAppearance(false, path);
     first->setOn(true);
     first->setAppearance(false, path);
     QCOMPARE(first->appearance().alternativeAppearances(), QStringList({path, path}));
-    InputSwitch second;
+    Element second{ElementType::InputSwitch};
     second.setAppearance(false, path);
     QCOMPARE(ElementAppearance::showingCount(path), 2);
     QCOMPARE(ElementAppearance::showingCount(second.appearance().picturePath(1)), 0);
@@ -168,10 +167,10 @@ void TestElementPictures::testDestroyingElementsSharingAFileGrowsLinearly()
     constexpr int few = 250;
     constexpr int many = 16000;
     const auto destroy = [&path](const int count) {
-        std::vector<std::unique_ptr<InputSwitch>> elements;
+        std::vector<std::unique_ptr<Element>> elements;
         elements.reserve(static_cast<std::size_t>(count));
         for (int i = 0; i < count; ++i) {
-            elements.push_back(std::make_unique<InputSwitch>());
+            elements.push_back(std::make_unique<Element>(ElementType::InputSwitch));
             elements.back()->setAppearance(false, path);
         }
         TestUtils::ThreadCpuTimer timer;
@@ -199,14 +198,14 @@ void TestElementPictures::testAFileThatStopsLoadingIsEveryElementsDefault()
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("gone.png");
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
-    InputSwitch before;
+    Element before{ElementType::InputSwitch};
     before.setAppearance(false, path);
     QVERIFY(ElementPicturesTestDetail::shows(before, QSize(96, 80)));
 
     // The file goes: an element that loads it now shows its slot's default, and so does every element showing the
     // path, which reports it as an element whose own load failed does
     QVERIFY(QFile::remove(path));
-    InputSwitch after;
+    Element after{ElementType::InputSwitch};
     after.setAppearance(false, path);
     const QSize fallback = ElementPicturesTestDetail::shownSize(after);
     QVERIFY(fallback.isValid() && (fallback != QSize(96, 80)));
@@ -217,7 +216,7 @@ void TestElementPictures::testAFileThatStopsLoadingIsEveryElementsDefault()
 
     // The file is back: the next load gives every element showing the path its picture again
     QVERIFY(ElementPicturesTestDetail::writeImage(path, QSize(96, 80)));
-    InputSwitch again;
+    Element again{ElementType::InputSwitch};
     again.setAppearance(false, path);
     QVERIFY(ElementPicturesTestDetail::shows(before, QSize(96, 80)));
     QVERIFY(ElementPicturesTestDetail::shows(after, QSize(96, 80)));
@@ -545,7 +544,7 @@ void TestElementPictures::testOnlyALightResourceIsThemed()
     QCOMPARE(ElementPictures::themed(onDisk, Theme::Dark), onDisk);
 
     // An element showing either is shown the same in both themes
-    InputSwitch custom;
+    Element custom{ElementType::InputSwitch};
     custom.setAppearance(false, onDisk);
     QCOMPARE(ElementPictures::instance().shown(custom, Theme::Dark), ElementPictures::instance().shown(custom, Theme::Light));
 }

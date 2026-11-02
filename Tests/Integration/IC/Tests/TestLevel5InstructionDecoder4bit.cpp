@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -33,7 +32,7 @@ struct InstructionDecoder4bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 4; ++i) {
-            auto *sw = new InputSwitch();
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(sw);
             instrInputs.append(sw);
             builder.connect(sw, 0, ic, QString("instr[%1]").arg(i));

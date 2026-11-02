@@ -39,16 +39,16 @@ void TestCPUInstructionExecute::testInstructionExecute()
     QFETCH(bool, expectedCarry);
     QFETCH(bool, expectedOverflow);
     // Integration test: Register Bank + ALU
-    QVector<InputSwitch *> a, b, op;
+    QVector<Element *> a, b, op;
     QVector<Element *> result;
     Element *zeroFlag, *signFlag, *carryFlag, *overflowFlag;
     for (int i = 0; i < 8; i++) {
-        a.append(new InputSwitch());
-        b.append(new InputSwitch());
+        a.append(ElementFactory::buildElement(ElementType::InputSwitch));
+        b.append(ElementFactory::buildElement(ElementType::InputSwitch));
         result.append(ElementFactory::buildElement(ElementType::Led));
     }
     for (int i = 0; i < 3; i++) {
-        op.append(new InputSwitch());
+        op.append(ElementFactory::buildElement(ElementType::InputSwitch));
     }
     zeroFlag = ElementFactory::buildElement(ElementType::Led);
     signFlag = ElementFactory::buildElement(ElementType::Led);

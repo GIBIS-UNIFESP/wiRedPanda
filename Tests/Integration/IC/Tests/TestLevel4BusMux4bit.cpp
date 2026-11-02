@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -18,8 +17,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct BusMux4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *in0[4] = {}, *in1[4] = {};
-    InputSwitch *sel = nullptr;
+    Element *in0[4] = {}, *in1[4] = {};
+    Element *sel = nullptr;
     Element *out[4] = {};
     Simulation *sim = nullptr;
 
@@ -28,15 +27,15 @@ struct BusMux4bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        sel = new InputSwitch();
+        sel = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sel);
 
         ic = loadBuildingBlockIC("level4_bus_mux_4bit.panda");
         builder.add(ic);
 
         for (int i = 0; i < 4; ++i) {
-            in0[i] = new InputSwitch();
-            in1[i] = new InputSwitch();
+            in0[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            in1[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             out[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(in0[i], in1[i], out[i]);
             builder.connect(in0[i], 0, ic, QString("In0[%1]").arg(i));

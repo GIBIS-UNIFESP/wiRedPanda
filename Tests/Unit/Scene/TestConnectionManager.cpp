@@ -11,7 +11,6 @@
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/PortHoverLabel.h"
@@ -28,7 +27,7 @@ void TestConnectionManager::testConnectionCreation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -46,7 +45,7 @@ void TestConnectionManager::testConnectionValidation()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
 
@@ -66,7 +65,7 @@ void TestConnectionManager::testConnectionDeletion()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     Connection *conn = builder.connect(&sw, 0, &andGate, 0);
@@ -84,7 +83,7 @@ void TestConnectionManager::testMultiPortConnection()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element and1{ElementType::And};
     Element and2{ElementType::And};
     and1.setPos(100, 0);
@@ -105,7 +104,7 @@ void TestConnectionManager::testHoverShowsConnectedPortLabels()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -152,7 +151,7 @@ void TestConnectionManager::testHoverSkipsUnnamedPortLabels()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -188,7 +187,7 @@ void TestConnectionManager::testHoverFanOutShowsAllPeerLabels()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element and1{ElementType::And};
     Element and2{ElementType::And};
     builder.add(&sw, &and1, &and2);
@@ -276,7 +275,7 @@ void TestConnectionManager::testHoverReleaseClearsPeerHighlightAfterWireDeleted(
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     auto *connection = builder.connect(&sw, 0, &andGate, 0);
@@ -305,7 +304,7 @@ void TestConnectionManager::testShowHoverLabelsBiasesLabelForRotatedElementPort(
     // more vertically offset from its own element's centre than horizontally.
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -368,7 +367,7 @@ void TestConnectionManager::testStartFromInputBeginsWireAnchoredAtEnd()
 void TestConnectionManager::testTryCompleteFromInputCompletesAtOutputPort()
 {
     WorkSpace workspace;
-    auto *sw = new InputSwitch;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     andGate->setPos(150, 0);
     workspace.scene()->addItem(sw);
@@ -468,7 +467,7 @@ void TestConnectionManager::testDetachRewiresFromSameOutput()
 {
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -544,7 +543,7 @@ void TestConnectionManager::testClearHoverReleasesHoveredPort()
 {
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);
@@ -563,7 +562,7 @@ void TestConnectionManager::testConnectionRejectionReasonForAlreadyConnectedPort
 {
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     builder.add(&sw, &andGate);
     builder.connect(&sw, 0, &andGate, 0);

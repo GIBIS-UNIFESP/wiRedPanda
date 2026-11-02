@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct DLatchFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *dataIn = nullptr, *enableIn = nullptr;
+    Element *dataIn = nullptr, *enableIn = nullptr;
     Element *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
@@ -25,8 +24,8 @@ struct DLatchFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        dataIn = new InputSwitch();
-        enableIn = new InputSwitch();
+        dataIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        enableIn = ElementFactory::buildElement(ElementType::InputSwitch);
         ledQ = ElementFactory::buildElement(ElementType::Led);
         ledQBar = ElementFactory::buildElement(ElementType::Led);
 

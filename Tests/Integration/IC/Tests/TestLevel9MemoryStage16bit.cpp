@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -25,10 +24,10 @@ struct MemoryStage16bitFixture {
     QVector<Element *> addressInputs;
     QVector<Element *> datainInputs;
     QVector<Element *> resultInputs;
-    InputSwitch *memread = nullptr;
-    InputSwitch *memwrite = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
+    Element *memread = nullptr;
+    Element *memwrite = nullptr;
+    Element *clk = nullptr;
+    Element *reset = nullptr;
     QVector<Element *> dataoutLeds;
     Simulation *sim = nullptr;
 
@@ -41,18 +40,18 @@ struct MemoryStage16bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch(); builder.add(a); addressInputs.append(a);
+            auto *a = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(a); addressInputs.append(a);
         }
         for (int i = 0; i < 16; i++) {
-            auto *d = new InputSwitch(); builder.add(d); datainInputs.append(d);
-            auto *r = new InputSwitch(); builder.add(r); resultInputs.append(r);
+            auto *d = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(d); datainInputs.append(d);
+            auto *r = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(r); resultInputs.append(r);
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); dataoutLeds.append(led);
         }
 
-        memread = new InputSwitch(); builder.add(memread);
-        memwrite = new InputSwitch(); builder.add(memwrite);
-        clk = new InputSwitch(); builder.add(clk);
-        reset = new InputSwitch(); builder.add(reset);
+        memread = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(memread);
+        memwrite = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(memwrite);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(clk);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(reset);
 
         for (int i = 0; i < 8; i++) {
             builder.connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));

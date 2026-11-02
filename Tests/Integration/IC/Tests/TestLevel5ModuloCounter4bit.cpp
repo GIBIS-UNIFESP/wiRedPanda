@@ -9,7 +9,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -22,8 +21,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ModuloCounter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *moduloIn[4] = {};
+    Element *clk = nullptr;
+    Element *moduloIn[4] = {};
     Element *counterOut[4] = {};
     Element *overflowOut = nullptr;
     Simulation *sim = nullptr;
@@ -33,7 +32,7 @@ struct ModuloCounter4bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        clk = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk);
 
         ic = loadBuildingBlockIC("level5_modulo_counter_4bit.panda");
@@ -42,7 +41,7 @@ struct ModuloCounter4bitFixture {
         builder.connect(clk, 0, ic, "Clock");
 
         for (int i = 0; i < 4; ++i) {
-            moduloIn[i] = new InputSwitch();
+            moduloIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             counterOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(moduloIn[i], counterOut[i]);
             builder.connect(moduloIn[i], 0, ic, QString("Modulo[%1]").arg(i));

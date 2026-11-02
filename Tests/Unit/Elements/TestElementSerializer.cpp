@@ -19,7 +19,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementSerializer.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
@@ -414,7 +413,8 @@ void TestElementSerializer::testLoadInputOutputPortRenamesExistingIcPorts()
 
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
     subBuilder.add(&sw1, &sw2, &andGate, &led);
@@ -458,7 +458,7 @@ void TestElementSerializer::testAFileSavesACustomSlotByKeyAtItsPosition()
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("lit.svg");
     QVERIFY(writePicture(path));
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     input.setOn(true);
     input.setAppearance(false, path);
 
@@ -470,7 +470,7 @@ void TestElementSerializer::testAFileSavesACustomSlotByKeyAtItsPosition()
     QCOMPARE(saved.at(1), (QMap<QString, QVariant>{{"key", "on"}, {"skinName", "lit.svg"}}));
 
     // A file of defaults saves no entry
-    const InputSwitch plain;
+    const Element plain{ElementType::InputSwitch};
     QVERIFY(savedAppearances(plain, SerializationPurpose::PortableFile).isEmpty());
 }
 
@@ -480,7 +480,7 @@ void TestElementSerializer::testASnapshotSavesEverySlotByKey()
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("lit.svg");
     QVERIFY(writePicture(path));
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     input.setOn(true);
     input.setAppearance(false, path);
 
@@ -499,7 +499,7 @@ void TestElementSerializer::testAKeyedEntryIsReadByItsKey()
     QVERIFY(writePicture(dir.filePath("lit.svg")));
 
     // The key names the slot wherever the entry sits: first in the list, it is still the on slot's
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     QVERIFY(loadsAppearances(input, {{{"key", "on"}, {"skinName", "lit.svg"}}}, SerializationPurpose::PortableFile,
                              dir.path()));
     QCOMPARE(input.appearance().alternativeAppearances(),
@@ -513,7 +513,7 @@ void TestElementSerializer::testAKeyNoSlotHasIsSkipped()
     QVERIFY(writePicture(dir.filePath("lit.svg")));
 
     // A key the type has no slot for, a slot dropped since or one a newer version added, is skipped, wherever it sits
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     QVERIFY(loadsAppearances(input,
                              {{{"key", "flashing"}, {"skinName", "lit.svg"}}, {}, {{"key", "dimmed"}, {"skinName", "lit.svg"}}},
                              SerializationPurpose::PortableFile, dir.path()));
@@ -528,7 +528,7 @@ void TestElementSerializer::testAnOlderFilesPositionsReadAsTheSlotsTheyNamed()
     QVERIFY(writePicture(dir.filePath("second.svg")));
 
     // A list with no keys reads each position as the slot it named: a switch's second is its on slot
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     QVERIFY(loadsAppearances(input, {{}, {{"skinName", "second.svg"}}}, SerializationPurpose::PortableFile, dir.path()));
     QCOMPARE(input.appearance().alternativeAppearances(),
              QStringList({input.appearance().defaultAppearances().at(0), dir.filePath("second.svg")}));
@@ -588,7 +588,7 @@ void TestElementSerializer::testAppearancesSaveAgainByteForByte()
 
     // A switch showing the file in its on slot, and an LED in its lit red slot: what each saves, read back into a new
     // element, saves again byte for byte
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     input.setOn(true);
     input.setAppearance(false, path);
     Element led{ElementType::Led};

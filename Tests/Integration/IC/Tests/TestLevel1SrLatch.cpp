@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct SrLatchFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *setIn = nullptr, *resetIn = nullptr;
+    Element *setIn = nullptr, *resetIn = nullptr;
     Element *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
@@ -25,8 +24,8 @@ struct SrLatchFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        setIn = new InputSwitch();
-        resetIn = new InputSwitch();
+        setIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        resetIn = ElementFactory::buildElement(ElementType::InputSwitch);
         ledQ = ElementFactory::buildElement(ElementType::Led);
         ledQBar = ElementFactory::buildElement(ElementType::Led);
 

@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,15 +19,15 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct StackMemoryInterfaceFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *dataInSwitches[8] = {};
-    InputSwitch *addressSwitches[8] = {};
-    InputSwitch *spLoad = nullptr;
-    InputSwitch *spPush = nullptr;
-    InputSwitch *spPop = nullptr;
-    InputSwitch *spReset = nullptr;
-    InputSwitch *addressSelect = nullptr;
-    InputSwitch *memWrite = nullptr;
-    InputSwitch *clk = nullptr;
+    Element *dataInSwitches[8] = {};
+    Element *addressSwitches[8] = {};
+    Element *spLoad = nullptr;
+    Element *spPush = nullptr;
+    Element *spPop = nullptr;
+    Element *spReset = nullptr;
+    Element *addressSelect = nullptr;
+    Element *memWrite = nullptr;
+    Element *clk = nullptr;
     Element *spOut[8] = {};
     Element *dataOutLeds[8] = {};
     Element *finalAddrLeds[8] = {};
@@ -41,20 +40,20 @@ struct StackMemoryInterfaceFixture {
 
         ic = loadBuildingBlockIC("level6_stack_memory_interface.panda");
 
-        spLoad = new InputSwitch();
-        spPush = new InputSwitch();
-        spPop = new InputSwitch();
-        spReset = new InputSwitch();
-        addressSelect = new InputSwitch();
-        memWrite = new InputSwitch();
-        clk = new InputSwitch();
+        spLoad = ElementFactory::buildElement(ElementType::InputSwitch);
+        spPush = ElementFactory::buildElement(ElementType::InputSwitch);
+        spPop = ElementFactory::buildElement(ElementType::InputSwitch);
+        spReset = ElementFactory::buildElement(ElementType::InputSwitch);
+        addressSelect = ElementFactory::buildElement(ElementType::InputSwitch);
+        memWrite = ElementFactory::buildElement(ElementType::InputSwitch);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
 
         builder.add(spLoad, spPush, spPop, spReset, addressSelect,
                     memWrite, clk, ic);
 
         for (int i = 0; i < 8; ++i) {
-            dataInSwitches[i] = new InputSwitch();
-            addressSwitches[i] = new InputSwitch();
+            dataInSwitches[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            addressSwitches[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             spOut[i] = ElementFactory::buildElement(ElementType::Led);
             dataOutLeds[i] = ElementFactory::buildElement(ElementType::Led);
             finalAddrLeds[i] = ElementFactory::buildElement(ElementType::Led);
@@ -92,7 +91,7 @@ struct StackMemoryInterfaceFixture {
         return TestUtils::readMultiBitOutput(dataOutLeds);
     }
 
-    void pulse(InputSwitch *ctrl)
+    void pulse(Element *ctrl)
     {
         ctrl->setOn(true);
         sim->update();

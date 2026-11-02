@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,7 +17,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Decoder2to4Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *addressBits[2] = {};
+    Element *addressBits[2] = {};
     Element *outputs[4] = {};
     Simulation *sim = nullptr;
 
@@ -28,7 +27,7 @@ struct Decoder2to4Fixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 2; ++i) {
-            addressBits[i] = new InputSwitch();
+            addressBits[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(addressBits[i]);
         }
         for (int i = 0; i < 4; ++i) {
@@ -138,9 +137,9 @@ void TestLevel2Decoder2To4::testEnableGating()
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
 
-    auto *a0 = new InputSwitch();
-    auto *a1 = new InputSwitch();
-    auto *en = new InputSwitch();
+    auto *a0 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *a1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *en = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(a0, a1, en);
     Element *outs[4] = {};
     for (auto &o : outs) {

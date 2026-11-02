@@ -20,7 +20,6 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -226,9 +225,9 @@ void TestSystemVerilogExport::testWirelessRxReachedByAWireFollowsItsTx()
 {
     // An Rx node reached both by a wire and by its Tx takes the Tx's signal in the simulation
     // (TestSimulation::testWirelessOverridesPhysicalWire); the module must assign the same driver.
-    auto wired = std::make_unique<InputSwitch>();
+    auto wired = std::make_unique<Element>(ElementType::InputSwitch);
     wired->setLabel("Wired");
-    auto air = std::make_unique<InputSwitch>();
+    auto air = std::make_unique<Element>(ElementType::InputSwitch);
     air->setLabel("Air");
     auto txNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(txNode);
@@ -279,7 +278,7 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
 {
     // A Tx and Rx node pair on the same channel. The Rx node's variable should be assigned the InputSwitch signal
     // rather than the default 1'b0, and the LED should read it.
-    auto sw = std::make_unique<InputSwitch>();
+    auto sw = std::make_unique<Element>(ElementType::InputSwitch);
     auto txNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(txNode);
     txNode->setLabel("CLK");
@@ -405,13 +404,13 @@ void TestSystemVerilogExport::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
     std::unique_ptr<IC> ic(icRaw);
     ic->setLabel("Evil\nmodule injected_module; endmodule");
 
-    std::vector<std::unique_ptr<InputSwitch>> switchOwners;
+    std::vector<std::unique_ptr<Element>> switchOwners;
     std::vector<std::unique_ptr<Element>> ledOwners;
     std::vector<std::unique_ptr<Connection>> connOwners;
     QVector<Element *> elements{ic.get()};
 
     for (int i = 0; i < ic->inputSize(); ++i) {
-        auto sw = std::make_unique<InputSwitch>();
+        auto sw = std::make_unique<Element>(ElementType::InputSwitch);
         auto conn = std::make_unique<Connection>();
         conn->setStartPort(sw->outputPort(0));
         conn->setEndPort(ic->inputPort(i));
@@ -565,7 +564,7 @@ void TestSystemVerilogExport::testSystemVerilogExportHelper(const QString &icFil
     // Create input switches (one per IC input)
     QVector<Element *> switches;
     for (int i = 0; i < ic->inputSize(); ++i) {
-        auto *sw = new InputSwitch();
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
         switches.append(sw);
         builder.connect(sw, 0, ic, i);
@@ -958,9 +957,8 @@ void TestSystemVerilogExport::testSystemVerilogExportFlat()
     const auto &outputPins = generator.outputMap();
     QVector<Element *> switches;
     for (const auto &pin : inputPins) {
-        auto *sw = qobject_cast<InputSwitch *>(pin.m_elm);
-        QVERIFY2(sw, "every input of a building block is a switch");
-        switches.append(sw);
+        QVERIFY2(pin.m_elm->elementType() == ElementType::InputSwitch, "every input of a building block is a switch");
+        switches.append(pin.m_elm);
     }
 
     Simulation *sim = workspace.scene()->simulation();
@@ -1409,8 +1407,8 @@ void TestSystemVerilogExport::testTruthTablesCompileAndSimulate()
     std::unique_ptr<WorkSpace> workspace = TestUtils::createWorkspace();
     auto *scene = workspace->scene();
     CircuitBuilder builder(scene);
-    auto *swA = new InputSwitch();
-    auto *swB = new InputSwitch();
+    auto *swA = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swB = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andTable = ElementFactory::buildElement(ElementType::TruthTable);
     auto *orXorTable = ElementFactory::buildElement(ElementType::TruthTable);
     orXorTable->setOutputSize(2);
@@ -1532,8 +1530,8 @@ void TestSystemVerilogExport::testTopLevelFeedbackLatchHoldsStateInExport()
     auto *scene = workspace->scene();
     CircuitBuilder builder(scene);
 
-    auto *swS = new InputSwitch();
-    auto *swR = new InputSwitch();
+    auto *swS = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swR = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *nandQ = ElementFactory::buildElement(ElementType::Nand);
     auto *nandQBar = ElementFactory::buildElement(ElementType::Nand);
     auto *led = ElementFactory::buildElement(ElementType::Led);

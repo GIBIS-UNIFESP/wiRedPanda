@@ -8,7 +8,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -21,7 +20,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Comparator4bitEqualityFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *inputA[4] = {}, *inputB[4] = {};
+    Element *inputA[4] = {}, *inputB[4] = {};
     Element *ledEqual = nullptr;
     Simulation *sim = nullptr;
 
@@ -37,8 +36,8 @@ struct Comparator4bitEqualityFixture {
         builder.add(ledEqual);
 
         for (int i = 0; i < 4; ++i) {
-            inputA[i] = new InputSwitch();
-            inputB[i] = new InputSwitch();
+            inputA[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            inputB[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(inputA[i], inputB[i]);
             builder.connect(inputA[i], 0, ic, QString("A[%1]").arg(i));
             builder.connect(inputB[i], 0, ic, QString("B[%1]").arg(i));

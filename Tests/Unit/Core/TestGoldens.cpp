@@ -21,7 +21,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/Goldens.h"
@@ -339,7 +338,7 @@ void TestGoldens::testElementsById()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *led = ElementFactory::buildElement(ElementType::Led);
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(led);
     scene->addItem(sw);

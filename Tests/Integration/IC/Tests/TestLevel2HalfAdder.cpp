@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct HalfAdderFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swA = nullptr, *swB = nullptr;
+    Element *swA = nullptr, *swB = nullptr;
     Element *ledSum = nullptr, *ledCarry = nullptr;
     Simulation *sim = nullptr;
 
@@ -25,8 +24,8 @@ struct HalfAdderFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        swA = new InputSwitch();
-        swB = new InputSwitch();
+        swA = ElementFactory::buildElement(ElementType::InputSwitch);
+        swB = ElementFactory::buildElement(ElementType::InputSwitch);
         ledSum = ElementFactory::buildElement(ElementType::Led);
         ledCarry = ElementFactory::buildElement(ElementType::Led);
 

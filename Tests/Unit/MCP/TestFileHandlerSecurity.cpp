@@ -8,7 +8,7 @@
 #include <QJsonObject>
 #include <QTemporaryDir>
 
-#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/CircuitExporter.h"
@@ -18,7 +18,7 @@
 void TestFileHandlerSecurity::testExportImagePngClampsExtremeSceneDimensions()
 {
     MainWindow window;
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     window.currentTab()->scene()->addItem(sw);
     sw->setPos(1e9, 1e9);
 
@@ -41,7 +41,7 @@ void TestFileHandlerSecurity::testExportImagePngClampsExtremeSceneDimensions()
 void TestFileHandlerSecurity::testExportImageClampsExcessivePadding()
 {
     MainWindow window;
-    window.currentTab()->scene()->addItem(new InputSwitch());
+    window.currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
 
     FileHandler handler(&window, nullptr);
 
@@ -67,7 +67,7 @@ void TestFileHandlerSecurity::testExportImageClampsNegativePadding()
     // flooring negative values at 0 today -- regression coverage for that floor, since no
     // test exercised a negative value at all.
     MainWindow window;
-    window.currentTab()->scene()->addItem(new InputSwitch());
+    window.currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
 
     FileHandler handler(&window, nullptr);
 

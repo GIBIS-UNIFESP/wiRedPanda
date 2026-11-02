@@ -34,13 +34,13 @@ void TestCPUBranch::cleanup()
 
 void TestCPUBranch::testBranchCondition()
 {
-    InputSwitch *decoderJMP = new InputSwitch();
-    InputSwitch *decoderBEQ = new InputSwitch();
-    InputSwitch *decoderBNE = new InputSwitch();
-    InputSwitch *decoderBLT = new InputSwitch();
-    InputSwitch *decoderBGE = new InputSwitch();
-    InputSwitch *zeroFlag = new InputSwitch();
-    InputSwitch *negativeFlag = new InputSwitch();
+    Element *decoderJMP = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *decoderBEQ = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *decoderBNE = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *decoderBLT = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *decoderBGE = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *zeroFlag = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *negativeFlag = ElementFactory::buildElement(ElementType::InputSwitch);
     Element *pcLoad = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildBranchCondition(
         decoderJMP, decoderBEQ, decoderBNE, decoderBLT, decoderBGE,
@@ -101,25 +101,25 @@ void TestCPUBranch::testBranchIntegration()
     // 4. Branch Condition Evaluator
     // Each build function creates its own workspace/simulation
     // === Program Counter ===
-    InputSwitch *pc_clock = new InputSwitch();
-    InputSwitch *reset = new InputSwitch();
-    QVector<InputSwitch *> pc_load_val;
+    Element *pc_clock = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *reset = ElementFactory::buildElement(ElementType::InputSwitch);
+    QVector<Element *> pc_load_val;
     QVector<Element *> pc_out;
     for (int i = 0; i < 8; i++) {
-        pc_load_val.append(new InputSwitch());
+        pc_load_val.append(ElementFactory::buildElement(ElementType::InputSwitch));
         pc_out.append(ElementFactory::buildElement(ElementType::Led));
     }
-    InputSwitch *pc_load = new InputSwitch();
-    InputSwitch *pc_inc = new InputSwitch();
+    Element *pc_load = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *pc_inc = ElementFactory::buildElement(ElementType::InputSwitch);
     // Build PC using existing function (creates its own workspace/simulation)
     std::unique_ptr<WorkSpace> workspace_pc(buildProgramCounter8bit(
         pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data()));
     auto *sim_pc = workspace_pc->simulation();
     // === Instruction Decoder (4-to-16) ===
-    QVector<InputSwitch *> opcode_bits;
+    QVector<Element *> opcode_bits;
     QVector<Element *> decoder_out;
     for (int i = 0; i < 4; i++) {
-        opcode_bits.append(new InputSwitch());
+        opcode_bits.append(ElementFactory::buildElement(ElementType::InputSwitch));
     }
     for (int i = 0; i < 16; i++) {
         decoder_out.append(ElementFactory::buildElement(ElementType::Led));
@@ -128,23 +128,23 @@ void TestCPUBranch::testBranchIntegration()
         opcode_bits.data(), decoder_out.data()));
     auto *sim_decoder = workspace_decoder->simulation();
     // === Flag Register ===
-    InputSwitch *flag_zero_in = new InputSwitch();
-    InputSwitch *flag_negative_in = new InputSwitch();
-    InputSwitch *flag_write = new InputSwitch();
-    InputSwitch *flag_clock = new InputSwitch();
+    Element *flag_zero_in = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *flag_negative_in = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *flag_write = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *flag_clock = ElementFactory::buildElement(ElementType::InputSwitch);
     Element *flag_zero_out = ElementFactory::buildElement(ElementType::Led);
     Element *flag_negative_out = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace_flags(buildFlagRegister(
         flag_zero_in, flag_negative_in, flag_write, flag_clock, flag_zero_out, flag_negative_out));
     auto *sim_flags = workspace_flags->simulation();
     // === Branch Condition Evaluator ===
-    InputSwitch *branch_decoder_jmp = new InputSwitch();
-    InputSwitch *branch_decoder_beq = new InputSwitch();
-    InputSwitch *branch_decoder_bne = new InputSwitch();
-    InputSwitch *branch_decoder_blt = new InputSwitch();
-    InputSwitch *branch_decoder_bge = new InputSwitch();
-    InputSwitch *branch_zero_flag = new InputSwitch();
-    InputSwitch *branch_negative_flag = new InputSwitch();
+    Element *branch_decoder_jmp = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *branch_decoder_beq = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *branch_decoder_bne = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *branch_decoder_blt = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *branch_decoder_bge = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *branch_zero_flag = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *branch_negative_flag = ElementFactory::buildElement(ElementType::InputSwitch);
     Element *branch_pc_load = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace_branch(buildBranchCondition(
         branch_decoder_jmp, branch_decoder_beq, branch_decoder_bne,

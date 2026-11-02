@@ -267,7 +267,10 @@ void TestLevel2HalfAdder::testHalfAdderTruthTable()
     CircuitBuilder builder(workspace.scene());
 
     // Create inputs/outputs
-    InputSwitch a, b, sum, carry;
+    Element a{ElementType::InputSwitch};
+    Element b{ElementType::InputSwitch};
+    Element sum{ElementType::InputSwitch};
+    Element carry{ElementType::InputSwitch};
 
     // Load the pre-built Half Adder IC
     IC *adder = loadBuildingBlockIC("level2_half_adder.panda");

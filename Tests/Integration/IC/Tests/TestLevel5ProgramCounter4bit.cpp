@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -22,7 +21,7 @@ struct ProgramCounter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> loadValueInputs;
-    InputSwitch *clock = nullptr, *load = nullptr, *inc = nullptr, *reset = nullptr;
+    Element *clock = nullptr, *load = nullptr, *inc = nullptr, *reset = nullptr;
     QVector<Element *> pcOutputs;
     QVector<Element *> pcPlus1Outputs;
     Simulation *sim = nullptr;
@@ -33,15 +32,15 @@ struct ProgramCounter4bitFixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 4; ++i) {
-            auto *lv = new InputSwitch();
+            auto *lv = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(lv);
             loadValueInputs.append(lv);
         }
 
-        clock = new InputSwitch();
-        load = new InputSwitch();
-        inc = new InputSwitch();
-        reset = new InputSwitch();
+        clock = ElementFactory::buildElement(ElementType::InputSwitch);
+        load = ElementFactory::buildElement(ElementType::InputSwitch);
+        inc = ElementFactory::buildElement(ElementType::InputSwitch);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clock, load, inc, reset);
 
         ic = loadBuildingBlockIC("level5_program_counter_4bit.panda");

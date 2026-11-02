@@ -4,15 +4,15 @@
 #include "Tests/Unit/Serialization/TestWaveformSimulator.h"
 
 #include "App/BeWavedDolphin/WaveformSimulator.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestWaveformSimulator::testCaptureAndRestoreSinglePortInputs()
 {
-    InputSwitch sw1;
+    Element sw1{ElementType::InputSwitch};
     sw1.setOn(true);
-    InputSwitch sw2;
+    Element sw2{ElementType::InputSwitch};
     sw2.setOn(false);
     QVector<Element *> inputs{&sw1, &sw2};
 
@@ -56,7 +56,7 @@ void TestWaveformSimulator::testRestorePreservesNonDefiniteStatus()
 {
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(sw);
 
     // A port that has never been driven reads Unknown -- the state captureInputs() would see for

@@ -1,8 +1,9 @@
 // Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "App/Element/GraphicElements/InputButton.h"
+#include <QCoreApplication>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/InputLevel.h"
@@ -39,6 +40,10 @@ struct ElementInfo<ElementType::InputButton> {
             {"off", ":/Components/Input/buttonOff.svg"},
             {"on", ":/Components/Input/buttonOn.svg"},
         };
+        descriptor.appearanceStates = [](const Element &) -> QList<std::pair<int, QString>> {
+            return {{0, QCoreApplication::translate("InputButton", "Released")},
+                    {1, QCoreApplication::translate("InputButton", "Pressed")}};
+        };
         // A button is held only while pressed: its level is no state of the circuit
         descriptor.parameters = {InputLevel::levelSpec(nullptr), InputLevel::lockSpec()};
         // Momentary: down on a press, up on its release, unlike a switch, which latches
@@ -57,17 +62,7 @@ struct ElementInfo<ElementType::InputButton> {
 
     static inline const bool registered = []() {
         ElementTypeDescriptor::add(describe());
-        ElementFactory::registerCreator(constraints.type, [] { return new InputButton(); });
+        ElementFactory::registerCreator(constraints.type, [] { return new Element(constraints.type); });
         return true;
     }();
 };
-
-InputButton::InputButton(QGraphicsItem *parent)
-    : Element(ElementType::InputButton, parent)
-{
-}
-
-QList<std::pair<int, QString>> InputButton::appearanceStates() const
-{
-    return {{0, tr("Released")}, {1, tr("Pressed")}};
-}

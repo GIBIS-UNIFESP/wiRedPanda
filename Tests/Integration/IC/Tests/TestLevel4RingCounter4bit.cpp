@@ -9,7 +9,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -21,8 +20,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct RingCounter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *preset = nullptr, *ce = nullptr, *load = nullptr;
-    InputSwitch *data[4] = {};
+    Element *clk = nullptr, *preset = nullptr, *ce = nullptr, *load = nullptr;
+    Element *data[4] = {};
     Element *counterOut[4] = {};
     Simulation *sim = nullptr;
 
@@ -31,13 +30,13 @@ struct RingCounter4bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        clk = new InputSwitch();
-        preset = new InputSwitch();
-        ce = new InputSwitch();
-        load = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        preset = ElementFactory::buildElement(ElementType::InputSwitch);
+        ce = ElementFactory::buildElement(ElementType::InputSwitch);
+        load = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk, preset, ce, load);
         for (int i = 0; i < 4; ++i) {
-            data[i] = new InputSwitch();
+            data[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(data[i]);
         }
 

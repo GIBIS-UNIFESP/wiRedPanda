@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -24,15 +23,15 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct FetchStageFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *pcData[8] = {};
-    InputSwitch *progAddr[8] = {};
-    InputSwitch *progData[8] = {};
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
-    InputSwitch *pcLoad = nullptr;
-    InputSwitch *pcInc = nullptr;
-    InputSwitch *instrLoad = nullptr;
-    InputSwitch *progWrite = nullptr;
+    Element *pcData[8] = {};
+    Element *progAddr[8] = {};
+    Element *progData[8] = {};
+    Element *clk = nullptr;
+    Element *reset = nullptr;
+    Element *pcLoad = nullptr;
+    Element *pcInc = nullptr;
+    Element *instrLoad = nullptr;
+    Element *progWrite = nullptr;
     Element *pc[8] = {};
     Element *instr[8] = {};
     Element *raw[8] = {};
@@ -47,18 +46,18 @@ struct FetchStageFixture {
 
         ic = loadBuildingBlockIC("level8_fetch_stage.panda");
 
-        clk = new InputSwitch();
-        reset = new InputSwitch();
-        pcLoad = new InputSwitch();
-        pcInc = new InputSwitch();
-        instrLoad = new InputSwitch();
-        progWrite = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
+        pcLoad = ElementFactory::buildElement(ElementType::InputSwitch);
+        pcInc = ElementFactory::buildElement(ElementType::InputSwitch);
+        instrLoad = ElementFactory::buildElement(ElementType::InputSwitch);
+        progWrite = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(ic, clk, reset, pcLoad, pcInc, instrLoad, progWrite);
 
         for (int i = 0; i < 8; ++i) {
-            pcData[i] = new InputSwitch();
-            progAddr[i] = new InputSwitch();
-            progData[i] = new InputSwitch();
+            pcData[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            progAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            progData[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             pc[i] = ElementFactory::buildElement(ElementType::Led);
             instr[i] = ElementFactory::buildElement(ElementType::Led);
             raw[i] = ElementFactory::buildElement(ElementType::Led);
@@ -212,7 +211,7 @@ void TestLevel8FetchStage::testFetchStage()
     // Create PC data input switches (8-bit)
     QVector<Element *> pcdata_inputs;
     for (int i = 0; i < 8; i++) {
-        InputSwitch *sw = new InputSwitch();
+        Element *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
         sw->setLabel(QString("PCData[%1]").arg(i));
         sw->setPos(50 + i * 60, 100);
@@ -220,28 +219,28 @@ void TestLevel8FetchStage::testFetchStage()
     }
 
     // Create clock input
-    InputSwitch *clk = new InputSwitch();
+    Element *clk = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(clk);
     clk->setLabel("Clock");
     clk->setPos(600, 100);
 
     // Create control signals
-    InputSwitch *reset = new InputSwitch();
+    Element *reset = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(reset);
     reset->setLabel("Reset");
     reset->setPos(650, 100);
 
-    InputSwitch *pcload = new InputSwitch();
+    Element *pcload = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(pcload);
     pcload->setLabel("PCLoad");
     pcload->setPos(700, 100);
 
-    InputSwitch *pcinc = new InputSwitch();
+    Element *pcinc = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(pcinc);
     pcinc->setLabel("PCInc");
     pcinc->setPos(750, 100);
 
-    InputSwitch *instrload = new InputSwitch();
+    Element *instrload = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(instrload);
     instrload->setLabel("InstrLoad");
     instrload->setPos(800, 100);
@@ -468,7 +467,7 @@ void TestLevel8FetchStage::testFetchStageStructure()
     QVERIFY(fetch != nullptr);
 
     // Create dummy elements for connection testing
-    InputSwitch *sw = new InputSwitch();
+    Element *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(sw);
 
     Element *out = ElementFactory::buildElement(ElementType::Led);

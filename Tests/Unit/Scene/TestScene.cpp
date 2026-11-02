@@ -41,8 +41,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
@@ -206,7 +204,7 @@ void TestScene::testConnectionsQuery()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -1362,10 +1360,10 @@ void TestScene::testInlineLabelEditorStartWhileEditingCommitsPrevious()
 {
     // Elements that show a label, the only ones an inline edit starts on (Element::mouseDoubleClickEvent())
     WorkSpace workspace;
-    auto *elmA = new InputSwitch;
+    auto *elmA = ElementFactory::buildElement(ElementType::InputSwitch);
     elmA->setLabel("Original A");
     workspace.scene()->addItem(elmA);
-    auto *elmB = new InputSwitch;
+    auto *elmB = ElementFactory::buildElement(ElementType::InputSwitch);
     elmB->setLabel("Original B");
     elmB->setPos(200, 0);
     workspace.scene()->addItem(elmB);
@@ -1481,7 +1479,7 @@ void TestScene::testInlineLabelEditorRelabelsAnICWithoutReadingItsFile()
     const QString path = dir.filePath("sub.panda");
     {
         WorkSpace sub;
-        sub.scene()->addItem(new InputSwitch());
+        sub.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
         sub.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         sub.save(path);
     }
@@ -1635,7 +1633,7 @@ void TestScene::testInlineLabelEditorEmptyLabelUsesElementBoundingRectFallback()
     // labelSceneBoundingRect() is empty when the label has no text yet; start() must fall
     // back to the element's own sceneBoundingRect() to position the editor.
     WorkSpace workspace;
-    auto *elm = new InputSwitch;
+    auto *elm = ElementFactory::buildElement(ElementType::InputSwitch);
     elm->setPos(100, 50);
     workspace.scene()->addItem(elm);
     QVERIFY(elm->label().isEmpty());
@@ -2172,7 +2170,7 @@ void TestScene::testSortSimpleChain()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -2221,7 +2219,8 @@ void TestScene::testSortMultipleChains()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element orGate{ElementType::Or};
     Element led1{ElementType::Led}, led2{ElementType::Led};
@@ -2273,7 +2272,7 @@ void TestScene::testSortCycleDetection()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element orGate{ElementType::Or};
 
@@ -2329,7 +2328,8 @@ void TestScene::testSortDisconnectedComponents()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -2418,7 +2418,7 @@ void TestScene::testForgetItemIdC7()
     // of a dangling pointer.
     WorkSpace ws;
     auto *scene = ws.scene();
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
@@ -2466,7 +2466,7 @@ void TestScene::testDrainConnectionsCleansRegistryHC()
     // UpdateBlobCommand::reconnectConnections, which is now redundant).
     WorkSpace ws;
     auto *scene = ws.scene();
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
@@ -2506,7 +2506,7 @@ void TestScene::testClipboardCanPasteMatchesPasteFormats()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->addItem(sw);
     sw->setSelected(true);
     scene->copyAction();
@@ -2532,9 +2532,9 @@ void TestScene::testBuildDragImageClampsExtremeSelectionExtent()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw1 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->addItem(sw1);
-    auto *sw2 = new InputSwitch();
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->addItem(sw2);
     sw2->setPos(1e7, 1e7);
 
@@ -2555,9 +2555,9 @@ void TestScene::testBuildDragImageClampsAnExtentBeyondIntRange()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw1 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->addItem(sw1);
-    auto *sw2 = new InputSwitch();
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->addItem(sw2);
     sw2->setPos(1e12, 1e11);
 
@@ -2690,7 +2690,7 @@ void TestScene::testKeyTriggerIgnoresAutoRepeat()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *inputSwitch = qobject_cast<InputSwitch *>(ElementFactory::buildElement(ElementType::InputSwitch));
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     QVERIFY(inputSwitch);
     inputSwitch->setTrigger(QKeySequence(Qt::Key_A));
     scene->addItem(inputSwitch);
@@ -3026,7 +3026,7 @@ void TestScene::testPressOnPortWhileWireInProgressCompletesConnection()
     Scene *scene = workspace.scene();
     GraphicsView *view = workspace.view();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setPos(0, 0);
     scene->addItem(sw);
     auto *led = ElementFactory::buildElement(ElementType::Led);
@@ -3072,7 +3072,7 @@ void TestScene::testPressOnOccupiedInputPortDetachesWire()
     GraphicsView *view = workspace.view();
     CircuitBuilder builder(scene);
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setPos(0, 0);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 0);
@@ -3180,7 +3180,7 @@ void TestScene::testCtrlDoubleClickOnWireDoesNotInsertNode()
     GraphicsView *view = workspace.view();
     CircuitBuilder builder(scene);
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw, led);
     builder.connect(sw, 0, led, 0);
@@ -3206,7 +3206,7 @@ void TestScene::testDoubleClickOnConnectedWireInsertsSplitNode()
     GraphicsView *view = workspace.view();
     CircuitBuilder builder(scene);
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setPos(0, 0);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 0);
@@ -3255,7 +3255,7 @@ void TestScene::testConnectionsReturnsRealConnections()
     Scene *scene = workspace.scene();
     CircuitBuilder builder(scene);
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw, led);
     Connection *conn = builder.connect(sw, 0, led, 0);
@@ -3272,7 +3272,7 @@ void TestScene::testUpdateThemeUpdatesConnectionTheme()
     Scene *scene = workspace.scene();
     CircuitBuilder builder(scene);
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw, led);
     Connection *conn = builder.connect(sw, 0, led, 0);
@@ -3700,7 +3700,7 @@ void TestScene::testKeyReleaseEventReleasesInputButtonTrigger()
     WorkSpace workspace;
     Scene *scene = workspace.scene();
 
-    auto *button = new InputButton();
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     button->setTrigger(QKeySequence(Qt::Key_B));
     scene->addItem(button);
 
@@ -3849,7 +3849,7 @@ void TestScene::testElementCountAgreesAfterEveryMutation()
     };
     QCOMPARE(scene->elementCount(), 0);
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
@@ -3942,7 +3942,7 @@ void TestScene::testUnsortedElementsFollowTheStacking()
         return scene->unsortedElements() == walked;
     };
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     auto *gate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw);
@@ -4038,7 +4038,7 @@ void TestScene::testElementCountKeepsAForgottenElement()
     // still takes it out.
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);

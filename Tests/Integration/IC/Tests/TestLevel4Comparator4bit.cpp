@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -18,8 +17,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Level4Comparator4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swA[4] = {}, *swB[4] = {};
-    InputSwitch *swGtIn = nullptr, *swEqIn = nullptr, *swLtIn = nullptr;
+    Element *swA[4] = {}, *swB[4] = {};
+    Element *swGtIn = nullptr, *swEqIn = nullptr, *swLtIn = nullptr;
     Element *ledGreater = nullptr, *ledEqual = nullptr, *ledLess = nullptr;
     Simulation *sim = nullptr;
 
@@ -32,15 +31,15 @@ struct Level4Comparator4bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 4; ++i) {
-            swA[i] = new InputSwitch();
-            swB[i] = new InputSwitch();
+            swA[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            swB[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(swA[i], swB[i]);
             builder.connect(swA[i], 0, ic, QString("A[%1]").arg(i));
             builder.connect(swB[i], 0, ic, QString("B[%1]").arg(i));
         }
-        swGtIn = new InputSwitch();
-        swEqIn = new InputSwitch();
-        swLtIn = new InputSwitch();
+        swGtIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        swEqIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        swLtIn = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(swGtIn, swEqIn, swLtIn);
         builder.connect(swGtIn, 0, ic, "GreaterIn");
         builder.connect(swEqIn, 0, ic, "EqualIn");

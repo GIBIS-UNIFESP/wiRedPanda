@@ -24,7 +24,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementTypeDescriptor.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -91,7 +90,7 @@ IC *icWithABrokenFile(Scene *scene, const QTemporaryDir &dir)
     const QString path = dir.filePath("sub.panda");
     {
         WorkSpace sub;
-        sub.scene()->addItem(new InputSwitch());
+        sub.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
         sub.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         sub.save(path);
     }

@@ -15,7 +15,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
@@ -96,7 +95,7 @@ QByteArray buildOldFormatBlobPredatingMetadata()
 void saveMinimalCircuit(const QString &path)
 {
     WorkSpace ws;
-    ws.scene()->addItem(new InputSwitch());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     QFile out(path);
     QVERIFY(out.open(QIODevice::WriteOnly));
     QDataStream stream(&out);

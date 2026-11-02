@@ -6,7 +6,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -22,8 +21,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct RippleAlu4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swA[4] = {}, *swB[4] = {};
-    InputSwitch *swCarryIn = nullptr, *swSubCarryIn = nullptr;
+    Element *swA[4] = {}, *swB[4] = {};
+    Element *swCarryIn = nullptr, *swSubCarryIn = nullptr;
     Element *ledAdd[4] = {}, *ledSub[4] = {}, *ledAnd[4] = {}, *ledOr[4] = {};
     Element *ledCarryOut = nullptr, *ledSubCarryOut = nullptr;
     Simulation *sim = nullptr;
@@ -37,16 +36,16 @@ struct RippleAlu4bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 4; ++i) {
-            swA[i] = new InputSwitch();
-            swB[i] = new InputSwitch();
+            swA[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            swB[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             ledAdd[i] = ElementFactory::buildElement(ElementType::Led);
             ledSub[i] = ElementFactory::buildElement(ElementType::Led);
             ledAnd[i] = ElementFactory::buildElement(ElementType::Led);
             ledOr[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(swA[i], swB[i], ledAdd[i], ledSub[i], ledAnd[i], ledOr[i]);
         }
-        swCarryIn = new InputSwitch();
-        swSubCarryIn = new InputSwitch();
+        swCarryIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        swSubCarryIn = ElementFactory::buildElement(ElementType::InputSwitch);
         ledCarryOut = ElementFactory::buildElement(ElementType::Led);
         ledSubCarryOut = ElementFactory::buildElement(ElementType::Led);
         builder.add(swCarryIn, swSubCarryIn, ledCarryOut, ledSubCarryOut);

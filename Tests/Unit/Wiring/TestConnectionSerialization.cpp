@@ -10,7 +10,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Workspace.h"
 #include "App/Versions.h"
@@ -173,7 +172,7 @@ void TestConnectionSerialization::testLoadPortTypeResolution()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto sw = std::make_unique<InputSwitch>();
+    auto sw = std::make_unique<Element>(ElementType::InputSwitch);
     auto led = std::make_unique<Element>(ElementType::Led);
     scene->addItem(sw.get());
     scene->addItem(led.get());
@@ -223,8 +222,8 @@ void TestConnectionSerialization::testLoadMultipleConnectionsOnSamePorts()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto sw1 = std::make_unique<InputSwitch>();
-    auto sw2 = std::make_unique<InputSwitch>();
+    auto sw1 = std::make_unique<Element>(ElementType::InputSwitch);
+    auto sw2 = std::make_unique<Element>(ElementType::InputSwitch);
     auto andGate = std::make_unique<Element>(ElementType::And);
     scene->addItem(sw1.get());
     scene->addItem(sw2.get());
@@ -349,7 +348,7 @@ void TestConnectionSerialization::testSaveLoadPreservesConnectionStatus()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto sw = std::make_unique<InputSwitch>();
+    auto sw = std::make_unique<Element>(ElementType::InputSwitch);
     auto led = std::make_unique<Element>(ElementType::Led);
     scene->addItem(sw.get());
     scene->addItem(led.get());
@@ -399,7 +398,7 @@ void TestConnectionSerialization::testSaveLoadWithStatusPropagation()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto sw = std::make_unique<InputSwitch>();
+    auto sw = std::make_unique<Element>(ElementType::InputSwitch);
     auto and1 = std::make_unique<Element>(ElementType::And);
     auto and2 = std::make_unique<Element>(ElementType::And);
     scene->addItem(sw.get());

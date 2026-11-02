@@ -12,7 +12,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -26,7 +25,7 @@ namespace {
 void writeLeafIcFixture(const QString &path)
 {
     WorkSpace ws;
-    ws.scene()->addItem(new InputSwitch());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QFile file(path);
     QVERIFY2(file.open(QIODevice::WriteOnly), qPrintable(path));
@@ -41,7 +40,7 @@ void writeLeafIcFixture(const QString &path)
 QByteArray leafIcBytes()
 {
     WorkSpace ws;
-    ws.scene()->addItem(new InputSwitch());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QByteArray bytes;
     QDataStream stream(&bytes, QIODevice::WriteOnly);

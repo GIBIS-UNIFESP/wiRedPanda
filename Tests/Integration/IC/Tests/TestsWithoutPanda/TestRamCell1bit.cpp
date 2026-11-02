@@ -4,7 +4,6 @@
 #include "Tests/Integration/IC/Tests/TestsWithoutPanda/TestRamCell1bit.h"
 
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::clockCycle;
@@ -15,7 +14,9 @@ using TestUtils::clockCycle;
 
 struct RamCellFixture {
     WorkSpace ws;
-    InputSwitch dataIn, writeEnable, clock;
+    Element dataIn{ElementType::InputSwitch};
+    Element writeEnable{ElementType::InputSwitch};
+    Element clock{ElementType::InputSwitch};
     Element writeControlGate{ElementType::And};
     Element cellDataMux{ElementType::Mux};
     Element storage{ElementType::DFlipFlop};

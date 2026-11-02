@@ -18,8 +18,6 @@
 #include "App/Element/AudioOutput.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -74,7 +72,7 @@ public:
     bool rebuilt() const { return m_rx->outputValue(0) != Status::Active; }
 
 private:
-    InputSwitch *m_source = new InputSwitch();
+    Element *m_source = ElementFactory::buildElement(ElementType::InputSwitch);
     Element *m_tx = ElementFactory::buildElement(ElementType::Node);
     Element *m_rx = ElementFactory::buildElement(ElementType::Node);
 };
@@ -387,7 +385,7 @@ void TestCommands::testFlipNonRotatablePorts()
     // --- InputButton: non-rotatable, single output port at the right edge on the mid-line ---
     // Flipping must mirror the PORT to the other side while leaving the button graphic upright
     // (no item-level transform), paralleling how rotation already repositions these ports.
-    auto *button = new InputButton();
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{button}, scene));
     button->setPos(104, 104);
 
@@ -435,7 +433,7 @@ void TestCommands::testRotateNonRotatablePorts()
     // icon upright and repositions the ports around the centre. This is the behaviour the GUI —
     // and, after reconciliation, the MCP rotate_element handler — rely on, so a rotated
     // pushbutton's output port must actually move (and round-trip back at 0°).
-    auto *button = new InputButton();
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{button}, scene));
     button->setPos(100, 100);
 
@@ -458,7 +456,7 @@ void TestCommands::testFlipRotateNonRotatablePort()
     // applyPortOrientation() applies rotation and flip together (order-dependent). A non-rotatable
     // element that is both rotated and flipped must place its port distinctly from rotate-only,
     // keep an identity item transform, and round-trip back through each state to the base position.
-    auto *button = new InputButton();
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{button}, scene));
     button->setPos(100, 100);
     QVERIFY(!button->rotatesGraphic());
@@ -525,7 +523,7 @@ void TestCommands::testChangeInputSizeCommandShrinkDropsAndRestoresConnection()
     auto *undoStack = scene->undoStack();
 
     auto *andGate = ElementFactory::buildElement(ElementType::And);
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     andGate->setPos(200, 0);
     sw->setPos(0, 0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate, sw}, scene));
@@ -560,8 +558,8 @@ void TestCommands::testConnectionPreservation()
     auto *undoStack = scene->undoStack();
 
     // Create a simple circuit: Switch -> AND -> LED
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -818,7 +816,7 @@ void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
     auto *undoStack = scene->undoStack();
 
     auto *disp7 = ElementFactory::buildElement(ElementType::Display7);
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{disp7, sw}, scene));
     const int dispId = disp7->id();
     const int swId = sw->id();
@@ -870,7 +868,7 @@ void TestCommands::testSplitCommandRedoAbandonedWhenUpstreamMissing()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(200, 0);
@@ -909,7 +907,7 @@ void TestCommands::testSplitCommand()
     auto *undoStack = scene->undoStack();
 
     // Create a simple circuit: Switch -> LED with one connection
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
     sw->setPos(0, 0);
@@ -1039,8 +1037,8 @@ void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     CircuitBuilder builder(scene);
-    auto *swA = new InputSwitch();
-    auto *swB = new InputSwitch();
+    auto *swA = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swB = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *txA = ElementFactory::buildElement(ElementType::Node);
     auto *txB = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);
@@ -1111,7 +1109,7 @@ void TestCommands::testUpdateCommandKeepsAWiredPresetOnItsWire()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     CircuitBuilder builder(scene);
-    auto *preset = new InputSwitch();
+    auto *preset = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *flipFlop = ElementFactory::buildElement(ElementType::DFlipFlop);
     builder.add(preset, flipFlop);
     builder.connect(preset, 0, flipFlop, 2);
@@ -1367,7 +1365,7 @@ void TestCommands::testSplitCommandRedoAbandonedWhenEndPortIsNull()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(200, 0);
@@ -1405,7 +1403,7 @@ void TestCommands::testSplitCommandUndoAbandonedWhenNodeMissing()
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(200, 0);
@@ -1664,7 +1662,7 @@ void TestCommands::testMorphUndoWithAPictureThatIsGoneShowsTheDefault()
 
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch}, scene));
     inputSwitch->setAppearance(false, png);
     const int id = inputSwitch->id();
@@ -1678,7 +1676,7 @@ void TestCommands::testMorphUndoWithAPictureThatIsGoneShowsTheDefault()
     auto *restored = dynamic_cast<Element *>(scene->itemById(id));
     QCOMPARE(restored->elementType(), ElementType::InputSwitch);
     QCOMPARE(restored->externalFiles(), QStringList{png});
-    const InputSwitch fresh;
+    const Element fresh{ElementType::InputSwitch};
     QCOMPARE(SnapshotAccess::pixmapIdentity(restored), SnapshotAccess::pixmapIdentity(&fresh));
 }
 
@@ -1695,7 +1693,7 @@ void TestCommands::testUndoWithAPictureThatIsGoneShowsTheDefault()
 
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch}, scene));
     inputSwitch->setAppearance(false, png);
 
@@ -1710,7 +1708,7 @@ void TestCommands::testUndoWithAPictureThatIsGoneShowsTheDefault()
     scene->undoStack()->undo();
     QCOMPARE(scene->undoStack()->index(), 1);
     QCOMPARE(inputSwitch->externalFiles(), QStringList{png});
-    const InputSwitch fresh;
+    const Element fresh{ElementType::InputSwitch};
     QCOMPARE(SnapshotAccess::pixmapIdentity(inputSwitch), SnapshotAccess::pixmapIdentity(&fresh));
 
     scene->undoStack()->redo();
@@ -1764,7 +1762,7 @@ void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
     const QString outer = dir.filePath("outer.panda");
     {
         WorkSpace workspace;
-        workspace.scene()->addItem(new InputSwitch());
+        workspace.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
         workspace.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         workspace.save(inner);
     }
@@ -1773,7 +1771,7 @@ void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
         auto *nested = new IC();
         workspace.scene()->addItem(nested);
         nested->loadFile(inner, dir.path());
-        workspace.scene()->addItem(new InputSwitch());
+        workspace.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
         workspace.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         workspace.save(outer);
     }
@@ -1964,7 +1962,7 @@ void TestCommands::testChangePortSizeUndoThatDoesNotReadChangesNothing()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *gate = ElementFactory::buildElement(ElementType::And);
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, sw}, scene));
     scene->receiveCommand(new ChangePortSizeCommand({gate}, 3, scene, true));
     auto *conn = new Connection();
@@ -2013,7 +2011,7 @@ namespace TestCommandsHelpers {
 void writeSwitchToLed(const QString &path)
 {
     WorkSpace workspace;
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(sw);
     workspace.scene()->addItem(led);
@@ -2054,8 +2052,8 @@ void TestCommands::testLabelUndoOnAFileICKeepsItsCircuit()
     // The file changed, its cache dropped as the watcher drops it: the redo builds the circuit again
     {
         WorkSpace changed;
-        changed.scene()->addItem(new InputSwitch());
-        changed.scene()->addItem(new InputSwitch());
+        changed.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
+        changed.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
         changed.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
         changed.save(path);
     }
@@ -2372,8 +2370,8 @@ void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *gate = ElementFactory::buildElement(ElementType::And);
-    auto *named = new InputSwitch();
-    auto *other = new InputSwitch();
+    auto *named = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *other = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{gate, named, other}, scene));
     named->setLocked(true);
     const ElementProperty locked = ElementProperty::parameter(ParamId::Locked);
@@ -2405,7 +2403,7 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
     // A rotary switch's value is the output it selects, a switch's its level
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch, rotary}, scene));
     rotary->setOutputSize(4);
@@ -2413,7 +2411,7 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
     // The value of a rotary is its selected output, of a latching input its level; a button's follows the pointer
     QCOMPARE(SetPropertyCommand::valueProperty(*rotary), ElementProperty::parameter(ParamId::Position));
     QCOMPARE(SetPropertyCommand::valueProperty(*inputSwitch), ElementProperty::parameter(ParamId::On));
-    const InputButton button;
+    const Element button{ElementType::InputButton};
     QVERIFY(!SetPropertyCommand::valueProperty(button).has_value());
 
     scene->receiveCommand(SetPropertyCommand::apply({{inputSwitch, ElementProperty::parameter(ParamId::On), true},
@@ -2470,7 +2468,7 @@ void TestCommands::testSetPropertyCommandFirstRedoLeavesTheValues()
     // apply() set the values; pushing the command writes nothing again
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *input = new InputSwitch();
+    auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{input}, scene));
 
     auto *command = SetPropertyCommand::apply({input}, ElementProperty::label(), QString("a"), scene).command;
@@ -2490,7 +2488,7 @@ void TestCommands::testSetPropertyCommandMergesASession()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
-    auto *input = new InputSwitch();
+    auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{input}, scene));
     input->setLabel("start");
     const int commands = undoStack->count();
@@ -2577,8 +2575,8 @@ void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     CircuitBuilder builder(scene);
-    auto *swA = new InputSwitch();
-    auto *swB = new InputSwitch();
+    auto *swA = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swB = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *txA = ElementFactory::buildElement(ElementType::Node);
     auto *txB = ElementFactory::buildElement(ElementType::Node);
     auto *rx = ElementFactory::buildElement(ElementType::Node);

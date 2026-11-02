@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -18,9 +17,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ClockGatedDecoderFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *addressBits[3] = {};
-    InputSwitch *clockGate = nullptr;
-    InputSwitch *writeEnable = nullptr;
+    Element *addressBits[3] = {};
+    Element *clockGate = nullptr;
+    Element *writeEnable = nullptr;
     Element *outputs[8] = {};
     Simulation *sim = nullptr;
 
@@ -30,11 +29,11 @@ struct ClockGatedDecoderFixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 3; ++i) {
-            addressBits[i] = new InputSwitch();
+            addressBits[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(addressBits[i]);
         }
-        clockGate = new InputSwitch();
-        writeEnable = new InputSwitch();
+        clockGate = ElementFactory::buildElement(ElementType::InputSwitch);
+        writeEnable = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clockGate, writeEnable);
 
         for (int i = 0; i < 8; ++i) {

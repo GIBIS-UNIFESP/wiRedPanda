@@ -14,7 +14,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Scene/Scene.h"
@@ -252,8 +251,8 @@ void TestLED::testShownSlotFourInputs()
 void TestLED::testShownSlotWithTwoDriversOnAnInput()
 {
     // Two wires into one input are no level the LED can show: it shows its first slot, whatever its port reads
-    InputSwitch first;
-    InputSwitch second;
+    Element first{ElementType::InputSwitch};
+    Element second{ElementType::InputSwitch};
     Element led{ElementType::Led};
     Connection one;
     one.setStartPort(first.outputPort());

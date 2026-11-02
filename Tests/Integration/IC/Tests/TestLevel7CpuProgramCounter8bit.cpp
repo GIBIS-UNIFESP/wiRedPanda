@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,10 +22,10 @@ struct CpuPC8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> dataInputs;
-    InputSwitch *clock = nullptr;
-    InputSwitch *load = nullptr;
-    InputSwitch *inc = nullptr;
-    InputSwitch *reset = nullptr;
+    Element *clock = nullptr;
+    Element *load = nullptr;
+    Element *inc = nullptr;
+    Element *reset = nullptr;
     QVector<Element *> addressOutputs;
     Simulation *sim = nullptr;
 
@@ -39,25 +38,25 @@ struct CpuPC8bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *data = new InputSwitch();
+            auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(data);
             data->setLabel(QString("Data[%1]").arg(i));
             dataInputs.append(data);
         }
 
-        clock = new InputSwitch();
+        clock = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clock);
         clock->setLabel("Clock");
 
-        load = new InputSwitch();
+        load = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(load);
         load->setLabel("Load");
 
-        inc = new InputSwitch();
+        inc = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(inc);
         inc->setLabel("Inc");
 
-        reset = new InputSwitch();
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(reset);
         reset->setLabel("Reset");
 

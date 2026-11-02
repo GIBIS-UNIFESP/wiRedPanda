@@ -37,21 +37,21 @@ void TestCPURegisterBank::testRegisterBank()
     QFETCH(int, readAddrB);
     QFETCH(int, expectedReadA);
     QFETCH(int, expectedReadB);
-    QVector<InputSwitch *> wAddr, wData, rAddrA, rAddrB;
-    InputSwitch *writeEnable, *clock;
+    QVector<Element *> wAddr, wData, rAddrA, rAddrB;
+    Element *writeEnable, *clock;
     QVector<Element *> readDataA, readDataB;
     for (int i = 0; i < 3; i++) {
-        wAddr.append(new InputSwitch());
-        rAddrA.append(new InputSwitch());
-        rAddrB.append(new InputSwitch());
+        wAddr.append(ElementFactory::buildElement(ElementType::InputSwitch));
+        rAddrA.append(ElementFactory::buildElement(ElementType::InputSwitch));
+        rAddrB.append(ElementFactory::buildElement(ElementType::InputSwitch));
     }
     for (int i = 0; i < 8; i++) {
-        wData.append(new InputSwitch());
+        wData.append(ElementFactory::buildElement(ElementType::InputSwitch));
         readDataA.append(ElementFactory::buildElement(ElementType::Led));
         readDataB.append(ElementFactory::buildElement(ElementType::Led));
     }
-    writeEnable = new InputSwitch();
-    clock = new InputSwitch();
+    writeEnable = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     std::unique_ptr<WorkSpace> workspace(buildRegisterBank8x8(wAddr.data(), wData.data(), writeEnable, clock, rAddrA.data(), rAddrB.data(), readDataA.data(), readDataB.data()));
     auto *sim = workspace->simulation();
     // Set write address and data

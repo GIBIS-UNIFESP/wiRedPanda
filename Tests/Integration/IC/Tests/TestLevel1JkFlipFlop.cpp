@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -35,8 +34,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct JkFlipFlopFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *jIn = nullptr, *kIn = nullptr, *clockIn = nullptr;
-    InputSwitch *presetIn = nullptr, *clearIn = nullptr;
+    Element *jIn = nullptr, *kIn = nullptr, *clockIn = nullptr;
+    Element *presetIn = nullptr, *clearIn = nullptr;
     Element *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
@@ -45,11 +44,11 @@ struct JkFlipFlopFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        jIn = new InputSwitch();
-        kIn = new InputSwitch();
-        clockIn = new InputSwitch();
-        presetIn = new InputSwitch();
-        clearIn = new InputSwitch();
+        jIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        kIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        clockIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        presetIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        clearIn = ElementFactory::buildElement(ElementType::InputSwitch);
         ledQ = ElementFactory::buildElement(ElementType::Led);
         ledQBar = ElementFactory::buildElement(ElementType::Led);
 

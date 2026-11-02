@@ -8,7 +8,7 @@
 #include <QImage>
 #include <QTemporaryDir>
 
-#include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/CircuitExporter.h"
 #include "Tests/Common/Goldens.h"
@@ -31,7 +31,7 @@ void TestCircuitExporter::testRenderToImageIgnoresARubberBandOutsideTheCircuit()
 {
     // The rubber-band selection item stays in the scene, hidden, with its last rectangle: it is not circuit
     WorkSpace workspace;
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(inputSwitch);
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
@@ -77,7 +77,7 @@ void TestCircuitExporter::testRenderToImagePaddingIsTransparentNotGarbage()
 void TestCircuitExporter::testRenderToImageClampsExtremeSceneDimensions()
 {
     WorkSpace workspace;
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(sw);
     sw->setPos(1e7, 1e7);
 
@@ -116,7 +116,7 @@ void TestCircuitExporter::testRenderScaledImageThrowsOnEmptyPaddedRect()
 void TestCircuitExporter::testRenderToPdfHandlesExtremeSceneDimensionsPromptly()
 {
     WorkSpace workspace;
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(sw);
     sw->setPos(1e7, 1e7);
 
@@ -130,7 +130,7 @@ void TestCircuitExporter::testRenderToPdfHandlesExtremeSceneDimensionsPromptly()
 void TestCircuitExporter::testRenderScaledImageClampsExtremeDimensionsDirectly()
 {
     WorkSpace workspace;
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(sw);
     sw->setPos(1e7, 1e7);
 

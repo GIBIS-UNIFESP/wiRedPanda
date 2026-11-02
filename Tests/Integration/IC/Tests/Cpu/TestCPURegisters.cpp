@@ -37,10 +37,10 @@ void TestCPURegisters::testFlagRegister()
     QFETCH(bool, writeEnable);
     QFETCH(bool, expectedZero);
     QFETCH(bool, expectedNegative);
-    InputSwitch *zeroInput = new InputSwitch();
-    InputSwitch *negativeInput = new InputSwitch();
-    InputSwitch *flagWrite = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
+    Element *zeroInput = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *negativeInput = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *flagWrite = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *clock = ElementFactory::buildElement(ElementType::InputSwitch);
     Element *zeroOut = ElementFactory::buildElement(ElementType::Led);
     Element *negativeOut = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut));
@@ -95,10 +95,10 @@ void TestCPURegisters::testFlagRegisterPersistence()
     // Store a known non-zero flag state, then drive the OPPOSITE inputs while
     // write is disabled and clock repeatedly: the latched values must persist.
     // (A transparent latch or a missing write-gate would leak the new inputs.)
-    InputSwitch *zeroInput = new InputSwitch();
-    InputSwitch *negativeInput = new InputSwitch();
-    InputSwitch *flagWrite = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
+    Element *zeroInput = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *negativeInput = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *flagWrite = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *clock = ElementFactory::buildElement(ElementType::InputSwitch);
     Element *zeroOut = ElementFactory::buildElement(ElementType::Led);
     Element *negativeOut = ElementFactory::buildElement(ElementType::Led);
     std::unique_ptr<WorkSpace> workspace(buildFlagRegister(zeroInput, negativeInput, flagWrite, clock, zeroOut, negativeOut));
@@ -133,15 +133,15 @@ void TestCPURegisters::testInstructionRegister()
     QFETCH(int, instructionValue);
     QFETCH(bool, shouldLoad);
     QFETCH(int, expectedIR);
-    QVector<InputSwitch *> instruction;
-    InputSwitch *load, *clock;
+    QVector<Element *> instruction;
+    Element *load, *clock;
     QVector<Element *> ir;
     for (int i = 0; i < 8; i++) {
-        instruction.append(new InputSwitch());
+        instruction.append(ElementFactory::buildElement(ElementType::InputSwitch));
         ir.append(ElementFactory::buildElement(ElementType::Led));
     }
-    load = new InputSwitch();
-    clock = new InputSwitch();
+    load = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     std::unique_ptr<WorkSpace> workspace(buildInstructionRegister8bit(instruction.data(), load, clock, ir.data()));
     auto *sim = workspace->simulation();
     // Load initial value using setOn(bool)
@@ -210,16 +210,16 @@ void TestCPURegisters::testInstructionRegister_data()
 
 void TestCPURegisters::testSingleGatedRegister()
 {
-    InputSwitch *writeData[8];
-    InputSwitch *decoderOut, *writeEnable, *clock;
+    Element *writeData[8];
+    Element *decoderOut, *writeEnable, *clock;
     Element *readOut[8];
     for (int i = 0; i < 8; i++) {
-        writeData[i] = new InputSwitch();
+        writeData[i] = ElementFactory::buildElement(ElementType::InputSwitch);
         readOut[i] = ElementFactory::buildElement(ElementType::Led);
     }
-    decoderOut = new InputSwitch();
-    writeEnable = new InputSwitch();
-    clock = new InputSwitch();
+    decoderOut = ElementFactory::buildElement(ElementType::InputSwitch);
+    writeEnable = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     std::unique_ptr<WorkSpace> workspace(buildSingleGatedRegister(writeData, decoderOut, writeEnable, clock, readOut));
     auto *sim = workspace->simulation();
     // Test 1: Write 0x42 when decoderOut is HIGH

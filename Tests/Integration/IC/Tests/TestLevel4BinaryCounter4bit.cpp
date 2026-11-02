@@ -8,7 +8,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -20,9 +19,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct BinaryCounter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *ce = nullptr, *load = nullptr, *clear = nullptr;
-    InputSwitch *data[4] = {};
+    Element *clk = nullptr;
+    Element *ce = nullptr, *load = nullptr, *clear = nullptr;
+    Element *data[4] = {};
     Element *counterOut[4] = {};
     Simulation *sim = nullptr;
 
@@ -31,13 +30,13 @@ struct BinaryCounter4bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        clk = new InputSwitch();
-        ce = new InputSwitch();
-        load = new InputSwitch();
-        clear = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        ce = ElementFactory::buildElement(ElementType::InputSwitch);
+        load = ElementFactory::buildElement(ElementType::InputSwitch);
+        clear = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk, ce, load, clear);
         for (int i = 0; i < 4; ++i) {
-            data[i] = new InputSwitch();
+            data[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(data[i]);
         }
 

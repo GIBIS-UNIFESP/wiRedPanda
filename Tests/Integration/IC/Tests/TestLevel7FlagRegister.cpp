@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -23,8 +22,8 @@ struct FlagRegisterFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
     QVector<Element *> flagInputs;
-    InputSwitch *load = nullptr;
-    InputSwitch *clk = nullptr;
+    Element *load = nullptr;
+    Element *clk = nullptr;
     QVector<Element *> flagOutputs;
     Simulation *sim = nullptr;
 
@@ -37,11 +36,11 @@ struct FlagRegisterFixture {
         builder.add(ic);
 
         for (int i = 0; i < 4; i++) {
-            auto *sw = new InputSwitch(); builder.add(sw); flagInputs.append(sw);
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(sw); flagInputs.append(sw);
         }
 
-        load = new InputSwitch(); builder.add(load);
-        clk = new InputSwitch(); builder.add(clk);
+        load = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(load);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(clk);
 
         for (int i = 0; i < 4; i++) {
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); flagOutputs.append(led);

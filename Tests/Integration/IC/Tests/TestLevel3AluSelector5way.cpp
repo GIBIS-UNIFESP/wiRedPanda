@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -18,8 +17,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct AluSelector5wayFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *in[5] = {};
-    InputSwitch *sel[3] = {};
+    Element *in[5] = {};
+    Element *sel[3] = {};
     Element *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -29,11 +28,11 @@ struct AluSelector5wayFixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 5; ++i) {
-            in[i] = new InputSwitch();
+            in[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(in[i]);
         }
         for (int i = 0; i < 3; ++i) {
-            sel[i] = new InputSwitch();
+            sel[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(sel[i]);
         }
         output = ElementFactory::buildElement(ElementType::Led);

@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,12 +19,12 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct StackPointer8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
-    InputSwitch *load = nullptr;
-    InputSwitch *push = nullptr;
-    InputSwitch *pop = nullptr;
-    InputSwitch *loadVal[8] = {};
+    Element *clk = nullptr;
+    Element *reset = nullptr;
+    Element *load = nullptr;
+    Element *push = nullptr;
+    Element *pop = nullptr;
+    Element *loadVal[8] = {};
     Element *sp[8] = {};
     Simulation *sim = nullptr;
 
@@ -36,16 +35,16 @@ struct StackPointer8bitFixture {
 
         ic = loadBuildingBlockIC("level6_stack_pointer_8bit.panda");
 
-        clk = new InputSwitch();
-        reset = new InputSwitch();
-        load = new InputSwitch();
-        push = new InputSwitch();
-        pop = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
+        load = ElementFactory::buildElement(ElementType::InputSwitch);
+        push = ElementFactory::buildElement(ElementType::InputSwitch);
+        pop = ElementFactory::buildElement(ElementType::InputSwitch);
 
         builder.add(clk, reset, load, push, pop, ic);
 
         for (int i = 0; i < 8; ++i) {
-            loadVal[i] = new InputSwitch();
+            loadVal[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             sp[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(loadVal[i], sp[i]);
         }

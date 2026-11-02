@@ -5,17 +5,18 @@
 
 #include <memory>
 
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
 #include <QFile>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QTranslator>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -29,7 +30,7 @@
 
 void TestInputElements::testInputSwitchConstructor()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     // Verify element type
     QCOMPARE(inputSwitch.elementType(), ElementType::InputSwitch);
@@ -56,7 +57,7 @@ void TestInputElements::testInputSwitchConstructor()
 
 void TestInputElements::testInputSwitchInitialState()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     // Initial state should be OFF
     QVERIFY(!inputSwitch.isOn());
@@ -67,7 +68,7 @@ void TestInputElements::testInputSwitchInitialState()
 
 void TestInputElements::testInputSwitchPressToggles()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     // Start: OFF
     QVERIFY(!inputSwitch.isOn());
@@ -83,7 +84,7 @@ void TestInputElements::testInputSwitchPressToggles()
 
 void TestInputElements::testInputSwitchSetOnSetsTheLevel()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     // A level is set, not toggled: the same level twice leaves it so
     inputSwitch.setOn(true);
@@ -98,7 +99,7 @@ void TestInputElements::testInputSwitchSetOnSetsTheLevel()
 
 void TestInputElements::testInputSwitchIsOn()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     // Port parameter is ignored
     QVERIFY(!inputSwitch.isOn(0));
@@ -114,7 +115,7 @@ void TestInputElements::testInputSwitchIsOn()
 
 void TestInputElements::testInputSwitchPortStatus()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     // Initial: Inactive
     QCOMPARE(inputSwitch.outputPort(0)->status(), Status::Inactive);
@@ -130,7 +131,7 @@ void TestInputElements::testInputSwitchPortStatus()
 
 void TestInputElements::testInputSwitchSaveState()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
     inputSwitch.setOn(true);
 
     // Save to stream
@@ -146,7 +147,7 @@ void TestInputElements::testInputSwitchSaveState()
 void TestInputElements::testInputSwitchLoadOldVersion()
 {
     // Create and save InputSwitch with version 4.1+ format
-    auto inputSwitch1 = std::unique_ptr<InputSwitch>(new InputSwitch());
+    auto inputSwitch1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputSwitch));
     inputSwitch1->setOn(true);
 
     QByteArray data;
@@ -155,7 +156,7 @@ void TestInputElements::testInputSwitchLoadOldVersion()
     inputSwitch1.reset();
 
     // Load with old version (< 4.1) - will try to read old format
-    auto inputSwitch2 = std::unique_ptr<InputSwitch>(new InputSwitch());
+    auto inputSwitch2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputSwitch));
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -177,7 +178,7 @@ void TestInputElements::testInputSwitchLoadOldVersion()
 void TestInputElements::testInputSwitchLoadNewVersion()
 {
     // Create and save InputSwitch
-    auto inputSwitch1 = std::unique_ptr<InputSwitch>(new InputSwitch());
+    auto inputSwitch1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputSwitch));
     inputSwitch1->setOn(true);
 
     QByteArray data;
@@ -186,7 +187,7 @@ void TestInputElements::testInputSwitchLoadNewVersion()
     inputSwitch1.reset();
 
     // Load with new version (>= 4.1)
-    auto inputSwitch2 = std::unique_ptr<InputSwitch>(new InputSwitch());
+    auto inputSwitch2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputSwitch));
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -204,7 +205,7 @@ void TestInputElements::testInputSwitchLockingMechanism()
     // mousePressEvent()'s interactive path checks the lock. Actually engage the lock here so
     // the "doesn't affect setOn(bool) directly" claim is demonstrated, not just asserted by
     // a comment.
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
     inputSwitch.setLocked(true);
     QVERIFY(inputSwitch.isLocked());
 
@@ -224,7 +225,7 @@ void TestInputElements::testInputSwitchLockingMechanism()
 void TestInputElements::testInputSwitchMousePressWhileLockedDoesNotToggle()
 {
     Scene scene;
-    auto *inputSwitch = new InputSwitch;
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     inputSwitch->setPos(0, 0);
     inputSwitch->setLocked(true);
     scene.addItem(inputSwitch);
@@ -242,7 +243,7 @@ void TestInputElements::testInputSwitchMousePressWhileLockedDoesNotToggle()
 
 void TestInputElements::testInputSwitchAppearanceChange()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     // Switch is OFF initially
     inputSwitch.setOn(false);
@@ -270,7 +271,7 @@ void TestInputElements::testInputSwitchAppearanceChange()
 
 void TestInputElements::testInputButtonConstructor()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Verify element type
     QCOMPARE(inputButton.elementType(), ElementType::InputButton);
@@ -297,7 +298,7 @@ void TestInputElements::testInputButtonConstructor()
 
 void TestInputElements::testInputButtonInitialState()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Initial state should be OFF (set in constructor)
     QVERIFY(!inputButton.isOn());
@@ -308,7 +309,7 @@ void TestInputElements::testInputButtonInitialState()
 
 void TestInputElements::testInputButtonSetOn()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Start: OFF
     QVERIFY(!inputButton.isOn());
@@ -324,7 +325,7 @@ void TestInputElements::testInputButtonSetOn()
 
 void TestInputElements::testInputButtonSetOff()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Set to ON first
     inputButton.setOn(true);
@@ -341,7 +342,7 @@ void TestInputElements::testInputButtonSetOff()
 
 void TestInputElements::testInputButtonIsOn()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Port parameter is ignored
     QVERIFY(!inputButton.isOn(0));
@@ -357,7 +358,7 @@ void TestInputElements::testInputButtonIsOn()
 
 void TestInputElements::testInputButtonPortStatus()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Initial: Inactive
     QCOMPARE(inputButton.outputPort(0)->status(), Status::Inactive);
@@ -373,7 +374,7 @@ void TestInputElements::testInputButtonPortStatus()
 
 void TestInputElements::testInputButtonSaveState()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Save to stream
     QByteArray data;
@@ -388,7 +389,7 @@ void TestInputElements::testInputButtonSaveState()
 void TestInputElements::testInputButtonLoadOldVersion()
 {
     // Create and save InputButton
-    auto inputButton1 = std::unique_ptr<InputButton>(new InputButton());
+    auto inputButton1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputButton));
     inputButton1->setOn(true);
 
     QByteArray data;
@@ -397,7 +398,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
     inputButton1.reset();
 
     // Load with old version (3.1 - 4.0)
-    auto inputButton2 = std::unique_ptr<InputButton>(new InputButton());
+    auto inputButton2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputButton));
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -417,7 +418,7 @@ void TestInputElements::testInputButtonLoadOldVersion()
 void TestInputElements::testInputButtonLoadNewVersion()
 {
     // Create and save InputButton
-    auto inputButton1 = std::unique_ptr<InputButton>(new InputButton());
+    auto inputButton1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputButton));
     inputButton1->setOn(true);
 
     QByteArray data;
@@ -426,7 +427,7 @@ void TestInputElements::testInputButtonLoadNewVersion()
     inputButton1.reset();
 
     // Load with new version (>= 4.1)
-    auto inputButton2 = std::unique_ptr<InputButton>(new InputButton());
+    auto inputButton2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputButton));
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -444,7 +445,7 @@ void TestInputElements::testInputButtonLockingMechanism()
     // setOn() is the direct/programmatic API and deliberately ignores the lock --
     // only mousePressEvent()/mouseReleaseEvent()'s interactive paths check the lock. Actually
     // engage the lock here so that claim is demonstrated, not just asserted by a comment.
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
     inputButton.setLocked(true);
     QVERIFY(inputButton.isLocked());
 
@@ -464,7 +465,7 @@ void TestInputElements::testInputButtonLockingMechanism()
 void TestInputElements::testInputButtonMousePressReleaseWhileLockedDoesNotToggle()
 {
     Scene scene;
-    auto *inputButton = new InputButton;
+    auto *inputButton = ElementFactory::buildElement(ElementType::InputButton);
     inputButton->setPos(0, 0);
     inputButton->setLocked(true);
     scene.addItem(inputButton);
@@ -487,7 +488,7 @@ void TestInputElements::testInputButtonMousePressReleaseWhileLockedDoesNotToggle
 
 void TestInputElements::testInputButtonAppearanceChange()
 {
-    InputButton inputButton;
+    Element inputButton{ElementType::InputButton};
 
     // Button is OFF initially
     inputButton.setOn(false);
@@ -515,7 +516,7 @@ void TestInputElements::testInputButtonAppearanceChange()
 
 void TestInputElements::testInputButton()
 {
-    InputButton elm;
+    Element elm{ElementType::InputButton};
     QCOMPARE(elm.inputSize(), 0);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.elementType(), ElementType::InputButton);
@@ -535,7 +536,7 @@ void TestInputElements::testInputButton()
 
 void TestInputElements::testInputSwitch()
 {
-    InputSwitch elm;
+    Element elm{ElementType::InputSwitch};
     QCOMPARE(elm.inputSize(), 0);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.elementType(), ElementType::InputSwitch);
@@ -565,7 +566,7 @@ void TestInputElements::testAppearanceWithSameOsAbsolutePath()
     const QString appearanceFullPath = tempDir.path() + "/custom_appearance.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", appearanceFullPath));
 
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
 
     bool threw = false;
     try {
@@ -579,10 +580,10 @@ void TestInputElements::testAppearanceWithSameOsAbsolutePath()
 
 void TestInputElements::testAppearanceWithNonExistentFileShowsTheDefault()
 {
-    InputSwitch inputSwitch;
+    Element inputSwitch{ElementType::InputSwitch};
     inputSwitch.setAppearance(false, "/some/empty/directory/nonexistent_appearance_12345.svg");
 
-    const InputSwitch fresh;
+    const Element fresh{ElementType::InputSwitch};
     QCOMPARE(SnapshotAccess::pixmapIdentity(&inputSwitch), SnapshotAccess::pixmapIdentity(&fresh));
 }
 
@@ -597,14 +598,14 @@ void TestInputElements::testLoadResolvesAppearanceBareFilenameAgainstContextDir(
     const QString appearanceFullPath = tempDir.path() + "/custom_appearance.svg";
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", appearanceFullPath));
 
-    InputSwitch inputSwitch1;
+    Element inputSwitch1{ElementType::InputSwitch};
     inputSwitch1.setAppearance(false, appearanceFullPath);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
     inputSwitch1.save(saveStream, {.purpose = SerializationPurpose::PortableFile});
 
-    InputSwitch inputSwitch2;
+    Element inputSwitch2{ElementType::InputSwitch};
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, tempDir.path()};
@@ -625,7 +626,7 @@ void TestInputElements::testLoadResolvesAppearanceForeignPathViaBareFilenameFall
     const QString appearanceFullPath = tempDir.path() + "/" + appearanceFileName;
     QVERIFY(QFile::copy(":/Components/Input/switchOff.svg", appearanceFullPath));
 
-    InputSwitch inputSwitch1;
+    Element inputSwitch1{ElementType::InputSwitch};
     inputSwitch1.setAppearance(false, appearanceFullPath);
 
     QByteArray data;
@@ -650,7 +651,7 @@ void TestInputElements::testLoadResolvesAppearanceForeignPathViaBareFilenameFall
         writeStream << propsMap << inputPorts << outputPorts << appearancesMap << extraMap;
     }
 
-    InputSwitch inputSwitch2;
+    Element inputSwitch2{ElementType::InputSwitch};
     QDataStream loadStream(rewritten);
     QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, QVersionNumber(4, 1), SerializationPurpose::PortableFile, tempDir.path()};
@@ -691,13 +692,13 @@ void TestInputElements::testAppearanceReloadsAfterFileModified()
     };
 
     writeSvg(path, 9);
-    auto *firstSwitch = new InputSwitch();
+    auto *firstSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(firstSwitch);
     firstSwitch->setAppearance(false, path);
     const QSizeF firstSize = firstSwitch->boundingRect().size();
 
     writeSvg(path, 200);
-    auto *secondSwitch = new InputSwitch();
+    auto *secondSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(secondSwitch);
     secondSwitch->setAppearance(false, path);
     const QSizeF secondSize = secondSwitch->boundingRect().size();
@@ -784,7 +785,7 @@ void sendKey(Scene &scene, const QEvent::Type type, const Qt::Key key)
 void TestInputElements::testSwitchClickIsOneUndoableCommand()
 {
     Scene scene;
-    auto *inputSwitch = new InputSwitch;
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(inputSwitch);
 
     TestInputElementsHelpers::click(scene, *inputSwitch);
@@ -804,8 +805,8 @@ void TestInputElements::testADoubleClickOnAnotherSwitchIsOneUndoableCommand()
     // A double-click on a switch other than the one that last held the mouse is a press of it: one undoable command,
     // as a click is. One on the switch just clicked edits its label, which records nothing
     Scene scene;
-    auto *first = new InputSwitch;
-    auto *second = new InputSwitch;
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
     second->setPos(0, 128);
     scene.addItem(first);
     scene.addItem(second);
@@ -881,8 +882,8 @@ void TestInputElements::testRotaryClickThroughAZoomedViewIsOneUndoableCommand()
 void TestInputElements::testTriggerKeyIsOneUndoableCommandKeepingTheSelection()
 {
     Scene scene;
-    auto *first = new InputSwitch;
-    auto *second = new InputSwitch;
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     first->setTrigger(QKeySequence(Qt::Key_A));
     second->setTrigger(QKeySequence(Qt::Key_A));
@@ -919,7 +920,7 @@ void TestInputElements::testButtonPressIsNotRecorded()
 {
     // A held button is not saved, so pressing it changes nothing a file or an undo holds
     Scene scene;
-    auto *button = new InputButton;
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     button->setTrigger(QKeySequence(Qt::Key_A));
     scene.addItem(button);
 
@@ -943,7 +944,7 @@ void TestInputElements::testMiddlePressLeavesTheSwitchNotHoldingTheMouse()
     // item is movable, and the scene drags elements itself), so a left press made away from a switch after a middle
     // press on it toggles nothing and records nothing
     Scene scene;
-    auto *inputSwitch = new InputSwitch;
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(inputSwitch);
 
     QGraphicsSceneMouseEvent middle(QEvent::GraphicsSceneMousePress);
@@ -967,7 +968,7 @@ void TestInputElements::testMiddlePressOnAHeldSwitchTogglesNothing()
 {
     // Qt gives a middle press made while the left button holds a switch to the switch, and only a left press operates it
     Scene scene;
-    auto *inputSwitch = new InputSwitch;
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(inputSwitch);
     const QPointF at = inputSwitch->sceneBoundingRect().center();
 
@@ -983,7 +984,7 @@ void TestInputElements::testMiddleReleaseLeavesAHeldButtonPressed()
 {
     // Only the left button's release lets a held button go
     Scene scene;
-    auto *button = new InputButton;
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     scene.addItem(button);
     const QPointF at = button->sceneBoundingRect().center();
 
@@ -999,7 +1000,7 @@ void TestInputElements::testAButtonLockedWhileHeldStaysPressed()
 {
     // A release is no operation of a locked input: a button locked while held stays pressed
     Scene scene;
-    auto *button = new InputButton;
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     scene.addItem(button);
 
     TestInputElementsHelpers::sendMouse(scene, QEvent::GraphicsSceneMousePress, *button);
@@ -1012,8 +1013,8 @@ void TestInputElements::testAButtonLockedWhileHeldStaysPressed()
 void TestInputElements::testLockedInputsIgnoreTheirTriggerKeys()
 {
     Scene scene;
-    auto *inputSwitch = new InputSwitch;
-    auto *button = new InputButton;
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     inputSwitch->setTrigger(QKeySequence(Qt::Key_A));
     button->setTrigger(QKeySequence(Qt::Key_B));
     button->setPos(0, 128);
@@ -1038,7 +1039,7 @@ void TestInputElements::testTheReleaseGoesToTheElementHoldingTheMouse()
 {
     // A button held by the mouse lets go when the left button is released anywhere
     Scene scene;
-    auto *button = new InputButton;
+    auto *button = ElementFactory::buildElement(ElementType::InputButton);
     scene.addItem(button);
 
     TestInputElementsHelpers::sendMouse(scene, QEvent::GraphicsSceneMousePress, *button);
@@ -1053,7 +1054,7 @@ void TestInputElements::testADoubleClickOnTheElementJustPressedEditsItsLabel()
     // Qt sends press, release, double-click, release: the switch toggles once, and the double-click on the element
     // that held the mouse asks to edit its label
     Scene scene;
-    auto *inputSwitch = new InputSwitch;
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(inputSwitch);
     const QPointF at = inputSwitch->sceneBoundingRect().center();
 
@@ -1069,7 +1070,7 @@ void TestInputElements::testADoubleClickAfterAPressNothingTookEditsTheLabel()
     // A press no item takes leaves no element having last held the mouse, so Qt gives a double-click that follows to
     // the element under it as a double-click: it edits the label and operates nothing
     Scene scene;
-    auto *inputSwitch = new InputSwitch;
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(inputSwitch);
     const QPointF at = inputSwitch->sceneBoundingRect().center();
     const QPointF away = inputSwitch->sceneBoundingRect().bottomRight() + QPointF(200, 200);
@@ -1090,8 +1091,8 @@ void TestInputElements::testADoubleClickAfterTheLastHolderLeftEditsTheLabel()
     // Qt forgets the element that last held the mouse when it leaves the scene, as a deletion kept for undo does, so a
     // double-click on another element is a double-click of it: it edits the label and operates nothing
     Scene scene;
-    auto *first = new InputSwitch;
-    auto *second = new InputSwitch;
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
     second->setPos(0, 128);
     scene.addItem(first);
     scene.addItem(second);
@@ -1101,7 +1102,7 @@ void TestInputElements::testADoubleClickAfterTheLastHolderLeftEditsTheLabel()
     QVERIFY(first->isOn());
     // Through QGraphicsScene's own removeItem(), as Qt's code removes an item, past Scene::removeItem()
     static_cast<QGraphicsScene &>(scene).removeItem(first);
-    const std::unique_ptr<InputSwitch> removed(first);
+    const std::unique_ptr<Element> removed(first);
     TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseDoubleClick, at, Qt::LeftButton, Qt::LeftButton);
     TestInputElementsHelpers::sendMouseAt(scene, QEvent::GraphicsSceneMouseRelease, at, Qt::LeftButton, Qt::NoButton);
 
@@ -1115,8 +1116,8 @@ void TestInputElements::testADoubleClickAfterTheLastHolderCameBackEditsTheLabel(
     // An element that left the scene and came back, as a deletion undone does, is not the one that last held the
     // mouse, which Qt forgot when it left: a double-click on another element is a double-click of it
     Scene scene;
-    auto *first = new InputSwitch;
-    auto *second = new InputSwitch;
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
     second->setPos(0, 128);
     scene.addItem(first);
     scene.addItem(second);
@@ -1139,8 +1140,8 @@ void TestInputElements::testADoubleClickOnAnotherElementPressesIt()
     // A double-click on an element other than the one that last held the mouse is a press of it: it operates, as one
     // undoable step, and edits no label
     Scene scene;
-    auto *first = new InputSwitch;
-    auto *second = new InputSwitch;
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
     second->setPos(0, 128);
     scene.addItem(first);
     scene.addItem(second);
@@ -1155,4 +1156,45 @@ void TestInputElements::testADoubleClickOnAnotherElementPressesIt()
     QCOMPARE(scene.undoStack()->count(), 2);
     scene.undoStack()->undo();
     QVERIFY(!second->isOn());
+}
+
+void TestInputElements::testEachLevelInputNamesItsStatesInItsContext()
+{
+    // A translator that names each string's context shows that every state is looked up in its type's
+    class ContextTagger : public QTranslator
+    {
+    public:
+        QString translate(const char *context, const char *sourceText, const char *disambiguation, int n) const override
+        {
+            Q_UNUSED(disambiguation)
+            Q_UNUSED(n)
+            return QStringLiteral("[%1 %2]").arg(QString::fromUtf8(context), QString::fromUtf8(sourceText));
+        }
+
+        bool isEmpty() const override { return false; }
+    };
+
+    struct Named {
+        ElementType type;
+        QString context;
+        QString low;
+        QString high;
+    };
+    const QList<Named> inputs{
+        {ElementType::InputSwitch, "InputSwitch", "Off", "On"},
+        {ElementType::InputButton, "InputButton", "Released", "Pressed"},
+        {ElementType::Clock, "Clock", "Low", "High"},
+    };
+
+    ContextTagger tagger;
+    QCoreApplication::installTranslator(&tagger);
+    const auto removeTagger = qScopeGuard([&tagger] { QCoreApplication::removeTranslator(&tagger); });
+    for (const Named &input : inputs) {
+        const Element element(input.type);
+        const QList<std::pair<int, QString>> expected{
+            {0, QStringLiteral("[%1 %2]").arg(input.context, input.low)},
+            {1, QStringLiteral("[%1 %2]").arg(input.context, input.high)},
+        };
+        QCOMPARE(element.appearanceStates(), expected);
+    }
 }

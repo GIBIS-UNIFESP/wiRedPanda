@@ -27,7 +27,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Scene/ICRegistry.h"
@@ -944,8 +943,8 @@ void TestElementEditor::testApplyCapabilitiesGenericMultiOutputShowsCuratedOptio
 void TestElementEditor::testApplyCapabilitiesMixedLockStateShowsPartiallyChecked()
 {
     WorkSpace workspace;
-    auto *switch1 = new InputSwitch();
-    auto *switch2 = new InputSwitch();
+    auto *switch1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *switch2 = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(switch1);
     workspace.scene()->addItem(switch2);
     switch1->setLocked(true);
@@ -1111,7 +1110,7 @@ void TestElementEditor::testRefusesALabelAnotherTxHasWithANonNodeSelected()
     second->setWirelessMode(WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(inputSwitch);
 
     ElementEditor editor(&workspace);
@@ -1421,7 +1420,7 @@ void TestElementEditor::testOutputValueChangedForInputRotary()
 void TestElementEditor::testOutputValueChangedForRegularInput()
 {
     WorkSpace workspace;
-    auto *switchElm = new InputSwitch();
+    auto *switchElm = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(switchElm);
 
     ElementEditor editor(&workspace);
@@ -1443,7 +1442,7 @@ void TestElementEditor::testOutputValueChangedForRegularInput()
 void TestElementEditor::testInputLockedGuardsEmptyOrDisabled()
 {
     WorkSpace workspace;
-    auto *switchElm = new InputSwitch();
+    auto *switchElm = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(switchElm);
 
     ElementEditor editor(&workspace);
@@ -1464,7 +1463,7 @@ void TestElementEditor::testInputLockedGuardsEmptyOrDisabled()
 void TestElementEditor::testInputLockedSetsLockState()
 {
     WorkSpace workspace;
-    auto *switchElm = new InputSwitch();
+    auto *switchElm = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(switchElm);
 
     ElementEditor editor(&workspace);
@@ -1665,7 +1664,7 @@ void TestElementEditor::testLowercaseTriggerPushesOneCommand()
 {
     // The field uppercases a typed letter, which changes its text again: the edit is still one undo step
     WorkSpace workspace;
-    auto *inputSwitch = new InputSwitch();
+    auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(inputSwitch);
 
     ElementEditor editor(&workspace);
@@ -1691,8 +1690,8 @@ void TestElementEditor::testManyTriggersPlaceholderKeepsItsCase()
 {
     // The field uppercases a typed key; the placeholder it shows for a selection of different triggers is not one
     WorkSpace workspace;
-    auto *switchA = new InputSwitch();
-    auto *switchB = new InputSwitch();
+    auto *switchA = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *switchB = ElementFactory::buildElement(ElementType::InputSwitch);
     switchA->setTrigger(QKeySequence("A"));
     switchB->setTrigger(QKeySequence("B"));
     workspace.scene()->addItem(switchA);
@@ -1828,7 +1827,7 @@ void TestElementEditor::testWritesMatchGolden()
 void TestElementEditor::testTypingALabelIsOneUndoStep()
 {
     WorkSpace workspace;
-    auto *input = new InputSwitch();
+    auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(input);
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
@@ -1979,8 +1978,8 @@ void TestElementEditor::testEachComboPickIsAnUndoStep()
 void TestElementEditor::testANewSelectionStartsAnUndoStep()
 {
     WorkSpace workspace;
-    auto *first = new InputSwitch();
-    auto *second = new InputSwitch();
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(first);
     workspace.scene()->addItem(second);
     ElementEditor editor(&workspace);
@@ -2003,7 +2002,7 @@ void TestElementEditor::testANewSelectionStartsAnUndoStep()
 void TestElementEditor::testUndoRestoresTheLock()
 {
     WorkSpace workspace;
-    auto *input = new InputSwitch();
+    auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(input);
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
@@ -2021,7 +2020,7 @@ void TestElementEditor::testUndoRestoresTheLock()
 void TestElementEditor::testUndoRestoresTheValueOfAnInput()
 {
     WorkSpace workspace;
-    auto *input = new InputSwitch();
+    auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(input);
     workspace.scene()->addItem(rotary);
@@ -2117,8 +2116,8 @@ void TestElementEditor::testMixedLabelsTypingIsOneStep()
 {
     // Typing into the label field of two switches whose labels differ is one undo step
     WorkSpace workspace;
-    auto *first = new InputSwitch();
-    auto *second = new InputSwitch();
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
     first->setLabel("a");
     second->setLabel("b");
     workspace.scene()->addItem(first);
@@ -2150,7 +2149,7 @@ void TestElementEditor::testDestroyingTheEditorWithAFocusedField()
     // that it was left: a slot of the editor called then asserts in a debug build (Qt's check that the receiver is
     // still of its type)
     WorkSpace workspace;
-    auto *input = new InputSwitch();
+    auto *input = ElementFactory::buildElement(ElementType::InputSwitch);
     workspace.scene()->addItem(input);
     auto *editor = new ElementEditor();
     editor->setScene(workspace.scene());

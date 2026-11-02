@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/Cpu/CpuCommon.h"
 
@@ -39,8 +38,8 @@ using TestSequentialHelpers::complementary;
  * @return Simulation pointer for the circuit
  */
 void buildSimple2StateFsm(WorkSpace* workspace,
-                          InputSwitch*& triggerSwitch,
-                          InputSwitch*& clockSwitch,
+                          Element*& triggerSwitch,
+                          Element*& clockSwitch,
                           Element *& stateLed,
                           Element *& stateNotLed,
                           Element*& outStateFf,
@@ -49,8 +48,8 @@ void buildSimple2StateFsm(WorkSpace* workspace,
     // Create fresh circuit for each test
     CircuitBuilder builder(workspace->scene());
 
-    triggerSwitch = new InputSwitch();
-    clockSwitch = new InputSwitch();
+    triggerSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    clockSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
     outStateFf = ElementFactory::buildElement(ElementType::DFlipFlop);
     stateLed = ElementFactory::buildElement(ElementType::Led);
     stateNotLed = ElementFactory::buildElement(ElementType::Led);
@@ -82,8 +81,8 @@ void buildSimple2StateFsm(WorkSpace* workspace,
  * @param settleAfter Number of settle iterations after each phase
  */
 void advanceFsm(Simulation *simulation,
-                InputSwitch *triggerSwitch,
-                InputSwitch *clockSwitch,
+                Element *triggerSwitch,
+                Element *clockSwitch,
                 bool newTriggerValue,
                 int settleAfter = 1)
 {
@@ -131,11 +130,11 @@ void TestSequential::testRegisterAsyncClear()
     CircuitBuilder builder(workspace.scene());
 
     // Input controls
-    InputSwitch clk;
-    InputSwitch clear;  // Active LOW clear signal
+    Element clk{ElementType::InputSwitch};
+    Element clear{ElementType::InputSwitch};  // Active LOW clear signal
 
     // Data inputs (4-bit)
-    InputSwitch dataIn[4];
+    ElementArray dataIn{ElementType::InputSwitch, 4};
 
     // D flip-flops (4-bit register)
     ElementArray dff{ElementType::DFlipFlop, 4};
@@ -230,8 +229,8 @@ void TestSequential::testCounterAsyncReset()
     CircuitBuilder builder(workspace.scene());
 
     // Clock input
-    InputSwitch clk;
-    InputSwitch clear;  // Active LOW clear signal
+    Element clk{ElementType::InputSwitch};
+    Element clear{ElementType::InputSwitch};  // Active LOW clear signal
 
     // Counter bits using D flip-flops
     ElementArray dff{ElementType::DFlipFlop, 4};
@@ -400,9 +399,9 @@ void TestSequential::testShiftRegisterAsyncClear()
     CircuitBuilder builder(workspace.scene());
 
     // Input controls
-    InputSwitch clk;
-    InputSwitch serialIn;
-    InputSwitch clear;  // Active LOW clear signal
+    Element clk{ElementType::InputSwitch};
+    Element serialIn{ElementType::InputSwitch};
+    Element clear{ElementType::InputSwitch};  // Active LOW clear signal
 
     // D flip-flops forming shift register (4-bit)
     ElementArray dff{ElementType::DFlipFlop, 4};
@@ -518,8 +517,8 @@ void TestSequential::testSimpleStateMachine()
     QCOMPARE(triggerSequence.size(), expectedStateSequence.size());
 
     // Build circuit using helper function
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -586,8 +585,8 @@ void TestSequential::testFsmStateTransitions()
     QFETCH(int, transitionCount);
 
     // Build circuit using helper function (FIX: Extract circuit builder)
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -674,8 +673,8 @@ void TestSequential::testFsmTimingEdgeCases()
     QFETCH(int, rapidChanges);
 
     // Build circuit using helper function (FIX: Extract circuit builder)
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -765,8 +764,8 @@ void TestSequential::testFsmExtendedSequences()
     QFETCH(QVector<bool>, triggerSequence);
 
     // Build circuit using helper function (FIX: Extract circuit builder)
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -857,8 +856,8 @@ void TestSequential::testFsmQnotComplementarity()
 {
     QFETCH(QVector<bool>, triggerSequence);
 
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -922,8 +921,8 @@ void TestSequential::testFsmLongSequenceStability()
 {
     QFETCH(int, cycleCount);
 
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -983,8 +982,8 @@ void TestSequential::testFsmLongSequenceStability()
 void TestSequential::testFsmStateLock()
 {
 
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -1042,8 +1041,8 @@ void TestSequential::testFsmRapidClockNoSettle()
 {
     QFETCH(int, rapidCycleCount);
 
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -1097,8 +1096,8 @@ void TestSequential::testFsmTriggerDuringClock()
     QFETCH(bool, initialTrigger);
     QFETCH(bool, triggerDuringClock);
 
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -1140,8 +1139,8 @@ void TestSequential::testFsmTriggerDuringClock()
 void TestSequential::testFsmLongTermStability()
 {
 
-    InputSwitch *triggerSwitch = nullptr;
-    InputSwitch *clockSwitch = nullptr;
+    Element *triggerSwitch = nullptr;
+    Element *clockSwitch = nullptr;
     Element *stateLed = nullptr;
     Element *stateNotLed = nullptr;
     Element *stateFf = nullptr;
@@ -1219,7 +1218,8 @@ void TestSequential::testTFlipFlopToggle()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch tSwitch, clockSwitch;
+    Element tSwitch{ElementType::InputSwitch};
+    Element clockSwitch{ElementType::InputSwitch};
     Element tff{ElementType::TFlipFlop};
     Element ledQ{ElementType::Led}, ledQnot{ElementType::Led};
 
@@ -1296,7 +1296,9 @@ void TestSequential::testSRFlipFlopSetReset()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sSwitch, clockSwitch, rSwitch;
+    Element sSwitch{ElementType::InputSwitch};
+    Element clockSwitch{ElementType::InputSwitch};
+    Element rSwitch{ElementType::InputSwitch};
     Element srff{ElementType::SRFlipFlop};
     Element ledQ{ElementType::Led}, ledQnot{ElementType::Led};
 

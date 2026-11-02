@@ -8,7 +8,6 @@
 
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -57,8 +56,8 @@ void TestFeedback::testSetResetPriorityInSRLatch()
     std::unique_ptr<Scene> scene(createSRLatchFromNAND());
     QVERIFY2(scene != nullptr, "Failed to create feedback circuit");
 
-    InputSwitch *switchS = nullptr;
-    InputSwitch *switchR = nullptr;
+    Element *switchS = nullptr;
+    Element *switchR = nullptr;
     Element *nand1 = nullptr; // Q
     Element *nand2 = nullptr; // Q'
     findSRLatchParts(scene.get(), switchS, switchR, nand1, nand2);
@@ -94,12 +93,12 @@ void TestFeedback::testInitialStateDependency()
     QVERIFY2(scene1 != nullptr, "Failed to create first scene");
     QVERIFY2(scene2 != nullptr, "Failed to create second scene");
 
-    InputSwitch *switchS1 = nullptr, *switchR1 = nullptr;
+    Element *switchS1 = nullptr, *switchR1 = nullptr;
     Element *nand1Q1 = nullptr, *nand1Q1Bar = nullptr;
     findSRLatchParts(scene1.get(), switchS1, switchR1, nand1Q1, nand1Q1Bar);
     QVERIFY(switchS1 && switchR1 && nand1Q1 && nand1Q1Bar);
 
-    InputSwitch *switchS2 = nullptr, *switchR2 = nullptr;
+    Element *switchS2 = nullptr, *switchR2 = nullptr;
     Element *nand2Q1 = nullptr, *nand2Q1Bar = nullptr;
     findSRLatchParts(scene2.get(), switchS2, switchR2, nand2Q1, nand2Q1Bar);
     QVERIFY(switchS2 && switchR2 && nand2Q1 && nand2Q1Bar);
@@ -294,10 +293,7 @@ void TestFeedback::testConflictingFeedbackSignals()
     auto elements = scene->elements();
     for (auto *elem : elements) {
         if (elem->elementType() == ElementType::InputSwitch) {
-            auto *sw = dynamic_cast<InputSwitch *>(elem);
-            if (sw) {
-                sw->setOn(true);
-            }
+            elem->setOn(true);
         }
     }
 
@@ -607,7 +603,7 @@ void TestFeedback::testMultipleSimultaneousFeedbackLoops()
 // Helper Functions
 // ============================================================
 
-void TestFeedback::findSRLatchParts(Scene *scene, InputSwitch *&switchS, InputSwitch *&switchR,
+void TestFeedback::findSRLatchParts(Scene *scene, Element *&switchS, Element *&switchR,
                                     Element *&nand1Q, Element *&nand2QBar)
 {
     switchS = switchR = nullptr;
@@ -615,7 +611,7 @@ void TestFeedback::findSRLatchParts(Scene *scene, InputSwitch *&switchS, InputSw
     for (auto *elem : scene->elements()) {
         const bool isSSide = (elem->pos().y() == 0);
         if (elem->elementType() == ElementType::InputSwitch) {
-            (isSSide ? switchS : switchR) = dynamic_cast<InputSwitch *>(elem);
+            (isSSide ? switchS : switchR) = elem;
         } else if (elem->elementType() == ElementType::Nand) {
             (isSSide ? nand1Q : nand2QBar) = elem;
         }

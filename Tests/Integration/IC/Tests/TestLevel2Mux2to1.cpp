@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Mux2to1Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *in0 = nullptr, *in1 = nullptr, *select = nullptr;
+    Element *in0 = nullptr, *in1 = nullptr, *select = nullptr;
     Element *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -25,9 +24,9 @@ struct Mux2to1Fixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        in0 = new InputSwitch();
-        in1 = new InputSwitch();
-        select = new InputSwitch();
+        in0 = ElementFactory::buildElement(ElementType::InputSwitch);
+        in1 = ElementFactory::buildElement(ElementType::InputSwitch);
+        select = ElementFactory::buildElement(ElementType::InputSwitch);
         output = ElementFactory::buildElement(ElementType::Led);
 
         builder.add(in0, in1, select, output);
@@ -119,10 +118,10 @@ void TestLevel2MUX2To1::testEnableGating()
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
 
-    auto *d0 = new InputSwitch();
-    auto *d1 = new InputSwitch();
-    auto *sel = new InputSwitch();
-    auto *en = new InputSwitch();
+    auto *d0 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *d1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sel = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *en = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *out = ElementFactory::buildElement(ElementType::Led);
     builder.add(d0, d1, sel, en, out);
 

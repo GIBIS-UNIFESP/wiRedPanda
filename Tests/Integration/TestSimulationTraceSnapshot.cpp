@@ -19,7 +19,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -206,9 +205,9 @@ QStringList elementRun(const ElementType type, const int inputs, const int outpu
     scene->addItem(element);
 
     const int wired = std::max(element->inputSize() - (lastOpen ? 1 : 0), 0);
-    QList<InputSwitch *> switches;
+    QList<Element *> switches;
     for (int index = 0; index < wired; ++index) {
-        auto *source = new InputSwitch();
+        auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
         source->setPos(0, index * 80);
         scene->addItem(source);
         auto *wire = new Connection();

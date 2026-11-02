@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -99,8 +98,8 @@ void TestComponents::testIC()
 
     testICData(ic);
 
-    auto *clkButton = new InputButton();
-    auto *prstButton = new InputButton();
+    auto *clkButton = ElementFactory::buildElement(ElementType::InputButton);
+    auto *prstButton = ElementFactory::buildElement(ElementType::InputButton);
 
     auto *led1 = ElementFactory::buildElement(ElementType::Led);
     auto *led2 = ElementFactory::buildElement(ElementType::Led);

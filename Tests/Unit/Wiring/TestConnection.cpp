@@ -15,7 +15,6 @@
 #include "App/Core/Application.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -75,7 +74,7 @@ void TestConnection::testConnectionDestruction()
 {
     // Destroying a connection must detach it from both of its ports, leaving no dangling
     // pointer behind in the ports' connection lists.
-    auto inputSwitch = std::make_unique<InputSwitch>();
+    auto inputSwitch = std::make_unique<Element>(ElementType::InputSwitch);
     auto andGate = std::make_unique<Element>(ElementType::And);
 
     OutputPort *outPort = inputSwitch->outputPort(0);
@@ -248,7 +247,7 @@ void TestConnection::testSceneEventSwallowsCtrlClick()
 
 void TestConnection::testPortAttachConnectionIgnoresNull()
 {
-    auto inputSwitch = std::make_unique<InputSwitch>();
+    auto inputSwitch = std::make_unique<Element>(ElementType::InputSwitch);
     OutputPort *outPort = inputSwitch->outputPort();
     const qsizetype before = outPort->connections().size();
 

@@ -9,7 +9,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -35,7 +34,7 @@ struct InstrDecoder8bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *sw = new InputSwitch();
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(sw);
             sw->setLabel(QString("instr[%1]").arg(i));
             instrInputs.append(sw);

@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -39,7 +38,7 @@ struct DecodeStageFixture {
         builder.add(ic);
 
         for (int i = 0; i < 5; i++) {
-            auto *sw = new InputSwitch(); builder.add(sw); opcodeInputs.append(sw);
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(sw); opcodeInputs.append(sw);
         }
         for (int i = 0; i < 3; i++) {
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); aluopLeds.append(led);

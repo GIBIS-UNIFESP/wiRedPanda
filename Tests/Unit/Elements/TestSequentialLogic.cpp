@@ -16,7 +16,6 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
@@ -106,7 +105,8 @@ void TestSequentialLogic::testDFlipFlopBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swD, swClk;
+    Element swD{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
     Element dff{ElementType::DFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -147,7 +147,8 @@ void TestSequentialLogic::testDLatchBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swD, swEnable;
+    Element swD{ElementType::InputSwitch};
+    Element swEnable{ElementType::InputSwitch};
     Element dlatch{ElementType::DLatch};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -190,7 +191,9 @@ void TestSequentialLogic::testJKFlipFlopBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swJ, swClk, swK;
+    Element swJ{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
+    Element swK{ElementType::InputSwitch};
     Element jkff{ElementType::JKFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -243,7 +246,9 @@ void TestSequentialLogic::testSRFlipFlopBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swS, swClk, swR;
+    Element swS{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
+    Element swR{ElementType::InputSwitch};
     Element srff{ElementType::SRFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -290,7 +295,8 @@ void TestSequentialLogic::testSRLatchBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swS, swR;
+    Element swS{ElementType::InputSwitch};
+    Element swR{ElementType::InputSwitch};
     Element srlatch{ElementType::SRLatch};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -338,7 +344,8 @@ void TestSequentialLogic::testTFlipFlopBehavior()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swT, swClk;
+    Element swT{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
     Element tff{ElementType::TFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -381,7 +388,10 @@ void TestSequentialLogic::testSRFlipFlopWithOneOfSAndROpen()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swClk, swS, swR, swPreset;
+    Element swClk{ElementType::InputSwitch};
+    Element swS{ElementType::InputSwitch};
+    Element swR{ElementType::InputSwitch};
+    Element swPreset{ElementType::InputSwitch};
     Element setOnly{ElementType::SRFlipFlop}, resetOnly{ElementType::SRFlipFlop};
     Element ledSet{ElementType::Led}, ledReset{ElementType::Led};
 
@@ -424,7 +434,9 @@ void TestSequentialLogic::testTFlipFlopWithTOpen()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swClk, swPreset, swClear;
+    Element swClk{ElementType::InputSwitch};
+    Element swPreset{ElementType::InputSwitch};
+    Element swClear{ElementType::InputSwitch};
     Element tff{ElementType::TFlipFlop};
     Element ledQ{ElementType::Led};
 
@@ -475,7 +487,8 @@ void TestSequentialLogic::testDFlipFlopResetSimState()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swD, swClk;
+    Element swD{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
     Element dff{ElementType::DFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -512,7 +525,9 @@ void TestSequentialLogic::testJKFlipFlopResetSimState()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swJ, swClk, swK;
+    Element swJ{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
+    Element swK{ElementType::InputSwitch};
     Element jkff{ElementType::JKFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -551,7 +566,9 @@ void TestSequentialLogic::testSRFlipFlopResetSimState()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swS, swClk, swR;
+    Element swS{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
+    Element swR{ElementType::InputSwitch};
     Element srff{ElementType::SRFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 
@@ -590,7 +607,8 @@ void TestSequentialLogic::testTFlipFlopResetSimState()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swT, swClk;
+    Element swT{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
     Element tff{ElementType::TFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 

@@ -9,7 +9,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -21,8 +20,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ShiftRegisterPisoFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *load = nullptr;
-    InputSwitch *dataIn[4] = {};
+    Element *clk = nullptr, *load = nullptr;
+    Element *dataIn[4] = {};
     Element *serialOut = nullptr;
     Simulation *sim = nullptr;
 
@@ -31,8 +30,8 @@ struct ShiftRegisterPisoFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        clk = new InputSwitch();
-        load = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        load = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk, load);
 
         ic = loadBuildingBlockIC("level4_shift_register_piso.panda");
@@ -42,7 +41,7 @@ struct ShiftRegisterPisoFixture {
         builder.connect(load, 0, ic, "Load");
 
         for (int i = 0; i < 4; ++i) {
-            dataIn[i] = new InputSwitch();
+            dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(dataIn[i]);
             builder.connect(dataIn[i], 0, ic, QString("D%1").arg(i));
         }

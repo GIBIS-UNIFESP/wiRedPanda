@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Decoder5to32Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swAddr[5] = {};
+    Element *swAddr[5] = {};
     Element *ledOut[32] = {};
     Simulation *sim = nullptr;
 
@@ -26,7 +25,7 @@ struct Decoder5to32Fixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 5; ++i) {
-            swAddr[i] = new InputSwitch();
+            swAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(swAddr[i]);
         }
         for (int i = 0; i < 32; ++i) {
@@ -117,12 +116,12 @@ void TestLevel2Decoder5To32::testEnableGating()
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
 
-    InputSwitch *addr[5] = {};
+    Element *addr[5] = {};
     for (auto &a : addr) {
-        a = new InputSwitch();
+        a = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(a);
     }
-    auto *en = new InputSwitch();
+    auto *en = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(en);
     Element *outs[32] = {};
     for (auto &o : outs) {

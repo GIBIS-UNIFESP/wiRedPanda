@@ -438,15 +438,13 @@ This is the most important subsystem of the project. All circuit components (log
 ```text
 QGraphicsObject
   └── Element                     (abstract base — all circuit components)
-        ├── InputSwitch           (toggle on/off)
-        ├── InputButton           (momentary press)
         └── IC                    (sub-circuit / integrated circuit)
 ```
 
-The inputs the user operates share no base class: the element answers for their levels (`isOn()`, `setOn()`), which
+The inputs the user operates have no class of their own either: the element answers for their levels (`isOn()`, `setOn()`), which
 their descriptors read and set (`sourceLevel`, `setLevel`), and the lock (`isLocked()`, `setLocked()`).
 
-The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND), the clock, the rotary switch, the node, the text and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
+The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND), the switch, the push button, the rotary switch, the clock, the node, the text and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
 
 ### Element: The Base Class
 
@@ -1167,7 +1165,8 @@ WorkSpace workspace;
 
 // CircuitBuilder reduces wiring boilerplate
 CircuitBuilder builder(workspace.scene());
-InputSwitch sw1, sw2;
+Element sw1{ElementType::InputSwitch};
+Element sw2{ElementType::InputSwitch};
 Element andGate{ElementType::And};
 Element led{ElementType::Led};
 builder.add(&sw1, &sw2, &andGate, &led);
@@ -1225,14 +1224,14 @@ private slots:
 ```cpp
 #include "TestMyGate.h"
 #include "Tests/Common/TestUtils.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 
 void TestMyGate::testAndTruthTable()
 {
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw0, sw1;
+    Element sw0{ElementType::InputSwitch};
+    Element sw1{ElementType::InputSwitch};
     Element gate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -1271,7 +1270,8 @@ void TestMyFlipFlop::testDFlipFlop()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch swD, swClk;
+    Element swD{ElementType::InputSwitch};
+    Element swClk{ElementType::InputSwitch};
     Element dff{ElementType::DFlipFlop};
     Element ledQ{ElementType::Led}, ledNQ{ElementType::Led};
 

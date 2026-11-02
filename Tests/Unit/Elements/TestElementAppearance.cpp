@@ -14,7 +14,6 @@
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
@@ -31,7 +30,7 @@ QString writeTempSvg(QTemporaryFile &file, const QString &body = "<svg xmlns=\"h
 
 void TestElementAppearance::testSetAppearanceAtOutOfBoundsIsNoOp()
 {
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     QVERIFY(sw.externalFiles().isEmpty());
 
     sw.setAppearanceAt(-1, "/some/path.svg");
@@ -42,7 +41,7 @@ void TestElementAppearance::testSetAppearanceAtOutOfBoundsIsNoOp()
 
 void TestElementAppearance::testSetAppearanceAtEmptyFileNameFallsBackToDefault()
 {
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     QTemporaryFile tempFile("XXXXXX.svg");
     const QString path = writeTempSvg(tempFile);
 
@@ -55,7 +54,7 @@ void TestElementAppearance::testSetAppearanceAtEmptyFileNameFallsBackToDefault()
 
 void TestElementAppearance::testSetAppearanceAtCustomFileName()
 {
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     QTemporaryFile tempFile("XXXXXX.svg");
     const QString path = writeTempSvg(tempFile);
 
@@ -65,7 +64,7 @@ void TestElementAppearance::testSetAppearanceAtCustomFileName()
 
 void TestElementAppearance::testExternalFilesReflectsCustomAppearance()
 {
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     QVERIFY(sw.externalFiles().isEmpty());
 
     QTemporaryFile tempFile("XXXXXX.svg");
@@ -77,7 +76,7 @@ void TestElementAppearance::testExternalFilesReflectsCustomAppearance()
 
 void TestElementAppearance::testRenderRasterAppearance()
 {
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
 
     QTemporaryFile tempFile("XXXXXX.png");
     QVERIFY(tempFile.open());
@@ -103,11 +102,11 @@ void TestElementAppearance::testMissingPictureShowsItsSlotsDefault()
 {
     // The switch turns on with a custom on picture that does not exist: it draws the on default, not the off one, and
     // the slot keeps its path
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     sw.setAppearanceAt(1, "/nonexistent/directory/nope.svg");
     sw.setOn(true);
 
-    InputSwitch fresh;
+    Element fresh{ElementType::InputSwitch};
     fresh.setOn(true);
     QCOMPARE(SnapshotAccess::pixmapIdentity(&sw), SnapshotAccess::pixmapIdentity(&fresh));
     QCOMPARE(sw.externalFiles(), QStringList{"/nonexistent/directory/nope.svg"});
@@ -121,11 +120,11 @@ void TestElementAppearance::testUndecodablePictureShowsItsSlotsDefault()
     tempFile.write("this is not a valid image file at all");
     tempFile.close();
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     sw.setOn(true);
     sw.setAppearanceAt(1, tempFile.fileName());
 
-    InputSwitch fresh;
+    Element fresh{ElementType::InputSwitch};
     fresh.setOn(true);
     QCOMPARE(SnapshotAccess::pixmapIdentity(&sw), SnapshotAccess::pixmapIdentity(&fresh));
     QCOMPARE(sw.externalFiles(), QStringList{tempFile.fileName()});

@@ -10,7 +10,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -82,7 +81,7 @@ void TestConnections::testOtherPort()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
@@ -105,7 +104,7 @@ void TestConnections::testValidOutputToInput()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
 
     builder.add(&sw, &andGate);
@@ -199,7 +198,7 @@ void TestConnections::testRejectDuplicateConnection()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
 
     builder.add(&sw, &andGate);
@@ -224,7 +223,7 @@ void TestConnections::testSingleInputConnection()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
 
     builder.add(&sw, &andGate);
@@ -242,8 +241,8 @@ void TestConnections::testMultipleInputInvalid()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw1);
     scene->addItem(sw2);
@@ -273,7 +272,7 @@ void TestConnections::testOutputFanOut()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *and1 = ElementFactory::buildElement(ElementType::And);
     auto *and2 = ElementFactory::buildElement(ElementType::And);
     auto *and3 = ElementFactory::buildElement(ElementType::And);
@@ -340,7 +339,7 @@ void TestConnections::testRequiredPortValidation()
     QVERIFY(!input->isValid());  // No connection + required = unknown
 
     // Connect
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     scene->addItem(sw);
     auto conn = std::make_unique<Connection>();
     conn->setStartPort(sw->outputPort());
@@ -364,7 +363,7 @@ void TestConnections::testStatusPropagation()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
@@ -395,7 +394,7 @@ void TestConnections::testMultiConnectionStatus()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led1 = ElementFactory::buildElement(ElementType::Led);
     auto *led2 = ElementFactory::buildElement(ElementType::Led);
     auto *led3 = ElementFactory::buildElement(ElementType::Led);
@@ -445,8 +444,8 @@ void TestConnections::testInvalidPortStatus()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     scene->addItem(sw1);
     scene->addItem(sw2);
@@ -490,7 +489,7 @@ void TestConnections::testConnectionPositionUpdate()
     WorkSpace workspace;
     auto *scene = workspace.scene();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
     led->setPos(100, 0);
@@ -533,7 +532,7 @@ void TestConnections::testPortIsConnected()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element orGate{ElementType::Or};
 

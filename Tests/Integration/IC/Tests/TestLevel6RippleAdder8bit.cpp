@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -21,9 +20,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct RippleAdder8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *a[8] = {};
-    InputSwitch *b[8] = {};
-    InputSwitch *carryIn = nullptr;
+    Element *a[8] = {};
+    Element *b[8] = {};
+    Element *carryIn = nullptr;
     Element *sum[8] = {};
     Element *carryOut = nullptr;
     Simulation *sim = nullptr;
@@ -37,16 +36,16 @@ struct RippleAdder8bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            a[i] = new InputSwitch();
+            a[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(a[i]);
             a[i]->setLabel(QString("A[%1]").arg(i));
 
-            b[i] = new InputSwitch();
+            b[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(b[i]);
             b[i]->setLabel(QString("B[%1]").arg(i));
         }
 
-        carryIn = new InputSwitch();
+        carryIn = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(carryIn);
         carryIn->setLabel("CarryIn");
 

@@ -23,18 +23,18 @@ void TestCPUMemoryInterface::cleanup()
 // Used by both tests to avoid duplicating setup code.
 static void writeAndVerify(int address, int dataToWrite, bool doWrite, int expectedData)
 {
-    QVector<InputSwitch *> addr, dataIn;
-    InputSwitch *memRead, *memWrite, *memEnable, *clock;
+    QVector<Element *> addr, dataIn;
+    Element *memRead, *memWrite, *memEnable, *clock;
     QVector<Element *> dataOut;
     for (int i = 0; i < 8; i++) {
-        addr.append(new InputSwitch());
-        dataIn.append(new InputSwitch());
+        addr.append(ElementFactory::buildElement(ElementType::InputSwitch));
+        dataIn.append(ElementFactory::buildElement(ElementType::InputSwitch));
         dataOut.append(ElementFactory::buildElement(ElementType::Led));
     }
-    memRead = new InputSwitch();
-    memWrite = new InputSwitch();
-    memEnable = new InputSwitch();
-    clock = new InputSwitch();
+    memRead = ElementFactory::buildElement(ElementType::InputSwitch);
+    memWrite = ElementFactory::buildElement(ElementType::InputSwitch);
+    memEnable = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     std::unique_ptr<WorkSpace> workspace(buildMemoryInterface(addr.data(), dataIn.data(), memRead, memWrite, memEnable, clock, dataOut.data()));
     auto *sim = workspace->simulation();
     // Set address and data inputs

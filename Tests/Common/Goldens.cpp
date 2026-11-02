@@ -23,7 +23,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Presentation/ElementPictures.h"
@@ -422,7 +421,7 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
     {
         WorkSpace definition;
         CircuitBuilder inner(definition.scene());
-        auto *segment = new InputSwitch;
+        auto *segment = ElementFactory::buildElement(ElementType::InputSwitch);
         auto *shown = ElementFactory::buildElement(ElementType::Display7);
         segment->setLabel("Segment");
         shown->setLabel("Shown");
@@ -436,10 +435,10 @@ void addSegmentDisplaysAndDisplayIc(CircuitBuilder &builder, const QString &dire
     auto *display7 = ElementFactory::buildElement(ElementType::Display7);
     auto *display14 = ElementFactory::buildElement(ElementType::Display14);
     auto *display16 = ElementFactory::buildElement(ElementType::Display16);
-    auto *icSegment = new InputSwitch;
-    auto *segment7 = new InputSwitch;
-    auto *segment14 = new InputSwitch;
-    auto *segment16 = new InputSwitch;
+    auto *icSegment = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *segment7 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *segment14 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *segment16 = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(icSegment, segment7, segment14, segment16, ic, display7, display14, display16);
     builder.connect(icSegment, 0, ic, 0);
     builder.connect(segment7, 0, display7, 0);

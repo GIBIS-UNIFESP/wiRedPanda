@@ -5,7 +5,6 @@
 
 #include "App/Core/Priorities.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
@@ -19,7 +18,7 @@ void TestPriorities::testPriorityBasic()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw;
+    Element sw{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -68,7 +67,8 @@ void TestPriorities::testPriorityMemoization()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch sw1, sw2;
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 

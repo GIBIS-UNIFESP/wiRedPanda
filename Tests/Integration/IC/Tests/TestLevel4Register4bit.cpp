@@ -9,7 +9,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -21,8 +20,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Register4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *en = nullptr, *reset = nullptr;
-    InputSwitch *dataIn[4] = {};
+    Element *clk = nullptr, *en = nullptr, *reset = nullptr;
+    Element *dataIn[4] = {};
     Element *dataOut[4] = {};
     Simulation *sim = nullptr;
 
@@ -31,9 +30,9 @@ struct Register4bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        clk = new InputSwitch();
-        en = new InputSwitch();
-        reset = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        en = ElementFactory::buildElement(ElementType::InputSwitch);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk, en, reset);
 
         ic = loadBuildingBlockIC("level4_register_4bit.panda");
@@ -44,7 +43,7 @@ struct Register4bitFixture {
         builder.connect(reset, 0, ic, "Reset");
 
         for (int i = 0; i < 4; ++i) {
-            dataIn[i] = new InputSwitch();
+            dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             dataOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(dataIn[i], dataOut[i]);
             builder.connect(dataIn[i], 0, ic, QString("D%1").arg(i));

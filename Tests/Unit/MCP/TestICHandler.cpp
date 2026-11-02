@@ -16,7 +16,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
@@ -32,7 +31,7 @@ namespace {
 void writeLeafIcHandlerFixture(const QString &path)
 {
     WorkSpace ws;
-    ws.scene()->addItem(new InputSwitch());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QFile file(path);
     QVERIFY2(file.open(QIODevice::WriteOnly), qPrintable(path));
@@ -45,7 +44,7 @@ void writeLeafIcHandlerFixture(const QString &path)
 QByteArray leafIcHandlerBytes()
 {
     WorkSpace ws;
-    ws.scene()->addItem(new InputSwitch());
+    ws.scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     ws.scene()->addItem(ElementFactory::buildElement(ElementType::Led));
     QByteArray bytes;
     QDataStream stream(&bytes, QIODevice::WriteOnly);
@@ -151,7 +150,7 @@ void TestICHandler::testHandleCreateIcCreatesRealFile()
     MainWindow window;
     window.loadPandaFile(projectPath);
     Scene *scene = window.currentTab()->scene();
-    scene->addItem(new InputSwitch());
+    scene->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     scene->addItem(ElementFactory::buildElement(ElementType::Led));
 
     ICHandler handler(&window, nullptr);
@@ -181,7 +180,7 @@ void TestICHandler::testHandleCreateIcRejectsExistingFile()
 
     MainWindow window;
     window.loadPandaFile(projectPath);
-    window.currentTab()->scene()->addItem(new InputSwitch());
+    window.currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
 
     ICHandler handler(&window, nullptr);
     const QJsonObject response = handler.handleCommand("create_ic", {{"name", "Existing"}}, 1);
@@ -217,7 +216,7 @@ void TestICHandler::testHandleCreateIcFailsOnUnwritableTarget()
 
     MainWindow window;
     window.loadPandaFile(projectPath);
-    window.currentTab()->scene()->addItem(new InputSwitch());
+    window.currentTab()->scene()->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
 
     // Application::interactiveMode is unconditionally false for the whole lifetime of a real
     // MCP server process (Main.cpp sets it before ICHandler is ever constructed for --mcp-mode

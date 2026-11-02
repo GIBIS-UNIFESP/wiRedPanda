@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,12 +19,12 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct RegFile4x4Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *writeAddr[2] = {};
-    InputSwitch *readAddr[2] = {};
-    InputSwitch *readAddr2[2] = {};
-    InputSwitch *writeData[4] = {};
-    InputSwitch *writeEnable = nullptr;
-    InputSwitch *clock = nullptr;
+    Element *writeAddr[2] = {};
+    Element *readAddr[2] = {};
+    Element *readAddr2[2] = {};
+    Element *writeData[4] = {};
+    Element *writeEnable = nullptr;
+    Element *clock = nullptr;
     Element *readData[4] = {};
     Element *readData2[4] = {};
     Simulation *sim = nullptr;
@@ -38,18 +37,18 @@ struct RegFile4x4Fixture {
         ic = loadBuildingBlockIC("level5_register_file_4x4.panda");
         builder.add(ic);
 
-        writeEnable = new InputSwitch();
-        clock = new InputSwitch();
+        writeEnable = ElementFactory::buildElement(ElementType::InputSwitch);
+        clock = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(writeEnable, clock);
 
         for (int i = 0; i < 2; ++i) {
-            writeAddr[i] = new InputSwitch();
-            readAddr[i] = new InputSwitch();
-            readAddr2[i] = new InputSwitch();
+            writeAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            readAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            readAddr2[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(writeAddr[i], readAddr[i], readAddr2[i]);
         }
         for (int i = 0; i < 4; ++i) {
-            writeData[i] = new InputSwitch();
+            writeData[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             readData[i] = ElementFactory::buildElement(ElementType::Led);
             readData2[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(writeData[i], readData[i], readData2[i]);

@@ -6,7 +6,6 @@
 #include "App/BeWavedDolphin/DolphinModelBuilder.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 
 void TestDolphinModelBuilder::testCollectSortsByLabel()
@@ -14,9 +13,9 @@ void TestDolphinModelBuilder::testCollectSortsByLabel()
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
 
-    auto *swB = new InputSwitch();
+    auto *swB = ElementFactory::buildElement(ElementType::InputSwitch);
     swB->setLabel("B");
-    auto *swA = new InputSwitch();
+    auto *swA = ElementFactory::buildElement(ElementType::InputSwitch);
     swA->setLabel("A");
     auto *ledB = ElementFactory::buildElement(ElementType::Led);
     ledB->setLabel("outB");
@@ -95,7 +94,7 @@ void TestDolphinModelBuilder::testCollectRejectsSceneWithNoOutputs()
 {
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
-    scene->addItem(new InputSwitch());
+    scene->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
 
     QVERIFY_THROWS_EXCEPTION(std::exception, DolphinModelBuilder::collect(scene));
 }

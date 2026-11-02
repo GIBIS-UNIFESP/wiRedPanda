@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -16,7 +15,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct DFlipFlopFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *dataIn = nullptr, *clockIn = nullptr, *presetIn = nullptr, *clearIn = nullptr;
+    Element *dataIn = nullptr, *clockIn = nullptr, *presetIn = nullptr, *clearIn = nullptr;
     Element *ledQ = nullptr, *ledQBar = nullptr;
     Simulation *sim = nullptr;
 
@@ -25,10 +24,10 @@ struct DFlipFlopFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        dataIn = new InputSwitch();
-        clockIn = new InputSwitch();
-        presetIn = new InputSwitch();
-        clearIn = new InputSwitch();
+        dataIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        clockIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        presetIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        clearIn = ElementFactory::buildElement(ElementType::InputSwitch);
         ledQ = ElementFactory::buildElement(ElementType::Led);
         ledQBar = ElementFactory::buildElement(ElementType::Led);
 

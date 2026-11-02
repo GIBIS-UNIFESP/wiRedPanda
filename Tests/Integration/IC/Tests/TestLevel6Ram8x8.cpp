@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -24,9 +23,9 @@ struct Ram8x8Fixture {
     IC *ic = nullptr;
     QVector<Element *> addressInputs;
     QVector<Element *> dataInInputs;
-    InputSwitch *we = nullptr;
-    InputSwitch *clk = nullptr;
-    InputSwitch *reset = nullptr;
+    Element *we = nullptr;
+    Element *clk = nullptr;
+    Element *reset = nullptr;
     QVector<Element *> dataOutOutputs;
     Simulation *sim = nullptr;
 
@@ -39,28 +38,28 @@ struct Ram8x8Fixture {
         builder.add(ic);
 
         for (int i = 0; i < 3; i++) {
-            auto *sw = new InputSwitch();
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(sw);
             sw->setLabel(QString("Address[%1]").arg(i));
             addressInputs.append(sw);
         }
 
         for (int i = 0; i < 8; i++) {
-            auto *sw = new InputSwitch();
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(sw);
             sw->setLabel(QString("DataIn[%1]").arg(i));
             dataInInputs.append(sw);
         }
 
-        we = new InputSwitch();
+        we = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(we);
         we->setLabel("WriteEnable");
 
-        clk = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk);
         clk->setLabel("Clock");
 
-        reset = new InputSwitch();
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(reset);
         reset->setLabel("Reset");
 

@@ -30,16 +30,16 @@ void TestCPUIntegration::testProgramCounterIncrement()
 {
     QFETCH(int, programLength);
     // Build 8-bit Program Counter component
-    InputSwitch *pc_clock = new InputSwitch();
-    InputSwitch *reset = new InputSwitch();
-    QVector<InputSwitch *> pc_load_val;
+    Element *pc_clock = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *reset = ElementFactory::buildElement(ElementType::InputSwitch);
+    QVector<Element *> pc_load_val;
     QVector<Element *> pc_out;
     for (int i = 0; i < 8; i++) {
-        pc_load_val.append(new InputSwitch());
+        pc_load_val.append(ElementFactory::buildElement(ElementType::InputSwitch));
         pc_out.append(ElementFactory::buildElement(ElementType::Led));
     }
-    InputSwitch *pc_load = new InputSwitch();
-    InputSwitch *pc_inc = new InputSwitch();
+    Element *pc_load = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *pc_inc = ElementFactory::buildElement(ElementType::InputSwitch);
     std::unique_ptr<WorkSpace> workspace_pc(buildProgramCounter8bit(
         pc_load_val.data(), pc_load, pc_inc, reset, pc_clock, pc_out.data()));
     auto *sim_pc = workspace_pc->simulation();

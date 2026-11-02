@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -18,7 +17,7 @@ using TestUtils::inputStatus;
 struct FullAdder1bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *a = nullptr, *b = nullptr, *carryIn = nullptr;
+    Element *a = nullptr, *b = nullptr, *carryIn = nullptr;
     Element *sum = nullptr, *carryOut = nullptr;
     Simulation *sim = nullptr;
 
@@ -27,9 +26,9 @@ struct FullAdder1bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        a = new InputSwitch();
-        b = new InputSwitch();
-        carryIn = new InputSwitch();
+        a = ElementFactory::buildElement(ElementType::InputSwitch);
+        b = ElementFactory::buildElement(ElementType::InputSwitch);
+        carryIn = ElementFactory::buildElement(ElementType::InputSwitch);
         sum = ElementFactory::buildElement(ElementType::Led);
         carryOut = ElementFactory::buildElement(ElementType::Led);
 

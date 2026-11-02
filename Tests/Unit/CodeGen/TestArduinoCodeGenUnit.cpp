@@ -14,7 +14,6 @@
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/Goldens.h"
@@ -37,8 +36,8 @@ void TestArduinoCodeGenUnit::testAndGateCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -68,8 +67,8 @@ void TestArduinoCodeGenUnit::testMultiGateCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *orGate = ElementFactory::buildElement(ElementType::Or);
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *led = ElementFactory::buildElement(ElementType::Led);
@@ -101,9 +100,9 @@ void TestArduinoCodeGenUnit::testMuxCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
-    auto *swSel = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *mux = ElementFactory::buildElement(ElementType::Mux);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -133,8 +132,8 @@ void TestArduinoCodeGenUnit::testDemuxCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *swData = new InputSwitch;
-    auto *swSel = new InputSwitch;
+    auto *swData = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     auto *led1 = ElementFactory::buildElement(ElementType::Led);
     auto *led2 = ElementFactory::buildElement(ElementType::Led);
@@ -185,8 +184,8 @@ void TestArduinoCodeGenUnit::testTruthTableMultiOutput()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     tt->setOutputSize(2);
     auto *led0 = ElementFactory::buildElement(ElementType::Led);
@@ -226,8 +225,8 @@ void TestArduinoCodeGenUnit::testSRLatchCircuit()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *swS = new InputSwitch;
-    auto *swR = new InputSwitch;
+    auto *swS = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swR = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *latch = ElementFactory::buildElement(ElementType::SRLatch);
     auto *ledQ = ElementFactory::buildElement(ElementType::Led);
     auto *ledNotQ = ElementFactory::buildElement(ElementType::Led);
@@ -258,7 +257,7 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchDeclaresSequentialState()
     CircuitBuilder builder(workspace.scene());
 
     auto *clk = ElementFactory::buildElement(ElementType::Clock);
-    auto *sw = new InputSwitch;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *tff = ElementFactory::buildElement(ElementType::TFlipFlop);
     auto *jkff = ElementFactory::buildElement(ElementType::JKFlipFlop);
@@ -389,7 +388,7 @@ void TestArduinoCodeGenUnit::testTruthTableInputTiedToVccResolvesToHigh()
     CircuitBuilder builder(workspace.scene());
 
     auto *vcc = ElementFactory::buildElement(ElementType::InputVcc);
-    auto *sw = new InputSwitch;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *tt = ElementFactory::buildElement(ElementType::TruthTable);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -421,8 +420,8 @@ void TestArduinoCodeGenUnit::testGenerateTestbenchNonSequentialSettleLoop()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -453,9 +452,9 @@ void TestArduinoCodeGenUnit::testDemuxWithFourOutputsUsesTwoSelectLines()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *swData = new InputSwitch;
-    auto *swSel0 = new InputSwitch;
-    auto *swSel1 = new InputSwitch;
+    auto *swData = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel0 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swSel1 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     demux->setOutputSize(4);
     auto *led0 = ElementFactory::buildElement(ElementType::Led);
@@ -510,8 +509,8 @@ QString generate(const std::function<void(CircuitBuilder &)> &build)
 /// An And gate driving an Led from two switches.
 void andGate(CircuitBuilder &builder)
 {
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *gate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(sw1, sw2, gate, led);
@@ -524,8 +523,8 @@ void andGate(CircuitBuilder &builder)
 template <ElementType type>
 void display(CircuitBuilder &builder)
 {
-    auto *sw1 = new InputSwitch;
-    auto *sw2 = new InputSwitch;
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *shown = ElementFactory::buildElement(type);
     builder.add(sw1, sw2, shown);
     builder.connect(sw1, 0, shown, 0);
@@ -561,7 +560,7 @@ void TestArduinoCodeGenUnit::testBuzzerToneFollowsItsFrequency()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *sw = new InputSwitch;
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     builder.add(sw, buzzer);
     builder.connect(sw, 0, buzzer, 0);

@@ -78,4 +78,8 @@ private slots:
     void testAppearanceReloadsAfterFileModified();
     void testLoadResolvesAppearanceBareFilenameAgainstContextDir();
     void testLoadResolvesAppearanceForeignPathViaBareFilenameFallback();
+
+    /// A switch, a button and a clock name the two states a custom picture can be chosen for, each in its type's
+    /// translation context, which the catalogues hold.
+    void testEachLevelInputNamesItsStatesInItsContext();
 };

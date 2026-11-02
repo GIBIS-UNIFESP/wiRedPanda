@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,8 +17,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Mux8to1Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *inputs[8] = {};
-    InputSwitch *selectBit[3] = {};
+    Element *inputs[8] = {};
+    Element *selectBit[3] = {};
     Element *output = nullptr;
     Simulation *sim = nullptr;
 
@@ -29,12 +28,12 @@ struct Mux8to1Fixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 8; ++i) {
-            inputs[i] = new InputSwitch();
+            inputs[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             inputs[i]->setOn(i % 2 == 0);
             builder.add(inputs[i]);
         }
         for (int i = 0; i < 3; ++i) {
-            selectBit[i] = new InputSwitch();
+            selectBit[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(selectBit[i]);
         }
         output = ElementFactory::buildElement(ElementType::Led);
@@ -117,17 +116,17 @@ void TestLevel2MUX8To1::testEnableGating()
     auto workspace = std::make_unique<WorkSpace>();
     CircuitBuilder builder(workspace->scene());
 
-    InputSwitch *data[8] = {};
+    Element *data[8] = {};
     for (auto &d : data) {
-        d = new InputSwitch();
+        d = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(d);
     }
-    InputSwitch *sel[3] = {};
+    Element *sel[3] = {};
     for (auto &s : sel) {
-        s = new InputSwitch();
+        s = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(s);
     }
-    auto *en = new InputSwitch();
+    auto *en = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *out = ElementFactory::buildElement(ElementType::Led);
     builder.add(en, out);
 

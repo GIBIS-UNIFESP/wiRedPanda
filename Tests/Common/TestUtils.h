@@ -311,7 +311,7 @@ inline Bits readMultiBitOutput(T *const (&elements)[N], int port = 0)
  * LOW → HIGH (rising edge, triggers latch) → LOW (falling edge, ready for next)
  *
  * Usage:
- *   InputSwitch clk;
+ *   Element clk{ElementType::InputSwitch};
  *   clockCycle(sim, &clk);  // Complete pulse: 0→1→0
  *   // Flip-flop has latched on the rising edge
  *
@@ -327,7 +327,7 @@ void clockCycle(Simulation *simulation, Element *clk);
  * level-sensitive latches, testing specific clock states).
  *
  * Usage:
- *   InputSwitch clk;  // starts LOW
+ *   Element clk{ElementType::InputSwitch};  // starts LOW
  *   clockToggle(sim, &clk);  // LOW → HIGH (rising edge)
  *   // ... do something while clock is HIGH ...
  *   clockToggle(sim, &clk);  // HIGH → LOW (falling edge)
@@ -702,9 +702,10 @@ private:
  *   WorkSpace workspace;
  *   CircuitBuilder builder(workspace.scene());
  *
- *   InputSwitch sw1, sw2;
+ *   Element sw1{ElementType::InputSwitch};
+ *   Element sw2{ElementType::InputSwitch};
  *   Element andGate{ElementType::And};
- *   Led led;
+ *   Element led{ElementType::Led};
  *
  *   builder.add(&sw1, &sw2, &andGate, &led);
  *   builder.connect(&sw1, 0, &andGate, 0);

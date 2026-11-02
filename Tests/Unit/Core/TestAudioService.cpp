@@ -19,7 +19,6 @@
 #include "App/Element/AudioOutput.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
@@ -33,7 +32,7 @@ namespace TestAudioServiceHelpers {
 
 /// A switch wired to an audio element of type \a type in \a workspace's scene, the simulation built.
 struct Wired {
-    InputSwitch *input = new InputSwitch;
+    Element *input = ElementFactory::buildElement(ElementType::InputSwitch);
     Element *audio;
 
     Wired(WorkSpace &workspace, const ElementType type)
@@ -104,7 +103,7 @@ void TestAudioService::testThePushTellsTheHostWhatItStartedAndStopped()
         QList<QList<Element *>> heard;
     };
 
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     Element buzzer{ElementType::Buzzer};
     Element led{ElementType::Led};
     auto connection = std::make_unique<Connection>();

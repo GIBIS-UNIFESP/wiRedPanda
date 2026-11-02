@@ -6,7 +6,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,8 +17,8 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct PriorityEncoder8to3Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *inputs[8] = {};
-    InputSwitch *ei = nullptr;
+    Element *inputs[8] = {};
+    Element *ei = nullptr;
     Element *outLeds[3] = {};
     Element *validLed = nullptr;
     Element *eoLed = nullptr;
@@ -31,10 +30,10 @@ struct PriorityEncoder8to3Fixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 8; ++i) {
-            inputs[i] = new InputSwitch();
+            inputs[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(inputs[i]);
         }
-        ei = new InputSwitch();
+        ei = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(ei);
         for (int i = 0; i < 3; ++i) {
             outLeds[i] = ElementFactory::buildElement(ElementType::Led);

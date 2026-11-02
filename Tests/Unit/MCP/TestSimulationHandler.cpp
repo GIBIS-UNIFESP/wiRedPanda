@@ -17,7 +17,6 @@
 #include "App/BeWavedDolphin/SignalModel.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -32,7 +31,7 @@ namespace {
 
 void addInputAndLed(Scene *scene, const QString &inputLabel = "sw1")
 {
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setLabel(inputLabel);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand({sw, led}, scene));
@@ -250,7 +249,7 @@ void TestSimulationHandler::testCreateWaveformResponseValidatesAgainstTheSchema(
     SimulationHandler handler(&window, nullptr);
     Scene *scene = window.currentTab()->scene();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     sw->setLabel("sw1");
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *led = ElementFactory::buildElement(ElementType::Led);

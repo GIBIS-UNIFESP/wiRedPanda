@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,10 +19,10 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Register8bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *data[8] = {};
-    InputSwitch *clock = nullptr;
-    InputSwitch *writeEnable = nullptr;
-    InputSwitch *reset = nullptr;
+    Element *data[8] = {};
+    Element *clock = nullptr;
+    Element *writeEnable = nullptr;
+    Element *reset = nullptr;
     Element *q[8] = {};
     Simulation *sim = nullptr;
 
@@ -36,20 +35,20 @@ struct Register8bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            data[i] = new InputSwitch();
+            data[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(data[i]);
             data[i]->setLabel(QString("Data[%1]").arg(i));
         }
 
-        clock = new InputSwitch();
+        clock = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clock);
         clock->setLabel("Clock");
 
-        writeEnable = new InputSwitch();
+        writeEnable = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(writeEnable);
         writeEnable->setLabel("WriteEnable");
 
-        reset = new InputSwitch();
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(reset);
         reset->setLabel("Reset");
 

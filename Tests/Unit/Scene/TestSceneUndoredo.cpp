@@ -16,7 +16,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -2282,7 +2281,7 @@ void TestSceneUndoredo::testDeleteUndoConnectionsReattachedCorrectly()
     // AND.in[0] instead of swIn.out[0] as the start-port of conn1.
     Scene scene;
 
-    auto *swIn = new InputSwitch();
+    auto *swIn = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     swIn->setPos(0, 0);
@@ -2350,8 +2349,8 @@ void TestSceneUndoredo::testDeleteUndoRedoConnectionCountStable()
     // count in the scene must return to its original value on every undo.
     Scene scene;
 
-    auto *swA = new InputSwitch();
-    auto *swB = new InputSwitch();
+    auto *swA = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swB = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     swA->setPos(0, 0);
@@ -2430,7 +2429,7 @@ void TestSceneUndoredo::testDeleteChainMiddleUndoRestoresTopology()
     // and the portMap must map each connection to the correct port objects.
     Scene scene;
 
-    auto *sw  = new InputSwitch();
+    auto *sw  = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *notGate = ElementFactory::buildElement(ElementType::Not);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     sw->setPos(0, 0);
@@ -2496,8 +2495,8 @@ void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
     // broken by the portMap key collision in Serialization::serialize().
     WorkSpace ws;
 
-    auto *swA     = new InputSwitch();
-    auto *swB     = new InputSwitch();
+    auto *swA     = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swB     = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led     = ElementFactory::buildElement(ElementType::Led);
     swA->setPos(0,  0);

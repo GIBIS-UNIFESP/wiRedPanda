@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,11 +19,11 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct Ram4x1Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ramIC = nullptr;
-    InputSwitch *addressBits[2] = {};
-    InputSwitch *dataIn = nullptr;
-    InputSwitch *writeEnable = nullptr;
-    InputSwitch *clock = nullptr;
-    InputSwitch *reset = nullptr;
+    Element *addressBits[2] = {};
+    Element *dataIn = nullptr;
+    Element *writeEnable = nullptr;
+    Element *clock = nullptr;
+    Element *reset = nullptr;
     Element *dataOut = nullptr;
     Simulation *sim = nullptr;
 
@@ -34,13 +33,13 @@ struct Ram4x1Fixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 2; ++i) {
-            addressBits[i] = new InputSwitch();
+            addressBits[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(addressBits[i]);
         }
-        dataIn = new InputSwitch();
-        writeEnable = new InputSwitch();
-        clock = new InputSwitch();
-        reset = new InputSwitch();
+        dataIn = ElementFactory::buildElement(ElementType::InputSwitch);
+        writeEnable = ElementFactory::buildElement(ElementType::InputSwitch);
+        clock = ElementFactory::buildElement(ElementType::InputSwitch);
+        reset = ElementFactory::buildElement(ElementType::InputSwitch);
         dataOut = ElementFactory::buildElement(ElementType::Led);
         builder.add(dataIn, writeEnable, clock, reset, dataOut);
 

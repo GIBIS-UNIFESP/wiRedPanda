@@ -33,11 +33,11 @@ void TestCPUControlUnit::testControlUnit()
 {
     QFETCH(int, stateTransitions);
     QFETCH(int, expectedFinalState);
-    InputSwitch *reset, *clock;
+    Element *reset, *clock;
     QVector<Element *> state;
     Element *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
-    reset = new InputSwitch();
-    clock = new InputSwitch();
+    reset = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     for (int i = 0; i < 3; i++) {
         state.append(ElementFactory::buildElement(ElementType::Led));
     }
@@ -71,11 +71,11 @@ void TestCPUControlUnit::testControlUnit()
 void TestCPUControlUnit::testControlUnitFlagWrite()
 {
     // Test that flagWrite is asserted during EXECUTE state (state 2 = 010)
-    InputSwitch *reset, *clock;
+    Element *reset, *clock;
     QVector<Element *> state;
     Element *pcInc, *irLoad, *regWrite, *aluEnable, *flagWrite;
-    reset = new InputSwitch();
-    clock = new InputSwitch();
+    reset = ElementFactory::buildElement(ElementType::InputSwitch);
+    clock = ElementFactory::buildElement(ElementType::InputSwitch);
     for (int i = 0; i < 3; i++) {
         state.append(ElementFactory::buildElement(ElementType::Led));
     }
@@ -129,8 +129,8 @@ void TestCPUControlUnit::testControlUnitSignals()
     // state bit before, so e.g. aluEnable asserted in HALT instead of EXECUTE):
     //   FETCH(0): pcInc, irLoad     EXECUTE(2): aluEnable, flagWrite
     //   WRITEBACK(3): regWrite      DECODE(1) and HALT(4): none
-    InputSwitch *reset = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
+    Element *reset = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *clock = ElementFactory::buildElement(ElementType::InputSwitch);
     QVector<Element *> state;
     for (int i = 0; i < 3; i++) state.append(ElementFactory::buildElement(ElementType::Led));
     Element *pcInc = ElementFactory::buildElement(ElementType::Led);
@@ -174,8 +174,8 @@ void TestCPUControlUnit::testControlUnitResetClears()
     // Reset must clear the state from a non-zero value, not merely hold it. The
     // earlier mux tied port 0 to Q, so reset held the current state and only
     // looked correct because the register powers up at 0.
-    InputSwitch *reset = new InputSwitch();
-    InputSwitch *clock = new InputSwitch();
+    Element *reset = ElementFactory::buildElement(ElementType::InputSwitch);
+    Element *clock = ElementFactory::buildElement(ElementType::InputSwitch);
     QVector<Element *> state;
     for (int i = 0; i < 3; i++) state.append(ElementFactory::buildElement(ElementType::Led));
     Element *pcInc = ElementFactory::buildElement(ElementType::Led);

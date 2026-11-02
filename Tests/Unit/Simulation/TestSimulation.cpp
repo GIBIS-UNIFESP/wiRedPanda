@@ -14,7 +14,6 @@
 #include "App/Core/SimulationHost.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
@@ -60,7 +59,7 @@ void TestSimulationUnit::testAddRemoveClockDuringSimulation()
     auto *scene = workspace.scene();
     auto *sim = scene->simulation();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
@@ -117,7 +116,7 @@ void TestSimulationUnit::testElementRemovalMidSimulation()
     auto *scene = workspace.scene();
     auto *sim = scene->simulation();
 
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
@@ -279,7 +278,7 @@ void TestSimulationUnit::testUpdateFlushesPendingVisualsOnLaterIdleTick()
 
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(sw);
     scene->addItem(led);
@@ -472,8 +471,8 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     CircuitBuilder builder(scene);
-    auto *data = new InputSwitch();
-    auto *clock = new InputSwitch();
+    auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *clock = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(data, clock, led);
     QTemporaryDir dir;
@@ -484,8 +483,8 @@ void TestSimulationUnit::testRebuildKeepsFlipFlopState()
         {
             WorkSpace definition;
             CircuitBuilder inner(definition.scene());
-            auto *innerData = new InputSwitch();
-            auto *innerClock = new InputSwitch();
+            auto *innerData = ElementFactory::buildElement(ElementType::InputSwitch);
+            auto *innerClock = ElementFactory::buildElement(ElementType::InputSwitch);
             auto *flipFlop = ElementFactory::buildElement(ElementType::DFlipFlop);
             auto *innerQ = ElementFactory::buildElement(ElementType::Led);
             innerData->setLabel("D");

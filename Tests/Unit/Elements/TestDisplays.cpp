@@ -14,7 +14,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -254,7 +253,14 @@ void TestDisplays::testDisplay7InCircuit()
     CircuitBuilder builder(workspace.scene());
 
     // Create circuit: 8 InputSwitches → Display_7
-    InputSwitch sw0, sw1, sw2, sw3, sw4, sw5, sw6, sw7;
+    Element sw0{ElementType::InputSwitch};
+    Element sw1{ElementType::InputSwitch};
+    Element sw2{ElementType::InputSwitch};
+    Element sw3{ElementType::InputSwitch};
+    Element sw4{ElementType::InputSwitch};
+    Element sw5{ElementType::InputSwitch};
+    Element sw6{ElementType::InputSwitch};
+    Element sw7{ElementType::InputSwitch};
     Element display{ElementType::Display7};
 
     builder.add(&sw0, &sw1, &sw2, &sw3, &sw4, &sw5, &sw6, &sw7, &display);
@@ -311,7 +317,8 @@ void TestDisplays::testDisplayWithDecoder()
 
     // Create simple 2-bit decoder → Display_7
     // This simulates a partial BCD decoder for digit display
-    InputSwitch bit0, bit1;
+    Element bit0{ElementType::InputSwitch};
+    Element bit1{ElementType::InputSwitch};
     Element display{ElementType::Display7};
     Element andGate{ElementType::And};
 
@@ -507,7 +514,7 @@ void TestDisplays::testASegmentsNewLevelRepaintsTheDisplay()
     // no view reports it; a view would take the update itself.
     Scene scene;
     CircuitBuilder builder(&scene);
-    InputSwitch input;
+    Element input{ElementType::InputSwitch};
     auto *display = ElementFactory::buildElement(type);
     // Away from the switch, whose own repaint would cover it, and before the scene has it: a move in a scene with no
     // view stays pending, and is reported with the next change near it.

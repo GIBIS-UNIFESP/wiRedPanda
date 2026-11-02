@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -18,9 +17,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct BarrelShifter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swData[4] = {};
-    InputSwitch *swShift[2] = {};
-    InputSwitch *swDir = nullptr;
+    Element *swData[4] = {};
+    Element *swShift[2] = {};
+    Element *swDir = nullptr;
     Element *ledOut[4] = {};
     Simulation *sim = nullptr;
 
@@ -33,18 +32,18 @@ struct BarrelShifter4bitFixture {
         builder.add(ic);
 
         for (int i = 0; i < 4; ++i) {
-            swData[i] = new InputSwitch();
+            swData[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             ledOut[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(swData[i], ledOut[i]);
             builder.connect(swData[i], 0, ic, QString("Data[%1]").arg(i));
             builder.connect(ic, QString("ShiftedData[%1]").arg(i), ledOut[i], 0);
         }
         for (int i = 0; i < 2; ++i) {
-            swShift[i] = new InputSwitch();
+            swShift[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(swShift[i]);
             builder.connect(swShift[i], 0, ic, QString("ShiftAmount[%1]").arg(i));
         }
-        swDir = new InputSwitch();
+        swDir = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(swDir);
         builder.connect(swDir, 0, ic, "ShiftDirection");
 

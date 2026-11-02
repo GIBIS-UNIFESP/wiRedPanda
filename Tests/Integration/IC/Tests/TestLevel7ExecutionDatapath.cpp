@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -39,12 +38,12 @@ struct ExecutionDatapathFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *a = new InputSwitch(); builder.add(a); operandAInputs.append(a);
-            auto *b = new InputSwitch(); builder.add(b); operandBInputs.append(b);
+            auto *a = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(a); operandAInputs.append(a);
+            auto *b = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(b); operandBInputs.append(b);
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); resultLeds.append(led);
         }
         for (int i = 0; i < 3; i++) {
-            auto *sw = new InputSwitch(); builder.add(sw); opcodeInputs.append(sw);
+            auto *sw = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(sw); opcodeInputs.append(sw);
         }
 
         zeroLed = ElementFactory::buildElement(ElementType::Led); builder.add(zeroLed);

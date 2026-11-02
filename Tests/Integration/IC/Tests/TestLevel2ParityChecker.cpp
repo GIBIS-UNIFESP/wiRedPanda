@@ -6,7 +6,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -18,9 +17,9 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct ParityCheckerFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *swD[4] = {};
-    InputSwitch *swP = nullptr;
-    InputSwitch *cascadeIn = nullptr;
+    Element *swD[4] = {};
+    Element *swP = nullptr;
+    Element *cascadeIn = nullptr;
     Element *ledResult = nullptr;
     Simulation *sim = nullptr;
 
@@ -30,11 +29,11 @@ struct ParityCheckerFixture {
         CircuitBuilder builder(workspace->scene());
 
         for (int i = 0; i < 4; ++i) {
-            swD[i] = new InputSwitch();
+            swD[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(swD[i]);
         }
-        swP = new InputSwitch();
-        cascadeIn = new InputSwitch();
+        swP = ElementFactory::buildElement(ElementType::InputSwitch);
+        cascadeIn = ElementFactory::buildElement(ElementType::InputSwitch);
         ledResult = ElementFactory::buildElement(ElementType::Led);
         builder.add(swP, cascadeIn, ledResult);
 

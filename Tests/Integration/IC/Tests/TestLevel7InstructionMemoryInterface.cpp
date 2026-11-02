@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -26,8 +25,8 @@ struct InstructionMemoryInterfaceFixture {
     IC *ic = nullptr;
     QVector<Element *> addressInputs;
     QVector<Element *> dataInputs;
-    InputSwitch *writeEnable = nullptr;
-    InputSwitch *clk = nullptr;
+    Element *writeEnable = nullptr;
+    Element *clk = nullptr;
     QVector<Element *> instrOutputs;
     Simulation *sim = nullptr;
 
@@ -40,13 +39,17 @@ struct InstructionMemoryInterfaceFixture {
         builder.add(ic);
 
         for (int i = 0; i < 8; i++) {
-            auto *addr = new InputSwitch(); builder.add(addr); addressInputs.append(addr);
-            auto *data = new InputSwitch(); builder.add(data); dataInputs.append(data);
+            auto *addr = ElementFactory::buildElement(ElementType::InputSwitch);
+            builder.add(addr);
+            addressInputs.append(addr);
+            auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+            builder.add(data);
+            dataInputs.append(data);
             auto *led = ElementFactory::buildElement(ElementType::Led); builder.add(led); instrOutputs.append(led);
         }
 
-        writeEnable = new InputSwitch(); builder.add(writeEnable);
-        clk = new InputSwitch(); builder.add(clk);
+        writeEnable = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(writeEnable);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch); builder.add(clk);
 
         for (int i = 0; i < 8; i++) {
             builder.connect(addressInputs[i], 0, ic, QString("Address[%1]").arg(i));
@@ -170,7 +173,7 @@ void TestLevel7InstructionMemoryInterface::testInstructionMemoryInterfaceStructu
     QVERIFY(imem != nullptr);
 
     // Create dummy elements for connection testing
-    InputSwitch *addr = new InputSwitch();
+    Element *addr = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(addr);
 
     Element *out = ElementFactory::buildElement(ElementType::Led);

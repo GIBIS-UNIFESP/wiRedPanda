@@ -7,7 +7,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -18,14 +17,14 @@ const Status kStatuses[] = {Status::Inactive, Status::Active, Status::Unknown, S
 /// Four LEDs, each wired to a switch so its input port is valid and holds whatever status it is given.
 struct Leds {
     std::unique_ptr<WorkSpace> workspace = std::make_unique<WorkSpace>();
-    InputSwitch *switches[4] = {};
+    Element *switches[4] = {};
     Element *leds[4] = {};
 
     Leds()
     {
         CircuitBuilder builder(workspace->scene());
         for (int i = 0; i < 4; ++i) {
-            switches[i] = new InputSwitch();
+            switches[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             leds[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(switches[i], leds[i]);
             builder.connect(switches[i], 0, leds[i], 0);

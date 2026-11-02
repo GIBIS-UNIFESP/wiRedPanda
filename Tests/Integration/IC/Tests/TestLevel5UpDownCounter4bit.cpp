@@ -9,7 +9,6 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "Tests/Common/TestUtils.h"
 #include "Tests/Integration/IC/Tests/CpuTestUtils.h"
@@ -21,7 +20,7 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct UpDownCounter4bitFixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *clk = nullptr, *dir = nullptr, *en = nullptr;
+    Element *clk = nullptr, *dir = nullptr, *en = nullptr;
     Element *counterOut[4] = {};
     Simulation *sim = nullptr;
 
@@ -30,9 +29,9 @@ struct UpDownCounter4bitFixture {
         workspace = std::make_unique<WorkSpace>();
         CircuitBuilder builder(workspace->scene());
 
-        clk = new InputSwitch();
-        dir = new InputSwitch();
-        en = new InputSwitch();
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
+        dir = ElementFactory::buildElement(ElementType::InputSwitch);
+        en = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(clk, dir, en);
 
         ic = loadBuildingBlockIC("level5_up_down_counter_4bit.panda");

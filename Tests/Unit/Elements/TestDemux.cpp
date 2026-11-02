@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -29,8 +28,8 @@ void TestDemux::testDemuxRouting()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *data = new InputSwitch;
-    auto *sel = new InputSwitch;
+    auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sel = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     builder.add(data, sel, demux);
     builder.connect(data, 0, demux, 0);
@@ -118,10 +117,10 @@ void TestDemux::testDemuxOutOfRangeSelect()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    InputSwitch dataIn;
-    QVector<InputSwitch *> selIn(3);
+    Element dataIn{ElementType::InputSwitch};
+    QVector<Element *> selIn(3);
     for (auto *&sw : selIn) {
-        sw = new InputSwitch();
+        sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
     }
 

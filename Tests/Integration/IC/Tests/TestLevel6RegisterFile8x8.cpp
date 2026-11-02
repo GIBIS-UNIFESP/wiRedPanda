@@ -8,7 +8,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -20,12 +19,12 @@ using CPUTestUtils::loadBuildingBlockIC;
 struct RegFile6_8x8Fixture {
     std::unique_ptr<WorkSpace> workspace;
     IC *ic = nullptr;
-    InputSwitch *writeAddr[3] = {};
-    InputSwitch *readAddr1In[3] = {};
-    InputSwitch *readAddr2In[3] = {};
-    InputSwitch *dataIn[8] = {};
-    InputSwitch *we = nullptr;
-    InputSwitch *clk = nullptr;
+    Element *writeAddr[3] = {};
+    Element *readAddr1In[3] = {};
+    Element *readAddr2In[3] = {};
+    Element *dataIn[8] = {};
+    Element *we = nullptr;
+    Element *clk = nullptr;
     Element *readData1[8] = {};
     Element *readData2[8] = {};
     Simulation *sim = nullptr;
@@ -37,18 +36,18 @@ struct RegFile6_8x8Fixture {
 
         ic = loadBuildingBlockIC("level6_register_file_8x8.panda");
 
-        we = new InputSwitch();
-        clk = new InputSwitch();
+        we = ElementFactory::buildElement(ElementType::InputSwitch);
+        clk = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(we, clk, ic);
 
         for (int i = 0; i < 3; ++i) {
-            writeAddr[i] = new InputSwitch();
-            readAddr1In[i] = new InputSwitch();
-            readAddr2In[i] = new InputSwitch();
+            writeAddr[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            readAddr1In[i] = ElementFactory::buildElement(ElementType::InputSwitch);
+            readAddr2In[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             builder.add(writeAddr[i], readAddr1In[i], readAddr2In[i]);
         }
         for (int i = 0; i < 8; ++i) {
-            dataIn[i] = new InputSwitch();
+            dataIn[i] = ElementFactory::buildElement(ElementType::InputSwitch);
             readData1[i] = ElementFactory::buildElement(ElementType::Led);
             readData2[i] = ElementFactory::buildElement(ElementType::Led);
             builder.add(dataIn[i], readData1[i], readData2[i]);

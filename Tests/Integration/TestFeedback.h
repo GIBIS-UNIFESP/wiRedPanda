@@ -67,6 +67,6 @@ private:
 
     // Locates the S/R switches and the Q/Q' NAND gates in a createSRLatchFromNAND() scene,
     // by their construction position (S-side elements at y=0, R-side at y=50).
-    void findSRLatchParts(Scene *scene, InputSwitch *&switchS, InputSwitch *&switchR,
+    void findSRLatchParts(Scene *scene, Element *&switchS, Element *&switchR,
                           Element *&nand1Q, Element *&nand2QBar);
 };

@@ -17,7 +17,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -451,7 +450,7 @@ void TestFileHandler::testHandleExportArduinoExportsRealFile()
     MainWindow window;
     FileHandler handler(&window, nullptr);
     auto *scene = window.currentTab()->scene();
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand({sw, led}, scene));
 
@@ -500,7 +499,7 @@ void TestFileHandler::testHandleExportSystemVerilogExportsRealFile()
     MainWindow window;
     FileHandler handler(&window, nullptr);
     auto *scene = window.currentTab()->scene();
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand({sw, led}, scene));
 

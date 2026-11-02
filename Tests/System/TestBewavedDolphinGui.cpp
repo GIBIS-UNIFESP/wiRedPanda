@@ -35,7 +35,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/Scene/Commands.h"
@@ -57,8 +56,8 @@ static std::unique_ptr<WorkSpace> createAndCircuit()
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
 
-    auto *sw0 = new InputSwitch();
-    auto *sw1 = new InputSwitch();
+    auto *sw0 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *andGate = ElementFactory::buildElement(ElementType::And);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -220,8 +219,8 @@ void TestBewavedDolphinGui::testRunLeavesLiveSequentialStateUnchanged()
     // flip-flop state above all, wherever the last swept column happened to leave it.
     WorkSpace ws;
     auto *scene = ws.scene();
-    auto *data = new InputSwitch();
-    auto *clk = new InputSwitch();
+    auto *data = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *clk = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *dff = ElementFactory::buildElement(ElementType::DFlipFlop);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(data);
@@ -1277,7 +1276,7 @@ void TestBewavedDolphinGui::testSaveToTxtClampsColumnCountForManyInputPorts()
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
     for (int i = 0; i < 12; ++i) {
-        scene->addItem(new InputSwitch());
+        scene->addItem(ElementFactory::buildElement(ElementType::InputSwitch));
     }
     scene->addItem(ElementFactory::buildElement(ElementType::Led));
     std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
@@ -1812,7 +1811,7 @@ void TestBewavedDolphinGui::testSnapshotMatchesModelRowsForMultiPortElements()
     auto *scene = ws->scene();
 
     auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *display = ElementFactory::buildElement(ElementType::Display7);
     scene->addItem(rotary);
     scene->addItem(sw);

@@ -25,7 +25,6 @@ QString TestArduino::s_cliCachePath;
 #include "App/Core/Enums.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Core/Priorities.h"
 #include "App/Wiring/Connection.h"
@@ -1712,7 +1711,7 @@ void TestArduino::testWirelessNodeGeneration()
     // A Tx and Rx node pair on the same channel — the Rx output variable should be
     // assigned from whatever drives the Tx input, not from LOW (the default for
     // unconnected ports).
-    auto *sw = new InputSwitch();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *txNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txNode);
     txNode->setLabel("CLK");
@@ -1751,9 +1750,9 @@ void TestArduino::testWirelessRxReachedByAWireFollowsItsTx()
 {
     // An Rx node reached both by a wire and by its Tx takes the Tx's signal in the simulation
     // (TestSimulation::testWirelessOverridesPhysicalWire); the sketch must read the same driver.
-    auto *wired = new InputSwitch();
+    auto *wired = ElementFactory::buildElement(ElementType::InputSwitch);
     wired->setLabel("Wired");
-    auto *air = new InputSwitch();
+    auto *air = ElementFactory::buildElement(ElementType::InputSwitch);
     air->setLabel("Air");
     auto *txNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txNode);
@@ -1824,8 +1823,8 @@ void TestArduino::testEmbeddedICGeneration()
     auto *reg = ws->scene()->icRegistry();
 
     auto *ic = new IC();
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
@@ -1882,8 +1881,8 @@ void TestArduino::testEmbeddedICLabelWithNewlineDoesNotInjectCode()
     auto *reg = ws->scene()->icRegistry();
 
     auto *ic = new IC();
-    auto *sw1 = new InputSwitch();
-    auto *sw2 = new InputSwitch();
+    auto *sw1 = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *sw2 = ElementFactory::buildElement(ElementType::InputSwitch);
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
     CircuitBuilder builder(ws->scene());
@@ -2453,9 +2452,9 @@ void TestArduino::testArduinoExportHelper(const QString &icFile)
     builder.add(ic);
 
     // Create input switches (one per IC input)
-    QVector<InputSwitch *> switches;
+    QVector<Element *> switches;
     for (int i = 0; i < ic->inputSize(); ++i) {
-        auto *sw = new InputSwitch();
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
         switches.append(sw);
         builder.connect(sw, 0, ic, i);
@@ -2683,8 +2682,8 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
     // This test checks Arduino-codegen vs engine equivalence over a clock
     // sequence, not ISA behaviour, so a blank program still exercises the full
     // datapath (cycle counter, fetch/decode/execute/memory, clock-enables).
-    auto *clk = new InputSwitch();
-    auto *rst = new InputSwitch();
+    auto *clk = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *rst = ElementFactory::buildElement(ElementType::InputSwitch);
     builder.add(clk);
     builder.add(rst);
     builder.connect(clk, 0, ic, "Clock");
@@ -2698,7 +2697,7 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
     for (int i = 0; i < 8; ++i) progLabels << QString("RegProgData[%1]").arg(i);
     progLabels << QStringLiteral("RegProgWrite");
     for (const auto &lbl : std::as_const(progLabels)) {
-        auto *sw = new InputSwitch();
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
         builder.add(sw);
         builder.connect(sw, 0, ic, lbl);  // held low (inactive)
     }
@@ -2713,13 +2712,13 @@ void TestArduino::testArduinoSequentialMultiCycleCpu8Bit()
     // Collect inputs/outputs in scene-scan order so the captured vector layout
     // matches the Arduino codegen's input/output pin order exactly.
     QVector<Element *> allElements;
-    QVector<InputSwitch *> scanInputs;
+    QVector<Element *> scanInputs;
     QVector<Element *> scanOutputs;
     for (auto *item : scene->items()) {
         if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
             allElements.append(elm);
-            if (auto *sw = qobject_cast<InputSwitch *>(elm)) {
-                scanInputs.append(sw);
+            if (elm->elementType() == ElementType::InputSwitch) {
+                scanInputs.append(elm);
             } else if (elm->elementType() == ElementType::Led) {
                 scanOutputs.append(elm);
             }
