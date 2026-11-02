@@ -644,6 +644,7 @@ void BewavedDolphin::on_actionCombinational_triggered()
     Application::guardedSlot(this, [this] {
         sentryBreadcrumb("waveform", QStringLiteral("Combinational mode"));
         const int truthTableSize = static_cast<int>((std::min)(static_cast<double>(SignalModel::kMaxColumns), std::pow(2, m_inputPorts)));
+        const int columnsBefore = m_model->columnCount();
         setLength(truthTableSize, false);
 
         qCDebug(zero) << "Setting the signal according to its columns and clock period.";
@@ -652,10 +653,14 @@ void BewavedDolphin::on_actionCombinational_triggered()
         DolphinEdits::combinational(*m_model, m_inputPorts, m_model->columnCount());
 
         qCDebug(zero) << "Running simulation.";
-        m_undoStack.push(new SetCellsCommand(m_model, cells, oldValues, [this] {
+        // The length and the values are one step: undo takes back the columns the fill added, with the values
+        auto *step = new SetLengthCommand([this](int length) { setLength(length, true); }, columnsBefore,
+                                          m_model->columnCount());
+        new SetCellsCommand(m_model, cells, oldValues, [this] {
             m_edited = true;
             run();
-        }));
+        }, step);
+        m_undoStack.push(step);
     });
 }
 

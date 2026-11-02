@@ -172,6 +172,7 @@ private slots:
     void testActionLoadCancelled();
     void testActionExportToPdfCancelledAndBareNameAppendsExtension();
 
+    void testUndoCombinationalRevertsColumnGrowth();
 private:
     QTemporaryDir m_tempDir;
 };

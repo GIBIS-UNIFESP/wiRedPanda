@@ -44,3 +44,24 @@ void SetCellsCommand::applyValues(const QList<int> &values)
         m_onApplied();
     }
 }
+
+SetLengthCommand::SetLengthCommand(std::function<void(int)> setLength, int oldLength, int newLength, QUndoCommand *parent)
+    : QUndoCommand(parent)
+    , m_setLength(std::move(setLength))
+    , m_oldLength(oldLength)
+    , m_newLength(newLength)
+{
+    setText(QObject::tr("Edit waveform"));
+}
+
+void SetLengthCommand::redo()
+{
+    m_setLength(m_newLength);
+    QUndoCommand::redo();
+}
+
+void SetLengthCommand::undo()
+{
+    QUndoCommand::undo();
+    m_setLength(m_oldLength);
+}

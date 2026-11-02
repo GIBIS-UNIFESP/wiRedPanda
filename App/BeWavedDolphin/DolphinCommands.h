@@ -47,3 +47,26 @@ private:
     QList<int> m_newValues;
     std::function<void()> m_onApplied;
 };
+
+/**
+ * \class SetLengthCommand
+ * \brief Undo step for a change of the simulation length, with the edits made under it as its children.
+ *
+ * \details The caller changes the length, and then makes the edits, before pushing this command: its children are the
+ * edits' commands. Redo sets the new length and then redoes the children; undo undoes the children and then sets the
+ * old length, so an edit that grew the grid is undone as one step with the columns it added. \a setLength applies a
+ * length and runs the simulation.
+ */
+class SetLengthCommand : public QUndoCommand
+{
+public:
+    SetLengthCommand(std::function<void(int)> setLength, int oldLength, int newLength, QUndoCommand *parent = nullptr);
+
+    void redo() override;
+    void undo() override;
+
+private:
+    std::function<void(int)> m_setLength;
+    int m_oldLength;
+    int m_newLength;
+};

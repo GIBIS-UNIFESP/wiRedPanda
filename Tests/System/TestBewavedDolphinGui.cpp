@@ -2414,3 +2414,24 @@ void TestBewavedDolphinGui::testActionExportToPdfCancelledAndBareNameAppendsExte
     guard.stub.saveResult = {"", ""};
     dolphin->findChild<QAction *>("actionExportToPdf")->trigger();
 }
+
+void TestBewavedDolphinGui::testUndoCombinationalRevertsColumnGrowth()
+{
+    // The combinational fill grows the grid's columns and fills its values. The undo reverts both: the values and the
+    // column count.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    // Two columns, so the fill of an AND's four input patterns has to grow the grid.
+    dolphin->setLength(2, false);
+    auto *model = dolphin->model();
+    const int columnsBefore = model->columnCount();
+    QCOMPARE(columnsBefore, 2);
+
+    auto *action = dolphin->findChild<QAction *>("actionCombinational");
+    QVERIFY(action);
+    action->trigger();
+    QVERIFY(model->columnCount() > columnsBefore);
+
+    dolphin->m_undoStack.undo();
+    QCOMPARE(model->columnCount(), columnsBefore);
+}
