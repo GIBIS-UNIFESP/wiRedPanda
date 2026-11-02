@@ -332,14 +332,14 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Main.cpp:447` | `main()` | Any `std::exception` from the command-line modes: a message box or stderr | Stays: CLI's boundary |
 | `App/Scene/ClipboardManager.cpp:140` | `ClipboardManager::paste()` | A blob registry that does not read: pasted without it | Stays: a fallback; the items' own read refuses the paste when they need a missing blob |
 | `App/Scene/ClipboardManager.cpp:144` | `ClipboardManager::paste()` | The legacy registry, as `:140` | Stays, as `:140` |
-| `App/Scene/Commands.cpp:434` | `AddItemsCommand::redo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/Commands.cpp:458` | `DeleteItemsCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/Commands.cpp:638` | `UpdateCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/Commands.cpp:655` | `UpdateCommand::redo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/Commands.cpp:1116` | `MorphCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/Commands.cpp:1458` | `ChangePortSizeCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/Commands.cpp:1745` | `UpdateBlobCommand::redo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/Commands.cpp:1767` | `UpdateBlobCommand::undo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:431` | `AddItemsCommand::redo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:455` | `DeleteItemsCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:634` | `UpdateCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:651` | `UpdateCommand::redo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:1148` | `MorphCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:1486` | `ChangePortSizeCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:1775` | `UpdateBlobCommand::redo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
+| `App/Scene/Commands.cpp:1797` | `UpdateBlobCommand::undo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
 | `App/Scene/ICRegistry.cpp:152` | `ICRegistry::onFileChanged()` | A reload that fails: the scene marked for update, `definitionChanged` emitted, rethrown (`:155`) | Stays: rethrows to its `guardedSlot()` (WATCH) |
 | `App/Scene/ICRegistry.cpp:335` | `ICRegistry::embedICsByFile()` | A reload that fails: the new blob removed, rethrown (`:337`) | Stays: rethrows to the IC controller's guarded slots |
 | `App/Scene/ICRegistry.cpp:419` | `ICRegistry::reloadTargetsAtomically()` | A target that does not reload: the updated ones rolled back, rethrown (`:421`) | Stays: rolls back for its callers, `:152`, `:335` and the extraction |
@@ -362,31 +362,31 @@ It does not cover a command the body pushes, directly or through the scene: that
 
 | Site | Slot | Disposition |
 |---|---|---|
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:339` | `BewavedDolphin::on_actionExit_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:579` | `BewavedDolphin::on_actionSetTo0_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:588` | `BewavedDolphin::on_actionSetTo1_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:597` | `BewavedDolphin::on_actionInvert_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:606` | `BewavedDolphin::on_actionSetClockWave_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:644` | `BewavedDolphin::on_actionCombinational_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:669` | `BewavedDolphin::on_actionSetLength_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:717` | `BewavedDolphin::on_actionZoomOut_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:726` | `BewavedDolphin::on_actionZoomIn_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:735` | `BewavedDolphin::on_actionResetZoom_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:750` | `BewavedDolphin::on_actionFitScreen_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:759` | `BewavedDolphin::on_actionClear_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:775` | `BewavedDolphin::on_actionAutoCrop_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:784` | `BewavedDolphin::on_actionCopy_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:799` | `BewavedDolphin::on_actionCut_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:817` | `BewavedDolphin::on_actionPaste_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:834` | `BewavedDolphin::on_actionSave_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:849` | `BewavedDolphin::on_actionSaveAs_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:913` | `BewavedDolphin::on_actionLoad_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:976` | `BewavedDolphin::on_actionShowNumbers_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:987` | `BewavedDolphin::on_actionShowWaveforms_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:996` | `BewavedDolphin::on_actionExportToPng_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:1014` | `BewavedDolphin::on_actionExportToPdf_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:1032` | `BewavedDolphin::on_actionAbout_triggered()` | Stays |
-| `App/BeWavedDolphin/BeWavedDolphin.cpp:1051` | `BewavedDolphin::on_actionAboutQt_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:338` | `BewavedDolphin::on_actionExit_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:578` | `BewavedDolphin::on_actionSetTo0_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:587` | `BewavedDolphin::on_actionSetTo1_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:596` | `BewavedDolphin::on_actionInvert_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:605` | `BewavedDolphin::on_actionSetClockWave_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:643` | `BewavedDolphin::on_actionCombinational_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:668` | `BewavedDolphin::on_actionSetLength_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:716` | `BewavedDolphin::on_actionZoomOut_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:725` | `BewavedDolphin::on_actionZoomIn_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:734` | `BewavedDolphin::on_actionResetZoom_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:749` | `BewavedDolphin::on_actionFitScreen_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:758` | `BewavedDolphin::on_actionClear_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:774` | `BewavedDolphin::on_actionAutoCrop_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:783` | `BewavedDolphin::on_actionCopy_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:798` | `BewavedDolphin::on_actionCut_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:816` | `BewavedDolphin::on_actionPaste_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:833` | `BewavedDolphin::on_actionSave_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:848` | `BewavedDolphin::on_actionSaveAs_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:912` | `BewavedDolphin::on_actionLoad_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:975` | `BewavedDolphin::on_actionShowNumbers_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:986` | `BewavedDolphin::on_actionShowWaveforms_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:995` | `BewavedDolphin::on_actionExportToPng_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:1013` | `BewavedDolphin::on_actionExportToPdf_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:1031` | `BewavedDolphin::on_actionAbout_triggered()` | Stays |
+| `App/BeWavedDolphin/BeWavedDolphin.cpp:1050` | `BewavedDolphin::on_actionAboutQt_triggered()` | Stays |
 | `App/Core/Application.h:137` | Its definition | Stays |
 | `App/Scene/ICRegistry.cpp:104` | `ICRegistry::onFileChanged()` | Stays |
 | `App/Scene/Scene.cpp:100` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
