@@ -9,15 +9,14 @@ sub-ID of the item it belongs to (`P4.4a`, `P4.4b`, ...) and a line in the log. 
 
 **Branch:** `04-ics-and-format`, from `03-element-types` at `2fe7e07f9` (the creation point; the merge-base with `03-element-types` is `d8f9e8765`), created 2026-11-02. Hashes from before the restack that no longer resolve were replaced by the commit each row names; those replacements are unverified.
 
-**Open decisions:** the defects in the undo and redo section below: D7 (a nested IC file's change, a design decision on
-whether it is plan 4 or plan 2), D8 (an intermittent unhandled exception, not reproduced since), D-S1 and D-C12 (each
-needs an owner and a fix or a recorded limit). D6 is row P4.6.
+**Open:** D6 (row P4.6) and D7 (row P4.2a) are plan 4 work, not started. D8 (an intermittent unhandled exception, not
+reproduced since) stays open here until a stack trace exists. D-S1 and D-C12 are fixed on plan 2 (P2.105, P2.106).
 
 Each row's notes say how its check is shown to fail; "as on the branch" marks a break `gpu-canvas` ran and saw fail.
 
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
-| P4.1 | The reload's undo as a failing test on `master`: one input after the undo, the cut wire still cut (§2.1) | done | `6f9f80d1f`, `2713b6bfa` | The probe run on plan 1's tip (`952aa6b2c`, the code before plan 2's fixes, with plan 1's MSVC warning flag, C4702, in a throwaway worktree): the one-input undo fails there, as §1.2 says. On plan 2's tip it passes, so plan 2 fixed that case. The reopen defect remains on the tip, marked by a `QEXPECT_FAIL` until P4.6. Edge probes in `TestICRegistry` (the same file): a growing reload, two reloads undone in turn, two instances of one file, undo then redo. Plan 1 fails all four; the tip passes the two instances and the shrinking undo, and fails the growing undo and the second reload's undo, marked until P4.5 |
+| P4.1 | The reload's undo as a failing test on `master`: one input after the undo, the cut wire still cut (§2.1) | done | `6f9f80d1f`, `2713b6bfa`, `a7a538357` | The probe run on plan 1's tip (`952aa6b2c`, the code before plan 2's fixes, with plan 1's MSVC warning flag, C4702, in a throwaway worktree): the one-input undo fails there, as §1.2 says. On plan 2's tip it passes, so plan 2 fixed that case. The reopen defect remains on the tip, marked by a `QEXPECT_FAIL` until P4.6. Edge probes in `TestICRegistry` (the same file): a growing reload, two reloads undone in turn, two instances of one file, undo then redo. Plan 1 fails all four; the tip passes the two instances and the shrinking undo, and fails the growing undo and the second reload's undo, marked until P4.5 |
 | P4.2 | The shared definition, its cache keyed by path and bytes for a file and by bytes for a blob, and the loader reading through `ICFileCache` (§2.2) | todo | | Shown to fail: eviction by insertion order, a failed read kept; a key of path, time and size, which reuses the definition of a file rewritten at the same size within the same millisecond |
 | P4.3 | The preview per definition, rendered on first hover; its guard checks the origin (§2.3) | todo | | Shown to fail: the guard checking the size only (as on the branch); a theme change that keeps previews. Plan 1's preview goldens unchanged |
 | P4.4 | Pin names from the circuit in one rule; the header in file order; no pin name saved in the interface language (§2.4) | todo | | Shown to fail: the header built in stacking order after an undo's reorder (as on the branch); a derived name made explicit. Payload goldens holding IC headers or pin names change, each named |
@@ -59,12 +58,12 @@ cycles. The per-test verdicts are kept outside the repository, not committed.
 | C9 `ChangePortSizeCommand` | ten cycles cut and restore the wire; discard | checked | `portsize-no-cut` |
 | C10 `FlipCommand` | ten cycles; discard; wire ends | checked | `flip-undo-noop` |
 | C11 `ToggleTruthTableOutputCommand` | the wire and the table's size across undo and redo | checked | `truthtable-undo-noop` |
-| C12 `RegisterBlobCommand` | redo restores the bytes; undo over a name in use | checked (redo); defect (undo, D-C12) | `register-redo-noop` |
+| C12 `RegisterBlobCommand` | redo restores the bytes; undo over a name in use | checked (redo); undo fixed on plan 2 (D-C12, P2.106) | `register-redo-noop` |
 | C13 `RemoveBlobCommand` | wire kept across undo and redo; embedded IC removed again on redo | checked (redo) | `removeblob-redo-noop` |
 | C14 `RemoveICFileCommand` | trashed again on each redo; a refusal by the trash leaves no step (Windows) | checked (redo) | `trash-redo-noop` |
 | C15 `RenameBlobCommand` | nested reference renamed and back; a collision changes nothing | checked | `rename-undo-noop`, `rename-collision-unguarded` |
 | C16 `UpdateBlobCommand` | the reload probes below | checked | `update-blob-redo-old`, `update-blob-undo-new` |
-| S1 `SetCellsCommand` (waveform fill) | redo fills again | checked (redo); defect (undo, D-S1) | `setcells-redo-noop` |
+| S1 `SetCellsCommand` (waveform fill) | redo fills again | checked (redo); undo fixed on plan 2 (D-S1, P2.105) | `setcells-redo-noop` |
 | M1 paste with an embedded IC | existing tests only | existing | none |
 | M2 embed | redo restores the blob and the instance | checked | `register-redo-noop` |
 | M3 remove an embedded IC | redo removes it again | checked | `removeblob-redo-noop` |
@@ -87,17 +86,17 @@ reload, two instances of one file, a change after an undo, a reopen after an und
 file, a rename save, a change that goes back to its original, a simulation that runs during a reload, and a nested file.
 The file-watch defects D1 to D4 are fixed on plan 2 (P2.104), and their probes are there.
 
-**Defects found by the probes.** Each is an expected failure, except D7 and D8, which are open with a note.
+**Defects found by the probes.** The expected failures that remain are D6, D7 and D8; D-S1 and D-C12 are fixed on plan 2 and their marks are gone here.
 
 | ID | Behaviour | Probe | Plan | Status |
 |---|---|---|---|---|
 | D1 to D4 | a rewrite with identical bytes, a touch, a save by rename and a file made again after deletion | plan 2's probes | plan 2 | fixed (P2.104); D3 is flaky (one failure in three `TestICRegistry` runs on the clean tree, not investigated) |
 | D5 | the undo of a growing reload keeps the added input | expected failures in `TestICRegistry` (the growing undo, two reloads undone in turn, a change after an undo) | plan 4, P4.5 | fixed (P4.5, `d28c93d0e`) |
 | D6 | a reopened document brings the file's new definition back after an undo | expected failure in `TestICRegistry` (the reopen part of the shrinking undo, and the growing reopen) | plan 4, P4.6 | open, waiting on P4.6 |
-| D7 | a nested IC file's change is not reported to the outer instance | expected failure in `TestICRegistry` | plan 4, unless the user makes it plan 2 | open, design decision |
+| D7 | a nested IC file's change is not reported to the outer instance | expected failure in `TestICRegistry` | plan 4, P4.2a | open, plan 4 work, not started |
 | D8 | an intermittent "Caught unhandled exception" | none: reproduced once while the nested-file probe ran, not since | plan 2, if on the reload path | open, not reproduced |
-| D-S1 | undoing a waveform fill keeps the columns it added | expected failure in `TestBewavedDolphinGui` | fix the length in the step | open, owner undecided |
-| D-C12 | registering over a name in use loses that name's blob on undo | expected failure in `TestICInline` (two marks) | fix in the command | open, owner undecided; latent unless a caller picks a name in use, which is not verified for every caller |
+| D-S1 | undoing a waveform fill keeps the columns it added | expected failure in `TestBewavedDolphinGui` | plan 2, P2.105 (`303c92af3`) | fixed on plan 2, mark removed there (`303c92af3`); none here |
+| D-C12 | registering over a name in use loses that name's blob on undo | expected failure in `TestICInline` (two marks) | plan 2, P2.106 (`10f274328`) | fixed on plan 2, marks removed there (`10f274328`); none here |
 
 **Mutation record.** Each mutation changes one behaviour in `App/`, runs the listed classes and restores the file from a
 backup. The failing tests are listed; counts are failing lines in the run's log.
