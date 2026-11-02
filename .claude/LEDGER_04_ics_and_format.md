@@ -11,7 +11,7 @@ sub-ID of the item it belongs to (`P4.4a`, `P4.4b`, ...) and a line in the log. 
 
 **Open decisions:** the defects in the undo and redo section below: D7 (a nested IC file's change, a design decision on
 whether it is plan 4 or plan 2), D8 (an intermittent unhandled exception, not reproduced since), D-S1 and D-C12 (each
-needs an owner and a fix or a recorded limit). D5 and D6 are rows P4.5 and P4.6.
+needs an owner and a fix or a recorded limit). D6 is row P4.6.
 
 Each row's notes say how its check is shown to fail; "as on the branch" marks a break `gpu-canvas` ran and saw fail.
 
@@ -21,7 +21,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P4.2 | The shared definition, its cache keyed by path and bytes for a file and by bytes for a blob, and the loader reading through `ICFileCache` (§2.2) | todo | | Shown to fail: eviction by insertion order, a failed read kept; a key of path, time and size, which reuses the definition of a file rewritten at the same size within the same millisecond |
 | P4.3 | The preview per definition, rendered on first hover; its guard checks the origin (§2.3) | todo | | Shown to fail: the guard checking the size only (as on the branch); a theme change that keeps previews. Plan 1's preview goldens unchanged |
 | P4.4 | Pin names from the circuit in one rule; the header in file order; no pin name saved in the interface language (§2.4) | todo | | Shown to fail: the header built in stacking order after an undo's reorder (as on the branch); a derived name made explicit. Payload goldens holding IC headers or pin names change, each named |
-| P4.5 | The reload's undo restores the definition in memory (§2.5) | todo | | P4.1 passes |
+| P4.5 | The reload's undo restores the definition in memory (§2.5) | done | `9610a7615` | Shown to fail: the four probes of `TestICRegistry` that the undo of a reload reaches (a growing reload, two reloads undone in turn, a change after an undo, two writes settled to the last), with their expected-failure marks removed, failed on the tip before the fix. The first fix, in the loader and the command, left them failing: `IC::loadState` skipped the reload when the IC's bytes matched the file's current bytes, so the skip also compares the snapshot's bytes (`ICLoader::fileBytes()`). The reopen part is P4.6 |
 | P4.6 | The document's copies of file-backed definitions with their hash; the four cases on open (§2.6) | todo | | Each case tested; an undo of a reload saved and reopened keeps its wire; the backward-compatibility files read as before |
 | P4.7 | The developer guide's IC and format sections; the release notes' format changes | todo | | |
 | P4.8 | The reload's undo behaves on `master` as probed on the branch (§5) | done | | Holds on plan 1, the code before plan 2 (P4.1): the one-input undo fails, as §1.2 says. Plan 2 fixed the shrinking case and the two-instance case, not bisected to a commit. §1.2 and §2.5 still describe a defect that the tip does not have for those cases, so their wording is revised in P4.5 to name the growing and repeated cases; the reopen case stands |
@@ -29,7 +29,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P4.10 | The cost of keying a file's definition by its bytes, on the IC-heavy fixture's load (2,000 instances of one file) (§5) | todo | | Measured before P4.2 lands, under callgrind with plan 1's probe; should the profile show the key, it goes back to path, time and size, with the two blind spots stated in the code |
 | P4.11 | The hand-over of §2.7: the internal elements, the IC's own serialization and the definitions' move into the document's registry, done by plan 8's last step | todo | | Carried by plan 8 (P8.15); closed here when that step lands |
 | P4.12 | The pin order saved in every file as the boundary elements' ids, migrated from positions before any snap; every element snapped on load; landing together (§2.9, P4.D5) | todo | | Added 2026-10-22 from plan 2's snapping rule (P2.42), which leaves the load exact. Shown to fail: the saved order ignored swaps two pins closer than half the grid; the migration taken after the snap swaps them too. P1.14's pin orders unchanged |
-| P4.13 | Undo and redo across the application, probed item by item (the section below): the commands, the macros, the stack behaviours and the IC reload | done | `349d8aaa4`, `14c40ef16` | Each item marked checked is broken on purpose once and shown to fail, as the mutation table below records (35 mutations on the App code, 5A, and 2 on the release-only paths, 5B). The reload probes and the waveform's redo are checked by the mutations listed against them. Five expected failures hold the defects the probes found (D5, D6, D7, D-S1, D-C12); none is fixed here. Plan 2's fixes to the reload (D1 to D4) are P2.104, not here |
+| P4.13 | Undo and redo across the application, probed item by item (the section below): the commands, the macros, the stack behaviours and the IC reload | done | `349d8aaa4`, `14c40ef16` | Each item marked checked is broken on purpose once and shown to fail, as the mutation table below records (35 mutations on the App code, 5A, and 2 on the release-only paths, 5B). The reload probes and the waveform's redo are checked by the mutations listed against them. The expected failures that remain hold four defects the probes found (D6, D7, D-S1, D-C12); none is fixed here, and D5 is fixed by P4.5. Plan 2's fixes to the reload (D1 to D4) are P2.104, not here |
 | P4.14 | The rollback of a failed IC save over the earlier targets, with a seam (`WorkSpace::saveChildICBlob`) to fail a later one | done | `14c40ef16` | Shown to fail: `seam-rollback-elements-removed` and `seam-rollback-registry-removed` (the seam probe is `testSaveChildICBlobFailureAtALaterTargetRollsBackTheEarlierOnes`). The seam is product code; its inventory rows move with its lines in the same commit |
 
 ## Undo and redo probes (P4.13, P4.14)
@@ -92,7 +92,7 @@ The file-watch defects D1 to D4 are fixed on plan 2 (P2.104), and their probes a
 | ID | Behaviour | Probe | Plan | Status |
 |---|---|---|---|---|
 | D1 to D4 | a rewrite with identical bytes, a touch, a save by rename and a file made again after deletion | plan 2's probes | plan 2 | fixed (P2.104); D3 is flaky (one failure in three `TestICRegistry` runs on the clean tree, not investigated) |
-| D5 | the undo of a growing reload keeps the added input | expected failures in `TestICRegistry` (the growing undo, two reloads undone in turn, a change after an undo) | plan 4, P4.5 | open, waiting on P4.5 |
+| D5 | the undo of a growing reload keeps the added input | expected failures in `TestICRegistry` (the growing undo, two reloads undone in turn, a change after an undo) | plan 4, P4.5 | fixed (P4.5, `d28c93d0e`) |
 | D6 | a reopened document brings the file's new definition back after an undo | expected failure in `TestICRegistry` (the reopen part of the shrinking undo, and the growing reopen) | plan 4, P4.6 | open, waiting on P4.6 |
 | D7 | a nested IC file's change is not reported to the outer instance | expected failure in `TestICRegistry` | plan 4, unless the user makes it plan 2 | open, design decision |
 | D8 | an intermittent "Caught unhandled exception" | none: reproduced once while the nested-file probe ran, not since | plan 2, if on the reload path | open, not reproduced |
@@ -166,6 +166,10 @@ per-class runs count. An expected failure that predates this work, `TestPortRead
 - 2026-11-02: P4.1 edge probes (`89c7bc825`): on plan 1 all four fail; on the tip the shrinking undo and the two-instance undo pass, the growing undo and the second reload's undo fail, marked for P4.5. P4.8 done: plan 1 shows §1.2's one-input undo, and the tip fixed that case in plan 2.
 - 2026-11-02: P4.13 and P4.14 done (`79fab62ee`, `bcf4ca94b`): the undo and redo probes, the seam and its rollback probe,
   each probe mutation-checked. The defects they found are listed in the section above and none is fixed here.
+- 2026-11-02: P4.5 done (`d28c93d0e`): the undo and redo of a reload restore the definition their snapshot captured. The
+  D5 probes, unmarked, failed before the fix and pass after it. The fix stays on plan 4 with the snapshot mechanism it
+  uses on the exception-boundaries branch (EB.4, `422eeba70`), which is not moved: the plan's own rule gives its
+  inventory-found fixes their own rows, and that fix depends on its other commits.
 - 2026-11-02: plan 2's watch fix re-lined the exception inventory's ICRegistry rows (`f9d083cbd` on 02c). The restack onto
   it reverted five of those rows on `03-element-types` and on this branch through its conflict resolution; they are
   re-lined on each (`950910817`, and this branch's re-line lands in a later commit). The inventory check passes on this branch.
