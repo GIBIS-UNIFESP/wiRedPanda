@@ -112,7 +112,7 @@ def update_pch_file(pch_path, used_includes):
     new_lines.append("\n")
     new_lines.extend(lines[end_idx:])
 
-    pch_path.write_text("".join(new_lines), encoding="utf-8")
+    pch_path.write_text("".join(new_lines), encoding="utf-8", newline="\n")
     return True
 
 

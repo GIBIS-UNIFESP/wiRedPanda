@@ -440,7 +440,7 @@ def fix_includes_in_file(filepath, verbose=False, force=False):
         return False
 
     try:
-        with open(filepath, "w", encoding="utf-8") as f:
+        with open(filepath, "w", encoding="utf-8", newline="\n") as f:
             f.writelines(new_lines)
         if verbose:
             status = "[MODIFIED]" if changed else "[UNCHANGED]"

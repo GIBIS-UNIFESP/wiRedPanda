@@ -103,7 +103,7 @@ def main():
         return 0
 
     CATALOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    CATALOG_PATH.write_text(rendered, encoding="utf-8")
+    CATALOG_PATH.write_text(rendered, encoding="utf-8", newline="\n")
     print(f"Wrote {CATALOG_PATH}")
     return 0
 
