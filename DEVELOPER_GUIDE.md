@@ -172,16 +172,18 @@ wiRedPanda/
 │   │   ├── ItemWithId.h                    #     Base with stable numeric identity
 │   │   └── StatusOps.h                     #     Four-state logic operations
 │   ├── Element/                            #   Logic elements and element factory
-│   │   ├── Element.cpp/h                   #     Abstract base class for all elements
+│   │   ├── Element.cpp/h                   #     The element class, the IC its one subclass
 │   │   ├── ElementFactory.cpp/h            #     Factory singleton
 │   │   ├── ElementInfo.h                   #     Self-registration template
-│   │   ├── ElementTypeDescriptor.cpp/h     #     Element type descriptors and capabilities
+│   │   ├── ElementTypeDescriptor.cpp/h     #     Each type: kernel, parameters, ports, appearance
+│   │   ├── Parameters.cpp/h                #     A type's parameters and their rules
 │   │   ├── IC.cpp/h                        #     Integrated circuit (sub-circuit) element
 │   │   ├── ICLoader.cpp/h                  #     Loads an IC's sub-circuit from file or embedded blob
 │   │   ├── ICRenderer.cpp/h                #     Builds an IC's hover-preview pixmap
 │   │   ├── ICSimulation.cpp/h              #     Builds/runs an IC's internal simulation graph
 │   │   ├── ElementSerializer.cpp/h         #     Serialization
-│   │   └── GraphicElements/                #     Each element type's descriptor, and its class if it has one
+│   │   └── GraphicElements/                #     Each element type's descriptor, one file per type
+│   ├── Presentation/                       #   How elements are drawn: presenters, pictures, labels
 │   ├── Simulation/                         #   Simulation engine
 │   │   ├── KernelLogic.cpp/h               #     Each kernel's logic
 │   │   ├── Simulation.cpp/h                #     Main simulation loop
@@ -248,7 +250,7 @@ wiRedPanda/
 
 ### Key Organizational Principles
 
-- **One element = one `.h`/`.cpp` pair** in `App/Element/GraphicElements/`.
+- **One element type = one `.cpp` file** in `App/Element/GraphicElements/`, its descriptor.
 - **Source file lists** live in `CMakeSources.cmake` (not `CMakeLists.txt`) and must stay **alphabetically sorted**.
   The model (`MODEL_SOURCES`, `MODEL_HEADERS`) and presentation (`PRESENTATION_SOURCES`, `PRESENTATION_HEADERS`) have
   lists of their own: no model file includes a presentation header, and `cmake/CheckModelIncludes.cmake` fails the
@@ -309,10 +311,12 @@ The application follows a layered architecture:
 ├─────────────────────────────────────┤
 │        Scene Layer (App/Scene/)     │  Canvas, undo/redo, clipboard
 ├─────────────────────────────────────┤
-│      Element Layer (App/Element/)   │  Logic gates, flip-flops, I/O
+│  Presentation (App/Presentation/)   │  How each type is drawn
+├─────────────────────────────────────┤
+│      Element Layer (App/Element/)   │  Element types: descriptors, parameters
 ├──────────────┬──────────────────────┤
-│  Simulation  │   Nodes (Ports &     │  Engine loop, topological sort,
-│  (App/Sim/)  │   Connections)       │  port/wire data model
+│  Simulation  │  Wiring (ports and   │  Engine loop, kernels, topological
+│(Simulation/) │  wires, Wiring/)     │  sort; port/wire data model
 ├──────────────┴──────────────────────┤
 │        Core Layer (App/Core/)       │  Enums, StatusOps, Settings
 └─────────────────────────────────────┘
@@ -344,8 +348,8 @@ The application follows a layered architecture:
               ┌────────────┼────────────┐
               │            │            │
        ┌──────▼──────┐ ┌───▼─────┐ ┌────▼───────┐
-       │  Elements   │ │  Nodes  │ │  Commands  │
-       │ (Element/)  │ │(Nodes/) │ │  (Scene/)  │
+       │  Elements   │ │ Wiring  │ │  Commands  │
+       │ (Element/)  │ │(Wiring/)│ │  (Scene/)  │
        └─────────────┘ └─────────┘ └────────────┘
               │
        ┌──────▼──────┐
@@ -437,7 +441,7 @@ This is the most important subsystem of the project. All circuit components (log
 
 ```text
 QGraphicsObject
-  └── Element                     (abstract base — all circuit components)
+  └── Element                     (every circuit component, an element of its type)
         └── IC                    (sub-circuit / integrated circuit)
 ```
 
@@ -446,9 +450,11 @@ their descriptors read and set (`sourceLevel`, `setLevel`), and the lock (`isLoc
 
 The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND), the switch, the push button, the rotary switch, the clock, the node, the text and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
 
-### Element: The Base Class
+### Element: The One Element Class
 
-`App/Element/Element.h` is the abstract base class for **all** graphic elements in the circuit. It inherits from:
+`App/Element/Element.h` is the class of **all** graphic elements in the circuit: an element of any type but the IC is
+an `Element` built for its type (`new Element(ElementType::And)`), which its type's descriptor
+(`ElementTypeDescriptor`) describes. It inherits from:
 
 - `QGraphicsObject`: visual representation in the Qt scene
 - `ItemWithId`: stable numeric identity (for serialization and undo/redo)
@@ -462,16 +468,13 @@ The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the
 - Label display and keyboard triggers
 - Selection highlighting
 
-**Key methods that subclasses implement:**
-
-```cpp
-// Simulation logic — REQUIRED for functional elements
-virtual void updateLogic() = 0;
-
-// Custom serialization (optional)
-virtual void save(QDataStream &stream) const;
-virtual void load(QDataStream &stream, SerializationContext &context);
-```
+**What a type changes comes from its descriptor, not from an override:** its logic is its kernel's
+(`descriptor.kernel`, which `updateLogic()` runs through `KernelLogic::of()`), its ports' places are its
+`inputAttributes`/`outputAttributes`, its settings are its parameters (`descriptor.parameters`, read with
+`param<T>()` and set with `setParam()`), what a press does is its `pressOperation`, and how an older file's data
+reads is its `readBeforeMap`/`readOlderKeys` hooks. The IC alone keeps a subclass, whose overrides
+(`updateLogic()`, `save()`, `loadState()`, `saveSimState()`, `restoreSimState()` and others) run its internal
+circuit.
 
 ### ElementFactory
 
@@ -522,11 +525,27 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 
 What only some types have, such as a colour, a frequency, a delay, a sound, a volume or a wireless mode, is a parameter of the type (`ElementTypeDescriptor::parameters`), not a field or an accessor of the element: it is asked with `offersParam(ParamId::Colour)`, read with `param<QString>(ParamId::Colour)` and set with `setParam(ParamId::Colour, value)`; a type without it has none, and asking for it is a broken invariant. `ElementColour` cycles the colour names and `WirelessNode` reads a node's mode as its enum.
 
-`ElementTypeDescriptor` extends this with visual information: pixmap paths, translated names, and its `appearanceSlots`: each slot's key, which a file saves the slot's picture by, and its built-in picture, which an element's appearance list starts as. `appearancePositions` keeps the slot each position of an older file's positional list named.
+`ElementTypeDescriptor` (`App/Element/ElementTypeDescriptor.h`) is everything an element of the type is, built from
+the constraints by `descriptorFromConstraints()` and completed in `describe()`:
+
+- **Display**: the picture (`pixmapPath`), the palette title and name, and their translation context.
+- **Simulation**: the kernel (`kernel`, the parameters it reads, `kernelParameters`), the history it keeps from one
+  update to the next at power-on (`kernelState`), and for an input the level it drives (`sourceLevel`, `setLevel`).
+- **Parameters**: the type's schema (`parameters`), one `ParamSpec` per setting, with its key in a file, its default
+  and its accept rule, which the editor, files, MCP and the setters all go through.
+- **Operations**: what a press and its release do (`pressOperation`, `releaseOperation`).
+- **Ports**: each port's place and visibility (`inputAttributes`, `outputAttributes`) and how the inputs follow the
+  outputs (`inputsForOutputs`).
+- **Files**: hooks reading an older file's data (`readBeforeMap`, `readOlderKeys`) and checking a loaded one
+  (`checkLoad`, `reportFailedFiles`).
+- **Appearance**: its `appearanceSlots`, each slot's key, which a file saves the slot's picture by, and its built-in
+  picture, which an element's appearance list starts as; the slot shown (`shownSlot`) and the states the user can
+  give a picture to (`appearanceStates`). `appearancePositions` keeps the slot each position of an older file's
+  positional list named.
 
 ### Element Catalog
 
-The 31 concrete elements live in `App/Element/GraphicElements/`:
+The 31 element types are each described in their own file in `App/Element/GraphicElements/`:
 
 #### Logic Gates (combinational)
 
@@ -981,7 +1000,8 @@ Circuit files (`.panda`) use a binary format (`App/IO/Serialization.h`):
     - Type (ElementType)
     - Position, rotation, flip state
     - Input and output ports with IDs
-    - Element-specific properties (frequency, color, etc.)
+    - The type's parameters (frequency, colour, etc.), each under its spec's key (`ParamSpec::key`)
+    - The appearance: the picture of each slot the user changed, under the slot's key
 
 [Connections]
   - Connection count
@@ -1098,7 +1118,7 @@ QString msg = tr("New translatable message");
 
 ## The Test System
 
-wiRedPanda has a comprehensive test suite with **192 test classes**.
+wiRedPanda has a comprehensive test suite of **over 230 test classes**.
 
 ### Test Organization
 
@@ -1497,10 +1517,10 @@ private slots:
 ```cpp
 #include "TestMyElement.h"
 #include "Tests/Common/TestUtils.h"
-// Include the elements you need...
+// Elements are built by their type: no element header to include
 
 void TestMyElement::testProperties() {
-    MyElement elm;
+    Element elm{ElementType::MyElement};
     QCOMPARE(elm.elementType(), ElementType::MyElement);
     // Verify port counts, group, etc.
 }
@@ -1577,7 +1597,6 @@ ctest --preset debug
 
 # 3. Commit with a descriptive message
 git add App/Element/GraphicElements/MyElement.cpp
-git add App/Element/GraphicElements/MyElement.h
 git commit -m "feat: add MyElement component
 
 - Implement logic for new element
@@ -1720,15 +1739,20 @@ Ordered by difficulty:
 | `App/Core/Settings.h`                 | Persistent settings management                        |
 | `App/Core/ThemeManager.h`             | Theme system (light/dark/system)                      |
 | `App/Core/Priorities.h`               | Topological sorting and feedback detection            |
-| `App/Element/Element.h`               | Base class for all elements                           |
+| `App/Element/Element.h`               | The element class: every type, the IC its subclass    |
 | `App/Element/InputLevel.h`            | The inputs' shared level and lock parameters          |
 | `App/Element/ElementInfo.h`           | Self-registration template and constraints            |
 | `App/Element/ElementFactory.h`        | Factory for creating elements by type                 |
-| `App/Element/ElementTypeDescriptor.h` | Element type descriptors (icons, names, capabilities) |
+| `App/Element/ElementTypeDescriptor.h` | Each type: kernel, parameters, ports, appearance      |
+| `App/Element/Parameters.h`            | A type's parameters: specs, values and their rules    |
+| `App/Element/ElementColour.h`         | The colour names and their cycle                      |
+| `App/Element/WirelessNode.h`          | A node's wireless mode, read as its enum              |
 | `App/Element/IC.h`                    | Integrated circuit element                            |
 | `App/Element/ICLoader.h`              | Loads an IC's sub-circuit from file or embedded blob  |
 | `App/Scene/ICRegistry.h`              | Central IC registry with file monitoring              |
 | `App/Simulation/Simulation.h`         | Simulation engine and update loop                     |
+| `App/Simulation/KernelLogic.h`        | Each kernel's logic, by the type's `KernelKind`       |
+| `App/Presentation/ElementPresenter.h` | How each type's body, picture and label are drawn     |
 | `App/Scene/Scene.h`                   | Main graphics scene                                   |
 | `App/Scene/Commands.h`                | All undo/redo command classes                         |
 | `App/Scene/Workspace.h`               | File and workspace management                         |
@@ -1751,6 +1775,9 @@ Ordered by difficulty:
 | **Sequential Circuit**    | Circuit with memory elements (flip-flops, latches)                                                |
 | **Clock**                 | Periodic signal that synchronizes sequential elements                                             |
 | **Rising Edge**           | Transition from 0 to 1 on the clock signal                                                        |
+| **Descriptor**            | Everything an element of a type is (`ElementTypeDescriptor`): kernel, parameters, ports, look     |
+| **Kernel**                | What the simulation computes for a type (`KernelKind`), its logic in `KernelLogic`                |
+| **Parameter**             | A setting a type has, such as a colour or a frequency (`ParamId`), kept by its spec's rule        |
 | **Feedback Loop**         | Path where an output feeds back to an input                                                       |
 | **Grid Snapping**         | Automatic alignment of elements to the 16px grid                                                  |
 | **IC**                    | Integrated Circuit — sub-circuit encapsulated as a component                                      |
