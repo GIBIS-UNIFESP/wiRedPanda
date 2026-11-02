@@ -355,6 +355,18 @@ not is rebuilt as P2.94's were, or retired. Found: every test passed on any exce
 reach their defect (`bugA`, `bugG` and `bugI` rebuilt, `bugE`'s defect unreachable from a load since the port-count
 check); each other test now requires the message of its fix's check, traced reached under gdb.
 
+### 2.31 The appearance tile grid's undo macro can never open
+
+The appearance picker's tile branch (`ElementEditor::updateElementAppearance()`) opened an undo macro for a multi-element
+selection. The grid is shown only for one selected element (`applyCapabilitiesToUi()`), and the element list is written
+only by `setCurrentElements()`, which applies that rule straight after, so the macro's guard is never true. Its
+`beginMacro()` and `endMacro()` carried `LCOV_EXCL_LINE` with the reason in prose, so the coverage pass hid the dead
+code rather than removing it. The fix removes the macro and its golden string ("Change appearance", used nowhere else)
+and keeps the one-step-per-element loop. A test pins the invariant the removal rests on (the grid hidden for two
+multi-state elements, the fallback one step over both, the grid back for one): it passes before and after, so it is
+a pin, not a failing test first. Placed here because no later plan rewrites the tile branch; plan 3 rewrites the
+editor around it, and the restack keeps the removal under that rewrite.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
