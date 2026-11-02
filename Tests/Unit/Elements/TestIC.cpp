@@ -45,6 +45,7 @@
 #include "App/Element/ICPreviewCache.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRenderer.h"
+#include "App/Element/PinOrder.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/ICRegistry.h"
@@ -644,6 +645,228 @@ void TestICUnit::testEmbeddedICPinNamesAreDerivedToo()
     QVERIFY2(ic.outputPort(0)->name().contains(QStringLiteral("_T")), "an embedded IC's pin must be derived too");
     QCoreApplication::removeTranslator(&tagger);
     QVERIFY(!ic.outputPort(0)->name().contains(QStringLiteral("_T")));
+}
+
+namespace {
+
+/// Returns an Input element labelled \a label, standing at \a pos.
+Element *inputLabelled(const QString &label, const QPointF &pos)
+{
+    auto *elm = ElementFactory::buildElement(ElementType::InputButton);
+    elm->setLabel(label);
+    elm->setPos(pos);
+    return elm;
+}
+
+/// Returns the element of \a workspace labelled \a label, or null.
+Element *elementLabelled(WorkSpace &workspace, const QString &label)
+{
+    for (auto *elm : workspace.scene()->elements()) {
+        if (elm->label() == label) {
+            return elm;
+        }
+    }
+    return nullptr;
+}
+
+/// Returns the element ids a saved file holds under \a key, in its order.
+QVector<quint64> savedIdsOf(const QString &path, const QString &key)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return {}; // the caller's comparison then fails on the empty order
+    }
+    QDataStream stream(&file);
+    QVector<quint64> ids;
+    for (const QString &entry : Serialization::readPreamble(stream).metadata.value(key).toStringList()) {
+        ids.append(entry.toULongLong());
+    }
+    return ids;
+}
+
+/// Rewrites the metadata of the .panda file at \a path with \a edit; the elements stay as they were.
+template<typename Edit>
+void rewriteMetadata(const QString &path, Edit edit)
+{
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QDataStream stream(&file);
+    auto preamble = Serialization::readPreamble(stream);
+    file.close();
+
+    edit(preamble.metadata);
+    QByteArray payload;
+    QDataStream payloadStream(&payload, QIODevice::WriteOnly);
+    payloadStream.setVersion(QDataStream::Qt_5_12);
+    payloadStream << preamble.metadata;
+    payload.append(preamble.remainingPayload);
+
+    QFile out(path);
+    QVERIFY(out.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    QDataStream outStream(&out);
+    Serialization::writePandaHeader(outStream);
+    Serialization::writePayload(outStream, payload);
+}
+
+} // namespace
+
+void TestICUnit::testAnOlderFileKeepsItsPinsOrderByPosition()
+{
+    // A file saved before pins kept an order holds none, so its pins take the order their positions gave, read before
+    // the load snaps them: A (at 100,20) stands above B (at 0,23), and the snap moves A to the right of B, which the
+    // order must not follow
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("older_pins.panda");
+    WorkSpace workspace;
+    workspace.scene()->addItem(inputLabelled(QStringLiteral("A"), QPointF(100, 20)));
+    workspace.scene()->addItem(inputLabelled(QStringLiteral("B"), QPointF(0, 23)));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    rewriteMetadata(path, [](QMap<QString, QVariant> &meta) {
+        meta.remove(QStringLiteral("inputOrder"));
+        meta.remove(QStringLiteral("outputOrder"));
+    });
+
+    IC ic;
+    ic.loadFile(path, dir.path());
+    QCOMPARE(ic.inputSize(), 2);
+    QVERIFY2(ic.inputPort(0)->sourceName().startsWith(QStringLiteral("A")), "pin A must stay first");
+    QVERIFY2(ic.inputPort(1)->sourceName().startsWith(QStringLiteral("B")), "pin B must stay second");
+
+    // The workspace takes the same order from the file, before the snap, and saves it under its own keys
+    const QString again = dir.filePath("older_pins_again.panda");
+    WorkSpace loaded;
+    loaded.load(path);
+    const quint64 keyA = PinOrder::liveKey(elementLabelled(loaded, QStringLiteral("A"))->outputPort(0));
+    const quint64 keyB = PinOrder::liveKey(elementLabelled(loaded, QStringLiteral("B"))->outputPort(0));
+    QCOMPARE(loaded.save(again), WorkSpace::SaveOutcome::Saved);
+    QCOMPARE(savedIdsOf(again, QStringLiteral("inputOrder")), (QVector<quint64>{keyA, keyB}));
+}
+
+void TestICUnit::testLoadSnapsEveryElementToTheGrid()
+{
+    // Every element snaps on load, the boundary elements and the others alike; A lands on (104,24) from (100,20)
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("snapped.panda");
+    WorkSpace workspace;
+    workspace.scene()->addItem(inputLabelled(QStringLiteral("A"), QPointF(100, 20)));
+    workspace.scene()->addItem(inputLabelled(QStringLiteral("B"), QPointF(0, 23)));
+    auto *gate = ElementFactory::buildElement(ElementType::And);
+    gate->setLabel(QStringLiteral("G"));
+    gate->setPos(QPointF(3, 5));
+    workspace.scene()->addItem(gate);
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    rewriteMetadata(path, [](QMap<QString, QVariant> &meta) {
+        meta.remove(QStringLiteral("inputOrder"));
+        meta.remove(QStringLiteral("outputOrder"));
+    });
+
+    WorkSpace loaded;
+    loaded.load(path);
+    QCOMPARE(elementLabelled(loaded, QStringLiteral("A"))->pos(), QPointF(104, 24));
+    QCOMPARE(elementLabelled(loaded, QStringLiteral("B"))->pos(), QPointF(0, 24));
+    const QPointF gatePos = elementLabelled(loaded, QStringLiteral("G"))->pos();
+    QVERIFY(qFuzzyIsNull(std::remainder(gatePos.x(), 8.0)));
+    QVERIFY(qFuzzyIsNull(std::remainder(gatePos.y(), 8.0)));
+}
+
+void TestICUnit::testASavedOrderGivesThePinsOrder()
+{
+    // A file's saved order decides the pins' order, even against their positions: A (at 0,20) stands first by position,
+    // and the saved order puts B first
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("saved_order.panda");
+    WorkSpace workspace;
+    auto *a = inputLabelled(QStringLiteral("A"), QPointF(0, 20));
+    auto *b = inputLabelled(QStringLiteral("B"), QPointF(100, 20));
+    workspace.scene()->addItem(a);
+    workspace.scene()->addItem(b);
+    const quint64 idA = PinOrder::liveKey(a->outputPort(0));
+    const quint64 idB = PinOrder::liveKey(b->outputPort(0));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    rewriteMetadata(path, [idA, idB](QMap<QString, QVariant> &meta) {
+        meta[QStringLiteral("inputOrder")] = QStringList{QString::number(idB), QString::number(idA)};
+    });
+
+    IC ic;
+    ic.loadFile(path, dir.path());
+    QCOMPARE(ic.inputSize(), 2);
+    QVERIFY2(ic.inputPort(0)->sourceName().startsWith(QStringLiteral("B")), "the saved order puts B first");
+}
+
+void TestICUnit::testASavedOrderIsKeptOnSave()
+{
+    // A pin keeps its place when its circuit is saved again, though its position alone would put it elsewhere
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("kept_order.panda");
+    const QString again = dir.filePath("kept_order_again.panda");
+    WorkSpace workspace;
+    auto *a = inputLabelled(QStringLiteral("A"), QPointF(0, 20));
+    auto *b = inputLabelled(QStringLiteral("B"), QPointF(100, 20));
+    workspace.scene()->addItem(a);
+    workspace.scene()->addItem(b);
+    const quint64 idA = PinOrder::liveKey(a->outputPort(0));
+    const quint64 idB = PinOrder::liveKey(b->outputPort(0));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    rewriteMetadata(path, [idA, idB](QMap<QString, QVariant> &meta) {
+        meta[QStringLiteral("inputOrder")] = QStringList{QString::number(idB), QString::number(idA)};
+    });
+
+    WorkSpace loaded;
+    loaded.load(path);
+    QCOMPARE(loaded.save(again), WorkSpace::SaveOutcome::Saved);
+    QCOMPARE(savedIdsOf(again, QStringLiteral("inputOrder")), (QVector<quint64>{idB, idA}));
+}
+
+void TestICUnit::testAMovedPinIsPlacedByItsPositionAtSave()
+{
+    // A pin moved since the load is placed by its new position at save; the pin that stayed keeps its place
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("moved_pin.panda");
+    const QString moved = dir.filePath("moved_pin_saved.panda");
+    WorkSpace workspace;
+    auto *a = inputLabelled(QStringLiteral("A"), QPointF(0, 20));
+    auto *b = inputLabelled(QStringLiteral("B"), QPointF(0, 40));
+    workspace.scene()->addItem(a);
+    workspace.scene()->addItem(b);
+    const quint64 idA = PinOrder::liveKey(a->outputPort(0));
+    const quint64 idB = PinOrder::liveKey(b->outputPort(0));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace loaded;
+    loaded.load(path);
+    elementLabelled(loaded, QStringLiteral("A"))->setPos(QPointF(0, 80));
+    QCOMPARE(loaded.save(moved), WorkSpace::SaveOutcome::Saved);
+    QCOMPARE(savedIdsOf(moved, QStringLiteral("inputOrder")), (QVector<quint64>{idB, idA}));
+}
+
+void TestICUnit::testANewPinIsInsertedByPosition()
+{
+    // A pin added since the load takes its place by position among the others: C (at y 32) goes between A (24) and B (40)
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("new_pin.panda");
+    const QString added = dir.filePath("new_pin_saved.panda");
+    WorkSpace workspace;
+    auto *a = inputLabelled(QStringLiteral("A"), QPointF(0, 24));
+    auto *b = inputLabelled(QStringLiteral("B"), QPointF(0, 40));
+    workspace.scene()->addItem(a);
+    workspace.scene()->addItem(b);
+    const quint64 idA = PinOrder::liveKey(a->outputPort(0));
+    const quint64 idB = PinOrder::liveKey(b->outputPort(0));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace loaded;
+    loaded.load(path);
+    auto *c = inputLabelled(QStringLiteral("C"), QPointF(0, 32));
+    loaded.scene()->addItem(c);
+    const quint64 idC = PinOrder::liveKey(c->outputPort(0));
+    QCOMPARE(loaded.save(added), WorkSpace::SaveOutcome::Saved);
+    QCOMPARE(savedIdsOf(added, QStringLiteral("inputOrder")), (QVector<quint64>{idA, idC, idB}));
 }
 
 void TestICUnit::testLoadGrowsLinearlyInICs()

@@ -9,7 +9,6 @@
 #include <tuple>
 #include <utility>
 
-#include <QDir>
 #include <QFile>
 #include <QImage>
 #include <QTemporaryDir>
@@ -82,25 +81,6 @@ private:
 bool offGrid(const QPointF &pos)
 {
     return Element::snapToGrid(pos) != pos;
-}
-
-/**
- * \brief Returns the first circuit, in name order, of those an older release (2.3) saved, that holds an element off the
- * grid which a morph can change, with that element's id; an empty path if none does.
- */
-std::pair<QString, int> offGridCase()
-{
-    const QDir dir(TestUtils::backwardCompatibilityDir() + "v2.3");
-    for (const QString &name : dir.entryList({"*.panda"}, QDir::Files, QDir::Name)) {
-        WorkSpace workspace;
-        TestUtils::loadCircuit(workspace, dir.filePath(name));
-        for (const auto *element : TestUtils::elementsById(workspace.scene())) {
-            if (offGrid(element->pos()) && (Enums::nextElmType(element->elementType()) != ElementType::Unknown)) {
-                return {dir.filePath(name), element->id()};
-            }
-        }
-    }
-    return {};
 }
 
 } // namespace TestCommandsHelpers
@@ -1472,16 +1452,16 @@ void TestCommands::testOffGridElementRestoresExactly_data()
 
 void TestCommands::testOffGridElementRestoresExactly()
 {
-    // An element an older release saved off the grid: a command that decides its place puts it on the grid, its undo
+    // An element set off the grid: a command that decides its place puts it on the grid, its undo
     // puts it back exactly where it was, and its redo gives the same place again; a morph keeps the exact place.
     QFETCH(QString, command);
     using namespace TestCommandsHelpers;
-    const auto [path, id] = offGridCase();
-    QVERIFY2(!path.isEmpty(), "no circuit of release 2.3 holds a morphable element off the grid");
-
     WorkSpace workspace;
-    TestUtils::loadCircuit(workspace, path);
     Scene *scene = workspace.scene();
+    auto *placed = ElementFactory::buildElement(ElementType::And);
+    scene->addItem(placed);
+    const int id = placed->id();
+    placed->setPos(279.333, 311.5); // set exactly, which leaves it off the grid
     const auto element = [scene, elementId = id] { return dynamic_cast<Element *>(scene->itemById(elementId)); };
     QVERIFY(element());
     const QPointF start = element()->pos();

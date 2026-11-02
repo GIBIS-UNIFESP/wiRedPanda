@@ -44,6 +44,12 @@ private slots:
     void testSavedHeaderNamesAreThePinsSourceNames();
     void testPinNamesCarryNoGenericProperties();
     void testEmbeddedICPinNamesAreDerivedToo();
+    void testAnOlderFileKeepsItsPinsOrderByPosition();
+    void testLoadSnapsEveryElementToTheGrid();
+    void testASavedOrderGivesThePinsOrder();
+    void testASavedOrderIsKeptOnSave();
+    void testAMovedPinIsPlacedByItsPositionAtSave();
+    void testANewPinIsInsertedByPosition();
     void testLoadGrowsLinearlyInICs();
 
     // ICPreviewPopup::executeShow() and showForIC()'s remaining branches

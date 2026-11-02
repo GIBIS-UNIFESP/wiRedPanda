@@ -179,6 +179,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewCache.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/PinOrder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/RecentFiles.cpp
@@ -261,6 +262,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewCache.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/PinOrder.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseStep.h

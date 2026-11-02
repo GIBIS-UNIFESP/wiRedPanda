@@ -16,6 +16,7 @@
 #include <QSet>
 
 #include "App/Element/Element.h"
+#include "App/Element/PinOrder.h"
 #include "App/IO/SerializationContext.h"
 
 class Connection;
@@ -123,7 +124,7 @@ public:
     };
 
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
-    static PortMetadata buildPortMetadata(const QVector<Element *> &elements);
+    static PortMetadata buildPortMetadata(const QVector<PinRef> &inputs, const QVector<PinRef> &outputs);
 
     // --- Visual ---
 

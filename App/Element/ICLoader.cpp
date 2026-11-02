@@ -20,6 +20,7 @@
 #include "App/Element/ICDefinition.h"
 #include "App/Element/ICFileCache.h"
 #include "App/Element/ICRenderer.h"
+#include "App/Element/PinOrder.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
@@ -29,36 +30,6 @@
 #include "App/Wiring/Port.h"
 
 namespace {
-
-bool comparePorts(Port *port1, Port *port2)
-{
-    auto *elem1 = port1->element();
-    auto *elem2 = port2->element();
-    if (!elem1 || !elem2) {
-        return false; // LCOV_EXCL_LINE — ElementPorts::addPort() unconditionally calls setElement() right after constructing a port, so every port reachable here already has a non-null owner.
-    }
-
-    // Primary sort: top-to-bottom by parent element Y, then left-to-right by X.
-    // This gives an intuitive pin order that matches the visual layout in the sub-circuit.
-    QPointF p1 = elem1->pos();
-    QPointF p2 = elem2->pos();
-
-    if (p1 != p2) {
-        return (p1.y() < p2.y()) || (qFuzzyCompare(p1.y(), p2.y()) && (p1.x() < p2.x()));
-    }
-
-    // Secondary sort: when two ports share the same parent element position, sort by
-    // the port's own local coordinates (left-to-right, top-to-bottom)
-    p1 = port1->pos();
-    p2 = port2->pos();
-
-    return (p1.x() < p2.x()) || (qFuzzyCompare(p1.x(), p2.x()) && (p1.y() < p2.y()));
-}
-
-void sortPorts(QVector<Port *> &ports)
-{
-    std::stable_sort(ports.begin(), ports.end(), comparePorts);
-}
 
 // A boundary element's label, or its type's name where it has none: the name its pins go by, and its proxy node's label
 QString boundaryLabel(const Element *elm)
@@ -83,7 +54,7 @@ PinName pinNameOf(Port *port)
 {
     auto *elm = port->element();
     if (!elm) {
-        return {}; // LCOV_EXCL_LINE — same invariant as comparePorts() above: every port has a non-null owner from construction onward.
+        return {}; // LCOV_EXCL_LINE — same invariant as PinOrder::comparePorts(): every port has a non-null owner from construction onward.
     }
     const QString label = boundaryLabel(elm);
     const auto portName = port->nameFunction();
@@ -305,7 +276,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     // IC's previous internal graph would remain intact.
     ic.resetInternalState();
     ic.m_definition = definition;
-    processLoadedItems(ic, items);
+    processLoadedItems(ic, items, definition->metadata(), portMap);
     ic.m_previewContextDir = fileInfo.absolutePath();
 
     if (ic.label().isEmpty()) {
@@ -327,7 +298,10 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
             }
         }
     }
-    const auto portMeta = buildPortMetadata(elements);
+    // A migrated file holds no order: its pins take the order their positions give, before any snap, as they did before
+    const auto inputs = PinOrder::ordered(PinOrder::pinsOf(elements, true), {});
+    const auto outputs = PinOrder::ordered(PinOrder::pinsOf(elements, false), {});
+    const auto portMeta = buildPortMetadata(inputs, outputs);
 
     QMap<QString, QVariant> migrationMeta;
     migrationMeta["inputCount"] = portMeta.inputCount;
@@ -357,8 +331,23 @@ void ICLoader::migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem 
     }
 }
 
-void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
+void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items, const QMap<QString, QVariant> &metadata,
+                                  const QHash<quint64, Port *> &portMap)
 {
+    QVector<Element *> elements;
+    for (auto *item : std::as_const(items)) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
+            elements.append(elm);
+        }
+    }
+    // The pins' order is taken before any element is snapped: a snap can move two close pins past one another
+    const auto inputs = PinOrder::loadedOrder(elements, true, metadata, QStringLiteral("inputOrder"), portMap);
+    const auto outputs = PinOrder::loadedOrder(elements, false, metadata, QStringLiteral("outputOrder"), portMap);
+    Element::snapLoaded(items);
+
+    // Each boundary port's proxy Node, keyed by the boundary port it replaces, so the pins can take the order above
+    QHash<const Port *, Port *> nodes;
+
     // Drain items one at a time: as ownership of each transfers (to
     // m_internalConnections/m_internalElements) or the item is deleted
     // (loadBoundaryElement()'s original Input/Output element), remove it from
@@ -381,16 +370,21 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
 
         // Input/Output elements become the IC's external ports; everything else is internal logic
         switch (elm->elementGroup()) {
-        case ElementGroup::Input:  loadBoundaryElement(ic, elm, true);  break;
-        case ElementGroup::Output: loadBoundaryElement(ic, elm, false); break;
+        case ElementGroup::Input:  loadBoundaryElement(ic, elm, true, nodes);  break;
+        case ElementGroup::Output: loadBoundaryElement(ic, elm, false, nodes); break;
         default:                   ic.m_internalElements.append(elm);  break;
         }
     }
 
-    // --- Build sorted, labelled port lists ---
-    // Sort top-to-bottom by Y position so port order on the IC body matches visual layout
-    sortPorts(ic.m_internalInputs);
-    sortPorts(ic.m_internalOutputs);
+    // --- Build the port lists in the pins' order, each pin its proxy Node ---
+    ic.m_internalInputs.clear();
+    for (const auto &pin : inputs) {
+        ic.m_internalInputs.append(nodes.value(pin.port));
+    }
+    ic.m_internalOutputs.clear();
+    for (const auto &pin : outputs) {
+        ic.m_internalOutputs.append(nodes.value(pin.port));
+    }
 
     loadBoundaryPorts(ic, true, pinNamesOf(ic.m_internalInputs));
     loadBoundaryPorts(ic, false, pinNamesOf(ic.m_internalOutputs));
@@ -450,7 +444,7 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     // Parsing succeeded — now clear old state and apply
     ic.resetInternalState();
     ic.m_definition = definition;
-    processLoadedItems(ic, items);
+    processLoadedItems(ic, items, definition->metadata(), portMap);
     ic.m_previewContextDir = contextDir;
 }
 
@@ -522,6 +516,7 @@ QPixmap ICLoader::renderPreview(const ICDefinition &definition, const QString &c
         QDataStream elementsStream(&records, QIODevice::ReadOnly);
         elementsStream.setVersion(QDataStream::Qt_5_12);
         items = Serialization::deserialize(elementsStream, context);
+        Element::snapLoaded(items);
     } catch (const Pandaception &) {
         // The circuit no longer loads (a file it names is gone or broken): no preview
         return {};
@@ -583,7 +578,7 @@ QByteArray ICLoader::fileHash(const QByteArray &bytes)
     return QCryptographicHash::hash(bytes, QCryptographicHash::Sha256);
 }
 
-void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
+void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput, QHash<const Port *, Port *> &nodes)
 {
     // Each port of a boundary element (input or output) becomes one external pin on the IC.
     // A proxy Node element is inserted as a bridge between the IC's external port and the
@@ -607,7 +602,7 @@ void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
             nodeElm->setParam(ParamId::Wired, elm->elementType() == ElementType::Clock);
             nodeInput->setDefaultStatus(srcPort->status());
             nodeInput->setStatus(srcPort->status());
-            ic.m_internalInputs.append(nodeInput);
+            nodes.insert(srcPort, nodeInput);
 
             // Re-route connections from original output to proxy Node's output
             const auto conns = srcPort->connections();
@@ -620,7 +615,7 @@ void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
             if (portCount > 1 && !srcPort->sourceName().isEmpty()) {
                 nodeOutput->setNameSource(srcPort->nameFunction(), srcPort->sourceName());
             }
-            ic.m_internalOutputs.append(nodeOutput);
+            nodes.insert(srcPort, nodeOutput);
 
             // Re-route connections from original input to proxy Node's input
             for (auto *conn : srcPort->connections()) {
@@ -689,30 +684,23 @@ void ICLoader::loadBoundaryPorts(IC &ic, const bool isInput, const QVector<PinNa
 
 IC::PortMetadata ICLoader::buildPortMetadata(const QVector<Element *> &elements)
 {
+    // Positional, as a file without an order gives them
+    return buildPortMetadata(PinOrder::ordered(PinOrder::pinsOf(elements, true), {}),
+                             PinOrder::ordered(PinOrder::pinsOf(elements, false), {}));
+}
+
+IC::PortMetadata ICLoader::buildPortMetadata(const QVector<PinRef> &inputs, const QVector<PinRef> &outputs)
+{
     IC::PortMetadata meta;
-    QVector<Port *> inputPorts, outputPorts;
-
-    for (auto *elm : elements) {
-        if (elm->elementGroup() == ElementGroup::Input) {
-            for (auto *port : elm->outputs()) { inputPorts.append(port); }
-        } else if (elm->elementGroup() == ElementGroup::Output) {
-            for (auto *port : elm->inputs()) { outputPorts.append(port); }
-        }
-    }
-
-    sortPorts(inputPorts);
-    sortPorts(outputPorts);
-
-    meta.inputCount = static_cast<int>(inputPorts.size());
-    meta.outputCount = static_cast<int>(outputPorts.size());
+    meta.inputCount = static_cast<int>(inputs.size());
+    meta.outputCount = static_cast<int>(outputs.size());
 
     // The header names the pins in the source language, so a file holds no name in the interface language
-    for (auto *port : inputPorts) {
-        meta.inputLabels.append(boundarySourceName(port));
+    for (const auto &pin : inputs) {
+        meta.inputLabels.append(boundarySourceName(pin.port));
     }
-    for (auto *port : outputPorts) {
-        meta.outputLabels.append(boundarySourceName(port));
+    for (const auto &pin : outputs) {
+        meta.outputLabels.append(boundarySourceName(pin.port));
     }
-
     return meta;
 }

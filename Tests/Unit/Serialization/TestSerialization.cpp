@@ -1116,8 +1116,9 @@ void TestSerialization::testNegativePositionValues()
     loadFromMemory(workspace2, data);
 
     auto *loaded = workspace2.scene()->elements().first();
+    // A load snaps each element to the grid's half-step of 8, so -500 rounds away from zero to -504
     QCOMPARE(loaded->x(), -1000.0);
-    QCOMPARE(loaded->y(), -500.0);
+    QCOMPARE(loaded->y(), -504.0);
     QCOMPARE(loaded->label(), QString("NegativePos"));
 }
 
@@ -1399,14 +1400,14 @@ void TestSerialization::testStreamPositionValidation()
     loadFromMemory(workspace2, data);
     QCOMPARE(workspace2.scene()->elements().size(), 2);
 
-    // An element far from the origin loads where the file puts it
+    // An element far from the origin loads on the grid line nearest where the file puts it: a load snaps every element
     const QByteArray far = currentFormatFile([](QDataStream &stream) {
         writeElement(stream, ElementType::And, {{"pos", QPointF(999999, 999999)}, {"id", 1}}, 2, 1);
     });
     WorkSpace workspace3;
     loadFromMemory(workspace3, far);
     QCOMPARE(workspace3.scene()->elements().size(), 1);
-    QCOMPARE(workspace3.scene()->elements().first()->pos(), QPointF(999999, 999999));
+    QCOMPARE(workspace3.scene()->elements().first()->pos(), QPointF(1e6, 1e6));
 }
 
 void TestSerialization::testConnectionSurvivesSaveLoadRoundTrip()

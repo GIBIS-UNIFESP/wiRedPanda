@@ -247,7 +247,7 @@ snapping two close rows of pins to one row can swap them: measured, snapping on 
 off-grid files among the 410 loaded, while a control that collapses every row reorders 82 of 82, so the order is
 safe today only by the files' luck.
 
-Every file saves the order of its pins, inputs and outputs, as a list of the boundary elements' ids, an extension of
+Every file saves the order of its pins, inputs and outputs, as a list of the pins' port serial ids, an extension of
 the current format (P4.D4); a file without it gets the order from its positions as loaded, before any snap, exactly as
 `master` computes it. Then every element is snapped on load, in every file. The two land together, so no load ever
 snaps an element whose position still decides an order. Adding a pin puts it in the order by its position among the

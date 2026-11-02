@@ -383,6 +383,9 @@ public:
      */
     static QPointF snapToGrid(const QPointF &pos, int step = Constants::gridSize / 2);
 
+    /// Snaps each element among \a items to the grid, as a load does to every element of a file.
+    static void snapLoaded(const QList<QGraphicsItem *> &items);
+
     /// Returns the centre the element turns about in local coordinates, as its body was last measured (BodyShape).
     QPointF pixmapCenter() const { return m_body.centre; }
 

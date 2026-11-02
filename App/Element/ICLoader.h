@@ -21,6 +21,7 @@
 #include <QVersionNumber>
 
 #include "App/Element/IC.h"
+#include "App/Element/PinOrder.h"
 
 class Element;
 class ICDefinition;
@@ -69,6 +70,7 @@ public:
 
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
     static IC::PortMetadata buildPortMetadata(const QVector<Element *> &elements);
+    static IC::PortMetadata buildPortMetadata(const QVector<PinRef> &inputs, const QVector<PinRef> &outputs);
 
     /// IC files by absolute path, with their bytes.
     using Files = QMap<QString, QByteArray>;
@@ -109,8 +111,9 @@ private:
     /// deleting boundary Input/Output elements after their ports are proxied. Removes
     /// each pointer from \a items as ownership transfers so the caller's qScopeGuard
     /// only deletes still-owned items on throw (no double-free).
-    static void processLoadedItems(IC &ic, QList<QGraphicsItem *> &items);
-    static void loadBoundaryElement(IC &ic, Element *elm, bool isInput);
+    static void processLoadedItems(IC &ic, QList<QGraphicsItem *> &items, const QMap<QString, QVariant> &metadata,
+                                   const QHash<quint64, Port *> &portMap);
+    static void loadBoundaryElement(IC &ic, Element *elm, bool isInput, QHash<const Port *, Port *> &nodes);
     /// Sizes ic's pins on one side to its boundary ports and names each from \a names.
     static void loadBoundaryPorts(IC &ic, bool isInput, const QVector<PinName> &names);
 };

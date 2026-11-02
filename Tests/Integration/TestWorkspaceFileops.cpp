@@ -265,7 +265,7 @@ void TestWorkspaceFileops::testSavePreservesElementData()
             }
             if (elem->label() == "OUTPUT") {
                 foundOutput = true;
-                QCOMPARE(elem->pos(), QPointF(100, 0));
+                QCOMPARE(elem->pos(), QPointF(104, 0)); // snapped to the grid on load
             }
         }
 

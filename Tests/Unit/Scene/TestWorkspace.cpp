@@ -662,6 +662,27 @@ void TestWorkspaceUnit::testAutosaveRemovesPreviousFileWhenProjectDirChanges()
     QFile::remove(workspace.m_autosaveFileName);
 }
 
+void TestWorkspaceUnit::testOrderMapHoldsOnlyThePinsPresent()
+{
+    // A pin deleted takes its entry in the pin order map with it, so after a save the map holds the pins that remain
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *first = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *second = ElementFactory::buildElement(ElementType::InputSwitch);
+    first->setPos(0, 0);
+    second->setPos(0, 100);
+    builder.add(first, second);
+    QCOMPARE(workspace.save(dir.filePath("pins.panda")), WorkSpace::SaveOutcome::Saved);
+    QCOMPARE(workspace.m_orderedAt.size(), qsizetype(2));
+
+    workspace.scene()->removeItem(second);
+    delete second;
+    QCOMPARE(workspace.save(dir.filePath("pins_after.panda")), WorkSpace::SaveOutcome::Saved);
+    QCOMPARE(workspace.m_orderedAt.size(), qsizetype(1));
+}
+
 void TestWorkspaceUnit::testAutosaveThrowsWhenFileCannotBeOpened()
 {
     QTemporaryDir dir;

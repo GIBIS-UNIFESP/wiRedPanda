@@ -10,11 +10,14 @@
 #include <functional>
 
 #include <QFileInfo>
+#include <QHash>
 #include <QPointer>
+#include <QPointF>
 #include <QTimer>
 #include <QUndoStack>
 
 #include "App/Core/Settings.h"
+#include "App/Element/PinOrder.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
 
@@ -206,6 +209,25 @@ private:
     GraphicsView m_view;
     Scene m_scene;
     QFileInfo m_fileInfo;
+    /// The pins' order the circuit holds: each pin's key (its port's serial id in this circuit), of its inputs and of its
+    /// outputs, as the file gave them or as they were placed since (pinsInOrder()), and where each pin stood when its
+    /// order was given.
+    QVector<quint64> m_inputOrder;
+    QVector<quint64> m_outputOrder;
+    QHash<quint64, QPointF> m_orderedAt;
+
+    /// Returns the pins on one side in order: those whose element stands where it stood when its order was given keep
+    /// their place, and the others take theirs by position. Records the order, and each element's position.
+    QVector<PinRef> pinsInOrder(bool inputs);
+
+    /// Takes the order of the pins that \a items give, from the \a metadata a file holds. Runs before any element is
+    /// snapped, since a snap can move two close pins past one another.
+    void takeLoadedOrder(const QList<QGraphicsItem *> &items, const QMap<QString, QVariant> &metadata,
+                         const QHash<quint64, Port *> &portMap);
+
+    /// Records where the pins of \a items stand, once the load has snapped them.
+    void recordPlacedPins(const QList<QGraphicsItem *> &items);
+
     QString m_dolphinFileName;
     QString m_autosaveFileName;
     QTimer m_autosaveDebounceTimer;

@@ -434,6 +434,15 @@ QPointF Element::snapToGrid(const QPointF &pos, const int step)
     return {std::round(pos.x() / step) * step + 0.0, std::round(pos.y() / step) * step + 0.0};
 }
 
+void Element::snapLoaded(const QList<QGraphicsItem *> &items)
+{
+    for (auto *item : items) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
+            elm->setPos(snapToGrid(elm->pos()));
+        }
+    }
+}
+
 void Element::setRotation(const qreal angle)
 {
     // The ports a non-rotatable element turns, and the oriented picture of a rotatable one, are part of the turn.

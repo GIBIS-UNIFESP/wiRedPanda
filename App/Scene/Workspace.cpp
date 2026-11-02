@@ -460,15 +460,18 @@ void WorkSpace::save(QDataStream &stream)
         metadata["dolphinFileName"] = m_dolphinFileName;
     }
 
-    // Extract port metadata from Input/Output elements in the scene,
-    // sorted by Y/X position to match IC runtime port order.
-    const auto portMeta = IC::buildPortMetadata(m_scene.elements());
+    // The pins of the Input/Output elements, in the order the circuit holds them: an IC made of it keeps that order
+    const auto inputs = pinsInOrder(true);
+    const auto outputs = pinsInOrder(false);
+    const auto portMeta = IC::buildPortMetadata(inputs, outputs);
     if (portMeta.inputCount > 0 || portMeta.outputCount > 0) {
         metadata["inputCount"] = portMeta.inputCount;
         metadata["outputCount"] = portMeta.outputCount;
         metadata["inputLabels"] = portMeta.inputLabels;
         metadata["outputLabels"] = portMeta.outputLabels;
     }
+    metadata["inputOrder"] = PinOrder::toStringList(PinOrder::keysOf(inputs));
+    metadata["outputOrder"] = PinOrder::toStringList(PinOrder::keysOf(outputs));
 
     // The document keeps a copy of each file-backed IC's definition, with the hash of its file, in a metadata entry of its
     // own; on open, the copy stands for the file (ICRegistry::reloadChangedFileCopies())
@@ -632,6 +635,13 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
             m_lastId = (std::max)(m_lastId, ge->id());
         }
     }
+
+    // The pins' order is taken once the elements are in the circuit, which gives them their keys, and before any snap
+    takeLoadedOrder(items, metadata, portMap);
+
+    // Every element snaps to the grid as the file loads; the pins are recorded where they now stand
+    Element::snapLoaded(items);
+    recordPlacedPins(items);
 
     m_scene.setLastId(m_lastId);
 
@@ -858,6 +868,9 @@ void WorkSpace::loadFromBlob(const QByteArray &blob, WorkSpace *parent, int icEl
         }
     }
 
+    takeLoadedOrder(items, preamble.metadata, portMap);
+    Element::snapLoaded(items);
+    recordPlacedPins(items);
     m_scene.setLastId(m_lastId);
     // An empty circuit has no bounds: a null rect would hand the scene rect back to Qt, which grows it over every item
     if (const auto bounds = m_scene.circuitBoundingRect(); !bounds.isNull()) {
@@ -986,4 +999,67 @@ void WorkSpace::setCurrentFile(const QString &filePath)
 void WorkSpace::setExerciseOverlay(ExerciseOverlay *overlay)
 {
     m_exerciseOverlay = overlay;
+}
+
+QVector<PinRef> WorkSpace::pinsInOrder(const bool inputs)
+{
+    const auto pins = PinOrder::pinsOf(m_scene.elements(), inputs);
+    QHash<quint64, QPointF> now;
+    for (const auto &pin : pins) {
+        now.insert(pin.key, pin.elementPos);
+    }
+
+    // A pin whose element stands elsewhere than when its order was given takes its place by position again, as a new
+    // pin does
+    QVector<quint64> &given = inputs ? m_inputOrder : m_outputOrder;
+    QVector<quint64> kept;
+    for (const quint64 key : std::as_const(given)) {
+        const auto position = now.constFind(key);
+        if (position != now.cend() && m_orderedAt.contains(key) && m_orderedAt.value(key) == position.value()) {
+            kept.append(key);
+        }
+    }
+
+    const auto ordered = PinOrder::ordered(pins, kept);
+    // A pin that is gone takes its entry in the map with it, so the map holds the pins present
+    for (const quint64 key : std::as_const(given)) {
+        if (!now.contains(key)) {
+            m_orderedAt.remove(key);
+        }
+    }
+    given = PinOrder::keysOf(ordered);
+    for (const auto &pin : pins) {
+        m_orderedAt.insert(pin.key, pin.elementPos);
+    }
+    return ordered;
+}
+
+void WorkSpace::takeLoadedOrder(const QList<QGraphicsItem *> &items, const QMap<QString, QVariant> &metadata,
+                                const QHash<quint64, Port *> &portMap)
+{
+    QVector<Element *> elements;
+    for (auto *item : items) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
+            elements.append(elm);
+        }
+    }
+    m_inputOrder = PinOrder::keysOf(
+        PinOrder::loadedOrder(elements, true, metadata, QStringLiteral("inputOrder"), portMap));
+    m_outputOrder = PinOrder::keysOf(
+        PinOrder::loadedOrder(elements, false, metadata, QStringLiteral("outputOrder"), portMap));
+}
+
+void WorkSpace::recordPlacedPins(const QList<QGraphicsItem *> &items)
+{
+    QVector<Element *> elements;
+    for (auto *item : items) {
+        if (auto *elm = qgraphicsitem_cast<Element *>(item)) {
+            elements.append(elm);
+        }
+    }
+    for (const bool inputs : {true, false}) {
+        for (const auto &pin : PinOrder::pinsOf(elements, inputs)) {
+            m_orderedAt.insert(pin.key, pin.elementPos);
+        }
+    }
 }

@@ -372,9 +372,9 @@ void IC::loadFromDrop(const QString &fileName, const QString &contextDir)
     loadFile(fileName, contextDir);
 }
 
-IC::PortMetadata IC::buildPortMetadata(const QVector<Element *> &elements)
+IC::PortMetadata IC::buildPortMetadata(const QVector<PinRef> &inputs, const QVector<PinRef> &outputs)
 {
-    return ICLoader::buildPortMetadata(elements);
+    return ICLoader::buildPortMetadata(inputs, outputs);
 }
 
 // --- Hover preview ---

@@ -46,6 +46,7 @@ private slots:
     /// fallback above; a dev checkout's is writable, so read-only-ness is not the test.
     void testAutosaveFallsBackToAppDataForBundledExamplesDir();
     void testAutosaveRemovesPreviousFileWhenProjectDirChanges();
+    void testOrderMapHoldsOnlyThePinsPresent();
     void testAutosaveThrowsWhenFileCannotBeOpened();
     void testAutosaveThrowsWhenCommitFails();
     void testAutosaveTimerReportsAFailureOnceAndTriesAgain();
