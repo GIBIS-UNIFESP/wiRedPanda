@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QCryptographicHash>
 #include <QDataStream>
 #include <QFile>
 #include <QHash>
@@ -557,6 +558,49 @@ void ICLoader::loadFromBlob(IC &ic, const QByteArray &blob, const QString &conte
     ic.m_file.clear(); // switching to blob-backed, no file association
 
     qCDebug(zero) << "Finished loading IC from blob.";
+}
+
+void ICLoader::loadFileCopy(IC &ic, const QString &fileName, const QByteArray &bytes, const QString &contextDir)
+{
+    const QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
+    deserializeAndLoad(ic, bytes, fileInfo.absolutePath());
+    recordICFileRead(fileInfo.absoluteFilePath(), bytes);
+    ic.m_blobName.clear();
+    ic.m_file = fileInfo.absoluteFilePath();
+    if (ic.label().isEmpty()) {
+        ic.setLabel(fileInfo.baseName().toUpper());
+    }
+}
+
+QByteArray ICLoader::packFileCopy(const QByteArray &hash, const QByteArray &bytes)
+{
+    QMap<QString, QByteArray> parts;
+    parts.insert(QStringLiteral("hash"), hash);
+    parts.insert(QStringLiteral("bytes"), bytes);
+    QByteArray packed;
+    QDataStream stream(&packed, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
+    stream << parts;
+    return packed;
+}
+
+bool ICLoader::unpackFileCopy(const QByteArray &packed, QByteArray &hash, QByteArray &bytes)
+{
+    QByteArray data(packed);
+    QDataStream stream(&data, QIODevice::ReadOnly);
+    stream.setVersion(QDataStream::Qt_5_12);
+    const QMap<QString, QByteArray> parts = Serialization::readBoundedBlobMap(stream);
+    if (!parts.contains(QStringLiteral("hash")) || !parts.contains(QStringLiteral("bytes"))) {
+        return false;
+    }
+    hash = parts.value(QStringLiteral("hash"));
+    bytes = parts.value(QStringLiteral("bytes"));
+    return true;
+}
+
+QByteArray ICLoader::fileHash(const QByteArray &bytes)
+{
+    return QCryptographicHash::hash(bytes, QCryptographicHash::Sha256);
 }
 
 void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)

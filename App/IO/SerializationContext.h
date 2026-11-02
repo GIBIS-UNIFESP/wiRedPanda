@@ -79,6 +79,9 @@ struct SerializationContext {
     /// A file read inside a snapshot's restore (an IC's circuit) or for a preview: a picture or a sound that does not
     /// load shows or plays its default, unreported, as in the snapshot itself (Serialization::deserialize()).
     bool fallBackOnFailedFiles = false;
+    /// The document's copies of its file-backed ICs' definitions, keyed by each file's name as the document references it; IC::loadState() loads
+    /// one in place of its file. Null where no document is being opened.
+    const QMap<QString, QByteArray> *fileCopies = nullptr;
 };
 
 /**

@@ -19,6 +19,8 @@
 #include "App/Core/Common.h"
 #include "App/Element/Element.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICLoader.h"
+#include "App/IO/ExternalFilePath.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -116,51 +118,74 @@ void ICRegistry::onFileChanged(const QString &filePath)
             }
         }
 
-        // Invalidate the cached definition so it's rebuilt on next access
-        invalidate(filePath);
-
-        // Re-add the watch (some OS remove it after a file change event)
-        if (!m_fileWatcher.files().contains(filePath) && QFileInfo::exists(filePath)) {
-            m_fileWatcher.addPath(filePath);
-        }
-
-        // A deleted file takes its watch with it, so its directory is watched for the file's return
-        if (!QFileInfo::exists(filePath)) {
-            m_absentFiles.insert(filePath);
-            const QString directory = QFileInfo(filePath).absolutePath();
-            if (!m_fileWatcher.directories().contains(directory)) {
-                m_fileWatcher.addPath(directory);
-            }
-        }
-
-        // Reload all IC instances referencing this file
-        const auto targets = findICsByFile(filePath);
-        if (targets.isEmpty()) {
-            emit definitionChanged(filePath);
-            return;
-        }
-
-        // Capture pre-reload state so the undo command can restore both the
-        // ICs' element data and the scene wires that touch their ports.
-        // Without this the wires get cascade-deleted by setInputSize/setOutputSize
-        // inside loadFile and Cluster D throws on the next undo lookup.
-        const auto connections = UpdateBlobCommand::captureConnections(targets);
-        const QByteArray oldData = captureSnapshot(targets);
-
-        try {
-            reloadTargetsAtomically(targets, oldData, [&](IC *ic) { ic->loadFile(filePath); });
-        } catch (...) {
-            m_scene->setCircuitUpdateRequired();
-            emit definitionChanged(filePath);
-            throw;
-        }
-        m_scene->setCircuitUpdateRequired();
-
-        auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
-        m_scene->receiveCommand(cmd);
-
-        emit definitionChanged(filePath);
+        reloadFile(filePath);
     });
+}
+
+void ICRegistry::reloadFile(const QString &filePath)
+{
+    // Invalidate the cached definition so it's rebuilt on next access
+    invalidate(filePath);
+
+    // Re-add the watch (some OS remove it after a file change event)
+    if (!m_fileWatcher.files().contains(filePath) && QFileInfo::exists(filePath)) {
+        m_fileWatcher.addPath(filePath);
+    }
+
+    // A deleted file takes its watch with it, so its directory is watched for the file's return
+    if (!QFileInfo::exists(filePath)) {
+        m_absentFiles.insert(filePath);
+        const QString directory = QFileInfo(filePath).absolutePath();
+        if (!m_fileWatcher.directories().contains(directory)) {
+            m_fileWatcher.addPath(directory);
+        }
+    }
+
+    // Reload all IC instances referencing this file
+    const auto targets = findICsByFile(filePath);
+    if (targets.isEmpty()) {
+        emit definitionChanged(filePath);
+        return;
+    }
+
+    // Capture pre-reload state so the undo command can restore both the
+    // ICs' element data and the scene wires that touch their ports.
+    // Without this the wires get cascade-deleted by setInputSize/setOutputSize
+    // inside loadFile and Cluster D throws on the next undo lookup.
+    const auto connections = UpdateBlobCommand::captureConnections(targets);
+    const QByteArray oldData = captureSnapshot(targets);
+
+    try {
+        reloadTargetsAtomically(targets, oldData, [&](IC *ic) { ic->loadFile(filePath); });
+    } catch (...) {
+        m_scene->setCircuitUpdateRequired();
+        emit definitionChanged(filePath);
+        throw;
+    }
+    m_scene->setCircuitUpdateRequired();
+
+    auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
+    m_scene->receiveCommand(cmd);
+
+    emit definitionChanged(filePath);
+}
+
+void ICRegistry::reloadChangedFileCopies(const QMap<QString, QByteArray> &copies, const QString &contextDir)
+{
+    for (auto it = copies.cbegin(); it != copies.cend(); ++it) {
+        QByteArray savedHash;
+        QByteArray savedBytes;
+        if (!ICLoader::unpackFileCopy(it.value(), savedHash, savedBytes)) {
+            continue;
+        }
+        const QString path = QFileInfo(ExternalFilePath::resolve(it.key(), contextDir)).absoluteFilePath();
+        // A file that is gone keeps its copy, and one unchanged since the save is the copy's own definition
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly) || ICLoader::fileHash(file.readAll()) == savedHash) {
+            continue;
+        }
+        reloadFile(path);
+    }
 }
 
 void ICRegistry::onDirectoryChanged(const QString &directory)

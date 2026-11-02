@@ -67,6 +67,12 @@ private slots:
     void testEmbedThenUndoRestoresTheFileBackedIC();
     void testExtractThenUndoRestoresTheEmbeddedIC();
     void testReopenAfterGrowingUndoKeepsTheRestoredDefinition();
+    void testReopenChangedFileReloadsWithAnUndo();
+    void testReopenMissingFileKeepsTheCopy();
+    void testReopenedDocumentSavesAgainByteForByte();
+    void testOpenedFileCopyStaysOutOfTheRegistry();
+    void testFileCopyIsSavedInItsOwnEntry();
+    void testCopyHashIsTheFileAsTheRegistryRead();
     void testSaveWithoutUndoReopensTheNewDefinition();
     void testReloadAndUndoWhileTheSimulationRuns();
     void testFileInAnotherDirectoryReloads();

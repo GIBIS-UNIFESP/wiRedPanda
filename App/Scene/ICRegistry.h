@@ -106,6 +106,10 @@ public:
     static void rollbackElements(const QList<Element *> &elements, const QByteArray &snapshot,
                                  Scene *scene);
 
+    /// Reloads each file-backed IC whose file a document's copy shows changed on disk, as a
+    /// change in the session does, so the undo of the reload returns to the copy. A file gone or unchanged keeps its copy.
+    void reloadChangedFileCopies(const QMap<QString, QByteArray> &copies, const QString &contextDir);
+
 signals:
     /// Emitted when an IC definition file changes on disk and its cached definition is invalidated.
     void definitionChanged(const QString &filePath);
@@ -122,6 +126,9 @@ private slots:
     void onDirectoryChanged(const QString &directory);
 
 private:
+    /// Reloads every IC instance of \a filePath from the file, after the file changed on disk; the undo of the reload
+    /// returns the instances to their definitions before it.
+    void reloadFile(const QString &filePath);
     /// Maximum recursion depth for makeBlobSelfContained()'s dependency walk. Cycle detection via
     /// its \c visited set alone doesn't bound a long, non-cyclic chain of distinct legitimate
     /// files (A embeds B embeds C embeds ..., no repeats) — mirrors ICLoader's

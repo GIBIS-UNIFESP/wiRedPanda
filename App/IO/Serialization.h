@@ -209,6 +209,13 @@ public:
     /// Serializes embedded ICs into a metadata map (sets the "embeddedICs" key).
     static void serializeBlobRegistry(const QMap<QString, QByteArray> &blobs, QMap<QString, QVariant> &metadata);
 
+    /// Returns the copies of file-backed ICs' definitions a metadata map holds (the "fileCopies" key), by file name; empty
+    /// when it holds none.
+    static QMap<QString, QByteArray> deserializeFileCopies(const QMap<QString, QVariant> &metadata);
+
+    /// Serializes the copies of file-backed ICs' definitions into a metadata map (sets the "fileCopies" key), unless empty.
+    static void serializeFileCopies(const QMap<QString, QByteArray> &copies, QMap<QString, QVariant> &metadata);
+
     // --- File Utilities ---
 
     /**

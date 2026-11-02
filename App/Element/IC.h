@@ -59,6 +59,15 @@ public:
 
     /// Loads the IC from in-memory blob bytes (full .panda file format).
     void loadFromBlob(const QByteArray &blob, const QString &contextDir);
+
+    /// Loads the IC from \a bytes, a document's copy of the definition of the file \a fileName, as loadFile() loads it.
+    void loadFileCopy(const QString &fileName, const QByteArray &bytes, const QString &contextDir);
+
+    /// Returns the file reference save() writes for this file-backed IC, written for \a purpose.
+    QString fileReference(SerializationPurpose purpose) const;
+
+    /// Returns the definition this file-backed IC holds, as its file was last read, or nothing when it holds none.
+    QByteArray definitionFileBytes() const;
     /// Lets this IC, a copy a snapshot is read into before \a live is (CommandUtils::readCopies()), keep the circuit
     /// \a live built instead of building it again from the same bytes: they load, and the copy is thrown away.
     void adoptLoadedCircuit(const IC &live);

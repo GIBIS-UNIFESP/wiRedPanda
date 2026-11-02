@@ -20,6 +20,7 @@
 #include "App/Core/Settings.h"
 #include "App/Element/Element.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICLoader.h"
 #include "App/Exercise/ExerciseOverlay.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
@@ -45,6 +46,30 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
     return error == QFileDevice::PermissionsError
         || error == QFileDevice::OpenError
         || error == QFileDevice::WriteError;
+}
+
+/// The document's copies of its file-backed ICs' definitions, keyed by each file's name as the document references it.
+/// The hash is the file's as the registry last read it, so a file changed since the read shows as changed on open.
+QMap<QString, QByteArray> fileCopiesOf(Scene &scene)
+{
+    QMap<QString, QByteArray> copies;
+    for (auto *elm : scene.elements()) {
+        if (elm->elementType() != ElementType::IC || elm->isEmbedded()) {
+            continue;
+        }
+        const auto *ic = static_cast<IC *>(elm);
+        const QByteArray definition = ic->definitionFileBytes();
+        if (ic->file().isEmpty() || definition.isEmpty()) {
+            continue;
+        }
+        const QString name = ic->fileReference(SerializationPurpose::PortableFile);
+        if (copies.contains(name)) {
+            continue;
+        }
+        const QByteArray &read = scene.icRegistry()->cachedFileBytes(ic->file());
+        copies.insert(name, ICLoader::packFileCopy(read.isEmpty() ? QByteArray() : ICLoader::fileHash(read), definition));
+    }
+    return copies;
 }
 
 } // namespace
@@ -445,7 +470,10 @@ void WorkSpace::save(QDataStream &stream)
         metadata["outputLabels"] = portMeta.outputLabels;
     }
 
+    // The document keeps a copy of each file-backed IC's definition, with the hash of its file, in a metadata entry of its
+    // own; on open, the copy stands for the file (ICRegistry::reloadChangedFileCopies())
     Serialization::serializeBlobRegistry(m_scene.icRegistry()->blobMap(), metadata);
+    Serialization::serializeFileCopies(fileCopiesOf(m_scene), metadata);
 
     // Collect unique file-backed IC filenames for copyFiles (Save As).
     QStringList fileBackedICs;
@@ -577,12 +605,13 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     }
     qCDebug(zero) << "Dolphin name: " << m_dolphinFileName;
 
-    QMap<QString, QByteArray> blobRegistry = Serialization::deserializeBlobRegistry(metadata, version);
-
-    // Populate the scene's IC registry with embedded IC blobs
+    // Populate the scene's IC registry with embedded IC blobs. The copies of file-backed ICs' definitions stay apart, for
+    // the ICs to load in place of their files.
+    const QMap<QString, QByteArray> blobRegistry = Serialization::deserializeBlobRegistry(metadata, version);
     for (auto it = blobRegistry.cbegin(); it != blobRegistry.cend(); ++it) {
         m_scene.icRegistry()->setBlob(it.key(), it.value());
     }
+    const QMap<QString, QByteArray> fileCopies = Serialization::deserializeFileCopies(metadata);
 
     QHash<quint64, Port *> portMap;
     if (!contextDir.isEmpty()) {
@@ -590,6 +619,7 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     }
     auto context = m_scene.deserializationContext(portMap, version, SerializationPurpose::PortableFile);
     context.contextDir = contextDir;
+    context.fileCopies = &fileCopies;
     const auto items = Serialization::deserialize(payloadStream, context);
     qCDebug(zero) << "Finished loading items.";
 
@@ -604,6 +634,9 @@ void WorkSpace::load(QDataStream &stream, const QVersionNumber &version, const Q
     }
 
     m_scene.setLastId(m_lastId);
+
+    // A file changed since the save reloads now, as a change in the session does: the undo of that reload returns to the copy
+    m_scene.icRegistry()->reloadChangedFileCopies(fileCopies, contextDir);
 
     // An empty circuit has no bounds: a null rect would hand the scene rect back to Qt, which grows it over every item
     if (const auto bounds = m_scene.circuitBoundingRect(); !bounds.isNull()) {

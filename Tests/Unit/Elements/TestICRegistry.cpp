@@ -191,8 +191,8 @@ void TestICRegistry::testICFileWatcher()
 void TestICRegistry::testReloadUndoRestoresTheInputAndItsWire()
 {
     // An IC from a file, wired to its second input. The file changes so the input goes, and the reload cuts the wire.
-    // The undo brings both back in the session (checked here). Saved and reopened, the file's new definition comes back
-    // instead: the reopen check below is an expected failure until a document keeps the definition it was saved with.
+    // The undo brings both back in the session (checked here). Saved and reopened, the document keeps the restored
+    // definition, so the file's new one does not come back (the reopen check below).
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("two.panda");
@@ -228,7 +228,7 @@ void TestICRegistry::testReloadUndoRestoresTheInputAndItsWire()
     QCOMPARE(source->outputPort(0)->connections().size(), 1);
 
     // The undone document saved and reopened: the IC is file-backed, so the file's new definition (one input) comes
-    // back with no undo step. Expected to fail until a document keeps the definition it was saved with.
+    // back with no undo step, unless the document keeps the definition it restored. It does, as a copy with the file's hash.
     const QString savedPath = dir.filePath("undone.panda");
     QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
     WorkSpace reopened;
@@ -240,7 +240,6 @@ void TestICRegistry::testReloadUndoRestoresTheInputAndItsWire()
         }
     }
     QVERIFY(reopenedIC);
-    QEXPECT_FAIL("", "a reopened document brings the file's new definition back", Continue);
     QCOMPARE(reopenedIC->inputSize(), 2);
 }
 
@@ -1302,7 +1301,7 @@ void TestICRegistry::testExtractThenUndoRestoresTheEmbeddedIC()
 void TestICRegistry::testReopenAfterGrowingUndoKeepsTheRestoredDefinition()
 {
     // A growing reload, undone, then saved and reopened: the document keeps the restored definition (one input), so
-    // the file's new one does not come back. Expected to fail until the reopen keeps the restored definition.
+    // the file's new one does not come back.
     QTemporaryDir dir;
     QVERIFY(dir.isValid());
     const QString path = dir.filePath("grow_reopen.panda");
@@ -1330,9 +1329,190 @@ void TestICRegistry::testReopenAfterGrowingUndoKeepsTheRestoredDefinition()
         }
     }
     QVERIFY(reopenedIC);
-    QEXPECT_FAIL("", "a reopened document brings the file's new definition back", Continue);
     QCOMPARE(reopenedIC->inputSize(), 1);
     Q_UNUSED(ic)
+}
+
+void TestICRegistry::testReopenChangedFileReloadsWithAnUndo()
+{
+    // A document saved with a file-backed IC, and the file changed on disk before the document is opened: the file's new
+    // definition comes in as a reload, and the undo of that reload returns to the definition the document kept.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("open_changed.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, path, dir.path());
+
+    const QString savedPath = dir.filePath("open_changed_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+    rewriteLater(path, [&] { saveSwitchesToLeds(path, 1); });
+
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QCOMPARE(reopenedIC->inputSize(), 1);
+    QVERIFY(reopened.scene()->undoStack()->canUndo());
+
+    reopened.scene()->undoStack()->undo();
+    QCOMPARE(reopenedIC->inputSize(), 2);
+
+    reopened.scene()->undoStack()->redo();
+    QCOMPARE(reopenedIC->inputSize(), 1);
+}
+
+void TestICRegistry::testReopenMissingFileKeepsTheCopy()
+{
+    // A document saved with a file-backed IC, and the file deleted before the document is opened: the document's copy
+    // is the definition, and the IC keeps its link to the file.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("open_missing.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, path, dir.path());
+
+    const QString savedPath = dir.filePath("open_missing_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+    QVERIFY(QFile::remove(path));
+
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QCOMPARE(reopenedIC->inputSize(), 2);
+    QCOMPARE(reopenedIC->file(), QFileInfo(path).absoluteFilePath());
+    QVERIFY(!reopened.scene()->undoStack()->canUndo());
+}
+
+void TestICRegistry::testReopenedDocumentSavesAgainByteForByte()
+{
+    // A document holding a file-backed IC's copy reads back and saves again with the same bytes.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("round_trip.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, path, dir.path());
+
+    const QString firstPath = dir.filePath("round_trip_first.panda");
+    QCOMPARE(workspace.save(firstPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(firstPath);
+    const QString secondPath = dir.filePath("round_trip_second.panda");
+    QCOMPARE(reopened.save(secondPath), WorkSpace::SaveOutcome::Saved);
+
+    QFile first(firstPath);
+    QFile second(secondPath);
+    QVERIFY(first.open(QIODevice::ReadOnly));
+    QVERIFY(second.open(QIODevice::ReadOnly));
+    QCOMPARE(second.readAll(), first.readAll());
+}
+
+void TestICRegistry::testOpenedFileCopyStaysOutOfTheRegistry()
+{
+    // The copy is the IC's definition only: the registry holds no blob for it, so an embedded blob cannot take its name.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("copy_registry.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, path, dir.path());
+
+    const QString savedPath = dir.filePath("copy_registry_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    QVERIFY(reopened.scene()->icRegistry()->blobMap().isEmpty());
+}
+
+void TestICRegistry::testFileCopyIsSavedInItsOwnEntry()
+{
+    // The copy goes under a metadata key of its own, by the file's name as the document references it, and the blob
+    // registry holds no embedded blob for it
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("own_entry.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, path, dir.path());
+
+    const QString savedPath = dir.filePath("own_entry_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+
+    QFile saved(savedPath);
+    QVERIFY(saved.open(QIODevice::ReadOnly));
+    QByteArray savedBytes = saved.readAll();
+    QDataStream savedStream(&savedBytes, QIODevice::ReadOnly);
+    const QMap<QString, QVariant> metadata = Serialization::readPreamble(savedStream).metadata;
+    QVERIFY(!metadata.contains("embeddedICs"));
+    QCOMPARE(Serialization::deserializeFileCopies(metadata).keys(), QList<QString>{"own_entry.panda"});
+}
+
+void TestICRegistry::testCopyHashIsTheFileAsTheRegistryRead()
+{
+    // The copy's hash is the file as the registry read it. A file changed on disk since, unseen by the session, is changed
+    // when the document opens: the copy is loaded over as a reload, whose undo returns to the copy
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("read_hash.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    QCOMPARE(ic->inputSize(), 2);
+
+    saveSwitchesToLeds(path, 1);
+    const QString savedPath = dir.filePath("read_hash_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QCOMPARE(reopenedIC->inputSize(), 1);
+    QVERIFY(reopened.scene()->undoStack()->canUndo());
 }
 
 void TestICRegistry::testSaveWithoutUndoReopensTheNewDefinition()

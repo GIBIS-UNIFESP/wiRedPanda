@@ -4,6 +4,7 @@
 #include "App/Element/IC.h"
 
 #include <algorithm>
+#include <optional>
 
 #include <QDataStream>
 #include <QFileInfo>
@@ -82,7 +83,7 @@ void IC::save(QDataStream &stream, SerializationOptions options) const
     if (isEmbedded()) {
         map.insert("name", m_blobName);
     } else if (!m_file.isEmpty()) {
-        map.insert("name", ExternalFilePath::forWriting(m_file, options.purpose));
+        map.insert("name", fileReference(options.purpose));
     }
 
     // A snapshot carries the IC files the circuit read, so its restore loads one deleted since; a file never does
@@ -96,6 +97,43 @@ void IC::save(QDataStream &stream, SerializationOptions options) const
 
     stream << map;
 }
+
+QString IC::fileReference(const SerializationPurpose purpose) const
+{
+    return ExternalFilePath::forWriting(m_file, purpose);
+}
+
+QByteArray IC::definitionFileBytes() const
+{
+    return m_filesRead.value(m_file);
+}
+
+void IC::loadFileCopy(const QString &fileName, const QByteArray &bytes, const QString &contextDir)
+{
+    // A definition replaces the ports and the body, and names the file: one change, also when the load throws.
+    const ChangeBatch batch(*this, ElementChange::Parameter | ElementChange::Ports);
+    m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFileCopy(*this, fileName, bytes, contextDir); });
+}
+
+namespace {
+/// Returns the document's copy of the definition of the file \a name, or nothing when the document holds none.
+std::optional<QByteArray> savedFileCopy(const SerializationContext &context, const QString &name)
+{
+    if (!context.fileCopies) {
+        return std::nullopt;
+    }
+    const auto packed = context.fileCopies->constFind(name);
+    if (packed == context.fileCopies->constEnd()) {
+        return std::nullopt;
+    }
+    QByteArray hash;
+    QByteArray bytes;
+    if (!ICLoader::unpackFileCopy(packed.value(), hash, bytes)) {
+        return std::nullopt;
+    }
+    return bytes;
+}
+} // namespace
 
 void IC::loadState(QDataStream &stream, SerializationContext &context)
 {
@@ -186,6 +224,10 @@ void IC::loadState(QDataStream &stream, SerializationContext &context)
             } else if (baseMatch) {
                 m_blobName = baseName;
                 loadFromBlob(context.blobRegistry->value(baseName), context.contextDir);
+            } else if (const std::optional<QByteArray> copy = savedFileCopy(context, name); copy) {
+                // The document's copy stands for the file: unchanged or gone, it is the definition; changed, it is loaded
+                // over afterwards as a reload, whose undo returns to the copy (WorkSpace::load())
+                loadFileCopy(name, *copy, context.contextDir);
             } else {
                 // Don't assign m_file until loadFile() has confirmed name actually resolves to a
                 // real file — ICLoader::loadFile() itself sets ic.m_file, but only once validated,

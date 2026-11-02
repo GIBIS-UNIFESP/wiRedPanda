@@ -836,6 +836,29 @@ void Serialization::serializeBlobRegistry(const QMap<QString, QByteArray> &blobs
     }
 }
 
+QMap<QString, QByteArray> Serialization::deserializeFileCopies(const QMap<QString, QVariant> &metadata)
+{
+    QMap<QString, QByteArray> result;
+    if (metadata.contains("fileCopies")) {
+        QByteArray copyBytes = metadata.value("fileCopies").toByteArray();
+        QDataStream copyStream(&copyBytes, QIODevice::ReadOnly);
+        copyStream.setVersion(QDataStream::Qt_5_12);
+        result = readBoundedBlobMap(copyStream);
+    }
+    return result;
+}
+
+void Serialization::serializeFileCopies(const QMap<QString, QByteArray> &copies, QMap<QString, QVariant> &metadata)
+{
+    if (!copies.isEmpty()) {
+        QByteArray copyBytes;
+        QDataStream copyStream(&copyBytes, QIODevice::WriteOnly);
+        copyStream.setVersion(QDataStream::Qt_5_12);
+        copyStream << copies;
+        metadata["fileCopies"] = copyBytes;
+    }
+}
+
 QString Serialization::typeName(const int type) {
     // These offsets must stay in sync with the ::Type enum constants defined in
     // Port, Connection, and Element (all use QGraphicsItem::UserType + N)

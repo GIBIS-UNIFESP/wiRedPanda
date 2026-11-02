@@ -431,18 +431,24 @@ void TestDanglingPointer::bug7_icRegistryFileChangedMustNotLeaveDanglingPointers
     const QString source = QString::fromUtf8(src.readAll());
     src.close();
 
-    const QString body = bodyOfFunction(source, "ICRegistry::onFileChanged");
-    QVERIFY2(!body.isEmpty(), "Could not locate ICRegistry::onFileChanged definition.");
+    // onFileChanged hands the reload to reloadFile(), which owns the reload loop
+    const QString onChanged = bodyOfFunction(source, "ICRegistry::onFileChanged");
+    QVERIFY2(!onChanged.isEmpty(), "Could not locate ICRegistry::onFileChanged definition.");
+    QVERIFY2(onChanged.contains("reloadFile("),
+             "ICRegistry::onFileChanged must reload through reloadFile().");
+
+    const QString body = bodyOfFunction(source, "ICRegistry::reloadFile");
+    QVERIFY2(!body.isEmpty(), "Could not locate ICRegistry::reloadFile definition.");
 
     QVERIFY2(body.contains("reloadTargetsAtomically"),
-             "ICRegistry::onFileChanged must reload targets through "
+             "ICRegistry::reloadFile must reload targets through "
              "reloadTargetsAtomically(), which opens a SimulationBlocker "
              "scope around the whole reload loop so the 1 ms simulation "
              "QTimer is quiescent while each IC's m_internalElements is "
              "freed and replaced.");
 
     QVERIFY2(body.contains("setCircuitUpdateRequired"),
-             "ICRegistry::onFileChanged must call setCircuitUpdateRequired() "
+             "ICRegistry::reloadFile must call setCircuitUpdateRequired() "
              "to drive a full Simulation::initialize() after the reload. "
              "The previous simulation()->restart() was too weak — it only "
              "invalidated the outer Simulation::m_sortedElements, leaving "

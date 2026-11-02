@@ -49,6 +49,17 @@ public:
     /// Loads \a ic from in-memory blob bytes (full .panda file format).
     static void loadFromBlob(IC &ic, const QByteArray &blob, const QString &contextDir);
 
+    /// Loads \a ic from \a bytes, a document's copy of the definition of the file \a fileName, as loadFile() loads the
+    /// file: \a ic is file-backed, and the file is recorded as read.
+    static void loadFileCopy(IC &ic, const QString &fileName, const QByteArray &bytes, const QString &contextDir);
+
+    /// Returns the stored form of a file copy: the hash of the file as it was when saved, and the definition's \a bytes.
+    static QByteArray packFileCopy(const QByteArray &hash, const QByteArray &bytes);
+    /// Reads a file copy's stored form into \a hash and \a bytes; returns \c false if it holds neither.
+    static bool unpackFileCopy(const QByteArray &packed, QByteArray &hash, QByteArray &bytes);
+    /// Returns the hash that identifies a file's \a bytes in a document.
+    static QByteArray fileHash(const QByteArray &bytes);
+
     /// Scans \a elements for Input/Output groups, sorts by Y/X position, and builds labels.
     static IC::PortMetadata buildPortMetadata(const QVector<Element *> &elements);
 
