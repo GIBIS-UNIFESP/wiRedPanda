@@ -23,6 +23,7 @@
 #include "App/Element/IC.h"
 
 class Element;
+class ICDefinition;
 class QGraphicsItem;
 
 /**
@@ -80,9 +81,9 @@ public:
     /// inside one inherits both.
     static void withCarriedFiles(const Files &files, bool restoring, const std::function<void()> &load);
 
-    /// Renders \a ic's hover preview from the definition it loaded last, read again: its bytes, or its file. A
-    /// definition that no longer loads leaves the preview null.
-    static void renderPreview(IC &ic);
+    /// Renders the hover preview of \a definition, read from \a contextDir as a load reads it. A definition that no
+    /// longer loads renders a null preview.
+    static QPixmap renderPreview(const ICDefinition &definition, const QString &contextDir);
 
     /// Runs \a load with the IC files its snapshot carries standing in for the files on disk, so the restore of an
     /// undone or redone reload gives back the definition the snapshot captured, not the file as it is now.

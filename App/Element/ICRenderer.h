@@ -8,6 +8,7 @@
 #pragma once
 
 #include <QList>
+#include <QPixmap>
 
 class IC;
 class QGraphicsItem;
@@ -22,7 +23,7 @@ class QGraphicsItem;
 class ICRenderer
 {
 public:
-    /// Snapshots \a items (the sub-circuit as designed, before boundary substitution) into
-    /// \a ic's cached hover-preview pixmap.
-    static void generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &items);
+    /// Renders \a items (the sub-circuit as designed, before boundary substitution) into a preview pixmap. Returns a
+    /// null pixmap for a circuit that is empty, too large, of unusable geometry or too small to show.
+    static QPixmap generatePreviewPixmap(const QList<QGraphicsItem *> &items);
 };

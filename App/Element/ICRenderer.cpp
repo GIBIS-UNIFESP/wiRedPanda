@@ -11,11 +11,11 @@
 #include <QSize>
 #include <QSizeF>
 
-#include "App/Element/IC.h"
+#include "App/Element/Element.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Wiring/Connection.h"
 
-void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &items)
+QPixmap ICRenderer::generatePreviewPixmap(const QList<QGraphicsItem *> &items)
 {
     // Split the freshly-deserialized items into elements and connections.  The
     // boundary Input/Output elements are still in their designed form here; the
@@ -34,8 +34,7 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
 
     // Skip for empty or very large circuits.
     if (elements.isEmpty() || elements.size() > ICPreviewPopup::MaxElementCount) {
-        ic.m_previewPixmap = QPixmap();
-        return;
+        return {};
     }
 
     // Temporarily borrow the items into a throwaway scene so QGraphicsScene::render()
@@ -64,9 +63,11 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
     // The load-side guards reject non-finite element position/rotation up front;
     // skip the (non-essential) preview here for any other geometry source rather
     // than crash.  Surfaced by libFuzzer (fuzz_ic_file).
-    if (!std::isfinite(sourceRect.width()) || !std::isfinite(sourceRect.height())) {
-        ic.m_previewPixmap = QPixmap();
-        return;
+    // The origin is checked too: a line or a text at a NaN position has a finite size, so a check of the size alone
+    // passes it.
+    if (!std::isfinite(sourceRect.left()) || !std::isfinite(sourceRect.top())
+        || !std::isfinite(sourceRect.width()) || !std::isfinite(sourceRect.height())) {
+        return {};
     }
 
     // Scale to fit within max preview dimensions while preserving aspect ratio, in floating point: a finite extent
@@ -76,8 +77,7 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
     const QSize targetSize = scaledSize.toSize();
 
     if (targetSize.isEmpty()) {
-        ic.m_previewPixmap = QPixmap();
-        return;
+        return {};
     }
 
     // QPixmap(QSize) is uninitialised; tempScene.render() paints the background
@@ -92,5 +92,5 @@ void ICRenderer::generatePreviewPixmap(IC &ic, const QList<QGraphicsItem *> &ite
     tempScene.render(&painter, QRectF(), sourceRect);
     painter.end();
 
-    ic.m_previewPixmap = preview;
+    return preview;
 }

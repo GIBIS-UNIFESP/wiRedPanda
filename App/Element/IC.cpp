@@ -14,6 +14,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/Element/ICLoader.h"
+#include "App/Element/ICPreviewCache.h"
 #include "App/Element/ICSimulation.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/Serialization.h"
@@ -358,13 +359,12 @@ void IC::setBlobName(const QString &name)
     changed(ElementChange::Parameter);
 }
 
-const QPixmap &IC::preview()
+QPixmap IC::preview()
 {
-    if (!m_previewRendered) {
-        m_previewRendered = true;
-        ICLoader::renderPreview(*this);
+    if (!m_loaded || !m_definition) {
+        return {};
     }
-    return m_previewPixmap;
+    return ICPreviewCache::preview(m_definition, m_previewContextDir);
 }
 
 void IC::loadFromDrop(const QString &fileName, const QString &contextDir)

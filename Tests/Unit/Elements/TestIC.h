@@ -34,6 +34,7 @@ private slots:
 
     // ICRenderer's non-finite/degenerate-geometry defense-in-depth guards
     void testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp();
+    void testGeneratePreviewPixmapWithANaNOriginIsNoOp();
     void testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty();
     void testGeneratePreviewPixmapScalesAnExtentBeyondIntRange();
     void testAPreviewShowsTheDefaultForAPictureThatIsGone();

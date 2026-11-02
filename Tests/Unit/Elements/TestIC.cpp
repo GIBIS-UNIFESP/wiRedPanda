@@ -38,6 +38,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICPreviewCache.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRenderer.h"
 #include "App/IO/Serialization.h"
@@ -320,14 +321,25 @@ void TestICUnit::testLoadedIcWithDisconnectedInputIsUnknown()
 
 void TestICUnit::testGeneratePreviewPixmapWithNonFiniteBoundsIsNoOp()
 {
-    IC ic;
     auto elm = std::make_unique<Element>(ElementType::And);
     elm->setPos(std::numeric_limits<qreal>::quiet_NaN(), 0);
 
     QList<QGraphicsItem *> items{elm.get()};
-    ICRenderer::generatePreviewPixmap(ic, items);
+    const QPixmap preview = ICRenderer::generatePreviewPixmap(items);
 
-    QVERIFY2(ic.previewPixmap().isNull(), "a non-finite item bounding rect must reset the preview to null, not abort");
+    QVERIFY2(preview.isNull(), "a non-finite item bounding rect must reset the preview to null, not abort");
+}
+
+void TestICUnit::testGeneratePreviewPixmapWithANaNOriginIsNoOp()
+{
+    // A line's size stays finite at a NaN position, so only the origin check refuses it
+    std::unique_ptr<Element> elm(ElementFactory::buildElement(ElementType::Line));
+    elm->setPos(QPointF(std::numeric_limits<qreal>::quiet_NaN(), 0));
+
+    QList<QGraphicsItem *> items{elm.get()};
+    const QPixmap preview = ICRenderer::generatePreviewPixmap(items);
+
+    QVERIFY2(preview.isNull(), "a NaN origin with a finite size must reset the preview to null");
 }
 
 void TestICUnit::testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty()
@@ -335,32 +347,29 @@ void TestICUnit::testGeneratePreviewPixmapWithDegenerateAspectRatioIsEmpty()
     // An extremely wide/thin circuit layout scales down to a QSize with one dimension
     // rounding to 0 (empty), which must reset the preview to null rather than construct a
     // degenerate QPixmap.
-    IC ic;
     auto elm1 = std::make_unique<Element>(ElementType::And);
     auto elm2 = std::make_unique<Element>(ElementType::And);
     elm1->setPos(0, 0);
     elm2->setPos(100000000, 0);
 
     QList<QGraphicsItem *> items{elm1.get(), elm2.get()};
-    ICRenderer::generatePreviewPixmap(ic, items);
+    const QPixmap preview = ICRenderer::generatePreviewPixmap(items);
 
-    QVERIFY(ic.previewPixmap().isNull());
+    QVERIFY(preview.isNull());
 }
 
 void TestICUnit::testGeneratePreviewPixmapScalesAnExtentBeyondIntRange()
 {
     // A finite extent past int's range is scaled down before it is rounded to whole pixels, so it fits the popup like
     // any other, keeping its aspect ratio.
-    IC ic;
     auto elm1 = std::make_unique<Element>(ElementType::And);
     auto elm2 = std::make_unique<Element>(ElementType::And);
     elm1->setPos(0, 0);
     elm2->setPos(2e11, 1e11);
 
     QList<QGraphicsItem *> items{elm1.get(), elm2.get()};
-    ICRenderer::generatePreviewPixmap(ic, items);
+    const QPixmap preview = ICRenderer::generatePreviewPixmap(items);
 
-    const QPixmap preview = ic.previewPixmap();
     QVERIFY2(!preview.isNull(), "an extent past int's range must still scale to a preview");
     QVERIFY(preview.width() <= ICPreviewPopup::MaxWidth);
     QVERIFY(preview.height() <= ICPreviewPopup::MaxHeight);
@@ -426,9 +435,10 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
     const QString outerPath = subDir.path() + "/preview_outer.panda";
     QCOMPARE(outerWorkspace.save(outerPath), WorkSpace::SaveOutcome::Saved);
 
+    const int beforeLoad = ICPreviewCache::renderCount();
     IC ic;
     ic.loadFile(outerPath, subDir.path());
-    QVERIFY2(ic.previewPixmap().isNull(), "a load renders no preview");
+    QCOMPARE(ICPreviewCache::renderCount(), beforeLoad);
 
     IC *nestedIc = nullptr;
     for (auto *elm : ic.internalElements()) {
@@ -438,15 +448,22 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
         }
     }
     QVERIFY(nestedIc);
-    QVERIFY2(nestedIc->previewPixmap().isNull(), "an IC inside the loaded one renders no preview");
 
+    // Asking for the outer preview renders that one only: the nested IC is never asked, so renders none
+    const int beforeShown = ICPreviewCache::renderCount();
     QVERIFY2(!ic.preview().isNull(), "the preview renders when shown");
-    QCOMPARE(ic.previewPixmap().cacheKey(), ic.preview().cacheKey());
-    QVERIFY2(nestedIc->previewPixmap().isNull(), "rendering the loaded IC's preview renders none for its nested IC");
+    QCOMPARE(ICPreviewCache::renderCount() - beforeShown, 1);
 
-    ic.loadFile(outerPath, subDir.path());
-    QVERIFY2(ic.previewPixmap().isNull(), "a reload drops the preview of the circuit it replaced");
+    // Kept: a second ask renders nothing
     QVERIFY(!ic.preview().isNull());
+    QCOMPARE(ICPreviewCache::renderCount() - beforeShown, 1);
+
+    // A reload of unchanged bytes finds the definition the IC holds, so the preview kept is the one shown (a changed
+    // file's reload renders its own: TestICPreviewCache::testReloadAsksForItsOwn)
+    ic.loadFile(outerPath, subDir.path());
+    const int beforeReload = ICPreviewCache::renderCount();
+    QVERIFY(!ic.preview().isNull());
+    QCOMPARE(ICPreviewCache::renderCount() - beforeReload, 0);
 }
 
 void TestICUnit::testLoadGrowsLinearlyInICs()

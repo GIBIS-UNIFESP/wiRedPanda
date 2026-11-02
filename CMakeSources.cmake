@@ -176,6 +176,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ThemeManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewCache.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.cpp
@@ -257,6 +258,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/ToneGenerator.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Core/UpdateChecker.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementLabel.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewCache.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICPreviewPopup.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICRenderer.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Exercise/ExerciseEngine.h
@@ -507,6 +509,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICDefinition.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICPreviewCache.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.cpp
@@ -753,6 +756,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICDefinition.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICPreviewCache.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.h
