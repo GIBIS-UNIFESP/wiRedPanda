@@ -132,9 +132,10 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
         return;
     }
 
-    if (event->key() == Qt::Key_Space) {
-        // Spacebar held = pan mode (same as middle-mouse drag), a common convention
-        // in design tools; the flag is checked in mouseMoveEvent
+    // Spacebar held = pan mode (same as middle-mouse drag), a common convention in design
+    // tools; the flag is checked in mouseMoveEvent. Not while a scene item has keyboard focus
+    // (the inline label editor): there the space is typed into it.
+    if ((event->key() == Qt::Key_Space) && !(scene() && scene()->focusItem())) {
         m_space = true;
         viewport()->setCursor(Qt::ClosedHandCursor);
         event->accept();
@@ -152,7 +153,10 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
         return;
     }
 
-    if (event->key() == Qt::Key_Space) {
+    // Only end a pan mode the press actually started (a space typed into the inline label
+    // editor never starts one); otherwise unsetCursor() would reset whatever cursor the
+    // viewport currently shows.
+    if ((event->key() == Qt::Key_Space) && m_space) {
         m_space = false;
         viewport()->unsetCursor();
         event->accept();
