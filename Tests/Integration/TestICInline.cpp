@@ -4,6 +4,7 @@
 #include "Tests/Integration/TestICInline.h"
 
 #include <memory>
+#include <stdexcept>
 
 #include <QApplication>
 #include <QDataStream>
@@ -1991,6 +1992,68 @@ void TestICInline::testSaveChildICBlobCorruptBlob()
     QVERIFY(restored);
     QCOMPARE(restored->inputSize(), origInputs);
     QCOMPARE(restored->blobName(), QString("my_ic"));
+}
+
+void TestICInline::testSaveChildICBlobFailureAtALaterTargetRollsBackTheEarlierOnes()
+{
+    // saveChildICBlob() loads its targets one after another, so a failure at the second leaves the first already
+    // reloaded. The seam throws before the second target loads: the first must come back to the old definition, with
+    // the registry's blob and no undo step. Every target is checked; the first alone would miss a rollback of the rest.
+    const QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
+    const QByteArray newBlob = readFile(m_fixtureDir + "/chain_c.panda");
+    QVERIFY(!andBlob.isEmpty());
+    QVERIFY(!newBlob.isEmpty());
+
+    // The two blobs must give different port counts, or a rollback that kept the new blob would pass unseen
+    const auto portsOf = [this](const QByteArray &blob) {
+        auto probe = std::make_unique<IC>();
+        probe->loadFromBlob(blob, m_fixtureDir);
+        return std::pair(probe->inputSize(), probe->outputSize());
+    };
+    const auto origPorts = portsOf(andBlob);
+    QVERIFY2(origPorts != portsOf(newBlob), "the two fixtures must differ in their port counts");
+
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+    reg->setBlob("target_ic", andBlob);
+
+    QList<int> ids;
+    for (int i = 0; i < 3; ++i) {
+        auto *ic = new IC();
+        ic->setBlobName("target_ic");
+        ic->loadFromBlob(andBlob, m_fixtureDir);
+        ic->setPos(i * 100, 100);
+        ic->setLabel(QString("IC_%1").arg(i));
+        ws.scene()->addItem(ic);
+        ids.append(ic->id());
+    }
+    const int stackIndex = ws.scene()->undoStack()->index();
+
+    // The second load fails; by then the first target has been reloaded
+    int loads = 0;
+    ws.setTargetLoadFaultForTesting([&loads](const Element &) {
+        if (++loads == 2) {
+            throw std::runtime_error("the second target does not load");
+        }
+    });
+    bool threw = false;
+    try {
+        ws.saveChildICBlob(ids.at(0), newBlob);
+    } catch (const std::runtime_error &) {
+        threw = true;
+    }
+    QVERIFY2(threw, "a failing target must re-throw");
+    QCOMPARE(loads, 2);
+    QCOMPARE(ws.scene()->undoStack()->index(), stackIndex);
+    QCOMPARE(reg->blob("target_ic"), andBlob);
+    for (const int id : std::as_const(ids)) {
+        auto *ic = dynamic_cast<IC *>(ws.scene()->itemById(id));
+        QVERIFY2(ic, "a target was lost");
+        QCOMPARE(ic->inputSize(), origPorts.first);
+        QCOMPARE(ic->outputSize(), origPorts.second);
+        QCOMPARE(ic->blobName(), QString("target_ic"));
+    }
 }
 
 void TestICInline::testSaveChildICBlobCorruptBlobMultiTarget()
@@ -5435,11 +5498,11 @@ void TestICInline::testExtractToFileUsesContextDir()
 // Edge cases: rollback, rename, and missing deps
 // ============================================================================
 
-void TestICInline::testChildBlobSavedPartialFailureRollback()
+void TestICInline::testChildBlobSavedCorruptBlobTouchesNoTarget()
 {
-    // saveChildICBlob with a blob that fails partway through multiple targets
-    // must roll back all already-updated ICs and restore the original blob in the
-    // registry, leaving the scene in a consistent state.
+    // A corrupt blob fails on the first target, so no IC is updated and there is nothing to roll back: every IC and
+    // the registry keep what they held. A failure partway through several targets (the rollback of the ones already
+    // updated) is not reached here, since every target loads the same bytes and fails at the first.
 
     QByteArray andBlob = readFile(m_fixtureDir + "/simple_and.panda");
     QVERIFY(!andBlob.isEmpty());
@@ -6189,6 +6252,31 @@ void TestICInline::testLoadFileDirectlyEnforcesNestingDepthLimit()
              qPrintable(QString("Expected a nesting-depth-limit error, got: %1").arg(message)));
 }
 
+// ─── Undo probes: the blob commands and an embedded IC's removal ───
+
+void TestICInline::testRegisterBlobCommandRedoRestoresTheBytes()
+{
+    // A registered blob is removed by the undo and back by the redo, with the bytes it had.
+    const QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    Scene scene;
+    scene.setContextDir(m_fixtureDir);
+    auto *reg = scene.icRegistry();
+
+    scene.undoStack()->push(new RegisterBlobCommand("reg_redo", blob, &scene));
+    QVERIFY(reg->hasBlob("reg_redo"));
+    const QByteArray stored = reg->blob("reg_redo");
+
+    scene.undoStack()->undo();
+    QVERIFY(!reg->hasBlob("reg_redo"));
+
+    scene.undoStack()->redo();
+    QVERIFY(reg->hasBlob("reg_redo"));
+    QCOMPARE(reg->blob("reg_redo"), stored);
+
+    scene.undoStack()->undo();
+    QVERIFY(!reg->hasBlob("reg_redo"));
+}
+
 void TestICInline::testRegisterBlobCommandOverAnExistingNameKeepsIt()
 {
     // A registration at a name already in use must not lose the blob there: the undo of the registration gives back the
@@ -6205,4 +6293,208 @@ void TestICInline::testRegisterBlobCommandOverAnExistingNameKeepsIt()
     scene.undoStack()->undo();
     QVERIFY(reg->hasBlob("reg_taken"));
     QCOMPARE(reg->blob("reg_taken"), original);
+}
+
+void TestICInline::testRemoveBlobCommandKeepsTheWireOnUndoAndRedo()
+{
+    // an embedded IC removed with its blob, while wired to a switch. The undo brings the IC back with its blob
+    // and its wire to the same input; the redo removes both again.
+    const QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    scene->setContextDir(m_fixtureDir);
+    auto *reg = scene->icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, blob, "wired_remove", m_fixtureDir, reg);
+    ic->setPos(200, 0);
+    scene->addItem(ic);
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    sw->setPos(0, 0);
+    scene->addItem(sw);
+    auto *wire = new Connection();
+    wire->setStartPort(sw->outputPort(0));
+    wire->setEndPort(ic->inputPort(0));
+    scene->addItem(wire);
+    const int icId = ic->id();
+    const int swId = sw->id();
+
+    auto icOnScene = [&scene, icId] { return dynamic_cast<IC *>(scene->itemById(icId)); };
+    ws.removeEmbeddedIC("wired_remove");
+    QVERIFY(icOnScene() == nullptr);
+    QVERIFY(!reg->hasBlob("wired_remove"));
+
+    scene->undoStack()->undo();
+    QVERIFY(reg->hasBlob("wired_remove"));
+    QCOMPARE(reg->blob("wired_remove"), blob);
+    auto *restored = icOnScene();
+    QVERIFY(restored != nullptr);
+    QCOMPARE(restored->inputPort(0)->connections().size(), 1);
+    QCOMPARE(restored->inputPort(0)->connections().constFirst()->startPort()->element()->id(), swId);
+
+    scene->undoStack()->redo();
+    QVERIFY(icOnScene() == nullptr);
+    QVERIFY(!reg->hasBlob("wired_remove"));
+}
+
+void TestICInline::testRemoveEmbeddedICRedoRemovesItAgain()
+{
+    // The removal's redo takes the IC and its blob away again after an undo has brought them back.
+    const QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    scene->setContextDir(m_fixtureDir);
+    auto *reg = scene->icRegistry();
+
+    auto *ic = new IC();
+    embedIC(ic, blob, "remove_redo", m_fixtureDir, reg);
+    ic->setPos(100, 100);
+    scene->addItem(ic);
+    auto embeddedCount = [&scene] {
+        int count = 0;
+        for (auto *elm : scene->elements()) {
+            if (elm->isEmbedded() && elm->blobName() == "remove_redo") {
+                ++count;
+            }
+        }
+        return count;
+    };
+    QCOMPARE(embeddedCount(), 1);
+
+    ws.removeEmbeddedIC("remove_redo");
+    QCOMPARE(embeddedCount(), 0);
+    QVERIFY(!reg->hasBlob("remove_redo"));
+
+    scene->undoStack()->undo();
+    QCOMPARE(embeddedCount(), 1);
+    QVERIFY(reg->hasBlob("remove_redo"));
+
+    scene->undoStack()->redo();
+    QCOMPARE(embeddedCount(), 0);
+    QVERIFY(!reg->hasBlob("remove_redo"));
+
+    scene->undoStack()->undo();
+    QCOMPARE(embeddedCount(), 1);
+    QCOMPARE(reg->blob("remove_redo"), blob);
+}
+
+void TestICInline::testRenameBlobCommandNestedReferenceUndoRedo()
+{
+    // A rename through the command rewrites a parent blob's reference to the renamed blob, and the undo and the redo
+    // each put that reference where it belongs.
+    WorkSpace ws;
+    ws.scene()->setContextDir(m_fixtureDir);
+    auto *reg = ws.scene()->icRegistry();
+    reg->registerBlob("nested_and", readFile(m_fixtureDir + "/nested_and.panda"));
+    reg->setBlob("simple_and", readFile(m_fixtureDir + "/simple_and.panda"));
+    auto embeds = [&reg](const QString &name) {
+        QByteArray blob = reg->blob("nested_and");
+        QDataStream stream(&blob, QIODevice::ReadOnly);
+        auto preamble = Serialization::readPreamble(stream);
+        return Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version).contains(name);
+    };
+    QVERIFY(embeds("simple_and"));
+
+    ws.scene()->undoStack()->push(new RenameBlobCommand("simple_and", "renamed_and", ws.scene()));
+    QVERIFY(embeds("renamed_and"));
+    QVERIFY(!embeds("simple_and"));
+    QVERIFY(reg->hasBlob("renamed_and"));
+    QVERIFY(!reg->hasBlob("simple_and"));
+
+    ws.scene()->undoStack()->undo();
+    QVERIFY(embeds("simple_and"));
+    QVERIFY(!embeds("renamed_and"));
+    QVERIFY(reg->hasBlob("simple_and"));
+    QVERIFY(!reg->hasBlob("renamed_and"));
+
+    ws.scene()->undoStack()->redo();
+    QVERIFY(embeds("renamed_and"));
+    QVERIFY(!embeds("simple_and"));
+}
+
+void TestICInline::testRenameBlobCommandOntoAnotherBlobChangesNothing()
+{
+    // A rename onto a name another blob holds changes nothing: both blobs keep their bytes, the IC keeps its name,
+    // and the undo and the redo change nothing either. The caller refuses such a rename before it is made (ElementEditor),
+    // so this is the command's own guard.
+    const QByteArray first = readFile(m_fixtureDir + "/simple_and.panda");
+    const QByteArray second = readFile(m_fixtureDir + "/nested_and.panda");
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    scene->setContextDir(m_fixtureDir);
+    auto *reg = scene->icRegistry();
+    auto *ic = new IC();
+    embedIC(ic, first, "collide_a", m_fixtureDir, reg);
+    ic->setPos(100, 100);
+    scene->addItem(ic);
+    reg->setBlob("collide_b", second);
+    const QByteArray bytesA = reg->blob("collide_a");
+    const QByteArray bytesB = reg->blob("collide_b");
+
+    auto unchanged = [&] {
+        return reg->blob("collide_a") == bytesA && reg->blob("collide_b") == bytesB && ic->blobName() == QStringLiteral("collide_a");
+    };
+    scene->undoStack()->push(new RenameBlobCommand("collide_a", "collide_b", scene));
+    QVERIFY(unchanged());
+    scene->undoStack()->undo();
+    QVERIFY(unchanged());
+    scene->undoStack()->redo();
+    QVERIFY(unchanged());
+}
+
+void TestICInline::testEmbeddedICWireRedoesWithItsBlob()
+{
+    // an embedded IC added with its blob (one macro), then a wire from a switch to its input. The undo of the
+    // wire, then the undo of the IC, leave nothing; the redos bring each back, with the wire on the IC's input.
+    const QByteArray blob = readFile(m_fixtureDir + "/simple_and.panda");
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    scene->setContextDir(m_fixtureDir);
+    auto *reg = scene->icRegistry();
+
+    IC *ic = reg->createEmbeddedIC("wired_add", blob, m_fixtureDir);
+    QVERIFY(ic);
+    ic->setPos(200, 0);
+    const int icId = ic->id();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    sw->setPos(0, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw}, scene));
+    const int swId = sw->id();
+    auto *wire = new Connection();
+    wire->setStartPort(sw->outputPort(0));
+    wire->setEndPort(ic->inputPort(0));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{wire}, scene));
+
+    auto restoredIC = [&scene, icId] { return dynamic_cast<IC *>(scene->itemById(icId)); };
+    auto wiredInput = [&] {
+        IC *found = restoredIC();
+        return found != nullptr && found->inputPort(0)->connections().size() == 1 && reg->hasBlob("wired_add");
+    };
+    QVERIFY(wiredInput());
+    QCOMPARE(scene->undoStack()->count(), 3);
+
+    // Three steps, each its own: the wire, the switch, and the macro that embedded the IC with its blob.
+    scene->undoStack()->undo();
+    QVERIFY(restoredIC() != nullptr);
+    QVERIFY(restoredIC()->inputPort(0)->connections().isEmpty());
+
+    scene->undoStack()->undo();
+    QVERIFY(restoredIC() != nullptr);
+    QVERIFY(scene->itemById(swId) == nullptr);
+
+    scene->undoStack()->undo();
+    QVERIFY(restoredIC() == nullptr);
+    QVERIFY(!reg->hasBlob("wired_add"));
+
+    scene->undoStack()->redo();
+    QVERIFY(reg->hasBlob("wired_add"));
+    QVERIFY(restoredIC() != nullptr);
+    QVERIFY(restoredIC()->inputPort(0)->connections().isEmpty());
+
+    scene->undoStack()->redo();
+    QVERIFY(scene->itemById(swId) != nullptr);
+    QVERIFY(restoredIC()->inputPort(0)->connections().isEmpty());
+
+    scene->undoStack()->redo();
+    QVERIFY(wiredInput());
 }

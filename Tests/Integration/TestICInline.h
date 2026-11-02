@@ -11,6 +11,12 @@ class TestICInline : public QObject
     Q_OBJECT
 
 private slots:
+    void testEmbeddedICWireRedoesWithItsBlob();
+    void testRegisterBlobCommandRedoRestoresTheBytes();
+    void testRemoveBlobCommandKeepsTheWireOnUndoAndRedo();
+    void testRemoveEmbeddedICRedoRemovesItAgain();
+    void testRenameBlobCommandNestedReferenceUndoRedo();
+    void testRenameBlobCommandOntoAnotherBlobChangesNothing();
     void initTestCase();
     void cleanup();
 
@@ -91,6 +97,7 @@ private slots:
     void testSaveChildICBlobNonEmbeddedTarget();
     void testSaveChildICBlobCorruptBlob();
     void testSaveChildICBlobCorruptBlobMultiTarget();
+    void testSaveChildICBlobFailureAtALaterTargetRollsBackTheEarlierOnes();
     void testSaveChildICBlobPortCountWithConnections();
     void testSaveChildICBlobBlobNameMismatch();
     void testSaveChildICBlobAllOrNothing();
@@ -223,7 +230,7 @@ private slots:
 
     // --- Edge cases: rollback, rename, and missing deps ---
 
-    void testChildBlobSavedPartialFailureRollback();
+    void testChildBlobSavedCorruptBlobTouchesNoTarget();
     void testRenameBlobUpdatesNestedMetadata();
     void testRegisterBlobMissingFileDepWarns();
 

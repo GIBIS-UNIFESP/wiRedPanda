@@ -276,7 +276,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Scene/Workspace.cpp:494` | `WorkSpace::load()`: a file that is gone or does not open | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/Scene/Workspace.cpp:736` | `WorkSpace::autosave()`: an autosave file that cannot be written | TIMER | E | Q: TIMER (EB.7) |
 | `App/Scene/Workspace.cpp:747` | `WorkSpace::autosave()`: an autosave file that cannot be written | TIMER | E | Q: TIMER (EB.7) |
-| `App/Scene/Workspace.cpp:888` | `WorkSpace::saveChildICBlob()`: rethrow (catch at `:885`); called from `WorkSpace::save()`, whose callers are boundaries (EB.6) | boundaries only | — | B: stays |
+| `App/Scene/Workspace.cpp:891` | `WorkSpace::saveChildICBlob()`: rethrow (catch at `:888`); called from `WorkSpace::save()`, whose callers are boundaries (EB.6) | boundaries only | — | B: stays |
 | `App/UI/CircuitExporter.cpp:39` | `renderToPdf()`: an export that cannot be written | boundaries only | E | B: stays |
 | `App/UI/CircuitExporter.cpp:77` | `renderScaledImage()`: an image too large to render | boundaries only | E | B: stays |
 | `App/UI/CircuitExporter.cpp:94` | `renderToImage()`: an image that cannot be written | boundaries only | E | B: stays |
@@ -344,7 +344,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Scene/ICRegistry.cpp:335` | `ICRegistry::embedICsByFile()` | A reload that fails: the new blob removed, rethrown (`:337`) | Stays: rethrows to the IC controller's guarded slots |
 | `App/Scene/ICRegistry.cpp:419` | `ICRegistry::reloadTargetsAtomically()` | A target that does not reload: the updated ones rolled back, rethrown (`:421`) | Stays: rolls back for its callers, `:152`, `:335` and the extraction |
 | `App/Scene/Workspace.cpp:772` | `WorkSpace::autosaveOnTimer()` | An autosave that fails: reported the first time of a run, inside `guardedSlot()` (`:778`), logged after (EB.7) | Stays |
-| `App/Scene/Workspace.cpp:885` | `WorkSpace::saveChildICBlob()` | A target that does not reload: rolled back, the blob put back, rethrown (`:888`) | Stays: since EB.6 the child tab's `WorkSpace::save()` calls it directly (`:325`), its callers guarded, instead of through `icBlobSaved` |
+| `App/Scene/Workspace.cpp:888` | `WorkSpace::saveChildICBlob()` | A target that does not reload: rolled back, the blob put back, rethrown (`:891`) | Stays: since EB.6 the child tab's `WorkSpace::save()` calls it directly (`:325`), its callers guarded, instead of through `icBlobSaved` |
 | `App/UI/ICController.cpp:67` | `ICController::runAsOneStep()` | A throw part way through the edits: those applied pushed as one step, rethrown (`:70`) | Stays: rethrows to the IC controller's guarded slots |
 | `App/UI/ICController.cpp:276` | `ICController::embedSelectedIC()` | Anything: the palette refreshed, rethrown (`:271`) | Stays: inside its `guardedSlot()` |
 | `App/UI/ICController.cpp:335` | `ICController::extractSelectedIC()` | Anything: the palette refreshed, rethrown (`:330`) | Stays: inside its `guardedSlot()` |

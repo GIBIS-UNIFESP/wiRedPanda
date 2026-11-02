@@ -878,6 +878,9 @@ void WorkSpace::saveChildICBlob(int icElementId, const QByteArray &blob)
     QList<Element *> updated;
     try {
         for (auto *target : targets) {
+            if (m_targetLoadFault) {
+                m_targetLoadFault(*target);
+            }
             auto *ic = static_cast<IC *>(target);
             ic->loadFromBlob(blob, m_scene.contextDir());
             updated.append(target);

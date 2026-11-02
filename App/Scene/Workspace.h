@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include <QFileInfo>
 #include <QPointer>
 #include <QTimer>
@@ -108,6 +110,10 @@ public:
     /// Puts \a blob, saved by a child inline tab, in the embedded IC \a icElementId and every IC sharing its blob, as
     /// one undo step; throws, everything as it was, when an IC does not load it.
     void saveChildICBlob(int icElementId, const QByteArray &blob);
+
+    /// Test seam: \a fault is called with each target of saveChildICBlob() just before that target loads the blob, and a
+    /// throw from it takes the same rollback as a failed load. Not set in the application.
+    void setTargetLoadFaultForTesting(std::function<void(const Element &)> fault) { m_targetLoadFault = std::move(fault); }
 
     /// Returns the blob name being edited (for tab title).
     const QString &inlineBlobName() const { return m_inlineBlobName; }
@@ -218,6 +224,7 @@ private:
     bool m_isInlineIC = false;
     QPointer<WorkSpace> m_parentWorkspace;
     int m_parentICElementId = -1;
+    std::function<void(const Element &)> m_targetLoadFault;
     QString m_inlineBlobName;
     QString m_untitledTitle;
     bool m_isRecovered = false;
