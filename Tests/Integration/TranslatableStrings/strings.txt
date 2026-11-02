@@ -179,7 +179,6 @@ ElementEditor	B6
 ElementEditor	Blue
 ElementEditor	C6
 ElementEditor	C7
-ElementEditor	Change appearance
 ElementEditor	Change appearance to ...
 ElementEditor	Change wireless mode
 ElementEditor	Choose audio file

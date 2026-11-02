@@ -40,6 +40,7 @@ private slots:
     void testUpdateElementAppearanceCancelledDialogIsNoOp();
     void testUpdateElementAppearanceViaTileGridUpdatesSelectedStateOnly();
     void testUpdateElementAppearanceFallbackAppliesToAllSelected();
+    void testTileGridHiddenForAMultiSelectionOfMultiStateElements();
     void testPickingAPictureThatDoesNotLoadChangesNothing();
     void testPickingAPictureThatDoesNotLoadForAStateChangesNothing();
 

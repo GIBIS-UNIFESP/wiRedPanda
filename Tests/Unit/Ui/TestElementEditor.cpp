@@ -712,6 +712,56 @@ void TestElementEditor::testUpdateElementAppearanceFallbackAppliesToAllSelected(
     QCOMPARE(undoStack->count(), countBefore + 1); // applyAppearance() pushed an UpdateCommand
 }
 
+void TestElementEditor::testTileGridHiddenForAMultiSelectionOfMultiStateElements()
+{
+    // The tile grid shows only for one selected element. With two multi-state elements selected it is hidden, so
+    // updateElementAppearance() takes the fallback path: one step over both. This is the invariant that makes the tile
+    // branch's macro unreachable (ElementEditor.cpp, the beginMacro under the tile grid's visibility test).
+    WorkSpace workspace;
+    auto *led1 = ElementFactory::buildElement(ElementType::Led);
+    auto *led2 = ElementFactory::buildElement(ElementType::Led);
+    led1->setInputSize(2); // 4 appearance states each
+    led2->setInputSize(2);
+    workspace.scene()->addItem(led1);
+    workspace.scene()->addItem(led2);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    led1->setSelected(true);
+    showAndActivate(&editor);
+
+    auto *statesWidget = editor.findChild<QWidget *>("widgetAppearanceStates");
+    QVERIFY(statesWidget);
+    QVERIFY(statesWidget->isVisible());
+
+    led2->setSelected(true);
+    QVERIFY(statesWidget->isHidden());
+    QVERIFY(!statesWidget->isVisible());
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString imagePath = dir.filePath("custom_multi.png");
+    QPixmap image(4, 4);
+    image.fill(Qt::red);
+    QVERIFY(image.save(imagePath, "PNG"));
+
+    ScopedFileDialogStub dialogStub;
+    dialogStub.stub.openResult = imagePath;
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+    editor.updateElementAppearance();
+    QCOMPARE(undoStack->count(), countBefore + 1);
+    QCOMPARE(led1->externalFiles(), QStringList{imagePath});
+    QCOMPARE(led2->externalFiles(), QStringList{imagePath});
+
+    // Back to one element: the grid shows again.
+    workspace.scene()->clearSelection();
+    led1->setSelected(true);
+    QVERIFY(statesWidget->isVisible());
+}
+
 void TestElementEditor::testPickingAPictureThatDoesNotLoadChangesNothing()
 {
     // A picked file that does not decode is reported, and neither the element nor the undo stack changes

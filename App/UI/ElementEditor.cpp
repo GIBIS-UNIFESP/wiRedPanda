@@ -246,10 +246,6 @@ void ElementEditor::updateElementAppearance()
         const int appearanceIndex = m_ui->buttonGroupAppearanceStates->checkedButton()->property("appearanceStateIndex").toInt();
 
         // Snapshot and apply via undo command
-        const bool needsMacro = m_scene && m_elements.size() > 1;
-        if (needsMacro) {
-            m_scene->undoStack()->beginMacro(tr("Change appearance")); // LCOV_EXCL_LINE — the tile grid (widgetAppearanceStates) is only ever made visible for a single-element selection (see applyCapabilitiesToUi()'s `m_elements.size() == 1` guard), so entering this branch structurally guarantees m_elements.size() == 1, making needsMacro permanently false.
-        }
         for (auto *elm : std::as_const(m_elements)) {
             QByteArray oldData;
             {
@@ -261,9 +257,6 @@ void ElementEditor::updateElementAppearance()
             if (m_scene) {
                 m_scene->receiveCommand(new UpdateCommand({elm}, oldData, m_scene));
             }
-        }
-        if (needsMacro) {
-            m_scene->undoStack()->endMacro(); // LCOV_EXCL_LINE — see the matching beginMacro() exclusion above: needsMacro is permanently false here.
         }
 
         // The tile icons were built from the pre-change appearance; refresh the edited tile in
