@@ -762,6 +762,11 @@ The IC system allows reusing circuits as sub-components, split across several fo
 - **`ICSimulation.cpp/h`** (`App/Element/`): builds and runs the IC's internal simulation graph
 - **`ICPreviewPopup.cpp/h`** (`App/Element/`): frameless popup showing a preview of an IC's internal circuit on hover
 - **`ICRegistry.cpp/h`** (`App/Scene/`): central registry that monitors `.panda` files and auto-updates ICs when the file changes
+- **`ICDefinition.cpp/h`** (`App/Element/`): a parsed `.panda` definition, shared by every IC that loads the same bytes; once no IC holds it, it is kept under a byte budget, the least recently released going first
+- **`ICPreviewCache.cpp/h`** (`App/Element/`): the hover previews, one per definition and directory, LRU over 16 entries, dropped on a theme change
+- **`PinOrder.cpp/h`** (`App/Element/`): the order of an IC's pins, as a file saves it
+
+An IC's pins take their names when asked, so a pin shows the current interface language; the saved header keeps each pin's source name. A pin's order is the file's saved order, and a pin the order does not name takes its place by position. Every element snaps to the half grid on load, after the pin order has been taken, since a snap can move two close pins past one another.
 
 ICs support **arbitrary hierarchy** — an IC can contain other ICs inside it. The tests include up to 9 levels of complexity, culminating in complete CPU implementations.
 
@@ -992,7 +997,9 @@ Circuit files (`.panda`) use a binary format (`App/IO/Serialization.h`):
 ```text
 [Preamble]
   - Magic number (0x57504346 = "WPCF") + format version
-  - Metadata (QMap): dolphin data, rect, etc.
+  - Metadata (QMap): dolphin data, rect, etc.; an IC's pin labels and source names (`inputLabels`, `outputLabels`);
+    its pin order (`inputOrder`, `outputOrder`), each pin named by its port's serial id, as text; the copies of the IC
+    files the document uses (`fileCopies`, below)
 
 [Elements]
   - Element count
@@ -1010,7 +1017,21 @@ Circuit files (`.panda`) use a binary format (`App/IO/Serialization.h`):
     - Destination port ID (input)
 ```
 
-On load, a **port map** is built during element deserialization so that connections can resolve their endpoints. The format is backward-compatible and can read files from older wiRedPanda versions.
+On load, a **port map** is built during element deserialization so that connections can resolve their endpoints. The format is backward-compatible and can read files from older wiRedPanda versions. The pin-order keys are added metadata, with no format revision: a file without them takes the order its positions give, read before the load's snap to the grid.
+
+**File copies.** A document that holds file-backed ICs keeps a copy of each file's definition under the `fileCopies`
+metadata entry, a map from the file's bare name (as the document references it) to its packed copy: the hash of the
+file as the registry last read it, and the definition's bytes. The copies cover the files those ICs nest, too; when
+several ICs nest one file, the first copy saved for its name is kept. On open, a copy stands for its file:
+
+- a file unchanged since the save keeps the copy;
+- a file changed since the save comes in as a reload of the IC instances that use it, which the undo returns to the copy;
+- a file that is gone keeps the copy, and the IC keeps its link to the file;
+- a file with no copy is read from disk, as before.
+
+A change to a nested file reloads the instances of the files that nest it, with an undo, as a change to any file does.
+The copies are per file, not per instance: when two instances nest different versions of one file, the first
+instance's copy is the one saved. The copies sit outside the blob registry, so no embedded IC is listed for them.
 
 ### Version History
 
