@@ -9,8 +9,9 @@ sub-ID of the item it belongs to (`P4.4a`, `P4.4b`, ...) and a line in the log. 
 
 **Branch:** `04-ics-and-format`, from `03-element-types` at `2fe7e07f9` (the creation point; the merge-base with `03-element-types` is `d8f9e8765`), created 2026-11-02. Hashes from before the restack that no longer resolve were replaced by the commit each row names; those replacements are unverified.
 
-**Open:** D6 (row P4.6) and D7 (row P4.2a) are plan 4 work, not started. D8 (an intermittent unhandled exception, not
-reproduced since) stays open here until a stack trace exists. D-S1 and D-C12 are fixed on plan 2 (P2.105, P2.106).
+**Open:** D7 (row P4.2a) is plan 4 work, not started. D3 (a flaky plan 2 test) and D8 (an intermittent unhandled
+exception, not reproduced) are discarded, as the user directed. D6 is fixed (P4.6). D-S1 and D-C12 are fixed on plan 2
+(P2.105, P2.106).
 
 Each row's notes say how its check is shown to fail; "as on the branch" marks a break `gpu-canvas` ran and saw fail.
 
@@ -21,7 +22,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | P4.3 | The preview per definition, rendered on first hover; its guard checks the origin (§2.3) | todo | | Shown to fail: the guard checking the size only (as on the branch); a theme change that keeps previews. Plan 1's preview goldens unchanged |
 | P4.4 | Pin names from the circuit in one rule; the header in file order; no pin name saved in the interface language (§2.4) | todo | | Shown to fail: the header built in stacking order after an undo's reorder (as on the branch); a derived name made explicit. Payload goldens holding IC headers or pin names change, each named |
 | P4.5 | The reload's undo restores the definition in memory (§2.5) | done | `9610a7615` | Shown to fail: the four probes of `TestICRegistry` that the undo of a reload reaches (a growing reload, two reloads undone in turn, a change after an undo, two writes settled to the last), with their expected-failure marks removed, failed on the tip before the fix. The first fix, in the loader and the command, left them failing: `IC::loadState` skipped the reload when the IC's bytes matched the file's current bytes, so the skip also compares the snapshot's bytes (`ICLoader::fileBytes()`). The reopen part is P4.6 |
-| P4.6 | The document's copies of file-backed definitions with their hash; the four cases on open (§2.6) | todo | | Each case tested; an undo of a reload saved and reopened keeps its wire; the backward-compatibility files read as before |
+| P4.6 | The document's copies of file-backed definitions with their hash; the four cases on open (§2.6) | done | `92a740b56` | The four cases on open, each tested: a file unchanged since the save keeps the copy (`testReopenAfterGrowingUndoKeepsTheRestoredDefinition`, `testReopenedDocumentSavesAgainByteForByte`); a file changed since comes in as an undoable reload (`testReopenChangedFileReloadsWithAnUndo`); a file missing keeps the copy (`testReopenMissingFileKeepsTheCopy`); no copies reads the files, as before (the backward-compatibility fixtures). The copy is kept out of the live registry (`testOpenedFileCopyStaysOutOfTheRegistry`). Each probe fails when broken: copies ignored, the reload skipped, the reload forced, no copy saved, the copy kept in the registry, the loaded file's bytes not recorded. The payload goldens of documents with file-backed ICs changed (180 files, each references an IC file). The format extends the blob registry with a key starting with a NUL, so no earlier document changes; the developer guide's format section is P4.7, still todo |
 | P4.7 | The developer guide's IC and format sections; the release notes' format changes | todo | | |
 | P4.8 | The reload's undo behaves on `master` as probed on the branch (§5) | done | | Holds on plan 1, the code before plan 2 (P4.1): the one-input undo fails, as §1.2 says. Plan 2 fixed the shrinking case and the two-instance case, not bisected to a commit. §1.2 and §2.5 still describe a defect that the tip does not have for those cases, so their wording is revised in P4.5 to name the growing and repeated cases; the reopen case stands |
 | P4.9 | Whether an IC's first reload in a scene always brings another definition (§5) | todo | | Checked here by counting definitions across a first reload; plan 6 checks it for its node ranges |
@@ -86,17 +87,17 @@ reload, two instances of one file, a change after an undo, a reopen after an und
 file, a rename save, a change that goes back to its original, a simulation that runs during a reload, and a nested file.
 The file-watch defects D1 to D4 are fixed on plan 2 (P2.104), and their probes are there.
 
-**Defects found by the probes.** The expected failures that remain are D6, D7 and D8; D-S1 and D-C12 are fixed on plan 2 and their marks are gone here.
+**Defects found by the probes.** The expected failure that remains is D7; D6 is fixed (P4.6); D-S1 and D-C12 were fixed on plan 2 (`303c92af3`, `10f274328`), and no code mark existed for them here.
 
 | ID | Behaviour | Probe | Plan | Status |
 |---|---|---|---|---|
-| D1 to D4 | a rewrite with identical bytes, a touch, a save by rename and a file made again after deletion | plan 2's probes | plan 2 | fixed (P2.104); D3 is flaky (one failure in three `TestICRegistry` runs on the clean tree, not investigated) |
+| D1 to D4 | a rewrite with identical bytes, a touch, a save by rename and a file made again after deletion | plan 2's probes | plan 2 | fixed (P2.104); D3 is flaky (one failure in three `TestICRegistry` runs on the clean tree), discarded, as the user directed |
 | D5 | the undo of a growing reload keeps the added input | expected failures in `TestICRegistry` (the growing undo, two reloads undone in turn, a change after an undo) | plan 4, P4.5 | fixed (P4.5, `d28c93d0e`) |
-| D6 | a reopened document brings the file's new definition back after an undo | expected failure in `TestICRegistry` (the reopen part of the shrinking undo, and the growing reopen) | plan 4, P4.6 | open, waiting on P4.6 |
+| D6 | a reopened document brings the file's new definition back after an undo | expected failure in `TestICRegistry` (the reopen part of the shrinking undo, and the growing reopen) | plan 4, P4.6 | fixed (P4.6, `490983679`); mark removed here |
 | D7 | a nested IC file's change is not reported to the outer instance | expected failure in `TestICRegistry` | plan 4, P4.2a | open, plan 4 work, not started |
-| D8 | an intermittent "Caught unhandled exception" | none: reproduced once while the nested-file probe ran, not since | plan 2, if on the reload path | open, not reproduced |
-| D-S1 | undoing a waveform fill keeps the columns it added | expected failure in `TestBewavedDolphinGui` | plan 2, P2.105 (`303c92af3`) | fixed on plan 2, mark removed there (`303c92af3`); none here |
-| D-C12 | registering over a name in use loses that name's blob on undo | expected failure in `TestICInline` (two marks) | plan 2, P2.106 (`10f274328`) | fixed on plan 2, marks removed there (`10f274328`); none here |
+| D8 | an intermittent "Caught unhandled exception" | none: reproduced once while the nested-file probe ran, not since | plan 2, if on the reload path | discarded, as the user directed; not reproduced |
+| D-S1 | undoing a waveform fill keeps the columns it added | expected failure in `TestBewavedDolphinGui` | plan 2, P2.105 (`303c92af3`) | fixed on plan 2 (`303c92af3`); no code mark existed here |
+| D-C12 | registering over a name in use loses that name's blob on undo | expected failure in `TestICInline` (two marks) | plan 2, P2.106 (`10f274328`) | fixed on plan 2 (`10f274328`); no code mark existed here |
 
 **Mutation record.** Each mutation changes one behaviour in `App/`, runs the listed classes and restores the file from a
 backup. The failing tests are listed; counts are failing lines in the run's log.
@@ -172,3 +173,4 @@ per-class runs count. An expected failure that predates this work, `TestPortRead
 - 2026-11-02: plan 2's watch fix re-lined the exception inventory's ICRegistry rows (`f9d083cbd` on 02c). The restack onto
   it reverted five of those rows on `03-element-types` and on this branch through its conflict resolution; they are
   re-lined on each (`950910817`, and this branch's re-line lands in a later commit). The inventory check passes on this branch.
+- 2026-11-02: P4.6 done (`490983679`): the document keeps a copy of each file-backed IC's definition with the hash of its file; the four cases on open are tested.
