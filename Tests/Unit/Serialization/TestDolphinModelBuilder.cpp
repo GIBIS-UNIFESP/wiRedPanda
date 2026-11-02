@@ -6,7 +6,6 @@
 #include "App/BeWavedDolphin/DolphinModelBuilder.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Workspace.h"
 
@@ -50,7 +49,7 @@ void TestDolphinModelBuilder::testCollectBuildsIndexedLabelsForMultiPortElements
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
 
-    auto *rotary = new InputRotary();
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     rotary->setLabel("Rot");
     auto *display = ElementFactory::buildElement(ElementType::Display7);
     display->setLabel("Disp");

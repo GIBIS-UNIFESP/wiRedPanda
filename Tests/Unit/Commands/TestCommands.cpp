@@ -19,7 +19,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -2407,7 +2406,7 @@ void TestCommands::testSetPropertyCommandSetsAnInputsLockAndValue()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *inputSwitch = new InputSwitch();
-    auto *rotary = new InputRotary();
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{inputSwitch, rotary}, scene));
     rotary->setOutputSize(4);
 

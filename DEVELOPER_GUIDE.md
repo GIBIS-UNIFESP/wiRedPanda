@@ -440,14 +440,13 @@ QGraphicsObject
   └── Element                     (abstract base — all circuit components)
         ├── InputSwitch           (toggle on/off)
         ├── InputButton           (momentary press)
-        ├── InputRotary           (multi-position rotary switch)
         └── IC                    (sub-circuit / integrated circuit)
 ```
 
 The inputs the user operates share no base class: the element answers for their levels (`isOn()`, `setOn()`), which
 their descriptors read and set (`sourceLevel`, `setLevel`), and the lock (`isLocked()`, `setLocked()`).
 
-The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND), the clock, the node, the text and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
+The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND), the clock, the rotary switch, the node, the text and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
 
 ### Element: The Base Class
 

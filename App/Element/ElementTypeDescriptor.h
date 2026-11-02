@@ -108,6 +108,11 @@ struct ElementTypeDescriptor {
     bool (*sourceLevel)(const Element &element, int port) = nullptr;
     /// For such an input: drives output \a port of \a element with \a level, through its parameters (Element::setOn()).
     void (*setLevel)(Element &element, bool level, int port) = nullptr;
+    /// For such an input whose levels its parameters hold in another form than a level per port (a rotary's selection):
+    /// sets the parameters of \a element again from the output values a restore of its simulation state put back
+    /// (Element::restoreSimState()), which the next update would otherwise overwrite from the parameters. None: the
+    /// parameters are the levels' own.
+    void (*levelsRestored)(Element &element) = nullptr;
 
     // --- Parameters ---
 

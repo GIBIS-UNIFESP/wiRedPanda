@@ -22,7 +22,6 @@
 #include "App/Element/ElementChange.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Element/LabelMeasure.h"
@@ -265,8 +264,8 @@ QList<Operation> operations(const QString &image, const QString &audio)
                  inputSwitch->setOn(!inputSwitch->isOn());
                  return true;
              }
-             if (auto *rotary = qobject_cast<InputRotary *>(&element)) {
-                 rotary->setOn(true, 1);
+             if (element.elementType() == ElementType::InputRotary) {
+                 element.setOn(true, 1);
                  return true;
              }
              return false;

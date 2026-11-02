@@ -107,7 +107,8 @@ public:
 
     /**
      * \brief Repositions and reconfigures all ports after the port count changes.
-     * \details Lays the ports out with layoutPorts(), and reports it as one change of the ports (see changed()).
+     * \details Lays the ports out with layoutPorts(), takes each value the ports bound again
+     * (ParamSpec::followsPorts), and reports it as one change of the ports (see changed()).
      * Called after construction, loading, and any input/output size change.
      */
     void updatePortsProperties();
@@ -294,6 +295,12 @@ public:
      * invariant: it asserts, and a release build changes nothing.
      */
     bool setParam(ParamId id, const ParamValue &value);
+
+    /// Puts back \a value, of its kind, as parameter \a id as it is, no rule applied: a value the element keeps in step
+    /// with its simulation state (a rotary's selection, reset or restored with its outputs). It shows as setParam()
+    /// shows a new value (showParam()), and repaints the picture, but it is no change of the circuit, which neither the
+    /// undo stack nor a file sees.
+    void restoreParam(ParamId id, ParamValue value);
 
     // --- Audio Properties ---
 
@@ -518,7 +525,8 @@ public:
     /**
      * \brief Resets all simulation-visible state to power-on defaults.
      * \details The base implementation resets each output slot to its port's
-     * defaultStatus(), and the kernel's history (kernelState()) to its type's power-on history,
+     * defaultStatus(), the kernel's history (kernelState()) to its type's power-on history, and each
+     * parameter that is simulation state too (ParamSpec::resetsWithSimulation) to its default,
      * so that BeWavedDolphin can start every sweep from a known, reproducible state.
      */
     virtual void resetSimState();
@@ -545,7 +553,8 @@ public:
      */
     virtual void saveSimState(QVector<Status> &out) const;
 
-    /// Restores what saveSimState() wrote, reading from \a in at \a cursor and advancing it.
+    /// Restores what saveSimState() wrote, reading from \a in at \a cursor and advancing it, then the
+    /// parameters that hold the restored levels in another form (ElementTypeDescriptor::levelsRestored).
     /// The read order must mirror the write order exactly.
     virtual void restoreSimState(const QVector<Status> &in, int &cursor);
 
@@ -763,12 +772,6 @@ protected:
     /// Follows a new value of parameter \a id, which had \a previous: what the element derives from it (a node's
     /// ports). Called by setParam(); nothing by default.
     virtual void parameterChanged(ParamId id, const ParamValue &previous);
-
-    /// Puts back \a value, of its kind, as parameter \a id as it is, no rule applied: a value the element keeps in step
-    /// with its simulation state (a rotary's selection, reset or restored with its outputs). It shows as setParam()
-    /// shows a new value (showParam()), and repaints the picture, but it is no change of the circuit, which neither the
-    /// undo stack nor a file sees.
-    void restoreParam(ParamId id, ParamValue value);
 
     // --- Qt Event Handling ---
 

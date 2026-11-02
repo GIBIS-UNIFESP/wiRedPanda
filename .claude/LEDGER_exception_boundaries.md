@@ -193,13 +193,13 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/BeWavedDolphin/Serializer.cpp:103` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
 | `App/BeWavedDolphin/Serializer.cpp:113` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
 | `App/BeWavedDolphin/Serializer.cpp:123` | `loadCSV()`: a waveform CSV that does not parse | boundaries only | E | B: stays |
-| `App/CodeGen/ArduinoCodeGen.cpp:28` | `ArduinoCodeGen::ArduinoCodeGen()`: a file that cannot be opened | MCP | E | B: stays |
-| `App/CodeGen/ArduinoCodeGen.cpp:194` | `ArduinoCodeGen::generate()`: rethrow (catch at `:191`) | MCP | — | B: stays |
-| `App/CodeGen/ArduinoCodeGen.cpp:776` | `ArduinoCodeGen::assignVariablesRec()`: a circuit the generator cannot express | MCP, TEST-ONLY | E | B: stays |
-| `App/CodeGen/ArduinoCodeGen.cpp:1002` | `ArduinoCodeGen::emitTruthTable()`: a circuit the generator cannot express | MCP, TEST-ONLY | E | B: stays |
-| `App/CodeGen/ArduinoCodeGen.cpp:1082` | `ArduinoCodeGen::throwPinOverflow()`: more pins than the board has | MCP | E | B: stays |
-| `App/CodeGen/ArduinoCodeGen.cpp:1292` | `ArduinoCodeGen::generateTestbench()`: a testbench file that cannot be opened, or the rethrow at `:1427` | TEST-ONLY | — | B: stays |
-| `App/CodeGen/ArduinoCodeGen.cpp:1427` | `ArduinoCodeGen::generateTestbench()`: a testbench file that cannot be opened, or the rethrow at `:1427` | TEST-ONLY | — | B: stays |
+| `App/CodeGen/ArduinoCodeGen.cpp:27` | `ArduinoCodeGen::ArduinoCodeGen()`: a file that cannot be opened | MCP | E | B: stays |
+| `App/CodeGen/ArduinoCodeGen.cpp:193` | `ArduinoCodeGen::generate()`: rethrow (catch at `:190`) | MCP | — | B: stays |
+| `App/CodeGen/ArduinoCodeGen.cpp:775` | `ArduinoCodeGen::assignVariablesRec()`: a circuit the generator cannot express | MCP, TEST-ONLY | E | B: stays |
+| `App/CodeGen/ArduinoCodeGen.cpp:1001` | `ArduinoCodeGen::emitTruthTable()`: a circuit the generator cannot express | MCP, TEST-ONLY | E | B: stays |
+| `App/CodeGen/ArduinoCodeGen.cpp:1081` | `ArduinoCodeGen::throwPinOverflow()`: more pins than the board has | MCP | E | B: stays |
+| `App/CodeGen/ArduinoCodeGen.cpp:1291` | `ArduinoCodeGen::generateTestbench()`: a testbench file that cannot be opened, or the rethrow at `:1426` | TEST-ONLY | — | B: stays |
+| `App/CodeGen/ArduinoCodeGen.cpp:1426` | `ArduinoCodeGen::generateTestbench()`: a testbench file that cannot be opened, or the rethrow at `:1426` | TEST-ONLY | — | B: stays |
 | `App/CodeGen/SystemVerilogCodeGen.cpp:37` | `SystemVerilogCodeGen::SystemVerilogCodeGen()`: a file that cannot be opened | MCP | E | B: stays |
 | `App/CodeGen/SystemVerilogCodeGen.cpp:1207` | `SystemVerilogCodeGen::assignVariablesRec()`: a circuit the generator cannot express | MCP | E | B: stays |
 | `App/CodeGen/SystemVerilogCodeGen.cpp:1265` | `SystemVerilogCodeGen::assignVariablesRec()`: a circuit the generator cannot express | MCP | E | B: stays |
@@ -322,8 +322,8 @@ trip only reloads nodes), which each fix narrows by reading.
 | `MCP/Server/Handlers/ICHandler.cpp:272` | `ICHandler::handleListICs()` | A listed IC file that does not load (`IC::loadFile()`): listed as without a valid definition | Stays: a fallback |
 | `MCP/Server/Handlers/ICHandler.cpp:283` | `ICHandler::handleListICs()` | A listed file whose header does not read: skipped | Stays: a fallback |
 | `App/BeWavedDolphin/BeWavedDolphin.cpp:532` | `BewavedDolphin::exportToPng()` | Anything from `DolphinExporter::exportToPng()`, which throws nothing today: `false` | Stays: a refusal its callers report |
-| `App/CodeGen/ArduinoCodeGen.cpp:191` | `ArduinoCodeGen::generate()` | Anything: the partial file removed, rethrown (`:194`) | Stays: cleans up for the export's boundary (EXPORT) |
-| `App/CodeGen/ArduinoCodeGen.cpp:1424` | `ArduinoCodeGen::generateTestbench()` | Anything: the stream restored, the file closed, rethrown (`:1427`) | Stays, as `:191` |
+| `App/CodeGen/ArduinoCodeGen.cpp:190` | `ArduinoCodeGen::generate()` | Anything: the partial file removed, rethrown (`:193`) | Stays: cleans up for the export's boundary (EXPORT) |
+| `App/CodeGen/ArduinoCodeGen.cpp:1423` | `ArduinoCodeGen::generateTestbench()` | Anything: the stream restored, the file closed, rethrown (`:1426`) | Stays, as `:190` |
 | `App/Core/Application.cpp:110` | `Application::notify()` | Any `std::exception` from an event's dispatch: reported | Stays: the last-resort reporter (§2); nothing relies on it |
 | `App/Core/Application.h:141` | `Application::guardedSlot()` | Any `std::exception` from the slot's body: reported | Stays: the boundary of every guarded slot |
 | `App/Core/DragDropPayload.cpp:43` | `readDragDropPayload(const QMimeData *)` | A payload that does not read: no payload, the drag refused (EB.8) | Stays |

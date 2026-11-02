@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Scene/PropertyShortcutHandler.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -153,7 +152,7 @@ void TestPropertyShortcutHandler::testDisplayColorPrev()
 void TestPropertyShortcutHandler::testInputRotaryOutputSize()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
     int originalOutputs = rotary->outputSize();
 

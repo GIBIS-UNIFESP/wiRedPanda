@@ -16,7 +16,6 @@
 #include "App/CodeGen/SystemVerilogCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
@@ -298,7 +297,7 @@ void TestSystemVerilogCodeGenUnit::testRotaryInputsDeclared()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     rotary->setOutputSize(4);
     rotary->setLabel("rot");
     QVector<Element *> leds(4);

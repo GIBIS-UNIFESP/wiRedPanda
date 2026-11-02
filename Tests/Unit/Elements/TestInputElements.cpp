@@ -15,7 +15,6 @@
 
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/GraphicsView.h"
@@ -710,7 +709,7 @@ void TestInputElements::testAppearanceReloadsAfterFileModified()
 
 void TestInputElements::testRotarySelectionIsResetAndRestoredWithSimState()
 {
-    auto *rotary = qobject_cast<InputRotary *>(ElementFactory::buildElement(ElementType::InputRotary));
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     QVERIFY(rotary != nullptr);
     rotary->setOutputSize(4);
     rotary->initSimulationVectors(rotary->inputSize(), rotary->outputSize());
@@ -841,7 +840,7 @@ void TestInputElements::testADoubleClickOnAnotherSwitchIsOneUndoableCommand()
 void TestInputElements::testRotaryClickIsOneUndoableCommand()
 {
     Scene scene;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     scene.addItem(rotary);
 
     TestInputElementsHelpers::click(scene, *rotary);
@@ -860,7 +859,7 @@ void TestInputElements::testRotaryClickThroughAZoomedViewIsOneUndoableCommand()
 {
     // Through a view Qt delivers a press to the items under the pointer's pixel, mapped through the view's transform
     Scene scene;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     rotary->setPos(200, 120);
     scene.addItem(rotary);
     GraphicsView view;
@@ -884,7 +883,7 @@ void TestInputElements::testTriggerKeyIsOneUndoableCommandKeepingTheSelection()
     Scene scene;
     auto *first = new InputSwitch;
     auto *second = new InputSwitch;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     first->setTrigger(QKeySequence(Qt::Key_A));
     second->setTrigger(QKeySequence(Qt::Key_A));
     rotary->setTrigger(QKeySequence(Qt::Key_B));

@@ -4,7 +4,6 @@
 #include "Tests/Unit/Serialization/TestWaveformSimulator.h"
 
 #include "App/BeWavedDolphin/WaveformSimulator.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
@@ -34,7 +33,7 @@ void TestWaveformSimulator::testCaptureAndRestoreMultiPortInput()
 {
     // InputRotary exposes multiple output ports, exercising restoreInputs()'s
     // per-port setOn(value, port) path (single-port inputs only ever use port 0).
-    InputRotary rotary;
+    Element rotary{ElementType::InputRotary};
     QVERIFY2(rotary.outputSize() > 1, "InputRotary should have more than one output port by default");
     QVector<Element *> inputs{&rotary};
 

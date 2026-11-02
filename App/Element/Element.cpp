@@ -548,6 +548,14 @@ void Element::updatePortsProperties()
 {
     const ChangeBatch batch(*this, ElementChange::Ports);
     layoutPorts();
+    // A value the ports bound is taken again: a selection beyond fewer outputs becomes what the spec makes of it
+    for (const ParamSpec &spec : m_descriptor.parameters) {
+        if (spec.followsPorts && spec.accept) {
+            if (std::optional<ParamValue> taken = spec.accept(*this, m_parameters.value(spec.id))) {
+                restoreParam(spec.id, std::move(*taken));
+            }
+        }
+    }
     // The ports an input adds or keeps show what it drives
     if (m_descriptor.sourceLevel) {
         showSourceLevels();
@@ -1064,6 +1072,12 @@ void Element::resetSimState()
 {
     m_sim.reset(m_ports.outputs());
     m_sim.kernelState() = m_descriptor.kernelState;
+    // A parameter that is simulation state too starts afresh with it
+    for (const ParamSpec &spec : m_descriptor.parameters) {
+        if (spec.resetsWithSimulation) {
+            restoreParam(spec.id, spec.defaultValue);
+        }
+    }
 }
 
 void Element::saveSimState(QVector<Status> &out) const
@@ -1088,6 +1102,11 @@ void Element::restoreSimState(const QVector<Status> &in, int &cursor)
             return; // LCOV_EXCL_LINE -- save/restore are always paired over the same element set
         }
         kept = in.at(cursor++);
+    }
+    // An input whose parameters hold its levels in another form takes them from the restored outputs, which the next
+    // update would otherwise overwrite from the parameters
+    if (m_descriptor.levelsRestored) {
+        m_descriptor.levelsRestored(*this);
     }
 }
 

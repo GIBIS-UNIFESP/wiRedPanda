@@ -35,7 +35,6 @@
 #include "App/Core/Application.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
@@ -693,7 +692,7 @@ void TestBewavedDolphinGui::testSaveToTxtSplitsAfterTheLastInputPort()
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
 
-    auto *rotary = new InputRotary();
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->addItem(rotary);
     scene->addItem(led);
@@ -1812,7 +1811,7 @@ void TestBewavedDolphinGui::testSnapshotMatchesModelRowsForMultiPortElements()
     auto ws = std::make_unique<WorkSpace>();
     auto *scene = ws->scene();
 
-    auto *rotary = new InputRotary();
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     auto *sw = new InputSwitch();
     auto *display = ElementFactory::buildElement(ElementType::Display7);
     scene->addItem(rotary);

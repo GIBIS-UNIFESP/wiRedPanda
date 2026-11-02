@@ -111,6 +111,15 @@ struct ParamSpec {
     /// Whether the value is a level the element drives on its outputs (an input's level or selection), so a new one
     /// sets each output port from the type's ElementTypeDescriptor::sourceLevel.
     bool drivesOutputs = false;
+
+    /// Whether the values \c accept takes depend on the ports (a rotary's selection, one of its outputs), so after each
+    /// layout of the ports the element takes its value through \c accept again, a selection beyond fewer outputs
+    /// becoming what \c accept makes of it. No change of the circuit is reported: the ports' change carries it.
+    bool followsPorts = false;
+
+    /// Whether the value is simulation state too (a rotary's selection, which its outputs show), so a reset of the
+    /// simulation's state (Element::resetSimState()) puts the default back, with no change of the circuit reported.
+    bool resetsWithSimulation = false;
 };
 
 /**

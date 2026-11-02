@@ -14,7 +14,6 @@
 #include "App/CodeGen/ArduinoCodeGen.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -316,9 +315,9 @@ void TestArduinoCodeGenUnit::testTooManyInputRotaryPositionsThrowsPinOverflow()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    QVector<InputRotary *> rotaries;
+    QVector<Element *> rotaries;
     for (int i = 0; i < 36; ++i) {
-        auto *rotary = new InputRotary;
+        auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
         QVERIFY2(rotary->outputSize() >= 2, "InputRotary should have at least 2 output ports by default");
         rotaries.append(rotary);
         builder.add(rotary);

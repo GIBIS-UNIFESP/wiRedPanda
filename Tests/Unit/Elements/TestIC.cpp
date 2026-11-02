@@ -37,7 +37,6 @@
 #include "App/Core/Settings.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
@@ -1264,7 +1263,7 @@ void TestICUnit::testLoadBoundaryElementProxiesMultiOutputInputPortNames()
 
     WorkSpace subWorkspace;
     CircuitBuilder subBuilder(subWorkspace.scene());
-    InputRotary rotary;
+    Element rotary{ElementType::InputRotary};
     QCOMPARE(rotary.outputSize(), 2);
     subBuilder.add(&rotary);
     const QString subPath = subDir.path() + "/rotary_probe.panda";

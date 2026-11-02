@@ -102,7 +102,6 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputButton.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputRotary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/InputSwitch.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h

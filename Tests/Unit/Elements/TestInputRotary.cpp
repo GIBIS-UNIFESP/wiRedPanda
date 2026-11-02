@@ -18,7 +18,6 @@
 #include <QTest>
 
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -35,8 +34,8 @@ void TestInputRotary::testInitialPortState()
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
     QVERIFY(elem != nullptr);
 
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     // Initial state should be port 0
     QCOMPARE(rotary->param<int>(ParamId::Position), 0);
@@ -46,8 +45,8 @@ void TestInputRotary::testInitialPortState()
 void TestInputRotary::testNextPortWrapping()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -72,8 +71,8 @@ void TestInputRotary::testNextPortWrapping()
 void TestInputRotary::testSetPortDirect()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -88,8 +87,8 @@ void TestInputRotary::testSetPortDirect()
 void TestInputRotary::testSetPortOutOfBounds()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -101,8 +100,8 @@ void TestInputRotary::testSetPortOutOfBounds()
 void TestInputRotary::testSetPortWrapsToZero()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -122,8 +121,8 @@ void TestInputRotary::testSetPortWrapsToZero()
 void TestInputRotary::testOutputValue()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     // Initial output value should be 0
     QCOMPARE(rotary->param<int>(ParamId::Position), 0);
@@ -137,8 +136,8 @@ void TestInputRotary::testOutputValue()
 void TestInputRotary::testOutputSize()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     // InputRotary should have valid output size
     int size = rotary->outputSize();
@@ -152,8 +151,8 @@ void TestInputRotary::testOutputSize()
 void TestInputRotary::testIsOnCurrentPort()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -167,8 +166,8 @@ void TestInputRotary::testIsOnCurrentPort()
 void TestInputRotary::testIsOnOtherPort()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     // Set to port 0
     rotary->setOn(true, 0);
@@ -184,8 +183,8 @@ void TestInputRotary::testIsOnOtherPort()
 void TestInputRotary::testIsOnAllPorts()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -223,8 +222,8 @@ void TestInputRotary::testPortConfigurationWithStandardSize()
     QFETCH(int, size);
 
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     rotary->setOutputSize(size);
     QCOMPARE(rotary->outputSize(), size);
@@ -247,8 +246,8 @@ void TestInputRotary::testPortConfigurationWithStandardSize()
 void TestInputRotary::testSaveCurrentPort()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     // Set to a specific port
     rotary->setOn(true, 3);
@@ -266,8 +265,8 @@ void TestInputRotary::testLoadCurrentPort()
 {
     // Create element and set port to 1 (valid for all configurations)
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     rotary->setOn(true, 1);
 
@@ -279,8 +278,8 @@ void TestInputRotary::testLoadCurrentPort()
 
     // Create new element and load state
     auto elem2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary2 = dynamic_cast<InputRotary *>(elem2.get());
-    QVERIFY(rotary2 != nullptr);
+    auto *rotary2 = elem2.get();
+    QCOMPARE(rotary2->elementType(), ElementType::InputRotary);
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -294,8 +293,8 @@ void TestInputRotary::testLoadCurrentPort()
 void TestInputRotary::testSaveLoadPreservesState()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int testPort = 1;  // Use valid port (all rotaries have at least 2 ports)
     rotary->setOn(true, testPort);
@@ -308,8 +307,8 @@ void TestInputRotary::testSaveLoadPreservesState()
 
     // Load into new element
     auto elem2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary2 = dynamic_cast<InputRotary *>(elem2.get());
-    QVERIFY(rotary2 != nullptr);
+    auto *rotary2 = elem2.get();
+    QCOMPARE(rotary2->elementType(), ElementType::InputRotary);
 
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
@@ -327,8 +326,8 @@ void TestInputRotary::testSaveLoadPreservesState()
 void TestInputRotary::testMultipleSetOn()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -342,8 +341,8 @@ void TestInputRotary::testMultipleSetOn()
 void TestInputRotary::testPortStatusAfterSetOn()
 {
     auto elem = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::InputRotary));
-    auto *rotary = dynamic_cast<InputRotary *>(elem.get());
-    QVERIFY(rotary != nullptr);
+    auto *rotary = elem.get();
+    QCOMPARE(rotary->elementType(), ElementType::InputRotary);
 
     const int numPorts = rotary->outputSize();
 
@@ -378,8 +377,8 @@ void TestInputRotary::testInputRotary()
     QVERIFY(rotary != nullptr);
 
     // Check that it's an InputRotary
-    auto *inputRotary = dynamic_cast<InputRotary *>(rotary.get());
-    QVERIFY(inputRotary != nullptr);
+    auto *inputRotary = rotary.get();
+    QCOMPARE(inputRotary->elementType(), ElementType::InputRotary);
 
     // Test initial state (should start at position 0)
     QCOMPARE(inputRotary->param<int>(ParamId::Position), 0);
@@ -445,7 +444,7 @@ void TestInputRotary::testSetOnNegativePortClamps()
     // negative position bypassed the upper-bound clamp — no port matched in
     // the output loop, leaving the rotary with no active output at all.
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     rotary->setOn(true, -5);
@@ -463,7 +462,7 @@ void TestInputRotary::testPortConfigurationWithNonStandardPortCount()
     // step at a time through the full [minOutputSize, maxOutputSize] range, so a
     // non-standard size (e.g. 5) is reachable in normal use and falls into its default case.
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     rotary->setOutputSize(5);
@@ -480,7 +479,7 @@ void TestInputRotary::testPortConfigurationWithNonStandardPortCount()
 void TestInputRotary::testPainting()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
     rotary->setOutputSize(4);
     rotary->setOn(true, 2); // exercises the arrow-overlay branch for a non-zero port too
@@ -498,7 +497,7 @@ void TestInputRotary::testPainting()
 void TestInputRotary::testAHighLevelSelectsThePort()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     rotary->setOn(true, 1);
@@ -508,7 +507,7 @@ void TestInputRotary::testAHighLevelSelectsThePort()
 void TestInputRotary::testALowLevelSelectsNothing()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     rotary->setOn(true, 1);
@@ -594,7 +593,7 @@ void TestInputRotary::testAResetAndARestoreOfTheSimulationShowTheSelection()
 void TestInputRotary::testMousePressAdvancesPort()
 {
     Scene scene;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     rotary->setPos(0, 0);
     scene.addItem(rotary);
 
@@ -615,7 +614,7 @@ void TestInputRotary::testMousePressWhileLockedDoesNotAdvance()
     // actually respects the lock (setOn() itself deliberately bypasses it -- see
     // testInputRotary's locked-state section).
     Scene scene;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     rotary->setPos(0, 0);
     rotary->setLocked(true);
     scene.addItem(rotary);
@@ -634,7 +633,7 @@ void TestInputRotary::testMousePressWhileLockedDoesNotAdvance()
 void TestInputRotary::testSetAppearanceCustom()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     QTemporaryFile tempFile("XXXXXX.svg");
@@ -642,14 +641,17 @@ void TestInputRotary::testSetAppearanceCustom()
     tempFile.write("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"/>");
     tempFile.close();
 
+    // The dial has one picture, its first slot, which a custom picture replaces
     rotary->setAppearance(false, tempFile.fileName());
     QVERIFY(!rotary->externalFiles().isEmpty());
+    QCOMPARE(rotary->appearance().alternativeAppearances(), QStringList{tempFile.fileName()});
+    QVERIFY(!rotary->appearance().usingDefaultAppearance());
 }
 
 void TestInputRotary::testSetAppearanceResetToDefault()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary;
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     QTemporaryFile tempFile("XXXXXX.svg");
@@ -683,13 +685,13 @@ void TestInputRotary::testLoadOldFormatBareFields()
         writeStream << 0;
     }
     writeStream << quint64(0); // appearance-names count = 0 (hasAppearanceNames is true at V_3_1)
-    writeStream << 1;          // InputRotary::load()'s bare m_currentPort
+    writeStream << 1;          // the rotary's bare selection, before 4.1
     writeStream << true;       // hasLockState is true at V_3_1 -- bare m_locked
 
     QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, Versions::V_3_1, SerializationPurpose::PortableFile};
 
-    InputRotary rotary;
+    Element rotary{ElementType::InputRotary};
     QDataStream readStream(data);
     rotary.load(readStream, context);
 
@@ -700,7 +702,7 @@ void TestInputRotary::testLoadOldFormatBareFields()
 
 void TestInputRotary::testLoadLockedFlagFromMap()
 {
-    auto rotary1 = std::make_unique<InputRotary>();
+    auto rotary1 = std::make_unique<Element>(ElementType::InputRotary);
     rotary1->setLocked(true);
 
     QByteArray data;
@@ -711,7 +713,7 @@ void TestInputRotary::testLoadLockedFlagFromMap()
     // with other whole-state round-trip tests).
     rotary1->save(saveStream, {.purpose = SerializationPurpose::InMemorySnapshot});
 
-    auto rotary2 = std::make_unique<InputRotary>();
+    auto rotary2 = std::make_unique<Element>(ElementType::InputRotary);
     QDataStream loadStream(data);
     QHash<quint64, Port *> portMap;
     SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::InMemorySnapshot};

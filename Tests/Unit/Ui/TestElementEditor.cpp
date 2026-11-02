@@ -27,7 +27,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/Presentation/ElementPictures.h"
@@ -923,7 +922,7 @@ void TestElementEditor::testApplyCapabilitiesDemuxShowsOutputOptions()
 void TestElementEditor::testApplyCapabilitiesGenericMultiOutputShowsCuratedOptions()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary(); // multi-output (2..16), not Demux/Mux.
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary); // multi-output (2..16), not Demux/Mux.
     workspace.scene()->addItem(rotary);
 
     ElementEditor editor(&workspace);
@@ -1353,7 +1352,7 @@ void TestElementEditor::testInputIndexChangedSendsChangePortSizeCommand()
 void TestElementEditor::testOutputIndexChangedGuardsEmptyOrDisabled()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary();
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     ElementEditor editor(&workspace);
@@ -1376,7 +1375,7 @@ void TestElementEditor::testOutputIndexChangedGuardsEmptyOrDisabled()
 void TestElementEditor::testOutputIndexChangedSendsChangePortSizeCommand()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary(); // 2..16 outputs, default 2.
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary); // 2..16 outputs, default 2.
     workspace.scene()->addItem(rotary);
 
     ElementEditor editor(&workspace);
@@ -1401,7 +1400,7 @@ void TestElementEditor::testOutputIndexChangedSendsChangePortSizeCommand()
 void TestElementEditor::testOutputValueChangedForInputRotary()
 {
     WorkSpace workspace;
-    auto *rotary = new InputRotary();
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(rotary);
 
     ElementEditor editor(&workspace);
@@ -2023,7 +2022,7 @@ void TestElementEditor::testUndoRestoresTheValueOfAnInput()
 {
     WorkSpace workspace;
     auto *input = new InputSwitch();
-    auto *rotary = new InputRotary();
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
     workspace.scene()->addItem(input);
     workspace.scene()->addItem(rotary);
     rotary->setOutputSize(4);

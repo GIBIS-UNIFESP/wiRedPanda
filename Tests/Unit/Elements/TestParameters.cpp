@@ -20,7 +20,6 @@
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/Parameters.h"
 #include "App/IO/SerializationContext.h"
@@ -364,7 +363,7 @@ void TestParameters::testANewInputDrivesADefiniteLevel()
     QCOMPARE(button.outputPort()->status(), Status::Inactive);
     QCOMPARE(clock.outputPort()->status(), Status::Inactive);
 
-    InputRotary rotary;
+    Element rotary{ElementType::InputRotary};
     QCOMPARE(rotary.outputPort(0)->status(), Status::Active);
     for (int port = 1; port < rotary.outputSize(); ++port) {
         QCOMPARE(rotary.outputPort(port)->status(), Status::Inactive);
@@ -373,7 +372,7 @@ void TestParameters::testANewInputDrivesADefiniteLevel()
 
 void TestParameters::testARotarysSelectionOutOfRangeIsTheFirst()
 {
-    InputRotary rotary;
+    Element rotary{ElementType::InputRotary};
     rotary.setOutputSize(4);
 
     QVERIFY(rotary.setParam(ParamId::Position, 3));
@@ -626,7 +625,7 @@ void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
     QCOMPARE(node.wirelessMode(), WirelessMode::Tx);
 
     // A value that does not read as its kind is dropped
-    InputRotary rotary;
+    Element rotary{ElementType::InputRotary};
     rotary.setOn(true, 1);
     loadMap(rotary, {{"currentPort", "first"}}, QVersionNumber(4, 1));
     QCOMPARE(rotary.param<int>(ParamId::Position), 1);
@@ -703,7 +702,7 @@ void TestParameters::testEveryLoadDrivesASwitchsLevelAndARotarysSelection()
     loadMap(toggle, {}, QVersionNumber(4, 1));
     QCOMPARE(toggle.outputPort(0)->status(), Status::Inactive);
 
-    InputRotary rotary;
+    Element rotary{ElementType::InputRotary};
     rotary.setOutputSize(4);
     for (int port = 0; port < rotary.outputSize(); ++port) {
         rotary.outputPort(port)->setStatus(Status::Unknown);
