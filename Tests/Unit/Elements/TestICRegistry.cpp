@@ -237,6 +237,151 @@ void TestICRegistry::testReloadUndoRestoresTheInputAndItsWire()
     QCOMPARE(reopenedIC->inputSize(), 2);
 }
 
+void TestICRegistry::testReloadUndoRedoRoundTrip()
+{
+    // The undo, then the redo of a reload, leave the IC and its cut wire as each state was.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("two.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    auto *ic = new IC();
+    ic->loadFile(path, dir.path());
+    builder.addElement(ic);
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QCOMPARE(ic->inputSize(), 1);
+    QVERIFY(source->outputPort(0)->connections().isEmpty());
+
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+
+    scene->undoStack()->redo();
+    QCOMPARE(ic->inputSize(), 1);
+    QVERIFY(source->outputPort(0)->connections().isEmpty());
+}
+
+void TestICRegistry::testReloadThatAddsAnInputUndoesCleanly()
+{
+    // A reload that adds an input cuts nothing; its undo removes the input and keeps the wire.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("grow.panda");
+    saveSwitchesToLeds(path, 1);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    auto *ic = new IC();
+    ic->loadFile(path, dir.path());
+    builder.addElement(ic);
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 0);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 2);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+
+    // Expected to fail until the undo of a reload restores the definition its snapshot captured, not the file as it is
+    // now: the undo reads the file's new definition back, which still has the added input.
+    scene->undoStack()->undo();
+    QEXPECT_FAIL("", "the undo of a growing reload keeps the added input", Continue);
+    QCOMPARE(ic->inputSize(), 1);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testTwoReloadsUndoInOrder()
+{
+    // Two reloads of one file, shrinking then growing, each undone in turn.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("twice.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    auto *ic = new IC();
+    ic->loadFile(path, dir.path());
+    builder.addElement(ic);
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    saveSwitchesToLeds(path, 3);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 2);
+    QCOMPARE(ic->inputSize(), 3);
+
+    scene->undoStack()->undo();
+    QEXPECT_FAIL("", "the undo of the second reload keeps its added input", Continue);
+    QCOMPARE(ic->inputSize(), 1);
+    scene->undoStack()->undo();
+    QEXPECT_FAIL("", "the undo of the first reload keeps the input the second reload left", Continue);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testTwoInstancesOfOneFileUndoRestoreBoth()
+{
+    // Two instances of one file, each wired to the input the reload removes; one undo restores both.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("pair.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    auto *first = new IC();
+    first->loadFile(path, dir.path());
+    auto *second = new IC();
+    second->loadFile(path, dir.path());
+    builder.add(first, second);
+    auto *firstSource = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *secondSource = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(firstSource, secondSource);
+    builder.connect(firstSource, 0, first, 1);
+    builder.connect(secondSource, 0, second, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QCOMPARE(first->inputSize(), 1);
+    QCOMPARE(second->inputSize(), 1);
+    QVERIFY(firstSource->outputPort(0)->connections().isEmpty());
+    QVERIFY(secondSource->outputPort(0)->connections().isEmpty());
+
+    scene->undoStack()->undo();
+    QCOMPARE(first->inputSize(), 2);
+    QCOMPARE(second->inputSize(), 2);
+    QCOMPARE(firstSource->outputPort(0)->connections().size(), 1);
+    QCOMPARE(secondSource->outputPort(0)->connections().size(), 1);
+}
+
 void TestICRegistry::testRecursiveICLoading()
 {
     // A short, legitimate dependency chain (root -> dep1 -> dep2, well under the
