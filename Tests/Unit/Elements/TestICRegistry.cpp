@@ -14,6 +14,7 @@
 #include <QUndoStack>
 
 #include "App/Core/Common.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
@@ -101,6 +102,27 @@ void saveMinimalCircuit(const QString &path)
     QDataStream stream(&out);
     Serialization::writePandaHeader(stream);
     ws.save(stream);
+}
+
+// Saves a circuit of \a count input switches, each driving its own LED: an IC of \a count inputs and outputs.
+void saveSwitchesToLeds(const QString &path, const int count)
+{
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    for (int i = 0; i < count; ++i) {
+        auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+        auto *led = ElementFactory::buildElement(ElementType::Led);
+        builder.add(sw, led);
+        builder.connect(sw, 0, led, 0);
+    }
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+}
+
+// Rewrites \a path as saveSwitchesToLeds() does, in one write, as an editor's save is one write: a second change
+// (a modification time set after it) would be a second watcher report and a second undo step.
+void rewriteSwitchesToLeds(const QString &path, const int count)
+{
+    saveSwitchesToLeds(path, count);
 }
 } // namespace
 
@@ -557,4 +579,113 @@ void TestICRegistry::testRenameBlobSkipsSiblingBlobPredatingMetadata()
     // The sibling predates metadata support -- renameBlobReference() must bail out via its own
     // hasMetadata() guard rather than attempting to reinterpret bytes it can't safely parse.
     QCOMPARE(registry->blob("sibling"), siblingBytes);
+}
+
+namespace {
+// Lets the file watcher's reports and the queued reloads they cause run, so a check reads the settled state.
+void settle()
+{
+    QTest::qWait(1500);
+}
+
+// Builds a file-backed IC of \a path in \a scene and returns it, added to the scene.
+IC *addFileIC(CircuitBuilder &builder, const QString &path, const QString &contextDir)
+{
+    auto *ic = new IC();
+    ic->loadFile(path, contextDir);
+    builder.addElement(ic);
+    return ic;
+}
+} // namespace
+
+void TestICRegistry::testIdenticalRewriteAddsNoUndoStep()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("same.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    rewriteSwitchesToLeds(path, 2); // the same bytes again
+    settle();
+    QCOMPARE(scene->undoStack()->count(), 0);
+    QCOMPARE(ic->inputSize(), 2);
+}
+
+void TestICRegistry::testTouchOnlyAddsNoUndoStep()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("touched.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadWrite));
+    QVERIFY(file.setFileTime(QFileInfo(path).lastModified().addSecs(2), QFileDevice::FileModificationTime));
+    file.close();
+    settle();
+    QCOMPARE(scene->undoStack()->count(), 0);
+    QCOMPARE(ic->inputSize(), 2);
+}
+
+void TestICRegistry::testRenameOverReloadsInstance()
+{
+    // An editor's save: the new bytes go to a temporary file, which is renamed over the original.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("renamed.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    const QString temporary = dir.filePath("renamed.tmp");
+    saveSwitchesToLeds(temporary, 1);
+    QVERIFY(QFile::remove(path));
+    QVERIFY(QFile::rename(temporary, path));
+    QVERIFY2(TestUtils::waitFor([&] { return ic->inputSize() == 1; }),
+             "the rename over the file must reach the instance");
+    QCOMPARE(scene->undoStack()->count(), 1);
+}
+
+void TestICRegistry::testDeletedFileKeepsInstanceAndStack()
+{
+    // The file is deleted, then made again with one input: the instance keeps its definition meanwhile, and the new
+    // file reaches it.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("deleted.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    QVERIFY(QFile::remove(path));
+    QVERIFY(definitionChangedSpy.wait());
+    settle();
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(scene->undoStack()->count(), 0);
+
+    saveSwitchesToLeds(path, 1);
+    const bool reloaded = TestUtils::waitFor([&] { return ic->inputSize() == 1; });
+    QCOMPARE(reloaded, true);
+    QCOMPARE(scene->undoStack()->count(), 1);
 }

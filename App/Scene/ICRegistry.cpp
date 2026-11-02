@@ -3,11 +3,14 @@
 
 #include "App/Scene/ICRegistry.h"
 
+#include <algorithm>
 #include <memory>
+#include <utility>
 
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QSaveFile>
 #include <QThread>
@@ -32,6 +35,8 @@ ICRegistry::ICRegistry(Scene *scene)
 {
     connect(&m_fileWatcher, &QFileSystemWatcher::fileChanged,
             this, &ICRegistry::onFileChanged, Qt::QueuedConnection);
+    connect(&m_fileWatcher, &QFileSystemWatcher::directoryChanged,
+            this, &ICRegistry::onDirectoryChanged, Qt::QueuedConnection);
 }
 
 const QByteArray &ICRegistry::cachedFileBytes(const QString &filePath)
@@ -62,6 +67,9 @@ void ICRegistry::invalidate(const QString &filePath)
 
 void ICRegistry::watchFile(const QString &filePath)
 {
+    // The bytes the instances were built from are cached here, so that a report whose bytes match them can be told apart
+    // from a change. An instance built before it reached a scene was read from disk, not from this cache.
+    cachedFileBytes(filePath);
     if (!m_fileWatcher.files().contains(filePath)) {
         m_fileWatcher.addPath(filePath);
     }
@@ -96,12 +104,33 @@ void ICRegistry::onFileChanged(const QString &filePath)
     Application::guardedSlot(this, [this, &filePath] {
         qCDebug(zero) << "IC file changed:" << filePath;
 
+        // A report whose bytes are the ones the cache holds changes nothing: a touch, a second report of one save, or an
+        // editor's save of the same text. The watch is kept, and no reload or undo step follows.
+        if (QFileInfo::exists(filePath)) {
+            QFile file(filePath);
+            const QByteArray bytes = file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
+            const auto cached = m_fileCache.constFind(filePath);
+            if (cached != m_fileCache.constEnd() && cached.value() == bytes) {
+                watchFile(filePath);
+                return;
+            }
+        }
+
         // Invalidate the cached definition so it's rebuilt on next access
         invalidate(filePath);
 
         // Re-add the watch (some OS remove it after a file change event)
         if (!m_fileWatcher.files().contains(filePath) && QFileInfo::exists(filePath)) {
             m_fileWatcher.addPath(filePath);
+        }
+
+        // A deleted file takes its watch with it, so its directory is watched for the file's return
+        if (!QFileInfo::exists(filePath)) {
+            m_absentFiles.insert(filePath);
+            const QString directory = QFileInfo(filePath).absolutePath();
+            if (!m_fileWatcher.directories().contains(directory)) {
+                m_fileWatcher.addPath(directory);
+            }
         }
 
         // Reload all IC instances referencing this file
@@ -132,6 +161,28 @@ void ICRegistry::onFileChanged(const QString &filePath)
 
         emit definitionChanged(filePath);
     });
+}
+
+void ICRegistry::onDirectoryChanged(const QString &directory)
+{
+    // Each returned file is reloaded in a queued call of its own, so the reload is guarded like any file change
+    QStringList returned;
+    for (const auto &path : std::as_const(m_absentFiles)) {
+        if (QFileInfo(path).absolutePath() == directory && QFileInfo::exists(path)) {
+            returned.append(path);
+        }
+    }
+    for (const auto &path : std::as_const(returned)) {
+        m_absentFiles.remove(path);
+        QMetaObject::invokeMethod(this, [this, path] { onFileChanged(path); }, Qt::QueuedConnection);
+    }
+
+    const bool stillAbsent = std::any_of(m_absentFiles.cbegin(), m_absentFiles.cend(), [&directory](const QString &path) {
+        return QFileInfo(path).absolutePath() == directory;
+    });
+    if (!stillAbsent) {
+        m_fileWatcher.removePath(directory);
+    }
 }
 
 // --- Embedded IC blob storage ---

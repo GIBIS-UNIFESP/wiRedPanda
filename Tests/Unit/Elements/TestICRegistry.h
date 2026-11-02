@@ -41,4 +41,9 @@ private slots:
     void testMakeBlobSelfContainedWarnsWhenDependencyFileUnreadable();
 
     void testRenameBlobSkipsSiblingBlobPredatingMetadata();
+
+    void testIdenticalRewriteAddsNoUndoStep();
+    void testTouchOnlyAddsNoUndoStep();
+    void testRenameOverReloadsInstance();
+    void testDeletedFileKeepsInstanceAndStack();
 };

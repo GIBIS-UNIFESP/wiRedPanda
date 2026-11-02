@@ -6052,6 +6052,10 @@ void TestICInline::testOnFileChangedPushesUndoCommandC5()
     auto *undoStack = ws.scene()->undoStack();
     const int stackBefore = undoStack->count();
 
+    // The file changes before the report: a report of unchanged bytes pushes no step.
+    QVERIFY(QFile::remove(icPath));
+    QVERIFY(QFile::copy(m_fixtureDir + "/chain_c.panda", icPath));
+
     QVERIFY(QMetaObject::invokeMethod(reg, "onFileChanged",
                                       Qt::DirectConnection, Q_ARG(QString, icPath)));
 

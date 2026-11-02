@@ -118,6 +118,9 @@ private slots:
     /// Handles QFileSystemWatcher notifications; invalidates the definition and reloads IC instances.
     void onFileChanged(const QString &filePath);
 
+    /// Handles directory notifications for a watched IC file that was deleted: once the file is back, it is reloaded.
+    void onDirectoryChanged(const QString &directory);
+
 private:
     /// Maximum recursion depth for makeBlobSelfContained()'s dependency walk. Cycle detection via
     /// its \c visited set alone doesn't bound a long, non-cyclic chain of distinct legitimate
@@ -146,6 +149,7 @@ private:
 
     Scene *m_scene;                          ///< Owning scene.
     QMap<QString, QByteArray> m_fileCache;   ///< Cached file reads for file-backed ICs (path → bytes).
+    QSet<QString> m_absentFiles;             ///< Watched IC files that are deleted; their directories are watched for their return.
     QMap<QString, QByteArray> m_blobs;       ///< Embedded IC blob storage (name → .panda bytes).
     QFileSystemWatcher m_fileWatcher;        ///< Watches IC source files for external modifications.
 };
