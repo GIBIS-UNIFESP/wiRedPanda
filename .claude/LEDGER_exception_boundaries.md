@@ -156,7 +156,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | OPEN-Q | Opening a file from a frame Qt owns: the Examples menu's lambda (`MainWindow.cpp:262`), `openRecentFile()` (connected at `:1002`), `SceneUiBinder::loadFileRequested` (`:113`; a `.panda` file dropped on the scene, relayed at `SceneUiBinder.cpp:166` and `:170`), `ElementEditor::openSubcircuitFileRequested` (`:392`) and WebAssembly's file-content callback (`WorkspaceManager.cpp:411`). Since EB.6 each calls `WorkspaceManager::openPandaFile()` (`WorkspaceManager.cpp:327`), which runs `loadPandaFile()` inside `guardedSlot()` | Yes (EB.6) |
 | UNDO | A command's `undo()` or `redo()`: `QUndoStack::push()` runs the first `redo()`, and `QUndoStack::undo()` and `redo()` the others; QtGui is built without unwinding, so a throw ends the process on macOS (P2.16) even under a `guardedSlot()`. Since EB.5 the scene's Undo and Redo actions call `Scene::undo()` and `redo()` inside `guardedSlot()`, which throw what a dropped command kept once the stack has returned; since EB.13 a push through `Scene::receiveCommand()` reports it, and `pushCommand()` throws it; BeWavedDolphin's are connected straight to its stack (`BeWavedDolphin.cpp:112`, `:113`), which is sound: its one command, `SetCellsCommand`, sets cells and runs the sweep again (`BewavedDolphin::run()`, `WaveformSimulator::sweep()`), which saves, steps and restores the simulation's state and reaches no throw site (read 2026-10-30) | **No** |
 | TIMER | The autosave's debounce timer's `timeout` (`Workspace.cpp:80`). Since EB.7 it calls `WorkSpace::autosaveOnTimer()` (`:767`), which runs `autosave()` in a `catch` and reports the first failure of a run inside `guardedSlot()` | Yes (EB.7) |
-| WATCH | `ICRegistry::onFileChanged()`, a queued slot wrapped in `guardedSlot()` (`ICRegistry.cpp:96`), its rethrow at `:126` caught there | Yes |
+| WATCH | `ICRegistry::onFileChanged()`, a queued slot wrapped in `guardedSlot()` (`ICRegistry.cpp:104`), its rethrow at `:155` caught there | Yes |
 | DROP | A drop's or a drag's event handler: `Scene::dropEvent()` (`Scene.cpp:1468`) to `SceneDropHandler::handleNewElementDrop()` (builds the element, a file-backed IC loading its file, `IC::loadFromDrop()`) and `handleCloneDrag()` (deserializes the drag), `TrashButton`'s and `ICDropZone`'s drag handlers. A drop's data can come from another program or another wiRedPanda. Since EB.8 every payload is read by `readDragDropPayload(const QMimeData *)` (`DragDropPayload.cpp`), which throws nothing, so a drag that does not read is refused while it hovers; the scene's drop runs its handlers inside `guardedSlot()` | Yes (EB.8) |
 | PALETTE | The palette's `addElementRequested`, connected to a lambda (`MainWindow.cpp:408`) that calls `Scene::addItem()`, `SceneDropHandler::addFromMimeData()`: builds the element, a file-backed IC loading its file. Since EB.6 the call runs inside `guardedSlot()` | Yes (EB.6) |
 | PASTE | Edit's Paste and Duplicate (and Copy, Cut, Delete, Clear Selection), each connected by `connectSceneAction()` (`MainWindow.cpp:455`) to a lambda, and the canvas menu's Paste (`Scene.cpp:1051`): `ClipboardManager::paste()` reads the clipboard, which another program or another wiRedPanda may have written, and deserializes it, reading everything before it changes anything. Since EB.6 both lambdas run the action inside `guardedSlot()` | Yes (EB.6) |
@@ -263,12 +263,12 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/IO/Serialization.cpp:800` | `Serialization::readPreamble()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/IO/Serialization.cpp:864` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/IO/Serialization.cpp:883` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
-| `App/Scene/ICRegistry.cpp:126` | `ICRegistry::onFileChanged()`: rethrow (catch at `:123`) | boundaries only | — | B: stays |
-| `App/Scene/ICRegistry.cpp:286` | `ICRegistry::embedICsByFile()`: rethrow (catch at `:284`) | boundaries only | — | B: stays |
-| `App/Scene/ICRegistry.cpp:306` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
-| `App/Scene/ICRegistry.cpp:313` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
-| `App/Scene/ICRegistry.cpp:370` | `ICRegistry::reloadTargetsAtomically()`: rethrow (catch at `:368`) | boundaries only | — | B: stays |
-| `App/Scene/ICRegistry.cpp:378` | `ICRegistry::makeBlobSelfContained()`: a sub-circuit that does not read | MCP, OPEN-Q, PASTE, UNDO | E | Q: OPEN-Q (EB.6); PASTE (EB.6); UNDO (EB.5) |
+| `App/Scene/ICRegistry.cpp:155` | `ICRegistry::onFileChanged()`: rethrow (catch at `:152`) | boundaries only | — | B: stays |
+| `App/Scene/ICRegistry.cpp:337` | `ICRegistry::embedICsByFile()`: rethrow (catch at `:335`) | boundaries only | — | B: stays |
+| `App/Scene/ICRegistry.cpp:357` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
+| `App/Scene/ICRegistry.cpp:364` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
+| `App/Scene/ICRegistry.cpp:421` | `ICRegistry::reloadTargetsAtomically()`: rethrow (catch at `:419`) | boundaries only | — | B: stays |
+| `App/Scene/ICRegistry.cpp:429` | `ICRegistry::makeBlobSelfContained()`: a sub-circuit that does not read | MCP, OPEN-Q, PASTE, UNDO | E | Q: OPEN-Q (EB.6); PASTE (EB.6); UNDO (EB.5) |
 | `App/Scene/Workspace.cpp:294` | `WorkSpace::save()`: a file that cannot be written, or a sub-circuit that does not read to embed | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/Scene/Workspace.cpp:378` | `WorkSpace::save()`: a file that cannot be written, or a sub-circuit that does not read to embed | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/Scene/Workspace.cpp:402` | `WorkSpace::save()`: a file that cannot be written, or a sub-circuit that does not read to embed | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
@@ -340,9 +340,9 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Scene/Commands.cpp:1458` | `ChangePortSizeCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
 | `App/Scene/Commands.cpp:1735` | `UpdateBlobCommand::redo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
 | `App/Scene/Commands.cpp:1757` | `UpdateBlobCommand::undo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/ICRegistry.cpp:123` | `ICRegistry::onFileChanged()` | A reload that fails: the scene marked for update, `definitionChanged` emitted, rethrown (`:126`) | Stays: rethrows to its `guardedSlot()` (WATCH) |
-| `App/Scene/ICRegistry.cpp:284` | `ICRegistry::embedICsByFile()` | A reload that fails: the new blob removed, rethrown (`:286`) | Stays: rethrows to the IC controller's guarded slots |
-| `App/Scene/ICRegistry.cpp:368` | `ICRegistry::reloadTargetsAtomically()` | A target that does not reload: the updated ones rolled back, rethrown (`:370`) | Stays: rolls back for its callers, `:123`, `:284` and the extraction |
+| `App/Scene/ICRegistry.cpp:152` | `ICRegistry::onFileChanged()` | A reload that fails: the scene marked for update, `definitionChanged` emitted, rethrown (`:155`) | Stays: rethrows to its `guardedSlot()` (WATCH) |
+| `App/Scene/ICRegistry.cpp:335` | `ICRegistry::embedICsByFile()` | A reload that fails: the new blob removed, rethrown (`:337`) | Stays: rethrows to the IC controller's guarded slots |
+| `App/Scene/ICRegistry.cpp:419` | `ICRegistry::reloadTargetsAtomically()` | A target that does not reload: the updated ones rolled back, rethrown (`:421`) | Stays: rolls back for its callers, `:152`, `:335` and the extraction |
 | `App/Scene/Workspace.cpp:772` | `WorkSpace::autosaveOnTimer()` | An autosave that fails: reported the first time of a run, inside `guardedSlot()` (`:778`), logged after (EB.7) | Stays |
 | `App/Scene/Workspace.cpp:885` | `WorkSpace::saveChildICBlob()` | A target that does not reload: rolled back, the blob put back, rethrown (`:888`) | Stays: since EB.6 the child tab's `WorkSpace::save()` calls it directly (`:325`), its callers guarded, instead of through `icBlobSaved` |
 | `App/UI/ICController.cpp:67` | `ICController::runAsOneStep()` | A throw part way through the edits: those applied pushed as one step, rethrown (`:70`) | Stays: rethrows to the IC controller's guarded slots |
@@ -388,7 +388,7 @@ It does not cover a command the body pushes, directly or through the scene: that
 | `App/BeWavedDolphin/BeWavedDolphin.cpp:1027` | `BewavedDolphin::on_actionAbout_triggered()` | Stays |
 | `App/BeWavedDolphin/BeWavedDolphin.cpp:1046` | `BewavedDolphin::on_actionAboutQt_triggered()` | Stays |
 | `App/Core/Application.h:137` | Its definition | Stays |
-| `App/Scene/ICRegistry.cpp:96` | `ICRegistry::onFileChanged()` | Stays |
+| `App/Scene/ICRegistry.cpp:104` | `ICRegistry::onFileChanged()` | Stays |
 | `App/Scene/Scene.cpp:96` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
 | `App/Scene/Scene.cpp:106` | `Scene::Scene()`: the Redo action's lambda (EB.5) | Stays |
 | `App/Scene/Scene.cpp:665` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
