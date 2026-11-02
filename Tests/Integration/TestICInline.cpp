@@ -6198,3 +6198,21 @@ void TestICInline::testLoadFileDirectlyEnforcesNestingDepthLimit()
     QVERIFY2(message.contains("nesting depth", Qt::CaseInsensitive),
              qPrintable(QString("Expected a nesting-depth-limit error, got: %1").arg(message)));
 }
+
+void TestICInline::testRegisterBlobCommandOverAnExistingNameKeepsIt()
+{
+    // A registration at a name already in use must not lose the blob there: the undo of the registration gives back the
+    // blob that was there before.
+    const QByteArray first = readFile(m_fixtureDir + "/simple_and.panda");
+    const QByteArray second = readFile(m_fixtureDir + "/nested_and.panda");
+    Scene scene;
+    scene.setContextDir(m_fixtureDir);
+    auto *reg = scene.icRegistry();
+    reg->setBlob("reg_taken", first);
+    const QByteArray original = reg->blob("reg_taken");
+
+    scene.undoStack()->push(new RegisterBlobCommand("reg_taken", second, &scene));
+    scene.undoStack()->undo();
+    QVERIFY(reg->hasBlob("reg_taken"));
+    QCOMPARE(reg->blob("reg_taken"), original);
+}

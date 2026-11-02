@@ -1379,6 +1379,12 @@ RegisterBlobCommand::RegisterBlobCommand(const QString &blobName, const QByteArr
     , m_scene(scene)
 {
     setText(tr("Register blob \"%1\"").arg(blobName));
+
+    // A name already in use: the blob there is what the undo gives back
+    m_replacesBlob = m_scene->icRegistry()->hasBlob(m_blobName);
+    if (m_replacesBlob) {
+        m_replacedBlob = m_scene->icRegistry()->blob(m_blobName);
+    }
 }
 
 void RegisterBlobCommand::redo()
@@ -1388,7 +1394,11 @@ void RegisterBlobCommand::redo()
 
 void RegisterBlobCommand::undo()
 {
-    m_scene->icRegistry()->removeBlob(m_blobName);
+    if (m_replacesBlob) {
+        m_scene->icRegistry()->setBlob(m_blobName, m_replacedBlob);
+    } else {
+        m_scene->icRegistry()->removeBlob(m_blobName);
+    }
 }
 
 // --- RemoveBlobCommand ---

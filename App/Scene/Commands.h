@@ -542,6 +542,9 @@ private:
     QString m_blobName;
     QByteArray m_data;
     Scene *m_scene;
+    // The blob the registration replaces, when the name was in use: the undo gives it back
+    bool m_replacesBlob = false;
+    QByteArray m_replacedBlob;
 };
 
 /**

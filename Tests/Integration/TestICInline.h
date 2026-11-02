@@ -259,6 +259,7 @@ private slots:
     // backed ICs recursed unbounded and could exhaust the call stack.
     void testLoadFileDirectlyEnforcesNestingDepthLimit();
 
+    void testRegisterBlobCommandOverAnExistingNameKeepsIt();
 private:
     QString fixturesSrcDir() const;
     bool copyFixture(const QString &name);
