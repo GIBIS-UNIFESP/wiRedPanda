@@ -14,6 +14,7 @@ private slots:
 
     void testICRegistration();
     void testICFileWatcher();
+    void testReloadUndoRestoresTheInputAndItsWire();
     void testRecursiveICLoading();
     void testICValidation();
 

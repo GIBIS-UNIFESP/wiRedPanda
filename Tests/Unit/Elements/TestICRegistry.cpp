@@ -20,6 +20,7 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 namespace {
@@ -178,6 +179,62 @@ void TestICRegistry::testICFileWatcher()
     file.close();
     QVERIFY2(onDiskAfterChange != onDisk, "Rewritten fixture must actually differ from the original");
     QCOMPARE(registry->cachedFileBytes(path), onDiskAfterChange);
+}
+
+void TestICRegistry::testReloadUndoRestoresTheInputAndItsWire()
+{
+    // An IC from a file, wired to its second input. The file changes so the input goes, and the reload cuts the wire.
+    // The undo brings both back in the session (checked here). Saved and reopened, the file's new definition comes back
+    // instead: the reopen check below is an expected failure until a document keeps the definition it was saved with.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("two.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+
+    auto *ic = new IC();
+    ic->loadFile(path, dir.path());
+    builder.addElement(ic);
+    QCOMPARE(ic->inputSize(), 2);
+
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+
+    // Rewrite the file with one input and report the change, as the watcher would: the reload has run when this returns.
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+
+    QCOMPARE(ic->inputSize(), 1);
+    QVERIFY2(source->outputPort(0)->connections().isEmpty(), "the reload must cut the wire to the removed input");
+
+    scene->undoStack()->undo();
+
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+
+    // The undone document saved and reopened: the IC is file-backed, so the file's new definition (one input) comes
+    // back with no undo step. Expected to fail until a document keeps the definition it was saved with.
+    const QString savedPath = dir.filePath("undone.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QEXPECT_FAIL("", "a reopened document brings the file's new definition back", Continue);
+    QCOMPARE(reopenedIC->inputSize(), 2);
 }
 
 void TestICRegistry::testRecursiveICLoading()
