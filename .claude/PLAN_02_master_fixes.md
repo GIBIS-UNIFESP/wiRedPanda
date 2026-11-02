@@ -367,6 +367,19 @@ multi-state elements, the fallback one step over both, the grid back for one): i
 a pin, not a failing test first. Placed here because no later plan rewrites the tile branch; plan 3 rewrites the
 editor around it, and the restack keeps the removal under that rewrite.
 
+### 2.32 The IC file watch reports changes that are not changes, and loses a file that returns
+
+A watched IC file's change report reloaded every instance and pushed an undo step even when the bytes were the
+instances' own: a touch, a second report of one save (a rename over the file), or a rewrite with the same bytes. A
+file deleted and made again never reached its instances, because the watch went with the file and was not added again.
+The registry caches a watched file's bytes when the file is first watched. A report whose bytes match the cache keeps
+the watch and changes nothing. A deleted file's directory is watched, and the file reloads when it is back. Four
+probes in `TestICRegistry` hold it: three report the same bytes and expect no step (the rename expects one step), and
+one expects the returned file to reach the instance with one step. Shown to fail: with the comparison disabled, three
+fail; with the directory watch disabled, the fourth fails. An existing probe, `TestICInline`'s C5, called the handler on
+an unchanged file and expected a step; it now changes the file first. Placed here as the watcher's own fault; the undo
+of a reload (P4.5) and its reopen (P4.6) stay in plan 4.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
