@@ -95,9 +95,10 @@ void Buzzer::setFrequency(double freq)
 
     m_generator->setFrequency(freq);
 
-    // If already playing, restart so the new frequency takes effect immediately
+    // A new tone while playing restarts it, so it sounds at once. reset() discards what the sink holds of the old tone,
+    // which stop() would play out first (Qt drains the buffer on Linux and macOS)
     if (m_isPlaying) {
-        m_sink->stop();
+        m_sink->reset();
         m_generator->start();
         m_sink->start(m_generator);
     }
@@ -120,7 +121,7 @@ void Buzzer::startAudio()
 
 void Buzzer::stopAudio()
 {
-    m_sink->stop();
+    m_sink->reset();
     m_generator->close();
 }
 
