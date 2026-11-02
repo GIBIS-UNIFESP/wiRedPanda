@@ -79,4 +79,5 @@ private slots:
     void testFileInAnotherDirectoryReloads();
     void testNestedFileChangeReachesTheOuterInstance();
     void testUndoOfANestedFilesReloadRestoresIt();
+    void testFirstReloadBringsOneDefinition();
 };

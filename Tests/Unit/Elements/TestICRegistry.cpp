@@ -1798,3 +1798,36 @@ void TestICRegistry::testEmbedThenUndoThenRedoRestoresTheEmbeddedIC()
     QVERIFY(source->outputPort(0)->connections().isEmpty());
     QVERIFY(scene->icRegistry()->hasBlob("embedded_redo"));
 }
+
+void TestICRegistry::testFirstReloadBringsOneDefinition()
+{
+    // What a scene's first reload parses: one definition for the new bytes, however many instances of the file the scene
+    // holds, since the instances share the one the file was loaded to
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("first_reload.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    auto *first = new IC();
+    first->loadFile(path, dir.path());
+    builder.addElement(first);
+    auto *second = new IC();
+    second->loadFile(path, dir.path());
+    builder.addElement(second);
+    QCOMPARE(first->inputSize(), 2);
+    QCOMPARE(second->inputSize(), 2);
+
+    const int parses = ICDefinition::parseCount();
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+
+    QCOMPARE(first->inputSize(), 1);
+    QCOMPARE(second->inputSize(), 1);
+    QCOMPARE(ICDefinition::parseCount() - parses, 1);
+}
