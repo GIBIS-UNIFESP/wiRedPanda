@@ -29,7 +29,7 @@ status change gets a dated line in the log.
 | EB.13 | A push that drops its command throws out of `Scene::receiveCommand()` into the slot or event handler that pushed it, none of which catches: the BUILD path, the element editor's context menu and the exercise's and tour's steps | done | `eeaab9595` | Found 2026-10-29 reading EB.6's UI path. EB.5 made `receiveCommand()` throw what a dropped command kept once the stack returns, and guarded Undo, Redo and the MCP server, not the pushes. A push drops when its first `redo()` cannot read its snapshot back: the application's own bytes, except an IC file another program changed since, its cache dropped, which the IC builds again from the file (EB.D6); about 49 push sites in 12 files, from some 20 entries Qt calls. Fixed 2026-10-30 at the user's choice (EB.D7): `Scene::receiveCommand()`, which every push of the interface goes through, reports a dropped push inside `guardedSlot()`, the scene as it was; `Scene::pushCommand()` throws it, for the MCP server's handlers (whose processor answers it as an error) and `WorkSpace::saveChildICBlob()`, whose save must fail as a whole (EB.6). The MCP server's wireless-mode macro is closed by a scope guard when a push in it throws, so later edits do not join it; no test reaches it, the macro's update being a node's, which reads no file. Tests: `receiveCommand()` reports and `pushCommand()` throws, the history unchanged (`TestCommands`); the inline label editor's Return on such an IC, emitted rather than typed, since a key event goes through `notify()`, whose last-resort catch hid the throw from the first version of the test (`TestScene`); the MCP server's label set throws to its processor (`TestElementHandler`). Each fails with its part put back: `receiveCommand()` throwing (two), `pushCommand()` reporting (one), the handler pushing through `receiveCommand()` (one). The element editor's label field pushes a property command, which reads no snapshot, so it cannot drop. Tip checked 2026-10-30: release suite 227/227, five sources compiled alone, at `-O3` and with GCC 13, three tests alone, `fix_style.py` clean; no `tr()` string added or removed |
 | EB.14 | A restore that rebuilds an IC whose circuit names a picture or a sound that is gone throws and drops: an embedded IC's circuit change undone or redone, or any snapshot of such an IC; and the IC's palette preview is lost | done | `ad60c1ad6` | Found 2026-10-30 by EB.2's command steps: undoing an embedded IC's circuit change whose old circuit holds a gate with a picture, or an AudioBox with a sound, deleted since, threw `Couldn't load pixmap` and `Couldn't load audio` and dropped the step. A restore shows or plays the default (P2.50, EB.3), but an IC's circuit is file content, read with `PortableFile` for its paths, and `deserialize()` reported a file's failed pictures and sounds by purpose alone. Fixed: `SerializationContext::fallBackOnFailedFiles`, set on the circuits read while a snapshot's restore is under way (`ICLoader::withCarriedFiles()`, which `IC::load()` enters for an in-memory snapshot, a load inside it inheriting) and on a preview's read; opening a file still reports one, inside its ICs too. The preview, read again from the IC's definition when shown, caught the report and showed none: it shows the default. Tests: the command steps' blob rows (`TestCommands`), four failing with the restore not marked; an IC's preview with its circuit's picture deleted after the load (`TestICUnit`), failing with the preview not marked |
 | EB.15 | Whether Windows ends the process too for a throw through Qt's frames (§9) | done | | Answered 2026-10-30 (plan 2c's audit) from CI already run, nothing new: P2.16's test threw a `Pandaception` out of a command's `undo()` through `QUndoStack::undo()`, a QtGui frame, inside `QVERIFY_THROWS_EXCEPTION` (`cf2d4176b`, Build 40135689835). All three Windows jobs, built with MSVC, passed it (x64 on Qt 6.8.3 and 6.9.3, jobs 120996600845 and 120996600839; ARM64 on 6.9.3, job 120996600923; each log read): the exception unwound through Qt's frame to the test's catch, as on Linux; both macOS jobs ended the process ("terminating due to uncaught exception of type Pandaception"). So Windows does not end the process for a throw through a frame Qt calls synchronously; a throw from an event handler reaches `notify()` there, as Qt documents. The rule holds either way (§9) |
-| EB.16 | The rendering baseline at the plan's end (`PLAN_01_characterization.md` §4.7, `Scripts/profile_probe.sh baseline`), its row in `.claude/RENDERING_BASELINE.md` | done | | Measured 2026-10-31 at `740054990`, after plan 1's P1.40 put the baseline in: clocked_2000 21.97 G / 3.46 G, combinational_1000 0.225 G / 0.628 G, ic_heavy 52.52 G / 10.64 G (`run` / `runfit`); two native runs of each phase alike. Within 0.4% of the ceiling but `combinational_1000` zoomed to fit, 1.2% more. |
+| EB.16 | The rendering baseline at the plan's end (`PLAN_01_characterization.md` §4.7, `Scripts/profile_probe.sh baseline`), its row in `.claude/RENDERING_BASELINE.md` | done | | Measured 2026-10-31 at `8db12330f`, after plan 1's P1.40 put the baseline in: clocked_2000 21.97 G / 3.46 G, combinational_1000 0.225 G / 0.628 G, ic_heavy 52.52 G / 10.64 G (`run` / `runfit`); two native runs of each phase alike. Within 0.4% of the ceiling but `combinational_1000` zoomed to fit, 1.2% more. |
 | EB.D2 | How the rule is kept (§5) | done | | Decided 2026-10-28 by the user: the inventory checked in CI against the sources, and a test through Qt's frame per fixed site; no `noexcept`, since `notify()` stays the last-resort reporter |
 | EB.D3 | What an AudioBox restored with its sound gone plays (§4) | done | | Decided 2026-10-28 by the user: its default sound, the path kept, as P2.50's pictures and plan 3's P3.D5 |
 | EB.D5 | What a command does when its own snapshot does not read (EB.5) | done | | Decided 2026-10-29 by the user: the operation is dropped and the failure thrown ("if it somehow fails to parse we should probably drop the operation and throw"), and nothing may be left half loaded ("the circuit should never go into an invalid state"). A throw through `QUndoStack` ends the process on macOS, so the command keeps the exception and the scene throws it once the stack has returned; a restore reads into copies before the live elements, since a catch after a partial load cannot undo it. A catch with the element left half loaded, and an assertion alone, were turned down |
@@ -51,41 +51,41 @@ status change gets a dated line in the log.
   appendix), the entry paths begun; clangd set up for navigation to trace callers.
 - 2026-10-29: EB.1's inventory written (the appendix): every throw, catch and `guardedSlot()` site, the throw
   sites' paths from clangd's call graph. EB.5 to EB.9 found, `todo`.
-- 2026-10-29: EB.1 done (`a79aecd46`).
+- 2026-10-29: EB.1 done (`2ddd24d8b`).
 - 2026-10-29: rebased onto `02b-qt-ceiling` at `141c90949`, the ceiling landed (QC.2 done); the hashes above
   re-mapped.
-- 2026-10-29: EB.3 done (`b228a4866`): the box plays its built-in sound; the inventory's AudioBox site moved to
+- 2026-10-29: EB.3 done (`163f2b1a1`): the box plays its built-in sound; the inventory's AudioBox site moved to
   `reportFailedFiles()`, and EB.9 loses the built-in sound.
 - 2026-10-29: EB.D4 decided by the user: an IC restored with its file gone loads the content its snapshot carries.
   EB.10 found asking it, `doing`: undoing an IC file's removal from the palette leaves the file in the trash.
-- 2026-10-29: EB.10 done (`64f62d4db`).
-- 2026-10-29: EB.4 done (`8cb358dd5`): a snapshot carries the IC files its ICs read (EB.D4).
+- 2026-10-29: EB.10 done (`125ba3db1`).
+- 2026-10-29: EB.4 done (`a4fe59ee0`): a snapshot carries the IC files its ICs read (EB.D4).
 - 2026-10-29: CI at `9559fa4fa` and `0fcfae66d`: EB.3's test failed with no output device and EB.10's constructor
   lacked parameter docs; both fixed and folded, the hashes above re-mapped.
 - 2026-10-29: CI green at `87f1b2f2f` for EB.3, EB.10 and EB.4 (Build 40896757311, Sanitizers 40896757433, API docs
   40896759215; none skipped).
-- 2026-10-29: EB.5 `doing`: its first slice (`cfcd045a3`), the commands' own throws given up instead.
+- 2026-10-29: EB.5 `doing`: its first slice (`6c5460892`), the commands' own throws given up instead.
 - 2026-10-29: EB.D5 and EB.D6 decided by the user: a snapshot that does not read drops its command, which the scene
   throws once the stack has returned, with nothing half loaded; the copies read first stay, an IC's unchanged circuit
   kept.
-- 2026-10-29: EB.5 done (`15a048469`): a snapshot that does not read drops its command, nothing half loaded.
+- 2026-10-29: EB.5 done (`1224a858d`): a snapshot that does not read drops its command, nothing half loaded.
 - 2026-10-29: CI green at `c160244d5` (Build 40906915433, Sanitizers 40906915419, API docs 40906915418) and at
-  `7ee8ac994` for EB.5 (Build 40966577050, Sanitizers 40966577062, API docs 40966577045); none skipped.
-- 2026-10-29: EB.6 `doing`: OPEN-Q (`a8d48e4f5`), PASTE (`0a0099364`) and PALETTE (`1f200d983`) report in their
-  slots. EB.11 found and done (`a67e7bf9b`): stream-error messages left `%2` unfilled. EB.12 found and done
-  (`e1003f7c5`): an added element's payload that does not read leaked.
-- 2026-10-29: EB.6 done (`c46dd000f`, `9396b94a4`): a sub-circuit tab's save hands its blob to the parent directly,
+  `96e44eaa3` for EB.5 (Build 40966577050, Sanitizers 40966577062, API docs 40966577045); none skipped.
+- 2026-10-29: EB.6 `doing`: OPEN-Q (`28e860293`), PASTE (`6c80eee5e`) and PALETTE (`34286ed95`) report in their
+  slots. EB.11 found and done (`5a733a7e0`): stream-error messages left `%2` unfilled. EB.12 found and done
+  (`2a976c25c`): an added element's payload that does not read leaked.
+- 2026-10-29: EB.6 done (`39d5e341c`, `74b2bca21`): a sub-circuit tab's save hands its blob to the parent directly,
   and a sub-circuit that does not read leaves no tab; the UI path read, its throws EB.9's and EB.13's. EB.13 found,
   `todo`: a push that drops its command throws into the slot that pushed it.
 - 2026-10-30: CI green at `5f5171e8d` (Build 40971282786, Sanitizers 40971282663, API docs 40971282402) and at
-  `290d085d3` for EB.6 (Build 40973622842, Sanitizers 40973622844, API docs 40973622872); none skipped.
+  `282bb07ad` for EB.6 (Build 40973622842, Sanitizers 40973622844, API docs 40973622872); none skipped.
 - 2026-10-30: EB.D7 decided by the user: a push that drops is reported
   by the scene, a throwing `pushCommand()` kept for the MCP server and the sub-circuit save. EB.13 done
-  (`edb23c998`).
-- 2026-10-30: EB.7 done (`345302a0e`): the autosave's timer reports a failure once. EB.8 done (`86a8a848a`): a drag
+  (`8623eb55d`).
+- 2026-10-30: EB.7 done (`8127a300e`): the autosave's timer reports a failure once. EB.8 done (`ff50d2db9`): a drag
   that does not read is refused, a drop that fails reported. Tip checked: release suite 227/227, six sources compiled
   alone, at `-O3` and with GCC 13, five tests alone, `fix_style.py` clean; no `tr()` string added or removed.
-- 2026-10-30: EB.9 done (`8d4f0f093`): broken invariants from the interface are assertions, and a stream refuses a
+- 2026-10-30: EB.9 done (`49e2df148`): broken invariants from the interface are assertions, and a stream refuses a
   type it cannot build. Two tests from EB.7 and EB.8 did not build against Qt 6.9 (a `QPointF` drag-enter event, a
   `QTRY_VERIFY` default timeout under `-Wconversion`); fixed with `makeDragEnterEvent()` and `TestUtils::waitFor()`,
   folded into them. Tip checked: release suite 227/227, debug
@@ -94,9 +94,9 @@ status change gets a dated line in the log.
   clean, the strings golden updated.
 - 2026-10-30: CI at `84a18b6bb` failed the two drag tests and the autosave test on Qt 6.8, fixed in the fold logged
   above.
-- 2026-10-30: EB.2 done (`4a0b6a2ea`, `926a3eeee`, `be30026d9`): the inventory checked in CI against the sources,
+- 2026-10-30: EB.2 done (`1ed07fc73`, `7834661f2`, `724dc0235`): the inventory checked in CI against the sources,
   and every command step that reads a snapshot tested with each external file gone. EB.14 found by it and done
-  (`be30026d9`): a restore threw for a picture or a sound gone inside an IC's circuit. Tip checked: release suite
+  (`724dc0235`): a restore threw for a picture or a sound gone inside an IC's circuit. Tip checked: release suite
   227/227, five sources compiled alone, at `-O3` and with GCC 13, `fix_style.py` clean, the inventory check clean;
   no `tr()` string added or removed.
 - 2026-10-30: the UNDO path's BeWavedDolphin actions read: its command reaches no throw site, so they need no guard.
@@ -104,23 +104,23 @@ status change gets a dated line in the log.
   41062510533) failed EB.2's command-step test: it read the element's id after the step that deleted it (an
   addition's undo, a deletion, a morph), a use after free ASan reported and macOS failed on, and GCC 13 at `-O3`
   raised `-Wnull-dereference` on the id's fallback; the id is taken when the element is added. GCC 13 at `-O3`
-  fails the old test and passes the new; folded into the fix (`be30026d9`).
+  fails the old test and passes the new; folded into the fix (`724dc0235`).
 - 2026-10-30: CI green at `b4778e528` (Build 41065411927, Sanitizers 41065411494, API docs 41065411536, Exception
   inventory 41065411455), the macOS-15 jobs on 15.8.2 included; none skipped.
 - 2026-10-30: plan 2c audited against the plan, not the ledger's statuses: EB.8's test went around Qt's frame and
   missed the clone case and the report, closed and folded into the fix; the two failed-file report sites listed the
   UNDO path that EB.14 closed; §9's question had no row (EB.15, answered from P2.16's CI); the
   appendix's counts recounted by the check's script; CLAUDE.md gains GCC 13's `-O3` null-dereference.
-  Tip checked at `2f7d4512e`: release and debug suites 227/227.
+  Tip checked at `d37267b68`: release and debug suites 227/227.
 - 2026-10-30: CI green at `f49d72cf2` (Build 41069500976, Sanitizers 41069501044, API docs 41069501292, Lint
   41069501290, Exception inventory 41069501128); none skipped.
 - 2026-10-30: rebased onto plan 2's P2.97, the growth tests timed by the thread's CPU, and P2.98, the update
   checker's failed reply from a local server, recorded here at first; the hashes above re-mapped.
-- 2026-10-31: EB.16 added and done: the rendering baseline measured at the plan's end, `740054990`, after plan 1 took it
+- 2026-10-31: EB.16 added and done: the rendering baseline measured at the plan's end, `8db12330f`, after plan 1 took it
   (P1.40).
 - 2026-11-01: CI's Exception inventory failed at `00fc1c8a6`, this branch's tip: plan 2's P2.97 and P2.98, rebased in
   below this branch, moved `Simulation::Simulation()`'s `guardedSlot()` from line 39 to 40 and its row stayed at 39. The
-  row moved in `47f439ccd`, the commit that wrote it, and in every commit after it, as this branch was rebased onto plan
+  row moved in `502d5440a`, the commit that wrote it, and in every commit after it, as this branch was rebased onto plan
   2's P2.100.
 
 ## Appendix: the inventory (EB.1)
