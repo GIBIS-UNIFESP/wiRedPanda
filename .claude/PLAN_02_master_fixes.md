@@ -380,6 +380,21 @@ fail; with the directory watch disabled, the fourth fails. An existing probe, `T
 an unchanged file and expected a step; it now changes the file first. Placed here as the watcher's own fault; the undo
 of a reload (P4.5) and its reopen (P4.6) stay in plan 4.
 
+### 2.33 The combinational fill's undo keeps the columns it added
+
+The waveform's combinational fill grows the grid to the truth table's length before it fills the values, and the length
+was not part of its step: an undo reverted the values and left the columns. The fill's step is now a `SetLengthCommand`
+whose child is the value change: redo sets the length and then the values; undo takes the values back and then the
+length. Shown to fail: `TestBewavedDolphinGui::testUndoCombinationalRevertsColumnGrowth` keeps four columns where two
+were. The Set Length action is not an undo step either; it is not changed here.
+
+### 2.34 A registration over a name in use gives back the blob it replaced
+
+`RegisterBlobCommand`'s undo removed the name, so a registration over a name already in use lost the blob that held it.
+The command now records the blob when the name is in use, and its undo restores that blob, removing the name only when
+there was none. Callers pick a free name, so this is reached only by a caller that does not. Shown to fail:
+`TestICInline::testRegisterBlobCommandOverAnExistingNameKeepsIt`, with the name gone after the undo.
+
 ## 3. In code plan 3 rewrites
 
 ### 3.1 SR and T flip-flops ignore every input while one input is open
@@ -898,6 +913,8 @@ Each of these exists on `master`, and its fix is another plan's decision:
 | P2.48 | The scene's bounds without the rubber band (§7.7) | P1.12 | the view golden's fit row and four wheel rows |
 | P2.38, P2.51 | A wire attached or detached refreshes only itself (§7.8) | P1.5, P1.10 | none |
 | P2.40 | Orienting a port leaves its wires to the port (its ledger row) | P1.5 | none (the wire-geometry golden unchanged) |
+| P2.105 | The combinational fill's undo keeps the columns it added (§2.33) | the helpers only | none
+| P2.106 | A registration over a name in use loses that name's blob on undo (§2.34) | the helpers only | none
 
 "None expected" means the branch saw no golden change, or the fix touches nothing a golden prints; the fix's commit
 says what changed.
