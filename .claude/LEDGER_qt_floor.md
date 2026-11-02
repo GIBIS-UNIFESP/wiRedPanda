@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`QF.4a`, `QF.4b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** `02a-qt-floor`, from `02-master-fixes` at `10fe2f83e`, created 2026-10-28. One slice of one commit.
+**Branch:** `02a-qt-floor`, from `02-master-fixes` at `ddc37b9fd`, created 2026-10-28. One slice of one commit.
 
 **Open decisions:** none.
 
@@ -21,7 +21,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | QF.4 | The aqt recipe: a compiler, Qt Multimedia and Qt Image Formats, the plugins' run-time libraries, no `libxcb-xinerama0` (§2.4) | done | `9bb28a2d8` | Shown to fail: the recipe as on `master`, in a bare Ubuntu 24.04 container, fails to configure, Qt Multimedia missing (as on the branch); the `ldd` check fails with one of the plugins' libraries left out of the recipe Done, in bare `ubuntu:24.04` containers: the recipe as on `master` fails to configure, Qt Multimedia missing (a compiler came with `python3-pip`); the new one, taken from `BUILD.md` as written, builds, its `ldd` check passes and `wiredpanda --version` runs offscreen; with `libxcb-cursor0` removed the `ldd` check fails, naming `libxcb-cursor.so.0`. The FFmpeg backend tries PipeWire at run time and works without it. The macOS recipe's architecture and modules read from `aqt list-qt`; it runs first in CI's `aqt-macos` job. |
 | QF.5 | CI: the matrix's comment naming the floor's 6.8 entries; the fresh distro jobs on Debian trixie and Ubuntu 26.04; the aqt job with its `ldd` check; the minimum CMake on Debian trixie (§2.5) | done | `9bb28a2d8` | Shown to fail: the fresh distro workflow's old `ubuntu:24.04` apt job, run locally against the raised floor, stops at `find_package` Done: the old `ubuntu:24.04` apt job, run locally against the floor, stops at `find_package` (QF.1). The `aqt` and `aqt-macos` jobs take their recipes out of `BUILD.md`; a changed line in `BUILD_es.md`'s recipe fails the translations' check, run locally. The fresh distro workflow is started by hand on the pushed branch. |
 | QF.6 | Which of the 11 test files include `TestUtils.h` only for `QVERIFY_THROWS`: four on the branch, checked on `master` by compiling each alone without the include (§6) | done | `9bb28a2d8` | Shown to fail: a file that uses another helper fails to compile without the include Done: three files drop the include (`TestDolphinExporter`, `TestDolphinModelBuilder`, `TestCircuitExporter`, the last using `TestUtils::ScenePointer` from `Goldens.h`); `TestFileUtils`, one of the branch's four, now uses `TestUtils::` and keeps it, as do the other seven. |
-| QF.7 | The rendering baseline at the plan's end (`PLAN_01_characterization.md` §4.7, `Scripts/profile_probe.sh baseline`), its row in `.claude/RENDERING_BASELINE.md` | done | | Measured 2026-10-31 at `18c003a0c`, after plan 1's P1.40 put the baseline in: clocked_2000 21.98 G / 3.46 G, combinational_1000 0.225 G / 0.621 G, ic_heavy 52.51 G / 10.64 G (`run` / `runfit`); two native runs of each phase alike. Within 0.4% of plan 2: the floor changes what the code may use, not the Qt it is built with here (6.12.0). |
+| QF.7 | The rendering baseline at the plan's end (`PLAN_01_characterization.md` §4.7, `Scripts/profile_probe.sh baseline`), its row in `.claude/RENDERING_BASELINE.md` | done | | Measured 2026-10-31 at `a18e2b9b6`, after plan 1's P1.40 put the baseline in: clocked_2000 21.98 G / 3.46 G, combinational_1000 0.225 G / 0.621 G, ic_heavy 52.51 G / 10.64 G (`run` / `runfit`); two native runs of each phase alike. Within 0.4% of plan 2: the floor changes what the code may use, not the Qt it is built with here (6.12.0). |
 
 ## Log
 
@@ -32,7 +32,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
   became "no new CI build", the 6.8 guards joining the dead ones (QF.2). The rows for a local 6.7.3 suite run (QF.6)
   and the first Windows and macOS 6.7.3 runs (QF.7) went, with no 6.7.3 build left to run; the include check, QF.8,
   is now QF.6. QF.5's break is now the old apt job against the raised floor, since no 6.7.3 job exists to break.
-- 2026-10-28: branch created from `02-master-fixes` at `f73422ab7`, plan 2 done. QF.1 to QF.6 doing (`7ec74eb22`):
+- 2026-10-28: branch created from `02-master-fixes` at `f73422ab7`, plan 2 done. QF.1 to QF.6 doing (`e2995472e`):
   the floor, its dead guards, the documents, the recipes and CI in one commit; tip checked, suite 227/227 on
   relwithdebinfo, every changed source compiled alone and at `-O3`, `fix_style.py` clean.
 - 2026-10-28: QF.D6 and QF.D7 added at the user's rulings: aqtinstall first with a distribution's packages the
@@ -41,7 +41,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 - 2026-10-28: QF.1 to QF.6 done: CI green on `48244a14e`, Build 40798106953, Sanitizers 40798106948, Lint
   40798107241, API docs 40798107236, and the fresh distro workflow, started by hand, 40798106406 (Debian trixie,
   Ubuntu 26.04, the minimum CMake, aqtinstall on Ubuntu 24.04 and on macOS 15). The floor has landed.
-- 2026-10-29: rebased onto `02-master-fixes` at `75f4373d5`, plan 2's folds from the Qt ceiling's CI (QC.2d,
+- 2026-10-29: rebased onto `02-master-fixes` at `c10ef55af`, plan 2's folds from the Qt ceiling's CI (QC.2d,
   QC.2e); the hashes above re-mapped.
-- 2026-10-31: QF.7 added and done: the rendering baseline measured at the plan's end, `18c003a0c`, after plan 1 took it
+- 2026-10-31: QF.7 added and done: the rendering baseline measured at the plan's end, `a18e2b9b6`, after plan 1 took it
   (P1.40).
