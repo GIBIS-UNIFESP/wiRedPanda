@@ -100,6 +100,8 @@ thread_local ICLoader::Files *s_icFilesRead = nullptr;
 thread_local const ICLoader::Files *s_icFilesCarried = nullptr;
 // Whether the loads under way are a snapshot's restore, whose circuits' pictures and sounds fall back unreported
 thread_local bool s_icRestoring = false;
+// Whether the loads under way restore a captured reload: the snapshot's files then stand in for the files on disk
+thread_local bool s_icRestoreCaptured = false;
 
 void recordICFileRead(const QString &path, const QByteArray &bytes)
 {
@@ -132,8 +134,10 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
 
     QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
 
-    if (!fileInfo.exists() || !fileInfo.isFile()) {
-        // A snapshot's restore loads what the file held when the snapshot was taken
+    // A snapshot's restore loads what the file held when the snapshot was taken: when the file is gone, and also when
+    // the restore is of a captured reload, whose definition is the one to give back
+    const bool onDisk = fileInfo.exists() && fileInfo.isFile();
+    if (!onDisk || s_icRestoreCaptured) {
         QString path;
         if (const QByteArray *carried = carriedICFile(fileInfo, fileName, path)) {
             const QFileInfo carriedInfo(path);
@@ -144,9 +148,11 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
             if (ic.label().isEmpty()) {
                 ic.setLabel(carriedInfo.baseName().toUpper());
             }
-            qCDebug(zero) << "Finished reading IC (from the snapshot, its file gone).";
+            qCDebug(zero) << "Finished reading IC (from the snapshot).";
             return;
         }
+    }
+    if (!onDisk) {
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 
@@ -191,26 +197,30 @@ Scene *ICLoader::filesScene(const IC &ic)
 std::optional<std::pair<QString, QByteArray>> ICLoader::fileBytes(const IC &ic, const QString &fileName,
                                                                   const QString &contextDir)
 {
+    // The bytes loadFile() would load: a captured reload's restore takes them from its snapshot, as loadFile() does
     const QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
-    if (fileInfo.exists() && fileInfo.isFile()) {
-        const QString path = fileInfo.absoluteFilePath();
-        if (auto *scene = filesScene(ic)) {
-            if (const QByteArray &cached = scene->icRegistry()->cachedFileBytes(path); !cached.isEmpty()) {
-                return std::pair(path, cached);
-            }
+    const bool onDisk = fileInfo.exists() && fileInfo.isFile();
+    if (!onDisk || s_icRestoreCaptured) {
+        QString path;
+        if (const QByteArray *carried = carriedICFile(fileInfo, fileName, path)) {
+            return std::pair(path, *carried);
         }
-        QFile file(path);
-        if (!file.open(QIODevice::ReadOnly)) {
-            return std::nullopt;
-        }
-        return std::pair(path, file.readAll());
+    }
+    if (!onDisk) {
+        return std::nullopt;
     }
 
-    QString path;
-    if (const QByteArray *carried = carriedICFile(fileInfo, fileName, path)) {
-        return std::pair(path, *carried);
+    const QString path = fileInfo.absoluteFilePath();
+    if (auto *scene = filesScene(ic)) {
+        if (const QByteArray &cached = scene->icRegistry()->cachedFileBytes(path); !cached.isEmpty()) {
+            return std::pair(path, cached);
+        }
     }
-    return std::nullopt;
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return std::nullopt;
+    }
+    return std::pair(path, file.readAll());
 }
 
 void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
@@ -474,6 +484,14 @@ void ICLoader::withCarriedFiles(const Files &files, const bool restoring, const 
         s_icFilesCarried = outer;
         s_icRestoring = outerRestoring;
     });
+    load();
+}
+
+void ICLoader::restoreCapturedFiles(const std::function<void()> &load)
+{
+    const bool outer = s_icRestoreCaptured;
+    s_icRestoreCaptured = true;
+    const auto restore = qScopeGuard([outer] { s_icRestoreCaptured = outer; });
     load();
 }
 

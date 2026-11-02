@@ -74,6 +74,10 @@ public:
     /// definition that no longer loads leaves the preview null.
     static void renderPreview(IC &ic);
 
+    /// Runs \a load with the IC files its snapshot carries standing in for the files on disk, so the restore of an
+    /// undone or redone reload gives back the definition the snapshot captured, not the file as it is now.
+    static void restoreCapturedFiles(const std::function<void()> &load);
+
 private:
     /// The scene whose file cache \a ic reads through: its own, or for a copy outside one the live IC's.
     static Scene *filesScene(const IC &ic);

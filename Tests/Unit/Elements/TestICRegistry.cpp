@@ -305,10 +305,8 @@ void TestICRegistry::testReloadThatAddsAnInputUndoesCleanly()
     QCOMPARE(ic->inputSize(), 2);
     QCOMPARE(source->outputPort(0)->connections().size(), 1);
 
-    // Expected to fail until the undo of a reload restores the definition its snapshot captured, not the file as it is
-    // now: the undo reads the file's new definition back, which still has the added input.
+    // The undo restores the definition the reload replaced, not the file's current one.
     scene->undoStack()->undo();
-    QEXPECT_FAIL("", "the undo of a growing reload keeps the added input", Continue);
     QCOMPARE(ic->inputSize(), 1);
     QCOMPARE(source->outputPort(0)->connections().size(), 1);
 }
@@ -342,10 +340,8 @@ void TestICRegistry::testTwoReloadsUndoInOrder()
     QCOMPARE(ic->inputSize(), 3);
 
     scene->undoStack()->undo();
-    QEXPECT_FAIL("", "the undo of the second reload keeps its added input", Continue);
     QCOMPARE(ic->inputSize(), 1);
     scene->undoStack()->undo();
-    QEXPECT_FAIL("", "the undo of the first reload keeps the input the second reload left", Continue);
     QCOMPARE(ic->inputSize(), 2);
     QCOMPARE(source->outputPort(0)->connections().size(), 1);
 }
@@ -1025,7 +1021,6 @@ void TestICRegistry::testTwoWritesInARowSettleToTheLast()
     while (scene->undoStack()->canUndo()) {
         scene->undoStack()->undo();
     }
-    QEXPECT_FAIL("", "the undo of a growing reload keeps the added input", Continue);
     QCOMPARE(ic->inputSize(), 2);
     QCOMPARE(source->outputPort(0)->connections().size(), 1);
 }
@@ -1093,7 +1088,6 @@ void TestICRegistry::testChangeAfterUndoDiscardsTheRedo()
     QCOMPARE(scene->undoStack()->count(), 1);
 
     scene->undoStack()->undo();
-    QEXPECT_FAIL("", "the undo of a growing reload keeps the added input", Continue);
     QCOMPARE(ic->inputSize(), 2);
     QCOMPARE(source->outputPort(0)->connections().size(), 1);
 }

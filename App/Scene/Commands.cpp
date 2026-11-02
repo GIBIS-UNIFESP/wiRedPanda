@@ -22,6 +22,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICLoader.h"
 #include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -1771,7 +1772,7 @@ void UpdateBlobCommand::redo()
 
     setBlob(m_newBlob);
     try {
-        loadData(*found, m_newData);
+        ICLoader::restoreCapturedFiles([&] { loadData(*found, m_newData); });
     } catch (const std::exception &) {
         // The registry back as it was, with the elements, which the read did not reach
         setBlob(m_oldBlob);
@@ -1793,7 +1794,7 @@ void UpdateBlobCommand::undo()
 
     setBlob(m_oldBlob);
     try {
-        loadData(*found, m_oldData);
+        ICLoader::restoreCapturedFiles([&] { loadData(*found, m_oldData); });
     } catch (const std::exception &) {
         // The registry back as it was, with the elements, which the read did not reach
         setBlob(m_newBlob);
