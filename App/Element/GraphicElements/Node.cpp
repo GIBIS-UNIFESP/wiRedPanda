@@ -4,6 +4,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
+#include "App/Element/WirelessNode.h"
 
 template<>
 struct ElementInfo<ElementType::Node> {
@@ -58,7 +59,7 @@ struct ElementInfo<ElementType::Node> {
             if (index != 0) {
                 return std::nullopt;
             }
-            const bool receives = (element.wirelessMode() == WirelessMode::Rx);
+            const bool receives = (WirelessNode::mode(element) == WirelessMode::Rx);
             return PortAttributes{.required = !receives && element.param<bool>(ParamId::Wired),
                                   .position = QPointF(0, 16),
                                   .visible = !receives};
@@ -67,7 +68,7 @@ struct ElementInfo<ElementType::Node> {
             if (index != 0) {
                 return std::nullopt;
             }
-            return PortAttributes{.position = QPointF(32, 16), .visible = (element.wirelessMode() != WirelessMode::Tx)};
+            return PortAttributes{.position = QPointF(32, 16), .visible = (WirelessNode::mode(element) != WirelessMode::Tx)};
         };
         // A node's map came with its mode, in 4.4 (VersionInfo::hasWirelessMode()); an older file holds nothing
         descriptor.mapSince = QVersionNumber(4, 4);

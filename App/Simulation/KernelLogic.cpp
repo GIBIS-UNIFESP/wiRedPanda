@@ -9,6 +9,7 @@
 
 #include "App/Core/StatusOps.h"
 #include "App/Element/Element.h"
+#include "App/Element/WirelessNode.h"
 
 namespace KernelLogicDetail {
 
@@ -323,7 +324,7 @@ void truthTable(Element &element)
 void node(Element &element)
 {
     const auto carry = [&element](const Status status) {
-        if (element.wirelessMode() != WirelessMode::None) {
+        if (WirelessNode::mode(element) != WirelessMode::None) {
             element.setParam(ParamId::Carried, static_cast<int>(status));
         }
     };

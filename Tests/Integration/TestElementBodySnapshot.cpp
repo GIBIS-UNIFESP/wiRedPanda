@@ -29,6 +29,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -217,7 +218,7 @@ QList<BodyState> ledStates(const CustomPictures &custom)
     for (const auto &colour : colours()) {
         for (const bool on : {false, true}) {
             states.append({QString("in=1 %1 %2").arg(colour, onOff(on)), [colour, on](Element *e) {
-                               e->setColor(colour);
+                               e->setParam(ParamId::Colour, colour);
                                driveInputs(e, on ? 1U : 0U);
                            }});
         }
@@ -231,7 +232,7 @@ QList<BodyState> ledStates(const CustomPictures &custom)
         }
     }
     states.append({"in=1 Red on custom.png", [&custom](Element *e) {
-                       e->setColor("Red");
+                       e->setParam(ParamId::Colour, QStringLiteral("Red"));
                        driveInputs(e, 1U);
                        e->setAppearance(false, custom.png());
                    }});
@@ -245,18 +246,18 @@ QList<BodyState> displayStates(const int inputs, const CustomPictures &custom)
     QList<BodyState> states;
     for (const auto &colour : colours()) {
         states.append({colour + " all", [colour, all](Element *e) {
-                           e->setColor(colour);
+                           e->setParam(ParamId::Colour, colour);
                            driveInputs(e, all);
                        }});
     }
     for (const auto &[name, pattern] : patterns) {
         states.append({"Red " + name, [pattern](Element *e) {
-                           e->setColor("Red");
+                           e->setParam(ParamId::Colour, QStringLiteral("Red"));
                            driveInputs(e, pattern);
                        }});
     }
     states.append({"Red all custom.svg", [&custom, all](Element *e) {
-                       e->setColor("Red");
+                       e->setParam(ParamId::Colour, QStringLiteral("Red"));
                        driveInputs(e, all);
                        e->setAppearance(false, custom.svg());
                    }});
@@ -331,10 +332,10 @@ QList<BodyState> nodeStates()
     QList<BodyState> states{{"none", [](Element *) {}}};
     for (const auto mode : {WirelessMode::Tx, WirelessMode::Rx}) {
         const QString modeName = (mode == WirelessMode::Tx) ? "Tx" : "Rx";
-        states.append({modeName, [mode](Element *e) { e->setWirelessMode(mode); }});
+        states.append({modeName, [mode](Element *e) { WirelessNode::setMode(*e, mode); }});
         for (const auto status : {Status::Inactive, Status::Active, Status::Error}) {
             states.append({modeName + ' ' + TestUtils::snapshotStatus(status), [mode, status](Element *e) {
-                               e->setWirelessMode(mode);
+                               WirelessNode::setMode(*e, mode);
                                driveNode(e, status);
                            }});
         }

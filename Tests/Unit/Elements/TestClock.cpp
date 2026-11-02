@@ -38,10 +38,10 @@ void TestClock::testConstructorInitialization()
     QCOMPARE(clock.outputSize(), 1);
 
     // Verify has frequency property
-    QVERIFY(clock.hasFrequency());
+    QVERIFY(clock.offersParam(ParamId::Frequency));
 
     // Verify has delay property
-    QVERIFY(clock.hasDelay());
+    QVERIFY(clock.offersParam(ParamId::Delay));
 
     // Verify has label
     QVERIFY(clock.hasLabel());
@@ -56,10 +56,10 @@ void TestClock::testConstructorInitialization()
     QVERIFY(!clock.isOn());
 
     // Verify default frequency is 1.0 Hz
-    QCOMPARE(clock.frequency(), 1.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 1.0);
 
     // Verify default delay is 0.0
-    QCOMPARE(clock.delay(), 0.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.0);
 }
 
 // ============================================================================
@@ -71,7 +71,7 @@ void TestClock::testDefaultFrequency()
     Element clock{ElementType::Clock};
 
     // Default frequency should be 1.0 Hz
-    QCOMPARE(clock.frequency(), 1.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 1.0);
 }
 
 void TestClock::testSetFrequency()
@@ -79,14 +79,14 @@ void TestClock::testSetFrequency()
     Element clock{ElementType::Clock};
 
     // Set various valid frequencies
-    clock.setFrequency(2.0);
-    QCOMPARE(clock.frequency(), 2.0);
+    clock.setParam(ParamId::Frequency, 2.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 2.0);
 
-    clock.setFrequency(10.0);
-    QCOMPARE(clock.frequency(), 10.0);
+    clock.setParam(ParamId::Frequency, 10.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 10.0);
 
-    clock.setFrequency(0.5);
-    QCOMPARE(clock.frequency(), 0.5);
+    clock.setParam(ParamId::Frequency, 0.5);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 0.5);
 }
 
 void TestClock::testSetFrequencyZero()
@@ -94,12 +94,12 @@ void TestClock::testSetFrequencyZero()
     Element clock{ElementType::Clock};
 
     // Set initial frequency
-    clock.setFrequency(5.0);
-    QCOMPARE(clock.frequency(), 5.0);
+    clock.setParam(ParamId::Frequency, 5.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 5.0);
 
     // Set to zero - should be rejected, frequency remains unchanged
-    clock.setFrequency(0.0);
-    QCOMPARE(clock.frequency(), 5.0);
+    clock.setParam(ParamId::Frequency, 0.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 5.0);
 }
 
 void TestClock::testSetFrequencyNegative()
@@ -107,14 +107,14 @@ void TestClock::testSetFrequencyNegative()
     Element clock{ElementType::Clock};
 
     // Set initial frequency
-    clock.setFrequency(3.0);
-    QCOMPARE(clock.frequency(), 3.0);
+    clock.setParam(ParamId::Frequency, 3.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 3.0);
 
     // Set to negative - should be rejected (interval = 1s / (2 * -2) = -250ms fails validation)
-    clock.setFrequency(-2.0);
+    clock.setParam(ParamId::Frequency, -2.0);
 
     // Frequency should remain unchanged at 3.0 (setter rejects invalid value)
-    QCOMPARE(clock.frequency(), 3.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 3.0);
 }
 
 void TestClock::testFrequencyPersistence()
@@ -122,17 +122,17 @@ void TestClock::testFrequencyPersistence()
     Element clock{ElementType::Clock};
 
     // Set multiple frequencies in sequence
-    clock.setFrequency(1.0);
-    QCOMPARE(clock.frequency(), 1.0);
+    clock.setParam(ParamId::Frequency, 1.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 1.0);
 
-    clock.setFrequency(5.0);
-    QCOMPARE(clock.frequency(), 5.0);
+    clock.setParam(ParamId::Frequency, 5.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 5.0);
 
-    clock.setFrequency(0.1);
-    QCOMPARE(clock.frequency(), 0.1);
+    clock.setParam(ParamId::Frequency, 0.1);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 0.1);
 
     // Verify final frequency is correct
-    QCOMPARE(clock.frequency(), 0.1);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 0.1);
 }
 
 void TestClock::testFrequencyHighValues()
@@ -140,14 +140,14 @@ void TestClock::testFrequencyHighValues()
     Element clock{ElementType::Clock};
 
     // Test high frequency values
-    clock.setFrequency(100.0);
-    QCOMPARE(clock.frequency(), 100.0);
+    clock.setParam(ParamId::Frequency, 100.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 100.0);
 
-    clock.setFrequency(1000.0);
-    QCOMPARE(clock.frequency(), 1000.0);
+    clock.setParam(ParamId::Frequency, 1000.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 1000.0);
 
-    clock.setFrequency(10000.0);
-    QCOMPARE(clock.frequency(), 10000.0);
+    clock.setParam(ParamId::Frequency, 10000.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 10000.0);
 }
 
 // ============================================================================
@@ -159,7 +159,7 @@ void TestClock::testDefaultDelay()
     Element clock{ElementType::Clock};
 
     // Default delay should be 0.0
-    QCOMPARE(clock.delay(), 0.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.0);
 }
 
 void TestClock::testSetDelay()
@@ -167,26 +167,26 @@ void TestClock::testSetDelay()
     Element clock{ElementType::Clock};
 
     // In-range values pass through verbatim.
-    clock.setDelay(1.0);
-    QCOMPARE(clock.delay(), 1.0);
+    clock.setParam(ParamId::Delay, 1.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 1.0);
 
-    clock.setDelay(0.1);
-    QCOMPARE(clock.delay(), 0.1);
+    clock.setParam(ParamId::Delay, 0.1);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.1);
 
     // Out-of-range finite values clamp to the documented [-1, 1] range.
-    clock.setDelay(5.5);
-    QCOMPARE(clock.delay(), 1.0);
+    clock.setParam(ParamId::Delay, 5.5);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 1.0);
 
-    clock.setDelay(-3.0);
-    QCOMPARE(clock.delay(), -1.0);
+    clock.setParam(ParamId::Delay, -3.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), -1.0);
 
     // Non-finite values are rejected and leave m_delay unchanged.
-    clock.setDelay(0.25);
-    clock.setDelay(std::numeric_limits<double>::infinity());
-    QCOMPARE(clock.delay(), 0.25);
+    clock.setParam(ParamId::Delay, 0.25);
+    clock.setParam(ParamId::Delay, std::numeric_limits<double>::infinity());
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.25);
 
-    clock.setDelay(std::numeric_limits<double>::quiet_NaN());
-    QCOMPARE(clock.delay(), 0.25);
+    clock.setParam(ParamId::Delay, std::numeric_limits<double>::quiet_NaN());
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.25);
 }
 
 void TestClock::testSetDelayNegative()
@@ -194,8 +194,8 @@ void TestClock::testSetDelayNegative()
     Element clock{ElementType::Clock};
 
     // Set negative delay - should be accepted
-    clock.setDelay(-1.0);
-    QCOMPARE(clock.delay(), -1.0);
+    clock.setParam(ParamId::Delay, -1.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), -1.0);
 
     // Negative delay is valid in simulation context
 }
@@ -205,17 +205,17 @@ void TestClock::testDelayPersistence()
     Element clock{ElementType::Clock};
 
     // Set multiple delays in sequence
-    clock.setDelay(0.5);
-    QCOMPARE(clock.delay(), 0.5);
+    clock.setParam(ParamId::Delay, 0.5);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.5);
 
-    clock.setDelay(1.0);
-    QCOMPARE(clock.delay(), 1.0);
+    clock.setParam(ParamId::Delay, 1.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 1.0);
 
-    clock.setDelay(0.0);
-    QCOMPARE(clock.delay(), 0.0);
+    clock.setParam(ParamId::Delay, 0.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.0);
 
     // Verify final delay is correct
-    QCOMPARE(clock.delay(), 0.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.0);
 }
 
 // ============================================================================
@@ -301,8 +301,8 @@ void TestClock::testResetClock()
 {
     Element clock{ElementType::Clock};
 
-    clock.setFrequency(1.0);
-    clock.setDelay(0.5);
+    clock.setParam(ParamId::Frequency, 1.0);
+    clock.setParam(ParamId::Delay, 0.5);
 
     // Get current time
     auto now = std::chrono::steady_clock::now();
@@ -318,7 +318,7 @@ void TestClock::testUpdateClock()
 {
     Element clock{ElementType::Clock};
 
-    clock.setFrequency(1.0);
+    clock.setParam(ParamId::Frequency, 1.0);
 
     // Get current time
     auto now = std::chrono::steady_clock::now();
@@ -341,7 +341,7 @@ void TestClock::testALockedClockHoldsItsLevel()
 {
     // At 10 Hz each level lasts 50 ms: a locked clock holds its level past it, and toggles once unlocked
     Element clock{ElementType::Clock};
-    clock.setFrequency(10.0);
+    clock.setParam(ParamId::Frequency, 10.0);
     const auto t0 = std::chrono::steady_clock::now();
     ClockTiming::reset(clock, t0);
     QVERIFY(clock.isOn());
@@ -362,8 +362,8 @@ void TestClock::testADelayShiftsTheFirstToggle()
     const auto t0 = std::chrono::steady_clock::now();
     const auto levelAt = [t0](const double delay, const int ms) {
         Element clock{ElementType::Clock};
-        clock.setFrequency(10.0);
-        clock.setDelay(delay);
+        clock.setParam(ParamId::Frequency, 10.0);
+        clock.setParam(ParamId::Delay, delay);
         ClockTiming::reset(clock, t0);
         ClockTiming::update(clock, t0 + std::chrono::milliseconds(ms));
         return clock.isOn();
@@ -383,7 +383,7 @@ void TestClock::testUpdateClockLargeBacklogResyncsInsteadOfBursting()
     // exactly like Simulation::start()'s explicit ClockTiming::reset() already does for the
     // stop/start case.
     Element clock{ElementType::Clock};
-    clock.setFrequency(1.0); // 500ms half-period
+    clock.setParam(ParamId::Frequency, 1.0); // 500ms half-period
 
     const auto t0 = std::chrono::steady_clock::now();
     ClockTiming::reset(clock, t0);
@@ -409,8 +409,8 @@ void TestClock::testSaveFrequencyDelay()
 {
     Element clock{ElementType::Clock};
 
-    clock.setFrequency(5.0);
-    clock.setDelay(1.5);
+    clock.setParam(ParamId::Frequency, 5.0);
+    clock.setParam(ParamId::Delay, 1.5);
 
     // Save to stream
     QByteArray data;
@@ -435,7 +435,7 @@ void TestClock::testLoadVersionOld()
 
     // Create and save Clock with current code (QMap format)
     auto clock1 = std::make_unique<Element>(ElementType::Clock);
-    clock1->setFrequency(2.0);
+    clock1->setParam(ParamId::Frequency, 2.0);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -462,8 +462,8 @@ void TestClock::testLoadVersionNew()
 {
     // Create and save Clock with both frequency and delay
     auto clock1 = std::make_unique<Element>(ElementType::Clock);
-    clock1->setFrequency(10.0);
-    clock1->setDelay(2.0);
+    clock1->setParam(ParamId::Frequency, 10.0);
+    clock1->setParam(ParamId::Delay, 2.0);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -479,10 +479,10 @@ void TestClock::testLoadVersionNew()
     clock2->load(loadStream, contextNew);
 
     // Frequency should be loaded correctly
-    QCOMPARE(clock2->frequency(), 10.0);
+    QCOMPARE(clock2->param<double>(ParamId::Frequency), 10.0);
 
     // Delay should NOT be loaded (discarded for version < 4.3), remains at default
-    QCOMPARE(clock2->delay(), 0.0);
+    QCOMPARE(clock2->param<double>(ParamId::Delay), 0.0);
 }
 
 void TestClock::testLoadVersionVeryOld()
@@ -504,8 +504,8 @@ void TestClock::testLoadVersionVeryOld()
     clock->load(readStream, contextVeryOld);
 
     // Should not crash, frequency/delay remain at defaults
-    QCOMPARE(clock->frequency(), 1.0);  // Default
-    QCOMPARE(clock->delay(), 0.0);      // Default
+    QCOMPARE(clock->param<double>(ParamId::Frequency), 1.0);  // Default
+    QCOMPARE(clock->param<double>(ParamId::Delay), 0.0);      // Default
 }
 
 void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
@@ -513,8 +513,8 @@ void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
     // Force map.value("delay").toDouble(&ok) to fail by rewriting the saved "delay" entry
     // to a non-numeric QVariant, exercising load()'s "ok" fallback (delayValue = 0.0).
     auto clock1 = std::make_unique<Element>(ElementType::Clock);
-    clock1->setFrequency(10.0);
-    clock1->setDelay(0.5);
+    clock1->setParam(ParamId::Frequency, 10.0);
+    clock1->setParam(ParamId::Delay, 0.5);
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -542,8 +542,8 @@ void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
     SerializationContext context = {portMap, Versions::V_4_3, SerializationPurpose::PortableFile};
     clock2->load(loadStream, context);
 
-    QCOMPARE(clock2->frequency(), 10.0); // unaffected sibling field still loads correctly
-    QCOMPARE(clock2->delay(), 0.0);      // falls back to 0.0 rather than keeping stale/garbage state
+    QCOMPARE(clock2->param<double>(ParamId::Frequency), 10.0); // unaffected sibling field still loads correctly
+    QCOMPARE(clock2->param<double>(ParamId::Delay), 0.0);      // falls back to 0.0 rather than keeping stale/garbage state
 }
 
 // ============================================================================
@@ -557,12 +557,12 @@ void TestClock::testGenericProperties()
     // Generic properties should return frequency in Hz format. genericProperties() is exactly
     // QString::number(frequency()) + " Hz" -- assert the exact string, not a loose
     // single-digit substring check that would pass for many wrong formatted values.
-    clock.setFrequency(1.0);
+    clock.setParam(ParamId::Frequency, 1.0);
     QCOMPARE(clock.genericProperties(), QString("1 Hz"));
 
-    clock.setFrequency(5.0);
+    clock.setParam(ParamId::Frequency, 5.0);
     QCOMPARE(clock.genericProperties(), QString("5 Hz"));
 
-    clock.setFrequency(0.5);
+    clock.setParam(ParamId::Frequency, 0.5);
     QCOMPARE(clock.genericProperties(), QString("0.5 Hz"));
 }

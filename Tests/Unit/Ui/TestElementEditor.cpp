@@ -28,6 +28,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Workspace.h"
@@ -105,13 +106,13 @@ QString editedValue(const Element *element, const TestUtils::PropertyKind kind)
     case TestUtils::PropertyKind::Label:
         return TestUtils::snapshotQuoted(element->label());
     case TestUtils::PropertyKind::Color:
-        return element->color();
+        return element->param<QString>(ParamId::Colour);
     case TestUtils::PropertyKind::Frequency:
-        return TestUtils::snapshotNumber(element->frequency());
+        return TestUtils::snapshotNumber(element->param<double>(ParamId::Frequency));
     case TestUtils::PropertyKind::Delay:
-        return TestUtils::snapshotNumber(element->delay());
+        return TestUtils::snapshotNumber(element->param<double>(ParamId::Delay));
     case TestUtils::PropertyKind::AudioBox:
-        return TestUtils::snapshotQuoted(QFileInfo(element->audio()).fileName());
+        return TestUtils::snapshotQuoted(QFileInfo(element->param<QString>(ParamId::AudioFile)).fileName());
     case TestUtils::PropertyKind::Trigger:
         return TestUtils::snapshotQuoted(element->trigger().toString());
     case TestUtils::PropertyKind::TruthTable:
@@ -119,9 +120,9 @@ QString editedValue(const Element *element, const TestUtils::PropertyKind kind)
     case TestUtils::PropertyKind::Appearance:
         return SnapshotAccess::pixmapIdentity(element);
     case TestUtils::PropertyKind::Volume:
-        return TestUtils::snapshotNumber(element->volume());
+        return TestUtils::snapshotNumber(element->param<double>(ParamId::Volume));
     case TestUtils::PropertyKind::WirelessModeSelector:
-        return QVariant::fromValue(element->wirelessMode()).toString();
+        return QVariant::fromValue(WirelessNode::mode(*element)).toString();
     }
     return {};
 }
@@ -834,8 +835,8 @@ void TestElementEditor::testApplyCapabilitiesMixedWirelessModeShowsPlaceholder()
     auto *node2 = ElementFactory::buildElement(ElementType::Node);
     workspace.scene()->addItem(node1);
     workspace.scene()->addItem(node2);
-    node1->setWirelessMode(WirelessMode::Tx);
-    node2->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node1, WirelessMode::Tx);
+    WirelessNode::setMode(*node2, WirelessMode::Rx);
 
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
@@ -855,8 +856,8 @@ void TestElementEditor::testApplyCapabilitiesMixedFrequencyShowsPlaceholder()
     WorkSpace workspace;
     auto *clock1 = ElementFactory::buildElement(ElementType::Clock);
     auto *clock2 = ElementFactory::buildElement(ElementType::Clock);
-    clock1->setFrequency(1.0);
-    clock2->setFrequency(5.0);
+    clock1->setParam(ParamId::Frequency, 1.0);
+    clock2->setParam(ParamId::Frequency, 5.0);
     workspace.scene()->addItem(clock1);
     workspace.scene()->addItem(clock2);
 
@@ -998,11 +999,11 @@ void TestElementEditor::testVolumeShownAsNearestPercent()
     // file holds
     for (int percent = 0; percent <= 100; ++percent) {
         workspace.scene()->clearSelection();
-        audiobox->setVolume(percent / 100.0);
+        audiobox->setParam(ParamId::Volume, percent / 100.0);
         audiobox->setSelected(true);
         QCOMPARE(slider->value(), percent);
         workspace.scene()->clearSelection();
-        audiobox->setVolume(static_cast<double>(static_cast<float>(percent) / 100.0f));
+        audiobox->setParam(ParamId::Volume, static_cast<double>(static_cast<float>(percent) / 100.0f));
         audiobox->setSelected(true);
         QCOMPARE(slider->value(), percent);
     }
@@ -1028,14 +1029,14 @@ void TestElementEditor::testApplyWirelessModeChangeSeversExistingConnection()
     QVERIFY(combo);
     combo->setCurrentIndex(static_cast<int>(WirelessMode::Tx)); // fires wirelessModeChanged()
 
-    QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Tx);
     // setWirelessMode() hides the port but doesn't delete the connection itself; wirelessModeChanged()'s
     // wireless-disconnect loop + DeleteItemsCommand macro must have removed it from the scene.
     QVERIFY(!workspace.scene()->items().contains(conn));
 
     // The mode and the wire it severed are one undo step
     workspace.scene()->undoStack()->undo();
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
     QCOMPARE(TestUtils::sceneConnections(workspace.scene()).size(), 1);
 }
 
@@ -1043,11 +1044,11 @@ void TestElementEditor::testRefusesALabelAnotherTxHas()
 {
     WorkSpace workspace;
     auto *first = ElementFactory::buildElement(ElementType::Node);
-    first->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*first, WirelessMode::Tx);
     first->setLabel("x");
     workspace.scene()->addItem(first);
     auto *second = ElementFactory::buildElement(ElementType::Node);
-    second->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*second, WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
 
@@ -1092,8 +1093,8 @@ void TestElementEditor::testRefusesTwoSelectedNodesBecomingOneTxChannel()
     combo->setCurrentIndex(static_cast<int>(WirelessMode::Tx));
 
     QCOMPARE(dismisser.dismissCount(), 1);
-    QCOMPARE(first->wirelessMode(), WirelessMode::None);
-    QCOMPARE(second->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*first), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*second), WirelessMode::None);
     QCOMPARE(workspace.scene()->undoStack()->count(), commands);
 }
 
@@ -1103,11 +1104,11 @@ void TestElementEditor::testRefusesALabelAnotherTxHasWithANonNodeSelected()
     // channel
     WorkSpace workspace;
     auto *first = ElementFactory::buildElement(ElementType::Node);
-    first->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*first, WirelessMode::Tx);
     first->setLabel("x");
     workspace.scene()->addItem(first);
     auto *second = ElementFactory::buildElement(ElementType::Node);
-    second->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*second, WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
     auto *inputSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
@@ -1138,11 +1139,11 @@ void TestElementEditor::testTypingPastAnotherTxsLabelDoesNotWarn()
     // "ab" is typed one key at a time and passes through "a", another Tx's channel, on the way
     WorkSpace workspace;
     auto *first = ElementFactory::buildElement(ElementType::Node);
-    first->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*first, WirelessMode::Tx);
     first->setLabel("a");
     workspace.scene()->addItem(first);
     auto *second = ElementFactory::buildElement(ElementType::Node);
-    second->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*second, WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
 
@@ -1166,11 +1167,11 @@ void TestElementEditor::testFinishingOnAnotherTxsLabelWarnsAndRestoresTheField()
     // The field is left on another Tx's channel: one warning, the label stays, and the field shows it again
     WorkSpace workspace;
     auto *first = ElementFactory::buildElement(ElementType::Node);
-    first->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*first, WirelessMode::Tx);
     first->setLabel("a");
     workspace.scene()->addItem(first);
     auto *second = ElementFactory::buildElement(ElementType::Node);
-    second->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*second, WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
 
@@ -1198,11 +1199,11 @@ void TestElementEditor::testLeavingTheFieldOnASharedLabelDoesNotWarn()
     // Two Tx nodes already share a label, as a file or a paste may leave them: leaving the field unedited is no edit
     WorkSpace workspace;
     auto *first = ElementFactory::buildElement(ElementType::Node);
-    first->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*first, WirelessMode::Tx);
     first->setLabel("dup");
     workspace.scene()->addItem(first);
     auto *second = ElementFactory::buildElement(ElementType::Node);
-    second->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*second, WirelessMode::Tx);
     second->setLabel("dup");
     workspace.scene()->addItem(second);
 
@@ -1560,11 +1561,11 @@ void TestElementEditor::testAudioBoxCancelledDialogIsNoOp()
     ScopedFileDialogStub dialogStub;
     dialogStub.stub.openResult = QString();
 
-    const QString audioBefore = audiobox->audio();
+    const QString audioBefore = audiobox->param<QString>(ParamId::AudioFile);
     editor.audioBox();
 
     QCOMPARE(dialogStub.stub.openCallCount, 1);
-    QCOMPARE(audiobox->audio(), audioBefore);
+    QCOMPARE(audiobox->param<QString>(ParamId::AudioFile), audioBefore);
 }
 
 void TestElementEditor::testPickingASoundThatCannotBeReadChangesNothing()
@@ -1586,13 +1587,13 @@ void TestElementEditor::testPickingASoundThatCannotBeReadChangesNothing()
     dialogStub.stub.openResult = dir.filePath("gone.wav");
     auto *undoStack = workspace.scene()->undoStack();
     const int countBefore = undoStack->count();
-    const QString audioBefore = audiobox->audio();
+    const QString audioBefore = audiobox->param<QString>(ParamId::AudioFile);
 
     auto dismisser = TestUtils::AutoDismisser::acceptMessageBox();
     editor.audioBox();
 
     QCOMPARE(dismisser.dismissCount(), 1);
-    QCOMPARE(audiobox->audio(), audioBefore);
+    QCOMPARE(audiobox->param<QString>(ParamId::AudioFile), audioBefore);
     QCOMPARE(undoStack->count(), countBefore);
 }
 
@@ -1619,7 +1620,7 @@ void TestElementEditor::testAudioBoxSetsAudioAndUpdatesLabel()
 
     editor.audioBox();
 
-    QCOMPARE(audiobox->audio(), audioPath);
+    QCOMPARE(audiobox->param<QString>(ParamId::AudioFile), audioPath);
     auto *lineEdit = editor.findChild<QLineEdit *>("lineCurrentAudioBox");
     QVERIFY(lineEdit);
     QCOMPARE(lineEdit->text(), QFileInfo(audioPath).fileName());
@@ -1649,15 +1650,15 @@ void TestElementEditor::testAudioBoxChangeIsUndoable()
 
     QUndoStack *undoStack = workspace.scene()->undoStack();
     const int commandsBefore = undoStack->count();
-    const QString audioBefore = audiobox->audio();
+    const QString audioBefore = audiobox->param<QString>(ParamId::AudioFile);
     editor.audioBox();
-    QCOMPARE(audiobox->audio(), audioPath);
+    QCOMPARE(audiobox->param<QString>(ParamId::AudioFile), audioPath);
     QCOMPARE(undoStack->count(), commandsBefore + 1);
 
     undoStack->undo();
-    QCOMPARE(audiobox->audio(), audioBefore);
+    QCOMPARE(audiobox->param<QString>(ParamId::AudioFile), audioBefore);
     undoStack->redo();
-    QCOMPARE(audiobox->audio(), audioPath);
+    QCOMPARE(audiobox->param<QString>(ParamId::AudioFile), audioPath);
 }
 
 void TestElementEditor::testLowercaseTriggerPushesOneCommand()
@@ -1872,7 +1873,7 @@ void TestElementEditor::testDraggingASliderIsOneUndoStep()
     slider->setValue(1);
     slider->setValue(2);
     slider->setValue(3);
-    QCOMPARE(clock->delay(), 3 / 8.0);
+    QCOMPARE(clock->param<double>(ParamId::Delay), 3 / 8.0);
     QCOMPARE(undoStack->count(), commands + 1);
 
     // Releasing the slider ends the drag
@@ -1883,9 +1884,9 @@ void TestElementEditor::testDraggingASliderIsOneUndoStep()
     QCOMPARE(undoStack->count(), commands + 2);
 
     undoStack->undo();
-    QCOMPARE(clock->delay(), 3 / 8.0);
+    QCOMPARE(clock->param<double>(ParamId::Delay), 3 / 8.0);
     undoStack->undo();
-    QCOMPARE(clock->delay(), 0.0);
+    QCOMPARE(clock->param<double>(ParamId::Delay), 0.0);
 }
 
 void TestElementEditor::testSliderKeyStepsAreStepsOfTheirOwn()
@@ -1918,9 +1919,9 @@ void TestElementEditor::testSliderKeyStepsAreStepsOfTheirOwn()
     QCOMPARE(undoStack->count(), commands + 3);
 
     undoStack->undo();
-    QCOMPARE(buzzer->volume(), (start - 2 * step) / 100.0);
+    QCOMPARE(buzzer->param<double>(ParamId::Volume), (start - 2 * step) / 100.0);
     undoStack->undo();
-    QCOMPARE(buzzer->volume(), (start - step) / 100.0);
+    QCOMPARE(buzzer->param<double>(ParamId::Volume), (start - step) / 100.0);
 }
 
 void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
@@ -1932,7 +1933,7 @@ void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
     editor.setScene(workspace.scene());
     workspace.scene()->clearSelection();
     clock->setSelected(true);
-    const double frequency = clock->frequency();
+    const double frequency = clock->param<double>(ParamId::Frequency);
     auto *undoStack = workspace.scene()->undoStack();
     const int commands = undoStack->count();
 
@@ -1945,9 +1946,9 @@ void TestElementEditor::testTypingAFrequencyIsOneUndoStep()
     QCOMPARE(undoStack->count(), commands + 2);
 
     undoStack->undo();
-    QCOMPARE(clock->frequency(), 25.0);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), 25.0);
     undoStack->undo();
-    QCOMPARE(clock->frequency(), frequency);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), frequency);
 }
 
 void TestElementEditor::testEachComboPickIsAnUndoStep()
@@ -1959,20 +1960,20 @@ void TestElementEditor::testEachComboPickIsAnUndoStep()
     editor.setScene(workspace.scene());
     workspace.scene()->clearSelection();
     led->setSelected(true);
-    const QString colour = led->color();
+    const QString colour = led->param<QString>(ParamId::Colour);
     auto *undoStack = workspace.scene()->undoStack();
     const int commands = undoStack->count();
 
     auto *combo = editor.findChild<QComboBox *>("comboBoxColor");
     combo->setCurrentIndex(combo->findData("Blue"));
     combo->setCurrentIndex(combo->findData("Green"));
-    QCOMPARE(led->color(), QString("Green"));
+    QCOMPARE(led->param<QString>(ParamId::Colour), QString("Green"));
     QCOMPARE(undoStack->count(), commands + 2);
 
     undoStack->undo();
-    QCOMPARE(led->color(), QString("Blue"));
+    QCOMPARE(led->param<QString>(ParamId::Colour), QString("Blue"));
     undoStack->undo();
-    QCOMPARE(led->color(), colour);
+    QCOMPARE(led->param<QString>(ParamId::Colour), colour);
 }
 
 void TestElementEditor::testANewSelectionStartsAnUndoStep()
@@ -2050,12 +2051,12 @@ void TestElementEditor::testEditingAFieldLeavesTheOthers()
     WorkSpace workspace;
     auto *early = ElementFactory::buildElement(ElementType::Clock);
     auto *late = ElementFactory::buildElement(ElementType::Clock);
-    early->setDelay(-0.25);
-    late->setDelay(0.25);
+    early->setParam(ParamId::Delay, -0.25);
+    late->setParam(ParamId::Delay, 0.25);
     auto *quiet = ElementFactory::buildElement(ElementType::Buzzer);
     auto *loud = ElementFactory::buildElement(ElementType::Buzzer);
-    quiet->setVolume(0.2);
-    loud->setVolume(0.8);
+    quiet->setParam(ParamId::Volume, 0.2);
+    loud->setParam(ParamId::Volume, 0.8);
     for (auto *element : QList<Element *>{early, late, quiet, loud}) {
         workspace.scene()->addItem(element);
     }
@@ -2067,16 +2068,16 @@ void TestElementEditor::testEditingAFieldLeavesTheOthers()
     late->setSelected(true);
     editor.findChild<QLineEdit *>("lineEditElementLabel")->setText("clocks");
     QCOMPARE(early->label(), QString("clocks"));
-    QCOMPARE(early->delay(), -0.25);
-    QCOMPARE(late->delay(), 0.25);
+    QCOMPARE(early->param<double>(ParamId::Delay), -0.25);
+    QCOMPARE(late->param<double>(ParamId::Delay), 0.25);
 
     workspace.scene()->clearSelection();
     quiet->setSelected(true);
     loud->setSelected(true);
     editor.findChild<QLineEdit *>("lineEditElementLabel")->setText("buzzers");
     QCOMPARE(quiet->label(), QString("buzzers"));
-    QCOMPARE(quiet->volume(), 0.2);
-    QCOMPARE(loud->volume(), 0.8);
+    QCOMPARE(quiet->param<double>(ParamId::Volume), 0.2);
+    QCOMPARE(loud->param<double>(ParamId::Volume), 0.8);
 }
 
 void TestElementEditor::testMixedDelaysDragIsOneStep()
@@ -2085,7 +2086,7 @@ void TestElementEditor::testMixedDelaysDragIsOneStep()
     WorkSpace workspace;
     auto *early = ElementFactory::buildElement(ElementType::Clock);
     auto *late = ElementFactory::buildElement(ElementType::Clock);
-    late->setDelay(0.125);
+    late->setParam(ParamId::Delay, 0.125);
     workspace.scene()->addItem(early);
     workspace.scene()->addItem(late);
     ElementEditor editor(&workspace);
@@ -2103,13 +2104,13 @@ void TestElementEditor::testMixedDelaysDragIsOneStep()
     slider->setValue(1);
     slider->setValue(2);
     slider->setSliderDown(false);
-    QCOMPARE(early->delay(), 0.25);
-    QCOMPARE(late->delay(), 0.25);
+    QCOMPARE(early->param<double>(ParamId::Delay), 0.25);
+    QCOMPARE(late->param<double>(ParamId::Delay), 0.25);
     QCOMPARE(undoStack->count() - before, 1);
 
     undoStack->undo();
-    QCOMPARE(early->delay(), 0.0);
-    QCOMPARE(late->delay(), 0.125);
+    QCOMPARE(early->param<double>(ParamId::Delay), 0.0);
+    QCOMPARE(late->param<double>(ParamId::Delay), 0.125);
 }
 
 void TestElementEditor::testMixedLabelsTypingIsOneStep()

@@ -58,6 +58,7 @@ private slots:
     // MorphCommand's remaining property-transfer/connection-drop branches
     void testMorphNotToNodeAdjustsPosition();
     void testMorphNodeToNotAdjustsPosition();
+    void testMorphPreservesColour();
     void testMorphPreservesFrequency();
     void testMorphDropsAndRestoresOutputConnection();
     void testMorphUndoSkipsRestoringConnectionToDeletedPeer();

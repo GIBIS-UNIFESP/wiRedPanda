@@ -39,7 +39,7 @@ private slots:
 
     // previousColor()/nextColor()/colorNameToIndex()'s fallback branches, for an element type
     // that never overrides color() (e.g. And, whose base color() always returns "")
-    void testColorCycleFunctionsDefaultToWhiteForNonColoredElement();
+    void testColourCycleStartsAtWhiteFromANameOutsideIt();
     void testColorNameToIndexUnknownColorDefaultsToZero();
 
     // isValid()'s propagate-invalid-downstream branch
@@ -47,7 +47,7 @@ private slots:
 
     // Base setColor()/setAudio()/setVolume()/setFrequency()/setDelay() no-ops, and the
     // blobName() default, for an element type that doesn't override any of them
-    void testBaseSettersAreNoOpsForUnsupportedProperties();
+    void testATypeHasNoneOfTheParametersOnlyOthersHave();
     void testBlobNameDefaultsToEmptyForNonIcElement();
 
     // Mux, Demux and TruthTable draw their bodies in code

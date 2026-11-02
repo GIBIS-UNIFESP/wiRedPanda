@@ -44,7 +44,7 @@ AudioService::~AudioService()
 QString AudioService::soundOf(const Element &element)
 {
     // A sound that is gone or unreadable keeps its path, and the built-in sound plays in its place until it is back
-    const QString path = element.audio();
+    const QString path = element.param<QString>(ParamId::AudioFile);
     if (path.startsWith(":/")) {
         return path;
     }
@@ -74,8 +74,8 @@ void AudioService::sync(Element &element)
 
     voice.document = element.scene();
     voice.state.muted = m_muted.value(element.scene(), false);
-    voice.state.volume = element.volume();
-    voice.state.frequency = tone ? element.frequency() : 0.0;
+    voice.state.volume = element.param<double>(ParamId::Volume);
+    voice.state.frequency = tone ? element.param<double>(ParamId::Frequency) : 0.0;
     voice.state.source = tone ? QString() : soundOf(element);
     voice.state.sounding = playing;
 

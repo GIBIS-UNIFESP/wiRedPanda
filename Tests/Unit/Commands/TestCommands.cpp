@@ -19,6 +19,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
@@ -54,9 +55,9 @@ public:
         CircuitBuilder builder(scene);
         builder.add(m_source, m_tx, m_rx);
         m_tx->setLabel("probe");
-        m_tx->setWirelessMode(WirelessMode::Tx);
+        WirelessNode::setMode(*m_tx, WirelessMode::Tx);
         m_rx->setLabel("probe");
-        m_rx->setWirelessMode(WirelessMode::Rx);
+        WirelessNode::setMode(*m_rx, WirelessMode::Rx);
         builder.connect(m_source, 0, m_tx, 0);
         m_source->setOn(true);
     }
@@ -787,20 +788,20 @@ void TestCommands::testMorphPreservesVolume()
     // than both elements coincidentally sharing the default.
     auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
-    QVERIFY(buzzer->hasVolume());
-    buzzer->setVolume(0.25);
+    QVERIFY(buzzer->offersParam(ParamId::Volume));
+    buzzer->setParam(ParamId::Volume, 0.25);
 
     scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::AudioBox, scene));
     auto *morphed = scene->elements().first();
     QCOMPARE(morphed->elementType(), ElementType::AudioBox);
-    QVERIFY(morphed->hasVolume());
-    QCOMPARE(morphed->volume(), 0.25);
+    QVERIFY(morphed->offersParam(ParamId::Volume));
+    QCOMPARE(morphed->param<double>(ParamId::Volume), 0.25);
 
     // Undo restores the Buzzer with its volume intact.
     undoStack->undo();
     auto *restored = scene->elements().first();
     QCOMPARE(restored->elementType(), ElementType::Buzzer);
-    QCOMPARE(restored->volume(), 0.25);
+    QCOMPARE(restored->param<double>(ParamId::Volume), 0.25);
 }
 
 void TestCommands::testMorphCommandUndoPreservesConnectionAddedWhileMorphed()
@@ -1044,11 +1045,11 @@ void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     builder.add(swA, swB, txA, txB, rx);
     txA->setLabel("A");
-    txA->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txA, WirelessMode::Tx);
     txB->setLabel("B");
-    txB->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txB, WirelessMode::Tx);
     rx->setLabel("A");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
     builder.connect(swA, 0, txA, 0);
     builder.connect(swB, 0, txB, 0);
     auto *sim = builder.initSimulation();
@@ -1218,27 +1219,50 @@ void TestCommands::testMorphNodeToNotAdjustsPosition()
 
 void TestCommands::testMorphPreservesFrequency()
 {
-    // Buzzer and Clock are the only two element types that both set hasFrequency in their
-    // ElementInfo, so this is the only reachable pairing for this transfer branch.
+    // Buzzer and Clock are the only two element types that both have a frequency
+    // (ParamId::Frequency), so this is the only reachable pairing for this transfer branch.
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *undoStack = scene->undoStack();
 
     auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
-    QVERIFY(buzzer->hasFrequency());
-    buzzer->setFrequency(123);
+    QVERIFY(buzzer->offersParam(ParamId::Frequency));
+    buzzer->setParam(ParamId::Frequency, 123.0);
 
     scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::Clock, scene));
     auto *morphed = scene->elements().first();
     QCOMPARE(morphed->elementType(), ElementType::Clock);
-    QVERIFY(morphed->hasFrequency());
-    QCOMPARE(morphed->frequency(), 123);
+    QVERIFY(morphed->offersParam(ParamId::Frequency));
+    QCOMPARE(morphed->param<double>(ParamId::Frequency), 123.0);
 
     undoStack->undo();
     auto *restored = scene->elements().first();
     QCOMPARE(restored->elementType(), ElementType::Buzzer);
-    QCOMPARE(restored->frequency(), 123);
+    QCOMPARE(restored->param<double>(ParamId::Frequency), 123.0);
+}
+
+void TestCommands::testMorphPreservesColour()
+{
+    // An LED and a seven-segment display both have a colour (ParamId::Colour): a morph from one
+    // to the other carries it, and its undo brings the LED back in it.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{led}, scene));
+    QVERIFY(led->setParam(ParamId::Colour, QStringLiteral("Blue")));
+
+    scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::Display7, scene));
+    auto *morphed = scene->elements().first();
+    QCOMPARE(morphed->elementType(), ElementType::Display7);
+    QCOMPARE(morphed->param<QString>(ParamId::Colour), QStringLiteral("Blue"));
+
+    undoStack->undo();
+    auto *restored = scene->elements().first();
+    QCOMPARE(restored->elementType(), ElementType::Led);
+    QCOMPARE(restored->param<QString>(ParamId::Colour), QStringLiteral("Blue"));
 }
 
 void TestCommands::testMorphDropsAndRestoresOutputConnection()
@@ -1592,8 +1616,8 @@ void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()
 
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
-    clock->setFrequency(5.0);
-    clock->setDelay(0.25);
+    clock->setParam(ParamId::Frequency, 5.0);
+    clock->setParam(ParamId::Delay, 0.25);
     clock->setLocked(true);
     clock->setLabel("clk");
     const int id = clock->id();
@@ -1605,8 +1629,8 @@ void TestCommands::testMorphUndoRestoresWhatTheNewTypeLacks()
     auto *restored = dynamic_cast<Element *>(scene->itemById(id));
     QVERIFY(restored);
     QCOMPARE(restored->elementType(), ElementType::Clock);
-    QCOMPARE(restored->frequency(), 5.0);
-    QCOMPARE(restored->delay(), 0.25);
+    QCOMPARE(restored->param<double>(ParamId::Frequency), 5.0);
+    QCOMPARE(restored->param<double>(ParamId::Delay), 0.25);
     QVERIFY(restored->isLocked());
     QCOMPARE(restored->label(), QString("clk"));
 
@@ -1732,23 +1756,23 @@ void TestCommands::testUndoWithASoundThatIsGoneKeepsItsPath()
     auto *scene = workspace.scene();
     auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{audioBox}, scene));
-    audioBox->setAudio(wav);
+    audioBox->setParam(ParamId::AudioFile, wav);
 
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
     Serialization::writePandaHeader(stream);
     audioBox->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
-    audioBox->setAudio(QString::fromLatin1(AudioOutput::kBuiltInSound));
+    audioBox->setParam(ParamId::AudioFile, QString::fromLatin1(AudioOutput::kBuiltInSound));
     scene->receiveCommand(new UpdateCommand({audioBox}, oldData, scene));
     QVERIFY(QFile::remove(wav));
 
     scene->undoStack()->undo();
     QCOMPARE(scene->undoStack()->index(), 1);
-    QCOMPARE(audioBox->audio(), wav);
+    QCOMPARE(audioBox->param<QString>(ParamId::AudioFile), wav);
 
     scene->undoStack()->redo();
     QCOMPARE(scene->undoStack()->index(), 2);
-    QCOMPARE(audioBox->audio(), QString::fromLatin1(AudioOutput::kBuiltInSound));
+    QCOMPARE(audioBox->param<QString>(ParamId::AudioFile), QString::fromLatin1(AudioOutput::kBuiltInSound));
 }
 
 void TestCommands::testUndoWithAnICFileThatIsGoneLoadsTheContentItHad()
@@ -2205,7 +2229,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         if (file == "picture") {
             element->setAppearance(false, path);
         } else if (file == "sound") {
-            element->setAudio(path);
+            element->setParam(ParamId::AudioFile, path);
         } else {
             static_cast<IC *>(element)->loadFile(path, dir.path());
         }
@@ -2215,7 +2239,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         if (file == "picture") {
             element->setAppearance(true, {});
         } else if (file == "sound") {
-            element->setAudio(QString::fromLatin1(AudioOutput::kBuiltInSound));
+            element->setParam(ParamId::AudioFile, QString::fromLatin1(AudioOutput::kBuiltInSound));
         } else {
             element->setLabel("changed");
         }
@@ -2238,7 +2262,7 @@ void TestCommands::testStepWithAFileGoneKeepsTheSceneWhole()
         if (file == "picture") {
             element->setAppearance(false, path);
         } else if (file == "sound") {
-            element->setAudio(path);
+            element->setParam(ParamId::AudioFile, path);
         } else {
             static_cast<IC *>(element)->loadFile(path, dir.path());
         }
@@ -2345,22 +2369,22 @@ void TestCommands::testSetPropertyCommandUndoesEachElementsValue()
     auto *red = ElementFactory::buildElement(ElementType::Led);
     auto *green = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{red, green}, scene));
-    red->setColor("Red");
-    green->setColor("Green");
+    red->setParam(ParamId::Colour, QStringLiteral("Red"));
+    green->setParam(ParamId::Colour, QStringLiteral("Green"));
 
     auto *command = SetPropertyCommand::apply({red, green}, ElementProperty::parameter(ParamId::Colour), QString("Blue"), scene).command;
     QVERIFY(command != nullptr);
-    QCOMPARE(red->color(), QString("Blue"));
-    QCOMPARE(green->color(), QString("Blue"));
+    QCOMPARE(red->param<QString>(ParamId::Colour), QString("Blue"));
+    QCOMPARE(green->param<QString>(ParamId::Colour), QString("Blue"));
     scene->receiveCommand(command);
     QCOMPARE(command->text(), QString("Update 2 elements"));
 
     scene->undoStack()->undo();
-    QCOMPARE(red->color(), QString("Red"));
-    QCOMPARE(green->color(), QString("Green"));
+    QCOMPARE(red->param<QString>(ParamId::Colour), QString("Red"));
+    QCOMPARE(green->param<QString>(ParamId::Colour), QString("Green"));
     scene->undoStack()->redo();
-    QCOMPARE(red->color(), QString("Blue"));
-    QCOMPARE(green->color(), QString("Blue"));
+    QCOMPARE(red->param<QString>(ParamId::Colour), QString("Blue"));
+    QCOMPARE(green->param<QString>(ParamId::Colour), QString("Blue"));
 }
 
 void TestCommands::testSetPropertyCommandNamesEveryElementThatHasTheProperty()
@@ -2441,7 +2465,7 @@ void TestCommands::testSetPropertyCommandSetsSeveralPropertiesAsOneStep()
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock, led}, scene));
-    const double frequency = clock->frequency();
+    const double frequency = clock->param<double>(ParamId::Frequency);
     const int commands = undoStack->count();
 
     scene->receiveCommand(SetPropertyCommand::apply({{clock, ElementProperty::parameter(ParamId::Frequency), 2.0},
@@ -2450,17 +2474,17 @@ void TestCommands::testSetPropertyCommandSetsSeveralPropertiesAsOneStep()
                                                      {clock, ElementProperty::label(), QString("second")}},
                                                     scene).command);
     QCOMPARE(undoStack->count(), commands + 1);
-    QCOMPARE(clock->frequency(), 2.0);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), 2.0);
     QCOMPARE(clock->label(), QString("second"));
-    QCOMPARE(led->color(), QString("Red"));
+    QCOMPARE(led->param<QString>(ParamId::Colour), QString("Red"));
 
     undoStack->undo();
-    QCOMPARE(clock->frequency(), frequency);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), frequency);
     QCOMPARE(clock->label(), QString());
-    QCOMPARE(led->color(), QString("White"));
+    QCOMPARE(led->param<QString>(ParamId::Colour), QString("White"));
     undoStack->redo();
     QCOMPARE(clock->label(), QString("second"));
-    QCOMPARE(led->color(), QString("Red"));
+    QCOMPARE(led->param<QString>(ParamId::Colour), QString("Red"));
 }
 
 void TestCommands::testSetPropertyCommandFirstRedoLeavesTheValues()
@@ -2525,14 +2549,14 @@ void TestCommands::testSetPropertyCommandMergedBackIsNoStep()
     auto *undoStack = scene->undoStack();
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
-    const double frequency = clock->frequency();
+    const double frequency = clock->param<double>(ParamId::Frequency);
     const int commands = undoStack->count();
 
     scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency + 1.0, scene, 3).command);
     QCOMPARE(undoStack->count(), commands + 1);
     scene->receiveCommand(SetPropertyCommand::apply({clock}, ElementProperty::parameter(ParamId::Frequency), frequency, scene, 3).command);
     QCOMPARE(undoStack->count(), commands);
-    QCOMPARE(clock->frequency(), frequency);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), frequency);
 }
 
 void TestCommands::testSetPropertyCommandMergesOnlyTheSameChanges()
@@ -2566,7 +2590,7 @@ void TestCommands::testSetPropertyCommandMergesOnlyTheSameChanges()
     QCOMPARE(second->label(), QString());
     undoStack->undo();
     QCOMPARE(first->label(), QString());
-    QCOMPARE(first->frequency(), 2.0);
+    QCOMPARE(first->param<double>(ParamId::Frequency), 2.0);
 }
 
 void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
@@ -2582,11 +2606,11 @@ void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     builder.add(swA, swB, txA, txB, rx);
     txA->setLabel("A");
-    txA->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txA, WirelessMode::Tx);
     txB->setLabel("B");
-    txB->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txB, WirelessMode::Tx);
     rx->setLabel("A");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
     builder.connect(swA, 0, txA, 0);
     builder.connect(swB, 0, txB, 0);
     auto *sim = builder.initSimulation();
@@ -2633,7 +2657,7 @@ void TestCommands::testSetPropertyCommandRefusesASecondTxOnAChannel()
     const auto wirelessNode = [scene](const QString &label, const WirelessMode mode) {
         auto *node = ElementFactory::buildElement(ElementType::Node);
         node->setLabel(label);
-        node->setWirelessMode(mode);
+        WirelessNode::setMode(*node, mode);
         scene->addItem(node);
         return node;
     };
@@ -2646,7 +2670,7 @@ void TestCommands::testSetPropertyCommandRefusesASecondTxOnAChannel()
     scene->addItem(clock);
     const auto label = ElementProperty::label();
     const auto mode = ElementProperty::parameter(ParamId::Wireless);
-    const double frequencyBefore = clock->frequency();
+    const double frequencyBefore = clock->param<double>(ParamId::Frequency);
 
     // A label that would give a second Tx the channel: every edit undone, the clock's included, the channel named
     const auto refused = SetPropertyCommand::apply({{clock, ElementProperty::parameter(ParamId::Frequency), 7.0},
@@ -2655,13 +2679,13 @@ void TestCommands::testSetPropertyCommandRefusesASecondTxOnAChannel()
     QCOMPARE(refused.command, nullptr);
     QCOMPARE(refused.duplicateTxLabel, QString("a"));
     QCOMPARE(other->label(), QString("b"));
-    QCOMPARE(clock->frequency(), frequencyBefore);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), frequencyBefore);
 
     // A mode that would make a node a second Tx on its channel
     const auto turned = SetPropertyCommand::apply({rx}, mode, static_cast<int>(WirelessMode::Tx), scene);
     QCOMPARE(turned.command, nullptr);
     QCOMPARE(turned.duplicateTxLabel, QString("a"));
-    QCOMPARE(rx->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*rx), WirelessMode::Rx);
 
     // Tx nodes that already share a channel refuse no edit that leaves it: their label or their mode set as it is
     const auto kept = SetPropertyCommand::apply({sharing, alsoSharing}, label, QString("dup"), scene);

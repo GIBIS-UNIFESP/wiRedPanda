@@ -7,6 +7,7 @@
 #include <QCoreApplication>
 
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -67,7 +68,7 @@ struct ElementInfo<ElementType::Led> {
         // Each colour has two slots, off then on: White's at 0, Red's at 2, Green's at 4, Blue's at 6, Purple's at 8.
         // The palettes are slots 10 to 25; two inputs both on show slot 25 (white), not 21, as they always have.
         switch (element.inputSize()) {
-        case 1: return (2 * Element::colorNameToIndex(element.color())) + index;
+        case 1: return (2 * ElementColour::indexOf(element.param<QString>(ParamId::Colour))) + index;
         case 2: return (index == 3) ? 25 : 18 + index;
         case 3: return 18 + index;
         case 4: return 10 + index;
@@ -94,7 +95,7 @@ struct ElementInfo<ElementType::Led> {
 
         switch (element.inputSize()) {
         case 1: {
-            const int offset = 2 * Element::colorNameToIndex(element.color());
+            const int offset = 2 * ElementColour::indexOf(element.param<QString>(ParamId::Colour));
             states.append({offset, QCoreApplication::translate("Led", "Off")});
             states.append({offset + 1, QCoreApplication::translate("Led", "On")});
             break;
@@ -172,7 +173,7 @@ struct ElementInfo<ElementType::Led> {
                 .id = ParamId::Colour,
                 .defaultValue = QStringLiteral("White"),
                 .key = "color",
-                .choices = Element::colorNames(),
+                .choices = ElementColour::names(),
                 .offered = [](const Element &element) { return element.inputSize() == 1; },
             },
             // The slot shown changes as refresh() reads the inputs, not as the colour or the inputs change
@@ -196,7 +197,7 @@ struct ElementInfo<ElementType::Led> {
         descriptor.shownSlot = shownSlot;
         descriptor.slotFollowsInputs = true;
         descriptor.appearanceStates = appearanceStates;
-        descriptor.genericProperties = [](const Element &element) { return element.color(); };
+        descriptor.genericProperties = [](const Element &element) { return element.param<QString>(ParamId::Colour); };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

@@ -38,6 +38,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPresenter.h"
@@ -465,7 +466,7 @@ QHash<QString, InputPort *> Scene::wirelessTxInputPorts(const QVector<Element *>
 {
     QHash<QString, InputPort *> txMap;
     for (auto *elm : elements) {
-        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty() && elm->inputPort(0)) {
+        if (WirelessNode::mode(*elm) == WirelessMode::Tx && !elm->label().isEmpty() && elm->inputPort(0)) {
             if (!txMap.contains(elm->label())) {
                 txMap.insert(elm->label(), elm->inputPort(0));
             }
@@ -490,7 +491,7 @@ QString Scene::duplicateTxLabel(const QList<WirelessEdit> &edits) const
         return {};
     }
     for (auto *element : unsortedElements()) {
-        if ((element->wirelessMode() == WirelessMode::Tx) && !edited.contains(element)) {
+        if ((WirelessNode::mode(*element) == WirelessMode::Tx) && !edited.contains(element)) {
             if (const auto it = holders.find(element->label()); it != holders.end()) {
                 ++it.value();
             }
@@ -508,7 +509,7 @@ QString Scene::duplicateTxLabel(const QList<WirelessEdit> &edits) const
 QStringList Scene::duplicateTxLabels(const QList<QGraphicsItem *> &items) const
 {
     const auto txLabel = [](const Element *element) {
-        return (element->wirelessMode() == WirelessMode::Tx) ? element->label() : QString();
+        return (WirelessNode::mode(*element) == WirelessMode::Tx) ? element->label() : QString();
     };
 
     QSet<QString> arrived;

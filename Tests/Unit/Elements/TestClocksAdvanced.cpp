@@ -39,12 +39,12 @@ void TestClocksAdvanced::testClockBehavior()
     QCOMPARE(TestUtils::inputStatus(&led), Status::Active);
 
     // Verify frequency property works
-    clock.setFrequency(1000.0);
-    QCOMPARE(clock.frequency(), 1000.0);
+    clock.setParam(ParamId::Frequency, 1000.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 1000.0);
 
     // Verify delay property works
-    clock.setDelay(0.5);
-    QCOMPARE(clock.delay(), 0.5);
+    clock.setParam(ParamId::Delay, 0.5);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.5);
 }
 
 // ============================================================
@@ -58,12 +58,12 @@ void TestClocksAdvanced::testClockFrequencyEdgeCases()
     QVERIFY(clock != nullptr);
 
     // Very low frequency
-    clock->setFrequency(0.1);
-    QVERIFY(qFuzzyCompare(clock->frequency(), 0.1));
+    clock->setParam(ParamId::Frequency, 0.1);
+    QVERIFY(qFuzzyCompare(clock->param<double>(ParamId::Frequency), 0.1));
 
     // Very high frequency
-    clock->setFrequency(10000.0);
-    QVERIFY(qFuzzyCompare(clock->frequency(), 10000.0));
+    clock->setParam(ParamId::Frequency, 10000.0);
+    QVERIFY(qFuzzyCompare(clock->param<double>(ParamId::Frequency), 10000.0));
 }
 
 void TestClocksAdvanced::testClockTimingPrecision()
@@ -73,7 +73,7 @@ void TestClocksAdvanced::testClockTimingPrecision()
     // half-period.
     auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
-    clock->setFrequency(10.0); // 50ms half-period
+    clock->setParam(ParamId::Frequency, 10.0); // 50ms half-period
     const auto t0 = std::chrono::steady_clock::now();
     ClockTiming::reset(*clock, t0);
     const bool initialState = clock->isOn();
@@ -94,24 +94,24 @@ void TestClocksAdvanced::testClockSilentRejectionForExtremeFrequencies()
     auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
     // Set a valid initial frequency
-    clock->setFrequency(100.0);
-    QCOMPARE(clock->frequency(), 100.0);
+    clock->setParam(ParamId::Frequency, 100.0);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), 100.0);
 
     // Try to set an extremely high frequency (should be silently rejected)
     // The threshold depends on implementation, but frequencies above ~1MHz typically fail
     // because the interval calculation produces microseconds <= 0
-    clock->setFrequency(1e8);  // 100 MHz - extremely high
+    clock->setParam(ParamId::Frequency, 1e8);  // 100 MHz - extremely high
     // After silent rejection, frequency should remain unchanged
-    QCOMPARE(clock->frequency(), 100.0);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), 100.0);
 
     // Verify we can still set a valid frequency after the failed attempt
-    clock->setFrequency(50.0);
-    QCOMPARE(clock->frequency(), 50.0);
+    clock->setParam(ParamId::Frequency, 50.0);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), 50.0);
 
     // Test zero frequency rejection (also silently rejected)
-    clock->setFrequency(0.0);
+    clock->setParam(ParamId::Frequency, 0.0);
     // Frequency should remain at last valid value
-    QCOMPARE(clock->frequency(), 50.0);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), 50.0);
 }
 
 // ============================================================
@@ -128,14 +128,14 @@ void TestClocksAdvanced::testTwoClocksDifferentFrequencies()
     QVERIFY(clock2 != nullptr);
 
     // Set different frequencies
-    clock1->setFrequency(1.0);   // 1 Hz
-    clock2->setFrequency(100.0); // 100 Hz
+    clock1->setParam(ParamId::Frequency, 1.0);   // 1 Hz
+    clock2->setParam(ParamId::Frequency, 100.0); // 100 Hz
 
-    QCOMPARE(clock1->frequency(), 1.0);
-    QCOMPARE(clock2->frequency(), 100.0);
+    QCOMPARE(clock1->param<double>(ParamId::Frequency), 1.0);
+    QCOMPARE(clock2->param<double>(ParamId::Frequency), 100.0);
 
     // Verify they maintain independent frequencies
-    QVERIFY(!qFuzzyCompare(clock1->frequency(), clock2->frequency()));
+    QVERIFY(!qFuzzyCompare(clock1->param<double>(ParamId::Frequency), clock2->param<double>(ParamId::Frequency)));
 }
 
 void TestClocksAdvanced::testThreeClocksConcurrentExecution()
@@ -161,9 +161,9 @@ void TestClocksAdvanced::testThreeClocksConcurrentExecution()
     auto clock2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto clock3 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
-    clock1->setFrequency(1.0);
-    clock2->setFrequency(10.0);
-    clock3->setFrequency(100.0);
+    clock1->setParam(ParamId::Frequency, 1.0);
+    clock2->setParam(ParamId::Frequency, 10.0);
+    clock3->setParam(ParamId::Frequency, 100.0);
 
     const auto t0 = std::chrono::steady_clock::now();
     constexpr int kDurationMs = 1000;
@@ -205,8 +205,8 @@ void TestClocksAdvanced::testClockSynchronizationEdgeCases()
     auto clock1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto clock2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
-    clock1->setFrequency(50.0);
-    clock2->setFrequency(50.0);
+    clock1->setParam(ParamId::Frequency, 50.0);
+    clock2->setParam(ParamId::Frequency, 50.0);
 
     const auto t0 = std::chrono::steady_clock::now();
     ClockTiming::reset(*clock1, t0);
@@ -223,8 +223,8 @@ void TestClocksAdvanced::testClockSynchronizationEdgeCases()
 
     // A clock with a phase delay must NOT stay in lockstep with an in-phase clock.
     auto clock3 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
-    clock3->setFrequency(50.0);
-    clock3->setDelay(0.5); // half a full period — exactly one half-period out of phase
+    clock3->setParam(ParamId::Frequency, 50.0);
+    clock3->setParam(ParamId::Delay, 0.5); // half a full period — exactly one half-period out of phase
     ClockTiming::reset(*clock3, t0);
 
     bool everDiverged = false;
@@ -247,8 +247,8 @@ void TestClocksAdvanced::testMultiClockPhaseRelationships()
     auto clock1 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     auto clock2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
-    clock1->setFrequency(100.0); // 5ms half-period
-    clock2->setFrequency(50.0);  // 10ms half-period — half of clock1's frequency
+    clock1->setParam(ParamId::Frequency, 100.0); // 5ms half-period
+    clock2->setParam(ParamId::Frequency, 50.0);  // 10ms half-period — half of clock1's frequency
 
     const auto t0 = std::chrono::steady_clock::now();
     ClockTiming::reset(*clock1, t0);

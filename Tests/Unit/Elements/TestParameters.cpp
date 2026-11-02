@@ -20,6 +20,7 @@
 #include "App/Element/ElementSerializer.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/Parameters.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Versions.h"
 #include "App/Wiring/Port.h"
@@ -217,13 +218,13 @@ void TestParameters::testEachTypeOffersThePropertiesOfItsParameters()
 
     const std::unique_ptr<Element> element(ElementFactory::buildElement(type));
     QStringList offers;
-    for (const auto &[name, has] : {std::pair{"frequency", element->hasFrequency()},
-                                    std::pair{"delay", element->hasDelay()},
-                                    std::pair{"sound", element->hasAudioBox()},
-                                    std::pair{"volume", element->hasVolume()},
-                                    std::pair{"colour", element->hasColors()},
+    for (const auto &[name, has] : {std::pair{"frequency", element->offersParam(ParamId::Frequency)},
+                                    std::pair{"delay", element->offersParam(ParamId::Delay)},
+                                    std::pair{"sound", element->offersParam(ParamId::AudioFile)},
+                                    std::pair{"volume", element->offersParam(ParamId::Volume)},
+                                    std::pair{"colour", element->offersParam(ParamId::Colour)},
                                     std::pair{"table", element->hasTruthTable()},
-                                    std::pair{"wireless", element->hasWirelessMode()}}) {
+                                    std::pair{"wireless", element->offersParam(ParamId::Wireless)}}) {
         if (has) {
             offers << QString::fromLatin1(name);
         }
@@ -280,38 +281,39 @@ void TestParameters::testSetParamTakesAValueAsItsSpecDoes()
     Element node{ElementType::Node};
 
     QVERIFY(node.setParam(ParamId::Wireless, static_cast<int>(WirelessMode::Rx)));
-    QCOMPARE(node.wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::Rx);
     QVERIFY(!node.inputPort()->isRequired());
     QVERIFY(!node.inputPort()->isVisible());
 
-    // The value it has and a parameter the type does not have change nothing; so does a value of another kind, a broken
-    // invariant, which a debug build asserts
+    // The value it has changes nothing; nor do a value of another kind and a parameter the type does not have, broken
+    // invariants, which a debug build asserts
     QVERIFY(!node.setParam(ParamId::Wireless, static_cast<int>(WirelessMode::Rx)));
 #ifdef QT_NO_DEBUG
     QVERIFY(!node.setParam(ParamId::Wireless, QStringLiteral("Tx")));
-#endif
     QVERIFY(!node.setParam(ParamId::Colour, QStringLiteral("Red")));
-    QCOMPARE(node.wirelessMode(), WirelessMode::Rx);
+    QVERIFY(!node.hasParam(ParamId::Colour));
+#endif
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::Rx);
 
     // The spec takes a mode out of range as None, as a file's loads
     QVERIFY(node.setParam(ParamId::Wireless, 7));
-    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::None);
     QVERIFY(node.inputPort()->isRequired());
     QVERIFY(node.inputPort()->isVisible());
     QVERIFY(!node.setParam(ParamId::Wireless, -1));
 
     // The accessor goes through the same spec
-    node.setWirelessMode(WirelessMode::Tx);
-    QCOMPARE(node.wirelessMode(), WirelessMode::Tx);
+    WirelessNode::setMode(node, WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::Tx);
     QVERIFY(!node.outputPort()->isVisible());
-    node.setWirelessMode(static_cast<WirelessMode>(3));
-    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+    WirelessNode::setMode(node, static_cast<WirelessMode>(3));
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::None);
 
-    // A type without the parameter answers as if it were empty and ignores the write
+    // A type without the parameter has none, and routes nothing
     const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(!gate->hasWirelessMode());
-    gate->setWirelessMode(WirelessMode::Tx);
-    QCOMPARE(gate->wirelessMode(), WirelessMode::None);
+    QVERIFY(!gate->hasParam(ParamId::Wireless));
+    QVERIFY(!gate->offersParam(ParamId::Wireless));
+    QCOMPARE(WirelessNode::mode(*gate), WirelessMode::None);
 }
 
 void TestParameters::testParameterChangedFollowsEachChangeOnly()
@@ -398,34 +400,33 @@ void TestParameters::testAClocksFrequencyAndDelayAreItsRules()
     // A frequency is finite and non-zero with a half-period of at least a microsecond; one it does not take leaves
     // the frequency as it was
     QVERIFY(clock.setParam(ParamId::Frequency, 2.5));
-    QCOMPARE(clock.frequency(), 2.5);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 2.5);
     for (const double refused : {0.0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity(),
                                  1.0e9}) {
         QVERIFY(!clock.setParam(ParamId::Frequency, refused));
-        clock.setFrequency(refused);
-        QCOMPARE(clock.frequency(), 2.5);
+        clock.setParam(ParamId::Frequency, refused);
+        QCOMPARE(clock.param<double>(ParamId::Frequency), 2.5);
     }
     QVERIFY(clock.setParam(ParamId::Frequency, 400000.0));
-    clock.setFrequency(10.0);
+    clock.setParam(ParamId::Frequency, 10.0);
     QCOMPARE(clock.param<double>(ParamId::Frequency), 10.0);
 
     // A delay is a fraction of the period in [-1, 1]: a finite one beyond it is clamped, a non-finite one refused
     QVERIFY(clock.setParam(ParamId::Delay, 0.25));
-    QCOMPARE(clock.delay(), 0.25);
-    clock.setDelay(3.0);
-    QCOMPARE(clock.delay(), 1.0);
-    clock.setDelay(-7.0);
-    QCOMPARE(clock.delay(), -1.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.25);
+    clock.setParam(ParamId::Delay, 3.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 1.0);
+    clock.setParam(ParamId::Delay, -7.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), -1.0);
     QVERIFY(!clock.setParam(ParamId::Delay, std::numeric_limits<double>::quiet_NaN()));
-    QCOMPARE(clock.delay(), -1.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), -1.0);
 
-    // A type without them has none and takes none
+    // A type without them has none and offers none
     const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(!gate->setParam(ParamId::Frequency, 1.0));
-    gate->setFrequency(1.0);
-    gate->setDelay(0.5);
-    QCOMPARE(gate->frequency(), 0.0);
-    QCOMPARE(gate->delay(), 0.0);
+    QVERIFY(!gate->hasParam(ParamId::Frequency));
+    QVERIFY(!gate->hasParam(ParamId::Delay));
+    QVERIFY(!gate->offersParam(ParamId::Frequency));
+    QVERIFY(!gate->offersParam(ParamId::Delay));
 }
 
 // --- The colours ---
@@ -434,34 +435,33 @@ void TestParameters::testAColourIsAnyNameAndTheLedOffersItWithOneInput()
 {
     // Any name is kept; the LED's pictures follow a listed one, and one not in the list is drawn as White
     Element led{ElementType::Led};
-    QVERIFY(led.hasColors());
-    led.setColor(QStringLiteral("Green"));
+    QVERIFY(led.offersParam(ParamId::Colour));
+    led.setParam(ParamId::Colour, QStringLiteral("Green"));
     QCOMPARE(led.param<QString>(ParamId::Colour), QStringLiteral("Green"));
     QCOMPARE(led.appearanceStates().constFirst().first, 4);
     QVERIFY(led.setParam(ParamId::Colour, QStringLiteral("Teal")));
-    QCOMPARE(led.color(), QStringLiteral("Teal"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QStringLiteral("Teal"));
     QCOMPARE(led.appearanceStates().constFirst().first, 0);
 
     // With more than one input the inputs' code picks the colour: the LED keeps it but does not offer it
-    led.setColor(QStringLiteral("Blue"));
+    led.setParam(ParamId::Colour, QStringLiteral("Blue"));
     led.setInputSize(2);
-    QVERIFY(!led.hasColors());
+    QVERIFY(!led.offersParam(ParamId::Colour));
     QVERIFY(led.hasParam(ParamId::Colour));
-    QCOMPARE(led.color(), QStringLiteral("Blue"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QStringLiteral("Blue"));
     led.setInputSize(1);
-    QVERIFY(led.hasColors());
+    QVERIFY(led.offersParam(ParamId::Colour));
     QCOMPARE(led.appearanceStates().constFirst().first, 6);
 
     Element display{ElementType::Display7};
-    QVERIFY(display.hasColors());
-    display.setColor(QStringLiteral("Purple"));
-    QCOMPARE(display.color(), QStringLiteral("Purple"));
+    QVERIFY(display.offersParam(ParamId::Colour));
+    display.setParam(ParamId::Colour, QStringLiteral("Purple"));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QStringLiteral("Purple"));
 
-    // A type without a colour has none, offers none and takes none
+    // A type without a colour has none and offers none
     const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
-    gate->setColor(QStringLiteral("Red"));
-    QVERIFY(!gate->hasColors());
-    QCOMPARE(gate->color(), QString());
+    QVERIFY(!gate->hasParam(ParamId::Colour));
+    QVERIFY(!gate->offersParam(ParamId::Colour));
 }
 
 // --- The audio outputs ---
@@ -472,12 +472,12 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
 
     // A frequency is finite and positive; one it does not take leaves the frequency as it was
     QVERIFY(buzzer.setParam(ParamId::Frequency, 440.0));
-    QCOMPARE(buzzer.frequency(), 440.0);
+    QCOMPARE(buzzer.param<double>(ParamId::Frequency), 440.0);
     for (const double refused : {0.0, -5.0, std::numeric_limits<double>::quiet_NaN(),
                                  std::numeric_limits<double>::infinity()}) {
         QVERIFY(!buzzer.setParam(ParamId::Frequency, refused));
-        buzzer.setFrequency(refused);
-        QCOMPARE(buzzer.frequency(), 440.0);
+        buzzer.setParam(ParamId::Frequency, refused);
+        QCOMPARE(buzzer.param<double>(ParamId::Frequency), 440.0);
     }
     QVERIFY(buzzer.setParam(ParamId::Frequency, 1.0e9));
 
@@ -485,31 +485,31 @@ void TestParameters::testAnAudioOutputsFrequencyFileAndVolumeAreItsRules()
     // float's shortest decimal: the nearest float to 0.1 is written out, since i386's x87 can fold
     // static_cast<double>(0.1F) at a wider precision to 0.1 itself
     QVERIFY(buzzer.setParam(ParamId::Volume, 0.3));
-    QCOMPARE(buzzer.volume(), 0.3);
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), 0.3);
     QVERIFY(buzzer.setParam(ParamId::Volume, kNearestFloatToATenth));
-    QCOMPARE(buzzer.volume(), 0.1);
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), 0.1);
     QVERIFY(!buzzer.setParam(ParamId::Volume, 0.1));
     QVERIFY(buzzer.setParam(ParamId::Volume, 0.5));
-    QCOMPARE(buzzer.volume(), 0.5);
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), 0.5);
     QCOMPARE(AudioOutput::volumeTaken(0.1 + 1e-12), 0.1 + 1e-12);
 
     // A sound file's path is kept whether or not its file is there; an empty one changes nothing
     Element box{ElementType::AudioBox};
-    box.setAudio(QString());
-    QCOMPARE(box.audio(), QString::fromLatin1(AudioOutput::kBuiltInSound));
+    box.setParam(ParamId::AudioFile, QString());
+    QCOMPARE(box.param<QString>(ParamId::AudioFile), QString::fromLatin1(AudioOutput::kBuiltInSound));
     const QString gone = QStringLiteral("/nonexistent/wiredpanda/gone.wav");
-    box.setAudio(gone);
+    box.setParam(ParamId::AudioFile, gone);
     QCOMPARE(box.param<QString>(ParamId::AudioFile), gone);
     QCOMPARE(box.externalFiles(), QStringList{gone});
-    box.setVolume(0.75);
-    QCOMPARE(box.volume(), 0.75);
+    box.setParam(ParamId::Volume, 0.75);
+    QCOMPARE(box.param<double>(ParamId::Volume), 0.75);
 
-    // A type without them has none and takes none
+    // A type without them has none and offers none
     const std::unique_ptr<Element> gate(ElementFactory::buildElement(ElementType::And));
-    gate->setAudio(gone);
-    gate->setVolume(0.5);
-    QCOMPARE(gate->audio(), QString());
-    QCOMPARE(gate->volume(), 0.0);
+    QVERIFY(!gate->hasParam(ParamId::AudioFile));
+    QVERIFY(!gate->hasParam(ParamId::Volume));
+    QVERIFY(!gate->offersParam(ParamId::AudioFile));
+    QVERIFY(!gate->offersParam(ParamId::Volume));
 }
 
 void TestParameters::testAnAudioBoxReportsItsSoundAsItIsWhenAFileOpens()
@@ -535,13 +535,13 @@ void TestParameters::testAnAudioBoxReportsItsSoundAsItIsWhenAFileOpens()
 
     writeSound();
     Element box{ElementType::AudioBox};
-    box.setAudio(path);
+    box.setParam(ParamId::AudioFile, path);
     QCOMPARE(report(box), QString());
     QVERIFY(QFile::remove(path));
     QVERIFY2(report(box).contains(QStringLiteral("sound.wav")), "a sound gone since it was set is not reported");
 
     Element other{ElementType::AudioBox};
-    other.setAudio(path);
+    other.setParam(ParamId::AudioFile, path);
     writeSound();
     QCOMPARE(report(other), QString());
 }
@@ -578,7 +578,7 @@ void TestParameters::testAPortableFileOmitsDefaultsButASnapshotWritesEveryKey()
     QCOMPARE(savedMap(clock, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{}));
     QCOMPARE(savedMap(clock, SerializationPurpose::InMemorySnapshot).keys(),
              (QStringList{"delay", "frequency", "locked"}));
-    clock.setFrequency(4.0);
+    clock.setParam(ParamId::Frequency, 4.0);
     QCOMPARE(savedMap(clock, SerializationPurpose::PortableFile), (QMap<QString, QVariant>{{"frequency", 4.0}}));
 
     Element table{ElementType::TruthTable};
@@ -603,24 +603,24 @@ void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
     // The clock's delay before 4.3 had another meaning and is dropped
     Element clock{ElementType::Clock};
     loadMap(clock, {{"frequency", 2.0}, {"delay", 0.5}}, QVersionNumber(4, 2));
-    QCOMPARE(clock.frequency(), 2.0);
-    QCOMPARE(clock.delay(), 0.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 2.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.0);
     loadMap(clock, {{"delay", 0.5}}, QVersionNumber(4, 3));
-    QCOMPARE(clock.delay(), 0.5);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.5);
 
     // A buzzer's map without a frequency can hold the old note name
     Element buzzer{ElementType::Buzzer};
     loadMap(buzzer, {{"note", "A4"}}, QVersionNumber(4, 1));
-    QCOMPARE(buzzer.frequency(), static_cast<double>(AudioOutput::noteToFrequency("A4")));
+    QCOMPARE(buzzer.param<double>(ParamId::Frequency), static_cast<double>(AudioOutput::noteToFrequency("A4")));
     loadMap(buzzer, {{"frequency", 300.0}, {"note", "C6"}}, QVersionNumber(4, 1));
-    QCOMPARE(buzzer.frequency(), 300.0);
+    QCOMPARE(buzzer.param<double>(ParamId::Frequency), 300.0);
 
     // A node's map came in 4.4: an older file holds none, and nothing is read
     Element node{ElementType::Node};
     QCOMPARE(loadMap(node, {{"wirelessMode", 1}}, QVersionNumber(4, 3)), qint64{0});
-    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::None);
     loadMap(node, {{"wirelessMode", 1}}, QVersionNumber(4, 4));
-    QCOMPARE(node.wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::Tx);
 
     // A value that does not read as its kind is dropped
     Element rotary{ElementType::InputRotary};
@@ -636,18 +636,18 @@ void TestParameters::testAnOlderFilesVolumeIsTheValueItsFloatNamed()
     // version writes 0.1, reads as written
     Element buzzer{ElementType::Buzzer};
     loadMap(buzzer, {{"volume", kNearestFloatToATenth}}, QVersionNumber(4, 1));
-    QCOMPARE(buzzer.volume(), 0.1);
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), 0.1);
     loadMap(buzzer, {{"volume", kNearestFloatToTheBuzzersVolume}}, FormatRev::current);
-    QCOMPARE(buzzer.volume(), AudioOutput::kBuzzerVolume);
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), AudioOutput::kBuzzerVolume);
     loadMap(buzzer, {{"volume", 0.3}}, FormatRev::current);
-    QCOMPARE(buzzer.volume(), 0.3);
+    QCOMPARE(buzzer.param<double>(ParamId::Volume), 0.3);
 
     // A volume that is not finite is refused: a file's loads as the default, and is saved as none
     for (const double refused : {std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
                                  std::numeric_limits<double>::quiet_NaN()}) {
         Element fresh{ElementType::Buzzer};
         loadMap(fresh, {{"volume", refused}}, FormatRev::current);
-        QCOMPARE(fresh.volume(), AudioOutput::kBuzzerVolume);
+        QCOMPARE(fresh.param<double>(ParamId::Volume), AudioOutput::kBuzzerVolume);
         QVERIFY(!savedMap(fresh, SerializationPurpose::PortableFile).contains("volume"));
         QVERIFY(!fresh.setParam(ParamId::Volume, refused));
     }

@@ -22,6 +22,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementAppearance.h"
+#include "App/Element/ElementColour.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Presentation/LabelMetrics.h"
 #include "App/Wiring/Port.h"
@@ -39,7 +40,7 @@ QByteArray recoloredSegmentSvg(const QByteArray &svgBytes, const QColor &color)
 }
 
 /// Returns the White/Red/Green/Blue/Purple vector renderers of the segment SVG at \a resourcePath (index order matches
-/// Element::colorNameToIndex()), built the first time, so lit segments stay crisp at any zoom. GUI-thread only.
+/// ElementColour::indexOf()), built the first time, so lit segments stay crisp at any zoom. GUI-thread only.
 const QVector<std::shared_ptr<QSvgRenderer>> &segmentRenderers(const QString &resourcePath)
 {
     Q_ASSERT(QCoreApplication::instance()->thread() == QThread::currentThread());
@@ -275,7 +276,7 @@ AppearanceKey SegmentDisplayPresenter::appearanceKey(const Element &element) con
     // The colour shows only in the lit segments, above which it is packed
     if (lit != 0) {
         key.type = element.elementType();
-        key.state = lit | (static_cast<quint32>(Element::colorNameToIndex(element.color())) << 24);
+        key.state = lit | (static_cast<quint32>(ElementColour::indexOf(element.param<QString>(ParamId::Colour))) << 24);
     }
     return key;
 }
@@ -288,7 +289,7 @@ void SegmentDisplayPresenter::paintOverlay(QPainter &painter, const Element &ele
     Q_ASSERT_X(m_segments.size() == element.inputSize(), "SegmentDisplayPresenter::paintOverlay()",
                "a display's inputs are fixed, one per segment of its table");
     const QRectF body(0, 0, 64, 64);
-    const int color = Element::colorNameToIndex(element.color());
+    const int color = ElementColour::indexOf(element.param<QString>(ParamId::Colour));
     const QStringList &segments = element.appearance().defaultAppearances();
     const int inputs = std::min(static_cast<int>(m_segments.size()), element.inputSize());
     for (int input = 0; input < inputs; ++input) {

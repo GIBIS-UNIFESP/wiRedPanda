@@ -22,6 +22,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/ICRegistry.h"
@@ -658,8 +659,8 @@ QVector<UpdateCommand::WirelessState> UpdateCommand::snapshotWirelessState(const
 {
     QVector<WirelessState> state;
     for (auto *elm : elements) {
-        if (elm && elm->hasWirelessMode()) {
-            state.append({elm, elm->wirelessMode(), elm->label()});
+        if (elm && elm->offersParam(ParamId::Wireless)) {
+            state.append({elm, WirelessNode::mode(*elm), elm->label()});
         }
     }
     return state;
@@ -799,11 +800,11 @@ SetPropertyCommand::Applied SetPropertyCommand::apply(const QList<PropertyEdit> 
             Q_ASSERT_X(false, "SetPropertyCommand::apply()", "an edit's value is not of its property's kind");
             continue;
         }
-        if (edit.element->hasWirelessMode()
+        if (edit.element->offersParam(ParamId::Wireless)
             && ((edit.property == ElementProperty::label()) || (edit.property == ElementProperty::parameter(ParamId::Wireless)))
             && !channelled.contains(edit.element)) {
             channelled.insert(edit.element);
-            channels.append({edit.element, edit.element->label(), edit.element->wirelessMode()});
+            channels.append({edit.element, edit.element->label(), WirelessNode::mode(*edit.element)});
         }
         reached.append(edit.element);
         properties.append(edit.property);
@@ -815,8 +816,8 @@ SetPropertyCommand::Applied SetPropertyCommand::apply(const QList<PropertyEdit> 
     // A Tx node's label is its channel, and a channel has one Tx: the nodes whose channel moved, as the edits left them
     QList<Scene::WirelessEdit> moved;
     for (const Scene::WirelessEdit &channel : std::as_const(channels)) {
-        if ((channel.node->label() != channel.label) || (channel.node->wirelessMode() != channel.mode)) {
-            moved.append({channel.node, channel.node->label(), channel.node->wirelessMode()});
+        if ((channel.node->label() != channel.label) || (WirelessNode::mode(*channel.node) != channel.mode)) {
+            moved.append({channel.node, channel.node->label(), WirelessNode::mode(*channel.node)});
         }
     }
     if (const QString duplicate = scene->duplicateTxLabel(moved); !duplicate.isEmpty()) {
@@ -860,8 +861,8 @@ SetPropertyCommand::SetPropertyCommand(const QList<Element *> &elements, const Q
         const Element *element = elements.at(i);
         m_wirelessTopologyChange = m_wirelessTopologyChange
             || (property == ElementProperty::parameter(ParamId::Wireless))
-            || ((property == ElementProperty::label()) && element->hasWirelessMode()
-                && (element->wirelessMode() != WirelessMode::None));
+            || ((property == ElementProperty::label()) && element->offersParam(ParamId::Wireless)
+                && (WirelessNode::mode(*element) != WirelessMode::None));
     }
 
     QList<int> distinct = m_ids;
@@ -1226,12 +1227,12 @@ void MorphCommand::copyProperties(const Element *oldElm, Element *newElm)
         newElm->setLabel(oldElm->label());
     }
 
-    if (newElm->hasColors() && oldElm->hasColors()) {
-        newElm->setColor(oldElm->color());
+    if (newElm->offersParam(ParamId::Colour) && oldElm->offersParam(ParamId::Colour)) {
+        newElm->setParam(ParamId::Colour, oldElm->param<QString>(ParamId::Colour));
     }
 
-    if (newElm->hasFrequency() && oldElm->hasFrequency()) {
-        newElm->setFrequency(oldElm->frequency());
+    if (newElm->offersParam(ParamId::Frequency) && oldElm->offersParam(ParamId::Frequency)) {
+        newElm->setParam(ParamId::Frequency, oldElm->param<double>(ParamId::Frequency));
     }
 
     if (newElm->hasTrigger() && oldElm->hasTrigger()) {
@@ -1243,12 +1244,12 @@ void MorphCommand::copyProperties(const Element *oldElm, Element *newElm)
     newElm->setFlippedX(oldElm->isFlippedX());
     newElm->setFlippedY(oldElm->isFlippedY());
 
-    if (newElm->hasVolume() && oldElm->hasVolume()) {
-        newElm->setVolume(oldElm->volume());
+    if (newElm->offersParam(ParamId::Volume) && oldElm->offersParam(ParamId::Volume)) {
+        newElm->setParam(ParamId::Volume, oldElm->param<double>(ParamId::Volume));
     }
 
-    if (newElm->hasDelay() && oldElm->hasDelay()) {
-        newElm->setDelay(oldElm->delay()); // LCOV_EXCL_LINE — Clock is the only element type with hasDelay=true, so no two distinct types can both satisfy this check.
+    if (newElm->offersParam(ParamId::Delay) && oldElm->offersParam(ParamId::Delay)) {
+        newElm->setParam(ParamId::Delay, oldElm->param<double>(ParamId::Delay)); // LCOV_EXCL_LINE — Clock is the only element type with a Delay, so no two distinct types can both satisfy this check.
     }
 }
 

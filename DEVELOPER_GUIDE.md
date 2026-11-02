@@ -516,15 +516,11 @@ The `ElementConstraints` are **validated at compile time** by the `constexpr val
 | `minOutputSize`       | Minimum number of output ports                                                  |
 | `maxOutputSize`       | Maximum number of output ports                                                  |
 | `canChangeAppearance` | Allows the user to assign a custom SVG appearance (e.g., ANSI/IEC)              |
-| `hasColors`           | Has color option (e.g., LED)                                                    |
-| `hasAudioBox`         | Has audio box capability (e.g., AudioBox)                                       |
 | `hasTrigger`          | Can be triggered via keyboard                                                   |
-| `hasFrequency`        | Configurable frequency (e.g., Clock)                                            |
-| `hasDelay`            | Has configurable delay                                                          |
 | `hasLabel`            | Displays a text label                                                           |
-| `hasTruthTable`       | Based on a truth table                                                          |
-| `hasVolume`           | Has volume control (e.g., Buzzer, AudioBox)                                     |
 | `rotatesGraphic`      | Rotating/flipping re-orients the graphic (false = icon fixed, ports still move) |
+
+What only some types have, such as a colour, a frequency, a delay, a sound, a volume or a wireless mode, is a parameter of the type (`ElementTypeDescriptor::parameters`), not a field or an accessor of the element: it is asked with `offersParam(ParamId::Colour)`, read with `param<QString>(ParamId::Colour)` and set with `setParam(ParamId::Colour, value)`; a type without it has none, and asking for it is a broken invariant. `ElementColour` cycles the colour names and `WirelessNode` reads a node's mode as its enum.
 
 `ElementTypeDescriptor` extends this with visual information: pixmap paths, translated names, and its `appearanceSlots`: each slot's key, which a file saves the slot's picture by, and its built-in picture, which an element's appearance list starts as. `appearancePositions` keeps the slot each position of an older file's positional list named.
 

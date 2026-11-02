@@ -7,10 +7,32 @@
 
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
+
+namespace PropertyShortcutHandlerDetail {
+
+/// Steps \a element's colour one place along the cycle (ElementColour): back when \a dir is negative.
+void stepColour(Element &element, const int dir)
+{
+    const auto &colour = element.param<QString>(ParamId::Colour);
+    element.setParam(ParamId::Colour, dir < 0 ? ElementColour::previous(colour) : ElementColour::next(colour));
+}
+
+/// Sets \a element's frequency \a step times \a dir past its own, clamped to [\a lowest, \a highest].
+void stepFrequency(Element &element, const int dir, const double step, const double lowest, const double highest)
+{
+    const double frequency = element.param<double>(ParamId::Frequency) + dir * step;
+    element.setParam(ParamId::Frequency, std::clamp(frequency, lowest, highest));
+}
+
+} // namespace PropertyShortcutHandlerDetail
+
+using PropertyShortcutHandlerDetail::stepColour;
+using PropertyShortcutHandlerDetail::stepFrequency;
 
 PropertyShortcutHandler::PropertyShortcutHandler(Scene *scene)
     : m_scene(scene)
@@ -71,25 +93,27 @@ void PropertyShortcutHandler::adjustMainProperty(int dir)
             break;
         }
         case ElementType::Clock:
-            if (element->hasFrequency())
-                applyWithUndo(element, [element, dir] { element->setFrequency(element->frequency() + dir * 0.5); });
+            if (element->offersParam(ParamId::Frequency))
+                applyWithUndo(element, [element, dir] {
+                    element->setParam(ParamId::Frequency, element->param<double>(ParamId::Frequency) + dir * 0.5);
+                });
             break;
 
         case ElementType::Buzzer:
-            if (element->hasFrequency())
-                applyWithUndo(element, [element, dir] { element->setFrequency(std::clamp(element->frequency() + dir * 100.0, 20.0, 20000.0)); });
+            if (element->offersParam(ParamId::Frequency))
+                applyWithUndo(element, [element, dir] { stepFrequency(*element, dir, 100.0, 20.0, 20000.0); });
             break;
 
         case ElementType::Display16:
             // Only previous-color is handled for Display16 (no next-color cycling)
-            if (dir < 0 && element->hasColors())
-                applyWithUndo(element, [element] { element->setColor(element->previousColor()); });
+            if (dir < 0 && element->offersParam(ParamId::Colour))
+                applyWithUndo(element, [element] { stepColour(*element, -1); });
             break;
 
         case ElementType::Display14:
         case ElementType::Display7:
-            if (element->hasColors())
-                applyWithUndo(element, [element, dir] { element->setColor(dir < 0 ? element->previousColor() : element->nextColor()); });
+            if (element->offersParam(ParamId::Colour))
+                applyWithUndo(element, [element, dir] { stepColour(*element, dir); });
             break;
 
         // Not implemented for these types
@@ -155,8 +179,8 @@ void PropertyShortcutHandler::adjustSecondaryProperty(int dir)
             break;
         }
         case ElementType::Led:
-            if (element->hasColors())
-                applyWithUndo(element, [element, dir] { element->setColor(dir < 0 ? element->previousColor() : element->nextColor()); });
+            if (element->offersParam(ParamId::Colour))
+                applyWithUndo(element, [element, dir] { stepColour(*element, dir); });
             break;
 
         case ElementType::And:

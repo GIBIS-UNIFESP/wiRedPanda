@@ -18,6 +18,7 @@
 #include "App/Element/ClockTiming.h"
 #include "App/Element/Element.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -594,7 +595,7 @@ void Simulation::connectWirelessElements(const QVector<Element *> &elements)
     // connectPredecessor() overwrites whatever buildConnectionGraph() set,
     // so the topological sort will see the true wireless dependency.
     for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() != WirelessMode::Rx || elm->label().isEmpty()) {
+        if (WirelessNode::mode(*elm) != WirelessMode::Rx || elm->label().isEmpty()) {
             continue;
         }
         if (auto *txElement = txMap.value(elm->label(), nullptr)) {
@@ -607,7 +608,7 @@ QHash<QString, Element *> Simulation::buildTxMap(const QVector<Element *> &eleme
 {
     QHash<QString, Element *> txMap;
     for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() == WirelessMode::Tx && !elm->label().isEmpty()) {
+        if (WirelessNode::mode(*elm) == WirelessMode::Tx && !elm->label().isEmpty()) {
             if (!txMap.contains(elm->label())) {
                 txMap.insert(elm->label(), elm);
             }
@@ -650,7 +651,7 @@ QHash<Element *, QVector<Element *>> Simulation::buildSuccessorGraph(
     // doesn't see wireless dependencies.  We must add them explicitly here for correct
     // topological ordering.
     for (auto *elm : std::as_const(elements)) {
-        if (elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+        if (WirelessNode::mode(*elm) == WirelessMode::Rx && !elm->label().isEmpty()) {
             if (auto *tx = txMap.value(elm->label(), nullptr)) {
                 addEdge(tx, elm);
             }

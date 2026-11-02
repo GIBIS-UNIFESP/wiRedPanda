@@ -66,9 +66,14 @@ void TestSelectionCapabilities::testMixedSelectionAndReducesFeatureFlags()
     SelectionCapabilities caps = computeCapabilities({led, andGate});
 
     QVERIFY2(!caps.hasColors, "hasColors must be false when not every selected element supports it");
+    // One with a colour and one without do not agree on it; two without it do
+    QVERIFY2(!caps.hasSameColors, "an element with a colour and one without it must not share one");
+    auto *otherGate = ElementFactory::buildElement(ElementType::And);
+    QVERIFY(computeCapabilities({andGate, otherGate}).hasSameColors);
 
     delete led;
     delete andGate;
+    delete otherGate;
 }
 
 void TestSelectionCapabilities::testHasSameLabelReflectsWhetherLabelsMatch()

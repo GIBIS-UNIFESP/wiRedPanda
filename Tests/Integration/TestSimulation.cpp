@@ -9,6 +9,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -776,9 +777,9 @@ void TestSimulation::testWirelessTxRxPropagation()
     Element led{ElementType::Led};
 
     tx->setLabel("SIG");
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     rx->setLabel("SIG");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw, tx, rx, &led);
     builder.connect(&sw, 0, tx, 0);   // physical wire: switch → Tx input
@@ -811,11 +812,11 @@ void TestSimulation::testWirelessMultiRxFanOut()
     Element led1{ElementType::Led}, led2{ElementType::Led};
 
     tx->setLabel("BUS");
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     rx1->setLabel("BUS");
-    rx1->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx1, WirelessMode::Rx);
     rx2->setLabel("BUS");
-    rx2->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx2, WirelessMode::Rx);
 
     builder.add(&sw, tx, rx1, rx2, &led1, &led2);
     builder.connect(&sw, 0, tx, 0);
@@ -848,7 +849,7 @@ void TestSimulation::testWirelessOrphanedRx()
     Element led{ElementType::Led};
 
     rx->setLabel("ORPHAN");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(rx, &led);
     builder.connect(rx, 0, &led, 0);
@@ -894,8 +895,8 @@ void TestSimulation::testWirelessInsideIC()
     // Verify the IC internals contain wireless nodes
     int txCount = 0, rxCount = 0;
     for (auto *elm : ic->internalElements()) {
-        if (elm->wirelessMode() == WirelessMode::Tx) ++txCount;
-        if (elm->wirelessMode() == WirelessMode::Rx) ++rxCount;
+        if (WirelessNode::mode(*elm) == WirelessMode::Tx) ++txCount;
+        if (WirelessNode::mode(*elm) == WirelessMode::Rx) ++rxCount;
     }
     QCOMPARE(txCount, 1);
     QCOMPARE(rxCount, 1);
@@ -936,11 +937,11 @@ void TestSimulation::testWirelessDuplicateTxIgnored()
     Element led{ElementType::Led};
 
     tx1->setLabel("DUP");
-    tx1->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx1, WirelessMode::Tx);
     tx2->setLabel("DUP");
-    tx2->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx2, WirelessMode::Tx);
     rx->setLabel("DUP");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw1, &sw2, tx1, tx2, rx, &led);
     builder.connect(&sw1, 0, tx1, 0);
@@ -988,9 +989,9 @@ void TestSimulation::testWirelessEmptyLabelIgnored()
     Element led{ElementType::Led};
 
     tx->setLabel("");
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     rx->setLabel("");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw, tx, rx, &led);
     builder.connect(&sw, 0, tx, 0);
@@ -1019,9 +1020,9 @@ void TestSimulation::testWirelessLabelMismatchIsolation()
     Element led{ElementType::Led};
 
     tx->setLabel("A");
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     rx->setLabel("B");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw, tx, rx, &led);
     builder.connect(&sw, 0, tx, 0);
@@ -1052,10 +1053,10 @@ void TestSimulation::testWirelessMultipleIndependentChannels()
     auto *rxB = ElementFactory::buildElement(ElementType::Node);
     Element led1{ElementType::Led}, led2{ElementType::Led};
 
-    txA->setLabel("CH_A"); txA->setWirelessMode(WirelessMode::Tx);
-    rxA->setLabel("CH_A"); rxA->setWirelessMode(WirelessMode::Rx);
-    txB->setLabel("CH_B"); txB->setWirelessMode(WirelessMode::Tx);
-    rxB->setLabel("CH_B"); rxB->setWirelessMode(WirelessMode::Rx);
+    txA->setLabel("CH_A"); WirelessNode::setMode(*txA, WirelessMode::Tx);
+    rxA->setLabel("CH_A"); WirelessNode::setMode(*rxA, WirelessMode::Rx);
+    txB->setLabel("CH_B"); WirelessNode::setMode(*txB, WirelessMode::Tx);
+    rxB->setLabel("CH_B"); WirelessNode::setMode(*rxB, WirelessMode::Rx);
 
     builder.add(&sw1, &sw2, txA, rxA, txB, rxB, &led1, &led2);
     builder.connect(&sw1, 0, txA, 0);
@@ -1099,9 +1100,9 @@ void TestSimulation::testWirelessTxUnconnectedInput()
     Element led{ElementType::Led};
 
     tx->setLabel("OPEN");
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     rx->setLabel("OPEN");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(tx, rx, &led);
     // No wire driving Tx input — only connect Rx output → LED
@@ -1130,9 +1131,9 @@ void TestSimulation::testWirelessLabelCaseSensitive()
     Element led{ElementType::Led};
 
     tx->setLabel("CLK");
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     rx->setLabel("clk");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw, tx, rx, &led);
     builder.connect(&sw, 0, tx, 0);
@@ -1162,8 +1163,8 @@ void TestSimulation::testWirelessNoneModeNodeDoesNotInterfere()
     auto *none = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
-    tx->setLabel("SIG");   tx->setWirelessMode(WirelessMode::Tx);
-    rx->setLabel("SIG");   rx->setWirelessMode(WirelessMode::Rx);
+    tx->setLabel("SIG");   WirelessNode::setMode(*tx, WirelessMode::Tx);
+    rx->setLabel("SIG");   WirelessNode::setMode(*rx, WirelessMode::Rx);
     none->setLabel("SIG"); // None mode — must not interfere
 
     builder.add(&sw, tx, none, rx, &led);
@@ -1193,9 +1194,9 @@ void TestSimulation::testWirelessLabelSetAfterMode()
     Element led{ElementType::Led};
 
     // Set mode first, label second
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     tx->setLabel("LATE");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
     rx->setLabel("LATE");
 
     builder.add(&sw, tx, rx, &led);
@@ -1225,10 +1226,10 @@ void TestSimulation::testWirelessCascadeThroughWire()
     auto *rxB = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
-    txA->setLabel("A"); txA->setWirelessMode(WirelessMode::Tx);
-    rxA->setLabel("A"); rxA->setWirelessMode(WirelessMode::Rx);
-    txB->setLabel("B"); txB->setWirelessMode(WirelessMode::Tx);
-    rxB->setLabel("B"); rxB->setWirelessMode(WirelessMode::Rx);
+    txA->setLabel("A"); WirelessNode::setMode(*txA, WirelessMode::Tx);
+    rxA->setLabel("A"); WirelessNode::setMode(*rxA, WirelessMode::Rx);
+    txB->setLabel("B"); WirelessNode::setMode(*txB, WirelessMode::Tx);
+    rxB->setLabel("B"); WirelessNode::setMode(*rxB, WirelessMode::Rx);
 
     builder.add(&sw, txA, rxA, txB, rxB, &led);
     builder.connect(&sw, 0, txA, 0);     // physical: sw → TxA
@@ -1259,8 +1260,8 @@ void TestSimulation::testWirelessRxFeedsCombinationalLogic()
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
-    tx->setLabel("X"); tx->setWirelessMode(WirelessMode::Tx);
-    rx->setLabel("X"); rx->setWirelessMode(WirelessMode::Rx);
+    tx->setLabel("X"); WirelessNode::setMode(*tx, WirelessMode::Tx);
+    rx->setLabel("X"); WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw1, &sw2, tx, rx, &andGate, &led);
     builder.connect(&sw1, 0, tx, 0);       // sw1 → Tx (wireless source)
@@ -1304,7 +1305,7 @@ void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
     Element led{ElementType::Led};
 
     tx->setLabel("DEAD_END");
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
 
     builder.add(&sw1, &sw2, &sw3, tx, &andGate, &led);
     builder.connect(&sw1, 0, tx, 0);         // sw1 → Tx (signal goes nowhere)
@@ -1336,7 +1337,7 @@ void TestSimulation::testWirelessOrphanedRxWithPhysicalWire()
     Element led{ElementType::Led};
 
     rx->setLabel("NO_TX");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw, rx, &led);
     builder.connect(&sw, 0, rx, 0);   // physical wire to Rx input (bypasses ConnectionManager)
@@ -1367,8 +1368,8 @@ void TestSimulation::testWirelessOverridesPhysicalWire()
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
-    tx->setLabel("CH"); tx->setWirelessMode(WirelessMode::Tx);
-    rx->setLabel("CH"); rx->setWirelessMode(WirelessMode::Rx);
+    tx->setLabel("CH"); WirelessNode::setMode(*tx, WirelessMode::Tx);
+    rx->setLabel("CH"); WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&swPhys, &swWireless, tx, rx, &led);
     builder.connect(&swPhys, 0, rx, 0);      // physical wire to Rx (bypasses ConnectionManager)
@@ -1406,8 +1407,8 @@ void TestSimulation::testWirelessFeedbackLoop()
     Element notGate{ElementType::Not};
     Element led{ElementType::Led};
 
-    tx->setLabel("FB"); tx->setWirelessMode(WirelessMode::Tx);
-    rx->setLabel("FB"); rx->setWirelessMode(WirelessMode::Rx);
+    tx->setLabel("FB"); WirelessNode::setMode(*tx, WirelessMode::Tx);
+    rx->setLabel("FB"); WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw, &andGate, tx, rx, &notGate, &led);
     builder.connect(&sw, 0, &andGate, 0);       // sw → AND input 0
@@ -1440,8 +1441,8 @@ void TestSimulation::testWirelessUnicodeLabels()
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
-    tx->setLabel(QStringLiteral("信号")); tx->setWirelessMode(WirelessMode::Tx);
-    rx->setLabel(QStringLiteral("信号")); rx->setWirelessMode(WirelessMode::Rx);
+    tx->setLabel(QStringLiteral("信号")); WirelessNode::setMode(*tx, WirelessMode::Tx);
+    rx->setLabel(QStringLiteral("信号")); WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     builder.add(&sw, tx, rx, &led);
     builder.connect(&sw, 0, tx, 0);

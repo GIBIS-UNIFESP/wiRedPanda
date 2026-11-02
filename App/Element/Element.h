@@ -129,15 +129,6 @@ public:
     /// The entry of \a table for port \a index, or nothing past its end: a type whose ports are fixed lists them so.
     static std::optional<PortAttributes> attributesAt(const QList<PortAttributes> &table, int index);
 
-    /// Returns the element's wireless routing mode (ParamId::Wireless); WirelessMode::None for a type without one.
-    WirelessMode wirelessMode() const;
-
-    /// Sets the wireless routing mode to \a mode (ParamId::Wireless); a mode out of range is None.
-    void setWirelessMode(WirelessMode mode);
-
-    /// Returns \c true if this element offers a wireless routing mode (ParamId::Wireless).
-    bool hasWirelessMode() const;
-
     // --- Inputs the user operates ---
 
     /// Whether output \a port of an input the user operates is on (ElementTypeDescriptor::sourceLevel): a switch's, a
@@ -290,9 +281,9 @@ public:
     /**
      * \brief Sets parameter \a id to \a value as its spec takes it (ParamSpec::accept).
      * \details The element follows the new value (parameterChanged()).
-     * \returns \c false, changing nothing, when the type has no such parameter, the spec leaves the parameter as it is,
-     * or the value it takes is the one the parameter has. A value of another kind than the parameter's is a broken
-     * invariant: it asserts, and a release build changes nothing.
+     * \returns \c false, changing nothing, when the spec leaves the parameter as it is, or the value it takes is the one
+     * the parameter has. A parameter the type does not have, or a value of another kind than the parameter's, is a
+     * broken invariant: it asserts, and a release build changes nothing.
      */
     bool setParam(ParamId id, const ParamValue &value);
 
@@ -301,69 +292,6 @@ public:
     /// shows a new value (showParam()), and repaints the picture, but it is no change of the circuit, which neither the
     /// undo stack nor a file sees.
     void restoreParam(ParamId id, ParamValue value);
-
-    // --- Audio Properties ---
-
-    /// Returns the sound file the element plays (ParamId::AudioFile), or an empty path for a type without one.
-    QString audio() const;
-
-    /// Sets the sound file the element plays to \a audio (ParamId::AudioFile), as its spec takes it.
-    void setAudio(const QString &audio);
-
-    /// Returns \c true if the element offers a sound file for editing (ParamId::AudioFile).
-    bool hasAudioBox() const;
-
-    /// Returns \c true if the element offers its volume for editing (ParamId::Volume).
-    bool hasVolume() const;
-
-    /// Returns the audio playback volume (ParamId::Volume, 0.0–1.0); 0 for a type without one.
-    double volume() const;
-
-    /// Sets the audio playback volume to \a vol (ParamId::Volume, 0.0–1.0).
-    void setVolume(double vol);
-
-    // --- Color Properties ---
-
-    /// Returns the name of the element's colour (ParamId::Colour), or an empty string for a type without one.
-    QString color() const;
-
-    /// Sets the element's colour to \a color, a name; a type without a colour takes nothing.
-    void setColor(const QString &color);
-
-    /// Returns \c true if the element offers its colour for editing (an LED with one input, a display).
-    bool hasColors() const;
-
-    /// The colour names an LED and a display offer, in their index order: White, Red, Green, Blue and Purple.
-    static const QStringList &colorNames();
-
-    /// Maps a color name of colorNames() to its index, 0 to 4; any other name to 0, White's.
-    static int colorNameToIndex(const QString &color);
-
-    /// Returns the name of the next color in the element's color list.
-    QString nextColor() const;
-
-    /// Returns the name of the previous color in the element's color list.
-    QString previousColor() const;
-
-    // --- Frequency & Delay ---
-
-    /// Returns the frequency in Hz (ParamId::Frequency); 0 for a type without one.
-    double frequency() const;
-
-    /// Returns the phase delay as a fraction of the period (ParamId::Delay); 0 for a type without one.
-    double delay() const;
-
-    /// Returns \c true if the element offers its frequency for editing (ParamId::Frequency).
-    bool hasFrequency() const;
-
-    /// Returns \c true if the element offers its phase delay for editing (ParamId::Delay).
-    bool hasDelay() const;
-
-    /// Sets the frequency to \a freq Hz (ParamId::Frequency), as its spec takes it.
-    void setFrequency(const double freq);
-
-    /// Sets the phase delay to \a delay (ParamId::Delay), as its spec takes it.
-    void setDelay(const double delay);
 
     // --- Appearance Management ---
 

@@ -10,6 +10,7 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
@@ -362,7 +363,7 @@ void TestSceneConnections::testWirelessRxPortIsNotRequired()
     QVERIFY(nodeElm->inputPort()->isRequired());
 
     // Switch to Rx — port becomes optional
-    nodeElm->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Rx);
     QVERIFY(!nodeElm->inputPort()->isRequired());
 
     // A connection can still be made to the port (it's optional, not forbidden)
@@ -388,7 +389,7 @@ void TestSceneConnections::testWirelessNoneModeNodePortIsRequired()
     auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(nodeElm != nullptr);
     scene.addItem(nodeElm);
-    QCOMPARE(nodeElm->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*nodeElm), WirelessMode::None);
     QVERIFY(nodeElm->inputPort()->isRequired());
 
     auto *src = ElementFactory::buildElement(ElementType::InputSwitch);

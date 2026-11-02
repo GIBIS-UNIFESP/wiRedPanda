@@ -8,7 +8,9 @@
 #include <QIODevice>
 
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -218,23 +220,23 @@ void TestElementProperties::testColorProperty()
     Element led{ElementType::Led};
 
     // Verify has color support
-    QVERIFY(led.hasColors());
+    QVERIFY(led.offersParam(ParamId::Colour));
 
     // Set colors
-    led.setColor("Red");
-    QCOMPARE(led.color(), QString("Red"));
+    led.setParam(ParamId::Colour, QStringLiteral("Red"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QString("Red"));
 
-    led.setColor("Green");
-    QCOMPARE(led.color(), QString("Green"));
+    led.setParam(ParamId::Colour, QStringLiteral("Green"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QString("Green"));
 
-    led.setColor("Blue");
-    QCOMPARE(led.color(), QString("Blue"));
+    led.setParam(ParamId::Colour, QStringLiteral("Blue"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QString("Blue"));
 
-    led.setColor("Purple");
-    QCOMPARE(led.color(), QString("Purple"));
+    led.setParam(ParamId::Colour, QStringLiteral("Purple"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QString("Purple"));
 
-    led.setColor("White");
-    QCOMPARE(led.color(), QString("White"));
+    led.setParam(ParamId::Colour, QStringLiteral("White"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QString("White"));
 }
 
 void TestElementProperties::testColorCycling()
@@ -242,39 +244,39 @@ void TestElementProperties::testColorCycling()
     Element led{ElementType::Led};
 
     // Start with White
-    led.setColor("White");
-    QCOMPARE(led.color(), QString("White"));
+    led.setParam(ParamId::Colour, QStringLiteral("White"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QString("White"));
 
     // Cycle: White → Red
-    QString next1 = led.nextColor();
+    QString next1 = ElementColour::next(led.param<QString>(ParamId::Colour));
     QCOMPARE(next1, QString("Red"));
 
-    led.setColor(next1);
-    QString next2 = led.nextColor();
+    led.setParam(ParamId::Colour, next1);
+    QString next2 = ElementColour::next(led.param<QString>(ParamId::Colour));
     QCOMPARE(next2, QString("Green"));
 
-    led.setColor(next2);
-    QString next3 = led.nextColor();
+    led.setParam(ParamId::Colour, next2);
+    QString next3 = ElementColour::next(led.param<QString>(ParamId::Colour));
     QCOMPARE(next3, QString("Blue"));
 
-    led.setColor(next3);
-    QString next4 = led.nextColor();
+    led.setParam(ParamId::Colour, next3);
+    QString next4 = ElementColour::next(led.param<QString>(ParamId::Colour));
     QCOMPARE(next4, QString("Purple"));
 
-    led.setColor(next4);
-    QString next5 = led.nextColor();
+    led.setParam(ParamId::Colour, next4);
+    QString next5 = ElementColour::next(led.param<QString>(ParamId::Colour));
     QCOMPARE(next5, QString("White"));  // Cycles back
 
     // Test previous cycling
-    led.setColor("Red");
-    QString prev = led.previousColor();
+    led.setParam(ParamId::Colour, QStringLiteral("Red"));
+    QString prev = ElementColour::previous(led.param<QString>(ParamId::Colour));
     QCOMPARE(prev, QString("White"));
 
-    led.setColor("Blue");
-    QCOMPARE(led.previousColor(), QString("Green"));
+    led.setParam(ParamId::Colour, QStringLiteral("Blue"));
+    QCOMPARE(ElementColour::previous(led.param<QString>(ParamId::Colour)), QString("Green"));
 
-    led.setColor("Purple");
-    QCOMPARE(led.previousColor(), QString("Blue"));
+    led.setParam(ParamId::Colour, QStringLiteral("Purple"));
+    QCOMPARE(ElementColour::previous(led.param<QString>(ParamId::Colour)), QString("Blue"));
 }
 
 // Rotation Tests
@@ -329,28 +331,28 @@ void TestElementProperties::testFrequencyProperty()
     Element clock{ElementType::Clock};
 
     // Verify has frequency support
-    QVERIFY(clock.hasFrequency());
+    QVERIFY(clock.offersParam(ParamId::Frequency));
 
     // Default frequency (usually 1 Hz)
-    QCOMPARE(clock.frequency(), 1.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 1.0);
 
     // Set various frequencies
-    clock.setFrequency(10.0);
-    QCOMPARE(clock.frequency(), 10.0);
+    clock.setParam(ParamId::Frequency, 10.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 10.0);
 
-    clock.setFrequency(100.0);
-    QCOMPARE(clock.frequency(), 100.0);
+    clock.setParam(ParamId::Frequency, 100.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 100.0);
 
-    clock.setFrequency(0.5);
-    QCOMPARE(clock.frequency(), 0.5);
+    clock.setParam(ParamId::Frequency, 0.5);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 0.5);
 
     // Test delay property
-    QVERIFY(clock.hasDelay());
-    clock.setDelay(0.5);
-    QCOMPARE(clock.delay(), 0.5);
+    QVERIFY(clock.offersParam(ParamId::Delay));
+    clock.setParam(ParamId::Delay, 0.5);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 0.5);
 
-    clock.setDelay(1.0);
-    QCOMPARE(clock.delay(), 1.0);
+    clock.setParam(ParamId::Delay, 1.0);
+    QCOMPARE(clock.param<double>(ParamId::Delay), 1.0);
 }
 
 void TestElementProperties::testFrequencyValidation()
@@ -358,32 +360,32 @@ void TestElementProperties::testFrequencyValidation()
     Element clock{ElementType::Clock};
 
     // Set valid frequency baseline
-    clock.setFrequency(10.0);
-    QCOMPARE(clock.frequency(), 10.0);
+    clock.setParam(ParamId::Frequency, 10.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 10.0);
 
     // Test 1: Zero frequency (invalid - rejected)
     // Clock uses 1s/(2*freq) for timing, so 1/(2*0) is undefined
-    clock.setFrequency(0.0);
-    QCOMPARE(clock.frequency(), 10.0);  // Should remain unchanged
+    clock.setParam(ParamId::Frequency, 0.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 10.0);  // Should remain unchanged
 
     // Test 2: Negative frequency (invalid - rejected)
     // Clock uses 1s/(2*freq) which would be negative, triggering interval check
     // Expected behavior: rejected, value unchanged
-    double beforeNegative = clock.frequency();
-    clock.setFrequency(-5.0);
-    QCOMPARE(clock.frequency(), beforeNegative);  // Unchanged by negative attempt
+    double beforeNegative = clock.param<double>(ParamId::Frequency);
+    clock.setParam(ParamId::Frequency, -5.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), beforeNegative);  // Unchanged by negative attempt
 
     // Test 3: Valid positive frequency
-    clock.setFrequency(50.0);
-    QCOMPARE(clock.frequency(), 50.0);
+    clock.setParam(ParamId::Frequency, 50.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), 50.0);
 
     // Test 4: Very high frequency (1 MHz) is deterministically rejected. The clock's frequency spec
     // (Clock.cpp) computes halfPeriod = duration_cast<microseconds>(1s / (2 * 1000000.0)) = 0.5us,
     // which truncates to 0us, so halfPeriod(frequency).count() > 0 is always false -- there is no
     // timing-precision ambiguity here, just a fixed rejection.
-    double before = clock.frequency();
-    clock.setFrequency(1000000.0);
-    QCOMPARE(clock.frequency(), before);
+    double before = clock.param<double>(ParamId::Frequency);
+    clock.setParam(ParamId::Frequency, 1000000.0);
+    QCOMPARE(clock.param<double>(ParamId::Frequency), before);
 }
 
 // Serialization Test
@@ -402,12 +404,12 @@ void TestElementProperties::testPropertiesSaveLoad()
     auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setInputSize(3);
     led->setLabel("SavedLED");
-    led->setColor("Blue");
+    led->setParam(ParamId::Colour, QStringLiteral("Blue"));
     workspace1.scene()->addItem(led);
 
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
-    clock->setFrequency(50.0);
-    clock->setDelay(0.5);
+    clock->setParam(ParamId::Frequency, 50.0);
+    clock->setParam(ParamId::Delay, 0.5);
     clock->setLabel("SavedClock");
     workspace1.scene()->addItem(clock);
 
@@ -451,12 +453,12 @@ void TestElementProperties::testPropertiesSaveLoad()
     QVERIFY(loadedLed != nullptr);
     QCOMPARE(loadedLed->inputSize(), 3);
     QCOMPARE(loadedLed->label(), QString("SavedLED"));
-    QCOMPARE(loadedLed->color(), QString("Blue"));
+    QCOMPARE(loadedLed->param<QString>(ParamId::Colour), QString("Blue"));
 
     // Verify Clock properties
     QVERIFY(loadedClock != nullptr);
-    QCOMPARE(loadedClock->frequency(), 50.0);
-    QCOMPARE(loadedClock->delay(), 0.5);
+    QCOMPARE(loadedClock->param<double>(ParamId::Frequency), 50.0);
+    QCOMPARE(loadedClock->param<double>(ParamId::Delay), 0.5);
     QCOMPARE(loadedClock->label(), QString("SavedClock"));
 }
 
@@ -629,21 +631,21 @@ void TestElementProperties::testWirelessModeProperty()
 {
     // hasWirelessMode() must return true for Node and false for all other elements.
     Element node{ElementType::Node};
-    QVERIFY(node.hasWirelessMode());
-    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+    QVERIFY(node.offersParam(ParamId::Wireless));
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::None);
 
     Element andGate{ElementType::And};
-    QVERIFY(!andGate.hasWirelessMode());
+    QVERIFY(!andGate.offersParam(ParamId::Wireless));
 
     // Tx and Rx transitions on a Node
-    node.setWirelessMode(WirelessMode::Tx);
-    QCOMPARE(node.wirelessMode(), WirelessMode::Tx);
+    WirelessNode::setMode(node, WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::Tx);
 
-    node.setWirelessMode(WirelessMode::Rx);
-    QCOMPARE(node.wirelessMode(), WirelessMode::Rx);
+    WirelessNode::setMode(node, WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::Rx);
 
-    node.setWirelessMode(WirelessMode::None);
-    QCOMPARE(node.wirelessMode(), WirelessMode::None);
+    WirelessNode::setMode(node, WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(node), WirelessMode::None);
 }
 
 void TestElementProperties::testWirelessModePortRequired()
@@ -653,13 +655,13 @@ void TestElementProperties::testWirelessModePortRequired()
     Element node{ElementType::Node};
     QVERIFY(node.inputPort()->isRequired());
 
-    node.setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(node, WirelessMode::Tx);
     QVERIFY(node.inputPort()->isRequired());   // Tx still needs a physical driver
 
-    node.setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(node, WirelessMode::Rx);
     QVERIFY(!node.inputPort()->isRequired());  // Rx receives wirelessly
 
-    node.setWirelessMode(WirelessMode::None);
+    WirelessNode::setMode(node, WirelessMode::None);
     QVERIFY(node.inputPort()->isRequired());   // restored to normal
 }
 
@@ -673,7 +675,7 @@ void TestElementProperties::testNodeHasLabel()
     QCOMPARE(node.label(), QStringLiteral("CHANNEL_X"));
 
     // Label is independent of wireless mode
-    node.setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(node, WirelessMode::Tx);
     QCOMPARE(node.label(), QStringLiteral("CHANNEL_X"));
     QVERIFY(node.hasLabel());
 }

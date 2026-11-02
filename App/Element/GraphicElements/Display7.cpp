@@ -3,6 +3,7 @@
 
 #include "App/Element/DisplaySegments.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -46,7 +47,7 @@ struct ElementInfo<ElementType::Display7> {
             .id = ParamId::Colour,
             .defaultValue = QStringLiteral("Red"),
             .key = "color",
-            .choices = Element::colorNames(),
+            .choices = ElementColour::names(),
         }};
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // The inputs were in another order before 1.6 (VersionInfo::hasDisplay7Color()) and again before 1.7

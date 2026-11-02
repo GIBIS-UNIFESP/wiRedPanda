@@ -15,6 +15,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -319,7 +320,7 @@ void TestSimulationUnit::testBlockerCyclePreservesClockLevel()
     QVERIFY(clock);
     // 10 Hz ⇒ 50 ms per phase: slow enough that the post-resume assertion below runs well
     // inside the LOW phase, fast enough for the first falling edge to land quickly.
-    clock->setFrequency(10.0);
+    clock->setParam(ParamId::Frequency, 10.0);
     scene->addItem(clock);
 
     sim->start();
@@ -429,7 +430,7 @@ void TestSimulationUnit::testResumeAfterAPausedRebuildKeepsClockPhase()
     auto *scene = workspace.scene();
     auto *sim = scene->simulation();
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
-    clock->setFrequency(1.0);
+    clock->setParam(ParamId::Frequency, 1.0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{clock}, scene));
     sim->start();
     sim->update();
@@ -438,7 +439,7 @@ void TestSimulationUnit::testResumeAfterAPausedRebuildKeepsClockPhase()
     // Three half-periods of pause, under the clock's catch-up limit
     QTest::qWait(1600);
     auto *added = ElementFactory::buildElement(ElementType::Clock);
-    added->setFrequency(1.0);
+    added->setParam(ParamId::Frequency, 1.0);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{added}, scene));
     sim->start();
     QVERIFY(!sim->m_hasPausedAt);
@@ -572,9 +573,9 @@ void TestSimulationUnit::testSuccessorGraphListsASuccessorOnce()
     wire(notGate.get(), andGate.get(), 1);
     wire(tx.get(), rx.get(), 0);
     tx->setLabel(QStringLiteral("bus"));
-    tx->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
     rx->setLabel(QStringLiteral("bus"));
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
     QCOMPARE(rx->inputPort()->connections().size(), 1);
 
     const QVector<Element *> elements{notGate.get(), andGate.get(), led.get(), tx.get(), rx.get()};

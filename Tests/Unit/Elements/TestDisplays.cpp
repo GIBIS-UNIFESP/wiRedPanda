@@ -68,8 +68,8 @@ void TestDisplays::testDisplay7Configuration()
     QCOMPARE(display.elementGroup(), ElementGroup::Output);
 
     // Verify color support
-    QVERIFY(display.hasColors());
-    QCOMPARE(display.color(), QString("Red"));  // Default color
+    QVERIFY(display.offersParam(ParamId::Colour));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QString("Red"));  // Default color
 
     // Verify all ports exist and are optional
     for (int i = 0; i < display.inputSize(); ++i) {
@@ -141,8 +141,8 @@ void TestDisplays::testDisplay14Configuration()
     QCOMPARE(display.elementGroup(), ElementGroup::Output);
 
     // Verify color support
-    QVERIFY(display.hasColors());
-    QCOMPARE(display.color(), QString("Red"));  // Default color
+    QVERIFY(display.offersParam(ParamId::Colour));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QString("Red"));  // Default color
 
     // Verify all ports are optional
     for (int i = 0; i < display.inputSize(); ++i) {
@@ -185,8 +185,8 @@ void TestDisplays::testDisplay16Configuration()
     QCOMPARE(display.elementGroup(), ElementGroup::Output);
 
     // Verify color support
-    QVERIFY(display.hasColors());
-    QCOMPARE(display.color(), QString("Red"));  // Default color
+    QVERIFY(display.offersParam(ParamId::Colour));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QString("Red"));  // Default color
 
     // Verify all ports are optional
     for (int i = 0; i < display.inputSize(); ++i) {
@@ -216,33 +216,33 @@ void TestDisplays::testDisplayColors()
 {
     // Test Display_7
     Element display7{ElementType::Display7};
-    QCOMPARE(display7.color(), QString("Red"));
-    display7.setColor("Green");
-    QCOMPARE(display7.color(), QString("Green"));
-    display7.setColor("Blue");
-    QCOMPARE(display7.color(), QString("Blue"));
-    display7.setColor("Purple");
-    QCOMPARE(display7.color(), QString("Purple"));
-    display7.setColor("White");
-    QCOMPARE(display7.color(), QString("White"));
-    display7.setColor("Red");  // Back to default
-    QCOMPARE(display7.color(), QString("Red"));
+    QCOMPARE(display7.param<QString>(ParamId::Colour), QString("Red"));
+    display7.setParam(ParamId::Colour, QStringLiteral("Green"));
+    QCOMPARE(display7.param<QString>(ParamId::Colour), QString("Green"));
+    display7.setParam(ParamId::Colour, QStringLiteral("Blue"));
+    QCOMPARE(display7.param<QString>(ParamId::Colour), QString("Blue"));
+    display7.setParam(ParamId::Colour, QStringLiteral("Purple"));
+    QCOMPARE(display7.param<QString>(ParamId::Colour), QString("Purple"));
+    display7.setParam(ParamId::Colour, QStringLiteral("White"));
+    QCOMPARE(display7.param<QString>(ParamId::Colour), QString("White"));
+    display7.setParam(ParamId::Colour, QStringLiteral("Red"));  // Back to default
+    QCOMPARE(display7.param<QString>(ParamId::Colour), QString("Red"));
 
     // Test Display_14
     Element display14{ElementType::Display14};
-    QCOMPARE(display14.color(), QString("Red"));
-    display14.setColor("Green");
-    QCOMPARE(display14.color(), QString("Green"));
-    display14.setColor("Blue");
-    QCOMPARE(display14.color(), QString("Blue"));
+    QCOMPARE(display14.param<QString>(ParamId::Colour), QString("Red"));
+    display14.setParam(ParamId::Colour, QStringLiteral("Green"));
+    QCOMPARE(display14.param<QString>(ParamId::Colour), QString("Green"));
+    display14.setParam(ParamId::Colour, QStringLiteral("Blue"));
+    QCOMPARE(display14.param<QString>(ParamId::Colour), QString("Blue"));
 
     // Test Display_16
     Element display16{ElementType::Display16};
-    QCOMPARE(display16.color(), QString("Red"));
-    display16.setColor("Purple");
-    QCOMPARE(display16.color(), QString("Purple"));
-    display16.setColor("White");
-    QCOMPARE(display16.color(), QString("White"));
+    QCOMPARE(display16.param<QString>(ParamId::Colour), QString("Red"));
+    display16.setParam(ParamId::Colour, QStringLiteral("Purple"));
+    QCOMPARE(display16.param<QString>(ParamId::Colour), QString("Purple"));
+    display16.setParam(ParamId::Colour, QStringLiteral("White"));
+    QCOMPARE(display16.param<QString>(ParamId::Colour), QString("White"));
 }
 
 // Integration Tests
@@ -369,11 +369,11 @@ void TestDisplays::testDisplay7()
     QCOMPARE(elm.elementType(), ElementType::Display7);
 
     // Test color property
-    QCOMPARE(elm.color(), QString("Red"));  // Default color
-    elm.setColor("Green");
-    QCOMPARE(elm.color(), QString("Green"));
-    elm.setColor("Blue");
-    QCOMPARE(elm.color(), QString("Blue"));
+    QCOMPARE(elm.param<QString>(ParamId::Colour), QString("Red"));  // Default color
+    elm.setParam(ParamId::Colour, QStringLiteral("Green"));
+    QCOMPARE(elm.param<QString>(ParamId::Colour), QString("Green"));
+    elm.setParam(ParamId::Colour, QStringLiteral("Blue"));
+    QCOMPARE(elm.param<QString>(ParamId::Colour), QString("Blue"));
 }
 
 // ============================================================================
@@ -391,7 +391,7 @@ void TestDisplays::testDisplay14LoadOldFormatBareColor()
     display.load(readStream, context);
 
     QCOMPARE(readStream.status(), QDataStream::Ok);
-    QCOMPARE(display.color(), QString("Green"));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QString("Green"));
 }
 
 void TestDisplays::testDisplay16LoadOldFormatBareColor()
@@ -405,13 +405,13 @@ void TestDisplays::testDisplay16LoadOldFormatBareColor()
     display.load(readStream, context);
 
     QCOMPARE(readStream.status(), QDataStream::Ok);
-    QCOMPARE(display.color(), QString("Blue"));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QString("Blue"));
 }
 
 void TestDisplays::testDisplay16SaveLoadCurrentFormat()
 {
     Element display1{ElementType::Display16};
-    display1.setColor("Purple");
+    display1.setParam(ParamId::Colour, QStringLiteral("Purple"));
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -423,7 +423,7 @@ void TestDisplays::testDisplay16SaveLoadCurrentFormat()
     SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile};
     display2.load(loadStream, context);
 
-    QCOMPARE(display2.color(), QString("Purple"));
+    QCOMPARE(display2.param<QString>(ParamId::Colour), QString("Purple"));
 }
 
 void TestDisplays::testLitSegmentsPastACustomPictureStayInTheBounds_data()

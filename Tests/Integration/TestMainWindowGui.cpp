@@ -39,6 +39,7 @@
 #include "App/Core/Settings.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementLabel.h"
 #include "App/Element/IC.h"
@@ -1026,15 +1027,15 @@ void TestMainWindowGui::testPropertyCycleSecondary()
 
     clickElement(view, led);
 
-    const QString colorBefore = led->color();
-    const QString expectedNext = led->nextColor();
+    const QString colorBefore = led->param<QString>(ParamId::Colour);
+    const QString expectedNext = ElementColour::next(led->param<QString>(ParamId::Colour));
 
     QTest::keyClick(window.get(), Qt::Key_BraceRight);
-    QCOMPARE(led->color(), expectedNext);
-    QVERIFY2(led->color() != colorBefore, "Cycling the secondary property forward must change the LED's color");
+    QCOMPARE(led->param<QString>(ParamId::Colour), expectedNext);
+    QVERIFY2(led->param<QString>(ParamId::Colour) != colorBefore, "Cycling the secondary property forward must change the LED's color");
 
     QTest::keyClick(window.get(), Qt::Key_BraceLeft);
-    QCOMPARE(led->color(), colorBefore);
+    QCOMPARE(led->param<QString>(ParamId::Colour), colorBefore);
 }
 
 // ===========================================================================

@@ -3,6 +3,8 @@
 
 #include "Tests/Integration/TestArduino.h"
 
+#include "App/Element/WirelessNode.h"
+
 QString TestArduino::s_cliCachePath;
 
 #include <memory>
@@ -1715,12 +1717,12 @@ void TestArduino::testWirelessNodeGeneration()
     auto *txNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txNode);
     txNode->setLabel("CLK");
-    txNode->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txNode, WirelessMode::Tx);
 
     auto *rxNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(rxNode);
     rxNode->setLabel("CLK");
-    rxNode->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxNode, WirelessMode::Rx);
 
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -1757,12 +1759,12 @@ void TestArduino::testWirelessRxReachedByAWireFollowsItsTx()
     auto *txNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txNode);
     txNode->setLabel("CH");
-    txNode->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txNode, WirelessMode::Tx);
 
     auto *rxNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(rxNode);
     rxNode->setLabel("CH");
-    rxNode->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxNode, WirelessMode::Rx);
 
     auto *led = ElementFactory::buildElement(ElementType::Led);
 
@@ -1797,7 +1799,7 @@ void TestArduino::testWirelessOrphanedRxCodegen()
     auto *rxNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(rxNode);
     rxNode->setLabel("MISSING_TX");
-    rxNode->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxNode, WirelessMode::Rx);
 
     auto *led = ElementFactory::buildElement(ElementType::Led);
 

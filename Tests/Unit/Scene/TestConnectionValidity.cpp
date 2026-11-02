@@ -9,6 +9,7 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
@@ -236,7 +237,7 @@ void TestConnectionValidity::testIsConnectionAllowedRejectsRxPort()
     auto *rxElm = ElementFactory::buildElement(ElementType::Node);
     scene.addItem(src);
     scene.addItem(rxElm);
-    rxElm->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxElm, WirelessMode::Rx);
 
     QVERIFY(!Scene::isConnectionAllowed(src->outputPort(0), rxElm->inputPort(0)));
 }
@@ -251,7 +252,7 @@ void TestConnectionValidity::testIsConnectionAllowedRejectsTxOutputPort()
     auto *dstElm = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(txElm);
     scene.addItem(dstElm);
-    txElm->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txElm, WirelessMode::Tx);
 
     QVERIFY(!Scene::isConnectionAllowed(txElm->outputPort(0), dstElm->inputPort(0)));
 }
@@ -282,7 +283,7 @@ void TestConnectionValidity::testIsConnectionAllowedPermitsTxInputPort()
     auto *txElm = ElementFactory::buildElement(ElementType::Node);
     scene.addItem(src);
     scene.addItem(txElm);
-    txElm->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txElm, WirelessMode::Tx);
 
     QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), txElm->inputPort(0)));
 }
@@ -297,7 +298,7 @@ void TestConnectionValidity::testIsConnectionAllowedPermitsRxOutputPort()
     auto *dst   = ElementFactory::buildElement(ElementType::Led);
     scene.addItem(rxElm);
     scene.addItem(dst);
-    rxElm->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxElm, WirelessMode::Rx);
 
     QVERIFY(Scene::isConnectionAllowed(rxElm->outputPort(0), dst->inputPort(0)));
 }
@@ -316,8 +317,8 @@ void TestConnectionValidity::testConnectionRejectionReasonMessages()
     scene.addItem(andElm);
     scene.addItem(rxElm);
     scene.addItem(txElm);
-    rxElm->setWirelessMode(WirelessMode::Rx);
-    txElm->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*rxElm, WirelessMode::Rx);
+    WirelessNode::setMode(*txElm, WirelessMode::Tx);
 
     // Allowed: no message.
     QVERIFY(ConnectionManager::connectionRejectionReason(src->outputPort(0), andElm->inputPort(0)).isEmpty());

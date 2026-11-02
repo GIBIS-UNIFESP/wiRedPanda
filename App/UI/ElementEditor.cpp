@@ -22,6 +22,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/ElementPictures.h"
@@ -357,13 +358,13 @@ void ElementEditor::applyCapabilitiesToUi()
     /* Color */
     setSection(c.hasColors, m_ui->labelColor, m_ui->comboBoxColor);
     if (prepareCombo(m_ui->comboBoxColor, c.hasColors, c.hasSameColors, m_manyColors)) {
-        m_ui->comboBoxColor->setCurrentIndex(m_ui->comboBoxColor->findData(firstElement->color()));
+        m_ui->comboBoxColor->setCurrentIndex(m_ui->comboBoxColor->findData(firstElement->param<QString>(ParamId::Colour)));
     }
 
     /* Volume */
     setSection(c.hasVolume, m_ui->labelVolume, m_ui->sliderVolume);
     if (c.hasVolume && c.hasSameVolume) {
-        m_ui->sliderVolume->setValue(qRound(firstElement->volume() * 100.0));
+        m_ui->sliderVolume->setValue(qRound(firstElement->param<double>(ParamId::Volume) * 100.0));
     }
 
     /* Frequency */
@@ -385,7 +386,7 @@ void ElementEditor::applyCapabilitiesToUi()
         if (c.hasSameFrequency) {
             m_ui->doubleSpinBoxFrequency->setMinimum(minFreq);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText({});
-            m_ui->doubleSpinBoxFrequency->setValue(firstElement->frequency());
+            m_ui->doubleSpinBoxFrequency->setValue(firstElement->param<double>(ParamId::Frequency));
         } else {
             m_ui->doubleSpinBoxFrequency->setMinimum(0.0);
             m_ui->doubleSpinBoxFrequency->setSpecialValueText(m_manyFreq);
@@ -397,7 +398,7 @@ void ElementEditor::applyCapabilitiesToUi()
     setSection(c.hasDelay, m_ui->labelDelay, m_ui->sliderDelay);
     if (c.hasDelay) {
         // Convert delay value (fraction of period, -0.5 to 0.5) to slider value (-4 to 4).
-        m_ui->sliderDelay->setValue(c.hasSameDelay ? static_cast<int>(firstElement->delay() * 8.0) : 0);
+        m_ui->sliderDelay->setValue(c.hasSameDelay ? static_cast<int>(firstElement->param<double>(ParamId::Delay) * 8.0) : 0);
     }
 
     /* Input size */
@@ -499,7 +500,7 @@ void ElementEditor::applyCapabilitiesToUi()
     m_ui->labelAudioBox->setVisible(c.hasAudioBox);
     m_ui->lineCurrentAudioBox->setVisible(c.hasAudioBox);
     if (c.hasAudioBox) {
-        m_ui->lineCurrentAudioBox->setText(m_elements.size() > 1 ? m_manyAudios : m_elements[0]->audio());
+        m_ui->lineCurrentAudioBox->setText(m_elements.size() > 1 ? m_manyAudios : m_elements[0]->param<QString>(ParamId::AudioFile));
     }
 
     /* TruthTable */
@@ -529,11 +530,11 @@ void ElementEditor::applyCapabilitiesToUi()
     if (c.hasWirelessMode && !m_elements.isEmpty()) {
         const auto *first = m_elements.constFirst();
         const bool sameMode = std::all_of(m_elements.cbegin(), m_elements.cend(), [&](const Element *elm) {
-            return (elm->elementType() == ElementType::Node) && (elm->wirelessMode() == first->wirelessMode());
+            return (elm->elementType() == ElementType::Node) && (WirelessNode::mode(*elm) == WirelessNode::mode(*first));
         });
         if (prepareCombo(m_ui->comboBoxWirelessMode, true, sameMode, m_manyWirelessModes) && (first->elementType() == ElementType::Node)) {
             QSignalBlocker blocker(m_ui->comboBoxWirelessMode);
-            m_ui->comboBoxWirelessMode->setCurrentIndex(static_cast<int>(first->wirelessMode()));
+            m_ui->comboBoxWirelessMode->setCurrentIndex(static_cast<int>(WirelessNode::mode(*first)));
         }
     }
 
@@ -972,7 +973,7 @@ void ElementEditor::audioBox()
         Serialization::writePandaHeader(stream);
         audiobox->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
-    audiobox->setAudio(filePath);
+    audiobox->setParam(ParamId::AudioFile, filePath);
     if (m_scene) {
         m_scene->receiveCommand(new UpdateCommand({audiobox}, oldData, m_scene));
     }

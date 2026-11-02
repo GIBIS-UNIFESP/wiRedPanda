@@ -47,14 +47,14 @@ void TestPropertyShortcutHandler::testClockFrequencyNext()
     WorkSpace workspace;
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
-    double originalFreq = clock->frequency();
+    double originalFreq = clock->param<double>(ParamId::Frequency);
 
     PropertyShortcutHandler handler(workspace.scene());
     workspace.scene()->clearSelection();
     clock->setSelected(true);
 
     handler.nextMainProperty();
-    QCOMPARE(clock->frequency(), originalFreq + 0.5);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), originalFreq + 0.5);
 }
 
 void TestPropertyShortcutHandler::testClockFrequencyPrev()
@@ -62,14 +62,14 @@ void TestPropertyShortcutHandler::testClockFrequencyPrev()
     WorkSpace workspace;
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock);
-    double originalFreq = clock->frequency();
+    double originalFreq = clock->param<double>(ParamId::Frequency);
 
     PropertyShortcutHandler handler(workspace.scene());
     workspace.scene()->clearSelection();
     clock->setSelected(true);
 
     handler.prevMainProperty();
-    QCOMPARE(clock->frequency(), originalFreq - 0.5);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), originalFreq - 0.5);
 }
 
 void TestPropertyShortcutHandler::testBuzzerFrequency()
@@ -77,18 +77,26 @@ void TestPropertyShortcutHandler::testBuzzerFrequency()
     WorkSpace workspace;
     auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     workspace.scene()->addItem(buzzer);
-    double originalFreq = buzzer->frequency();
+    double originalFreq = buzzer->param<double>(ParamId::Frequency);
 
     PropertyShortcutHandler handler(workspace.scene());
     workspace.scene()->clearSelection();
     buzzer->setSelected(true);
 
     handler.nextMainProperty();
-    QVERIFY(buzzer->frequency() > originalFreq);
-    QVERIFY(buzzer->frequency() <= 20000.0);
+    QVERIFY(buzzer->param<double>(ParamId::Frequency) > originalFreq);
+    QVERIFY(buzzer->param<double>(ParamId::Frequency) <= 20000.0);
 
     handler.prevMainProperty();
-    QVERIFY(buzzer->frequency() >= 20.0);
+    QVERIFY(buzzer->param<double>(ParamId::Frequency) >= 20.0);
+
+    // The steps stop at the audible range's ends, 20 Hz and 20 kHz, which the buzzer's own spec does not bound
+    QVERIFY(buzzer->setParam(ParamId::Frequency, 19950.0));
+    handler.nextMainProperty();
+    QCOMPARE(buzzer->param<double>(ParamId::Frequency), 20000.0);
+    QVERIFY(buzzer->setParam(ParamId::Frequency, 50.0));
+    handler.prevMainProperty();
+    QCOMPARE(buzzer->param<double>(ParamId::Frequency), 20.0);
 }
 
 void TestPropertyShortcutHandler::testLedColorSecondary()
@@ -96,7 +104,7 @@ void TestPropertyShortcutHandler::testLedColorSecondary()
     WorkSpace workspace;
     auto *led = ElementFactory::buildElement(ElementType::Led);
     workspace.scene()->addItem(led);
-    QString originalColor = led->color();
+    QString originalColor = led->param<QString>(ParamId::Colour);
 
     PropertyShortcutHandler handler(workspace.scene());
     workspace.scene()->clearSelection();
@@ -107,8 +115,8 @@ void TestPropertyShortcutHandler::testLedColorSecondary()
 
     // Led color is secondary property
     handler.nextSecondaryProperty();
-    QVERIFY(led->color() != originalColor);
-    const QString cycledColor = led->color();
+    QVERIFY(led->param<QString>(ParamId::Colour) != originalColor);
+    const QString cycledColor = led->param<QString>(ParamId::Colour);
 
     // Regression: this mutation used to bypass the undo system entirely — every sibling
     // branch in adjustSecondaryProperty()/adjustMainProperty() wraps its change in an
@@ -116,12 +124,12 @@ void TestPropertyShortcutHandler::testLedColorSecondary()
     QCOMPARE(undoStack->count(), countBefore + 1);
     QVERIFY(undoStack->canUndo());
     undoStack->undo();
-    QCOMPARE(led->color(), originalColor);
+    QCOMPARE(led->param<QString>(ParamId::Colour), originalColor);
     undoStack->redo();
-    QCOMPARE(led->color(), cycledColor);
+    QCOMPARE(led->param<QString>(ParamId::Colour), cycledColor);
 
     handler.prevSecondaryProperty();
-    QCOMPARE(led->color(), originalColor);
+    QCOMPARE(led->param<QString>(ParamId::Colour), originalColor);
 }
 
 void TestPropertyShortcutHandler::testDisplayColorPrev()
@@ -137,16 +145,16 @@ void TestPropertyShortcutHandler::testDisplayColorPrev()
     // Test Display14 color cycling via prevMainProperty
     workspace.scene()->clearSelection();
     disp14->setSelected(true);
-    QString originalColor14 = disp14->color();
+    QString originalColor14 = disp14->param<QString>(ParamId::Colour);
     handler.prevMainProperty();
-    QVERIFY(disp14->color() != originalColor14);
+    QVERIFY(disp14->param<QString>(ParamId::Colour) != originalColor14);
 
     // Test Display7 color cycling via prevMainProperty
     workspace.scene()->clearSelection();
     disp7->setSelected(true);
-    QString originalColor7 = disp7->color();
+    QString originalColor7 = disp7->param<QString>(ParamId::Colour);
     handler.prevMainProperty();
-    QVERIFY(disp7->color() != originalColor7);
+    QVERIFY(disp7->param<QString>(ParamId::Colour) != originalColor7);
 }
 
 void TestPropertyShortcutHandler::testInputRotaryOutputSize()
@@ -214,8 +222,8 @@ void TestPropertyShortcutHandler::testMultiElementShortcutIsSingleUndoStep()
     auto *clock2 = ElementFactory::buildElement(ElementType::Clock);
     workspace.scene()->addItem(clock1);
     workspace.scene()->addItem(clock2);
-    const double originalFreq1 = clock1->frequency();
-    const double originalFreq2 = clock2->frequency();
+    const double originalFreq1 = clock1->param<double>(ParamId::Frequency);
+    const double originalFreq2 = clock2->param<double>(ParamId::Frequency);
 
     PropertyShortcutHandler handler(workspace.scene());
     workspace.scene()->clearSelection();
@@ -227,13 +235,13 @@ void TestPropertyShortcutHandler::testMultiElementShortcutIsSingleUndoStep()
 
     handler.nextMainProperty();
 
-    QCOMPARE(clock1->frequency(), originalFreq1 + 0.5);
-    QCOMPARE(clock2->frequency(), originalFreq2 + 0.5);
+    QCOMPARE(clock1->param<double>(ParamId::Frequency), originalFreq1 + 0.5);
+    QCOMPARE(clock2->param<double>(ParamId::Frequency), originalFreq2 + 0.5);
     QCOMPARE(undoStack->count(), countBefore + 1);
 
     undoStack->undo();
-    QCOMPARE(clock1->frequency(), originalFreq1);
-    QCOMPARE(clock2->frequency(), originalFreq2);
+    QCOMPARE(clock1->param<double>(ParamId::Frequency), originalFreq1);
+    QCOMPARE(clock2->param<double>(ParamId::Frequency), originalFreq2);
 }
 
 void TestPropertyShortcutHandler::testDisplay16ColorPrevMainProperty()
@@ -247,13 +255,13 @@ void TestPropertyShortcutHandler::testDisplay16ColorPrevMainProperty()
     workspace.scene()->clearSelection();
     disp16->setSelected(true);
 
-    const QString originalColor = disp16->color();
+    const QString originalColor = disp16->param<QString>(ParamId::Colour);
     handler.prevMainProperty();
-    QVERIFY(disp16->color() != originalColor);
+    QVERIFY(disp16->param<QString>(ParamId::Colour) != originalColor);
 
-    const QString afterPrev = disp16->color();
+    const QString afterPrev = disp16->param<QString>(ParamId::Colour);
     handler.nextMainProperty();
-    QCOMPARE(disp16->color(), afterPrev); // next is deliberately not implemented: no-op
+    QCOMPARE(disp16->param<QString>(ParamId::Colour), afterPrev); // next is deliberately not implemented: no-op
 }
 
 void TestPropertyShortcutHandler::testAudioBoxMainPropertyIsNoOp()
@@ -302,8 +310,8 @@ void TestPropertyShortcutHandler::testMultiElementSecondaryPropertyIsSingleUndoS
     led2->setPos(100, 0);
     workspace.scene()->addItem(led1);
     workspace.scene()->addItem(led2);
-    const QString originalColor1 = led1->color();
-    const QString originalColor2 = led2->color();
+    const QString originalColor1 = led1->param<QString>(ParamId::Colour);
+    const QString originalColor2 = led2->param<QString>(ParamId::Colour);
 
     PropertyShortcutHandler handler(workspace.scene());
     workspace.scene()->clearSelection();
@@ -315,13 +323,13 @@ void TestPropertyShortcutHandler::testMultiElementSecondaryPropertyIsSingleUndoS
 
     handler.nextSecondaryProperty();
 
-    QVERIFY(led1->color() != originalColor1);
-    QVERIFY(led2->color() != originalColor2);
+    QVERIFY(led1->param<QString>(ParamId::Colour) != originalColor1);
+    QVERIFY(led2->param<QString>(ParamId::Colour) != originalColor2);
     QCOMPARE(undoStack->count(), countBefore + 1);
 
     undoStack->undo();
-    QCOMPARE(led1->color(), originalColor1);
-    QCOMPARE(led2->color(), originalColor2);
+    QCOMPARE(led1->param<QString>(ParamId::Colour), originalColor1);
+    QCOMPARE(led2->param<QString>(ParamId::Colour), originalColor2);
 }
 
 void TestPropertyShortcutHandler::testMultiElementMorphNextIsSingleUndoStep()

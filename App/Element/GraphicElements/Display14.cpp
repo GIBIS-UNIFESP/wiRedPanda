@@ -3,6 +3,7 @@
 
 #include "App/Element/DisplaySegments.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInfo.h"
 #include "App/IO/Serialization.h"
@@ -52,7 +53,7 @@ struct ElementInfo<ElementType::Display14> {
             .id = ParamId::Colour,
             .defaultValue = QStringLiteral("Red"),
             .key = "color",
-            .choices = Element::colorNames(),
+            .choices = ElementColour::names(),
         }};
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 3.1 to 4.0 the colour was a bare string

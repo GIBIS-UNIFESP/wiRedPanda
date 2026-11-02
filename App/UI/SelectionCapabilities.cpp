@@ -3,8 +3,36 @@
 
 #include "App/UI/SelectionCapabilities.h"
 
+#include <variant>
+
 #include "App/Core/Enums.h"
 #include "App/Element/Element.h"
+
+namespace SelectionCapabilitiesDetail {
+
+/// Returns \c true if \a element and \a other agree on parameter \a id: both lack it, or both have it at one value,
+/// numbers compared within rounding (qFuzzyCompare()).
+bool sameParam(const Element &element, const Element &other, const ParamId id)
+{
+    if (element.hasParam(id) != other.hasParam(id)) {
+        return false;
+    }
+    if (!element.hasParam(id)) {
+        return true;
+    }
+    const auto &value = element.parameters().value(id);
+    const auto &otherValue = other.parameters().value(id);
+    const auto *number = std::get_if<double>(&value);
+    const auto *otherNumber = std::get_if<double>(&otherValue);
+    if (number && otherNumber) {
+        return qFuzzyCompare(*number, *otherNumber);
+    }
+    return value == otherValue;
+}
+
+} // namespace SelectionCapabilitiesDetail
+
+using SelectionCapabilitiesDetail::sameParam;
 
 SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
 {
@@ -36,22 +64,22 @@ SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
         c.hasTruthTable &= elm->hasTruthTable();
         c.hasLabel      &= elm->hasLabel();
         c.canChangeAppearance &= elm->canChangeAppearance();
-        c.hasColors     &= elm->hasColors();
-        c.hasAudioBox   &= elm->hasAudioBox();
-        c.hasFrequency  &= elm->hasFrequency();
-        c.hasDelay      &= elm->hasDelay();
+        c.hasColors     &= elm->offersParam(ParamId::Colour);
+        c.hasAudioBox   &= elm->offersParam(ParamId::AudioFile);
+        c.hasFrequency  &= elm->offersParam(ParamId::Frequency);
+        c.hasDelay      &= elm->offersParam(ParamId::Delay);
         c.minimumInputs  = (std::max)(c.minimumInputs,  elm->minInputSize());
         c.maximumInputs  = (std::min)(c.maximumInputs,  elm->maxInputSize());
         c.minimumOutputs = (std::max)(c.minimumOutputs, elm->minOutputSize());
         c.maximumOutputs = (std::min)(c.maximumOutputs, elm->maxOutputSize());
-        c.hasVolume       &= elm->hasVolume();
-        c.hasWirelessMode &= elm->hasWirelessMode();
+        c.hasVolume       &= elm->offersParam(ParamId::Volume);
+        c.hasWirelessMode &= elm->offersParam(ParamId::Wireless);
         c.hasTrigger      &= elm->hasTrigger();
 
         c.hasSameLabel      &= (elm->label()    == firstElement->label());
-        c.hasSameColors     &= (elm->color()    == firstElement->color());
-        c.hasSameFrequency  &= qFuzzyCompare(elm->frequency(), firstElement->frequency());
-        c.hasSameDelay      &= qFuzzyCompare(elm->delay(),     firstElement->delay());
+        c.hasSameColors     &= sameParam(*elm, *firstElement, ParamId::Colour);
+        c.hasSameFrequency  &= sameParam(*elm, *firstElement, ParamId::Frequency);
+        c.hasSameDelay      &= sameParam(*elm, *firstElement, ParamId::Delay);
         c.hasSameInputSize  &= (elm->inputSize()  == firstElement->inputSize());
         c.hasSameOutputSize &= (elm->outputSize() == firstElement->outputSize());
         c.maxCurrentOutputSize = (std::min)(c.maxCurrentOutputSize, elm->outputSize());
@@ -63,7 +91,7 @@ SelectionCapabilities computeCapabilities(const QList<Element *> &elements)
 
         c.hasSameTrigger &= (elm->trigger()      == firstElement->trigger());
         c.hasSameType    &= (elm->elementType()  == firstElement->elementType());
-        c.hasSameVolume  &= qFuzzyCompare(elm->volume(), firstElement->volume());
+        c.hasSameVolume  &= sameParam(*elm, *firstElement, ParamId::Volume);
 
         // Embedded IC flags: AND-reduced so both are true only when ALL selected
         // elements are ICs that are embedded or file-backed respectively.

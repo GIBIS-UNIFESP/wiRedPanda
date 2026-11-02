@@ -20,17 +20,17 @@
 void TestDisplay7::testDisplay7ColorSetting()
 {
     Element display{ElementType::Display7};
-    display.setColor("Red");
-    QCOMPARE(display.color(), QString("Red"));
+    display.setParam(ParamId::Colour, QStringLiteral("Red"));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QString("Red"));
 
-    display.setColor("Green");
-    QCOMPARE(display.color(), QString("Green"));
+    display.setParam(ParamId::Colour, QStringLiteral("Green"));
+    QCOMPARE(display.param<QString>(ParamId::Colour), QString("Green"));
 }
 
 void TestDisplay7::testDisplay7SaveLoad()
 {
     Element display{ElementType::Display7};
-    display.setColor("Red");
+    display.setParam(ParamId::Colour, QStringLiteral("Red"));
 
     QByteArray data;
     QDataStream writeStream(&data, QIODevice::WriteOnly);
@@ -43,8 +43,8 @@ void TestDisplay7::testDisplay7AllColors()
     Element display{ElementType::Display7};
     const QStringList colors = {"White", "Red", "Green", "Blue", "Purple"};
     for (const QString &color : colors) {
-        display.setColor(color);
-        QCOMPARE(display.color(), color);
+        display.setParam(ParamId::Colour, color);
+        QCOMPARE(display.param<QString>(ParamId::Colour), color);
     }
 }
 
@@ -53,7 +53,7 @@ void TestDisplay7::testDisplay7Paint()
     WorkSpace workspace;
     auto *disp = ElementFactory::buildElement(ElementType::Display7);
     workspace.scene()->addItem(disp);
-    disp->setColor("Red");
+    disp->setParam(ParamId::Colour, QStringLiteral("Red"));
 
     // Set all segments to Active
     for (int i = 0; i < disp->inputSize(); ++i) {

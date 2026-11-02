@@ -14,6 +14,7 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -28,7 +29,7 @@ Element *addNode(Scene *scene, const QPointF &pos, const WirelessMode mode)
     auto *node = ElementFactory::buildElement(ElementType::Node);
     scene->addItem(node);
     node->setPos(pos);
-    node->setWirelessMode(mode);
+    WirelessNode::setMode(*node, mode);
     return node;
 }
 

@@ -40,8 +40,10 @@
 #include "App/Core/MimeTypes.h"
 #include "App/Core/ThemeManager.h"
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/Commands.h"
@@ -1046,14 +1048,14 @@ void TestScene::testPropertyCycleFrequency()
 
     // Add a Clock element
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
-    clock->setFrequency(1.0);
+    clock->setParam(ParamId::Frequency, 1.0);
     scene->addItem(clock);
 
     // Select it
     clock->setSelected(true);
 
     // Get initial frequency
-    double initialFreq = clock->frequency();
+    double initialFreq = clock->param<double>(ParamId::Frequency);
     QVERIFY(initialFreq > 0);
 
     // Call next main property
@@ -1063,7 +1065,7 @@ void TestScene::testPropertyCycleFrequency()
     QCOMPARE(scene->elements().size(), 1);
 
     // adjustMainProperty() cycles the clock's frequency in 0.5 Hz steps.
-    QCOMPARE(clock->frequency(), initialFreq + 0.5);
+    QCOMPARE(clock->param<double>(ParamId::Frequency), initialFreq + 0.5);
 }
 
 void TestScene::testPropertyCycleColor()
@@ -1072,15 +1074,15 @@ void TestScene::testPropertyCycleColor()
 
     // Add an LED element
     auto *led = ElementFactory::buildElement(ElementType::Led);
-    led->setColor("Red");
+    led->setParam(ParamId::Colour, QStringLiteral("Red"));
     scene->addItem(led);
 
     // Select it
     led->setSelected(true);
 
-    QString initialColor = led->color();
+    QString initialColor = led->param<QString>(ParamId::Colour);
     QCOMPARE(initialColor, QString("Red"));
-    const QString expectedColor = led->nextColor();
+    const QString expectedColor = ElementColour::next(led->param<QString>(ParamId::Colour));
 
     // Cycle color -- Led's color is cycled by adjustSecondaryProperty() (nextSecndProp), not
     // adjustMainProperty(): the "main" property shortcut instead changes Led's *input size*
@@ -1089,7 +1091,7 @@ void TestScene::testPropertyCycleColor()
 
     // LED should still exist
     QCOMPARE(scene->elements().size(), 1);
-    QCOMPARE(led->color(), expectedColor);
+    QCOMPARE(led->param<QString>(ParamId::Colour), expectedColor);
 }
 
 void TestScene::testPropertyCycleAudio()
@@ -1103,7 +1105,7 @@ void TestScene::testPropertyCycleAudio()
     // Select it
     buzzer->setSelected(true);
 
-    const double initialVolume = buzzer->volume();
+    const double initialVolume = buzzer->param<double>(ParamId::Volume);
     const bool initialMuted = AudioService::instance().isMuted(scene.get());
 
     // Cycle audio property -- PropertyShortcutHandler::adjustSecondaryProperty() has no case
@@ -1114,7 +1116,7 @@ void TestScene::testPropertyCycleAudio()
 
     // Buzzer should still exist, unaffected.
     QCOMPARE(scene->elements().size(), 1);
-    QCOMPARE(buzzer->volume(), initialVolume);
+    QCOMPARE(buzzer->param<double>(ParamId::Volume), initialVolume);
     QCOMPARE(AudioService::instance().isMuted(scene.get()), initialMuted);
 }
 
@@ -1418,7 +1420,7 @@ void TestScene::testDuplicateTxLabel()
     QHash<QString, Element *> byName;
     for (const auto &[name, label, mode] : nodes) {
         auto *node = ElementFactory::buildElement(ElementType::Node);
-        node->setWirelessMode(mode);
+        WirelessNode::setMode(*node, mode);
         node->setLabel(label);
         scene->addItem(node);
         byName.insert(name, node);
@@ -1440,11 +1442,11 @@ void TestScene::testInlineLabelEditorRefusesADuplicateTxLabel()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *first = ElementFactory::buildElement(ElementType::Node);
-    first->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*first, WirelessMode::Tx);
     first->setLabel("x");
     scene->addItem(first);
     auto *second = ElementFactory::buildElement(ElementType::Node);
-    second->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*second, WirelessMode::Tx);
     second->setLabel("y");
     second->setPos(100, 0);
     scene->addItem(second);
@@ -1523,7 +1525,7 @@ namespace TestSceneTxHelpers {
 Element *addWirelessNode(Scene *scene, const QString &label, const WirelessMode mode, const QPointF pos)
 {
     auto *node = ElementFactory::buildElement(ElementType::Node);
-    node->setWirelessMode(mode);
+    WirelessNode::setMode(*node, mode);
     node->setLabel(label);
     node->setPos(pos);
     scene->addItem(node);

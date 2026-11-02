@@ -134,21 +134,6 @@ OutputPort *Element::outputPort(const int index) const
     return m_ports.outputPort(index);
 }
 
-WirelessMode Element::wirelessMode() const
-{
-    return hasParam(ParamId::Wireless) ? static_cast<WirelessMode>(param<int>(ParamId::Wireless)) : WirelessMode::None;
-}
-
-void Element::setWirelessMode(const WirelessMode mode)
-{
-    setParam(ParamId::Wireless, static_cast<int>(mode));
-}
-
-bool Element::hasWirelessMode() const
-{
-    return offersParam(ParamId::Wireless);
-}
-
 bool Element::isOn(const int port) const
 {
     return m_descriptor.sourceLevel && m_descriptor.sourceLevel(*this, port);
@@ -210,6 +195,7 @@ bool Element::setParam(const ParamId id, const ParamValue &value)
 {
     const ParamSpec *spec = m_parameters.spec(id);
     if (spec == nullptr) {
+        Q_ASSERT_X(false, "Element::setParam()", "a parameter the type does not have");
         return false;
     }
     if (value.index() != spec->defaultValue.index()) {
@@ -829,29 +815,6 @@ QRectF Element::labelBoundingRect() const
     return m_label->mapRectToParent(QRectF(QPointF(0, 0), m_labelShape.box));
 }
 
-// Color cycle (forward): White → Red → Green → Blue → Purple → White
-// These two functions implement previous/next steps in that cycle so the
-// property editor can wrap around without knowing the full list
-QString Element::previousColor() const
-{
-    if (color() == "White") return "Purple";
-    if (color() == "Red") return "White";
-    if (color() == "Green") return "Red";
-    if (color() == "Blue") return "Green";
-    if (color() == "Purple") return "Blue";
-    return "White"; // Standard
-}
-
-QString Element::nextColor() const
-{
-    if (color() == "White") return "Red";
-    if (color() == "Red") return "Green";
-    if (color() == "Green") return "Blue";
-    if (color() == "Blue") return "Purple";
-    if (color() == "Purple") return "White";
-    return "White"; // Standard
-}
-
 void Element::updateTheme()
 {
     const ThemeAttributes theme = ThemeManager::attributes();
@@ -892,55 +855,9 @@ bool Element::isValid()
     return valid;
 }
 
-bool Element::hasColors() const
-{
-    return offersParam(ParamId::Colour);
-}
-
 bool Element::hasTrigger() const
 {
     return m_descriptor.hasTrigger;
-}
-
-void Element::setColor(const QString &color)
-{
-    setParam(ParamId::Colour, color);
-}
-
-QString Element::color() const
-{
-    return hasParam(ParamId::Colour) ? param<QString>(ParamId::Colour) : QString();
-}
-
-const QStringList &Element::colorNames()
-{
-    static const QStringList names{"White", "Red", "Green", "Blue", "Purple"};
-    return names;
-}
-
-int Element::colorNameToIndex(const QString &color)
-{
-    return std::max(0, static_cast<int>(colorNames().indexOf(color)));
-}
-
-void Element::setAudio(const QString &audio)
-{
-    setParam(ParamId::AudioFile, audio);
-}
-
-QString Element::audio() const
-{
-    return hasParam(ParamId::AudioFile) ? param<QString>(ParamId::AudioFile) : QString();
-}
-
-bool Element::hasFrequency() const
-{
-    return offersParam(ParamId::Frequency);
-}
-
-bool Element::hasDelay() const
-{
-    return offersParam(ParamId::Delay);
 }
 
 bool Element::hasLabel() const
@@ -951,27 +868,6 @@ bool Element::hasLabel() const
 bool Element::hasTruthTable() const
 {
     return offersParam(ParamId::Table);
-}
-
-bool Element::hasAudioBox() const
-{
-    return offersParam(ParamId::AudioFile);
-}
-
-bool Element::hasVolume() const
-{
-    return offersParam(ParamId::Volume);
-}
-
-double Element::volume() const
-{
-    // The spec keeps a float's precision, so narrowing it back is exact
-    return hasParam(ParamId::Volume) ? param<double>(ParamId::Volume) : 0.0;
-}
-
-void Element::setVolume(const double vol)
-{
-    setParam(ParamId::Volume, vol);
 }
 
 bool Element::canChangeAppearance() const
@@ -1038,26 +934,6 @@ void Element::setOutputSize(const int size)
     const ChangeBatch batch(*this, ElementChange::Ports);
     setPortSize(size, false);
     setPortSize(m_descriptor.inputsForOutputs(size), true);
-}
-
-double Element::frequency() const
-{
-    return hasParam(ParamId::Frequency) ? param<double>(ParamId::Frequency) : 0.0;
-}
-
-void Element::setFrequency(const double freq)
-{
-    setParam(ParamId::Frequency, freq);
-}
-
-double Element::delay() const
-{
-    return hasParam(ParamId::Delay) ? param<double>(ParamId::Delay) : 0.0;
-}
-
-void Element::setDelay(const double delay)
-{
-    setParam(ParamId::Delay, delay);
 }
 
 void Element::updateLogic()

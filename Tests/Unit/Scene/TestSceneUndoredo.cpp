@@ -16,6 +16,7 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -1317,7 +1318,7 @@ void TestSceneUndoredo::testUpdateCommandWirelessModeUndoRedo()
     auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
     scene.addItem(nodeElm);
     const int id = nodeElm->id();
-    QCOMPARE(nodeElm->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*nodeElm), WirelessMode::None);
 
     // Capture old state (None mode) before making changes
     QByteArray oldData;
@@ -1328,7 +1329,7 @@ void TestSceneUndoredo::testUpdateCommandWirelessModeUndoRedo()
     }
 
     // Change to Tx mode
-    nodeElm->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Tx);
 
     // Push UpdateCommand — captures current (Tx) state as newData
     scene.undoStack()->push(new UpdateCommand({nodeElm}, oldData, &scene));
@@ -1336,20 +1337,20 @@ void TestSceneUndoredo::testUpdateCommandWirelessModeUndoRedo()
     // After push (redo): Tx mode
     auto *elm = dynamic_cast<Element *>(scene.itemById(id));
     QVERIFY(elm != nullptr);
-    QCOMPARE(elm->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*elm), WirelessMode::Tx);
 
     // Undo → None mode
     scene.undoStack()->undo();
     elm = dynamic_cast<Element *>(scene.itemById(id));
     QVERIFY(elm != nullptr);
-    QCOMPARE(elm->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*elm), WirelessMode::None);
     QVERIFY(elm->inputPort()->isRequired());
 
     // Redo → Tx mode again
     scene.undoStack()->redo();
     elm = dynamic_cast<Element *>(scene.itemById(id));
     QVERIFY(elm != nullptr);
-    QCOMPARE(elm->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*elm), WirelessMode::Tx);
     QVERIFY(elm->inputPort()->isRequired());
 }
 
@@ -1373,7 +1374,7 @@ void TestSceneUndoredo::testUpdateCommandRxModeIsRequired()
     }
 
     // Switch to Rx mode — input port becomes optional
-    nodeElm->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Rx);
     QVERIFY(!nodeElm->inputPort()->isRequired());
 
     // Push UpdateCommand (captures Rx state)
@@ -1382,21 +1383,21 @@ void TestSceneUndoredo::testUpdateCommandRxModeIsRequired()
     // After push: Rx mode, port optional
     auto *elm = dynamic_cast<Element *>(scene.itemById(id));
     QVERIFY(elm != nullptr);
-    QCOMPARE(elm->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*elm), WirelessMode::Rx);
     QVERIFY(!elm->inputPort()->isRequired());
 
     // Undo → None mode, port must be required again
     scene.undoStack()->undo();
     elm = dynamic_cast<Element *>(scene.itemById(id));
     QVERIFY(elm != nullptr);
-    QCOMPARE(elm->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*elm), WirelessMode::None);
     QVERIFY(elm->inputPort()->isRequired());
 
     // Redo → Rx mode, port optional again
     scene.undoStack()->redo();
     elm = dynamic_cast<Element *>(scene.itemById(id));
     QVERIFY(elm != nullptr);
-    QCOMPARE(elm->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*elm), WirelessMode::Rx);
     QVERIFY(!elm->inputPort()->isRequired());
 }
 
@@ -1438,7 +1439,7 @@ void TestSceneUndoredo::testWirelessModeUndoRestoresConnection()
     }
 
     // Set to Tx mode (hides output port) — connection not deleted by setWirelessMode
-    nodeElm->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Tx);
 
     // Use the same macro pattern as ElementEditor::apply():
     // beginMacro → UpdateCommand → DeleteItemsCommand → endMacro
@@ -1450,7 +1451,7 @@ void TestSceneUndoredo::testWirelessModeUndoRestoresConnection()
     // After macro: node is Tx, conn2 is deleted, conn1 still exists
     auto *n = dynamic_cast<Element *>(scene.itemById(nodeId));
     QVERIFY(n != nullptr);
-    QCOMPARE(n->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*n), WirelessMode::Tx);
     QVERIFY(scene.itemById(conn1Id) != nullptr);
     QVERIFY(scene.itemById(conn2Id) == nullptr);
 
@@ -1458,7 +1459,7 @@ void TestSceneUndoredo::testWirelessModeUndoRestoresConnection()
     scene.undoStack()->undo();
     n = dynamic_cast<Element *>(scene.itemById(nodeId));
     QVERIFY(n != nullptr);
-    QCOMPARE(n->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*n), WirelessMode::None);
     QVERIFY(n->inputPort()->isRequired());
 
     auto *restoredConn2 = dynamic_cast<Connection *>(scene.itemById(conn2Id));
@@ -1472,7 +1473,7 @@ void TestSceneUndoredo::testWirelessModeUndoRestoresConnection()
     // Redo: conn2 deleted again
     scene.undoStack()->redo();
     QVERIFY(scene.itemById(conn2Id) == nullptr);
-    QCOMPARE(dynamic_cast<Element *>(scene.itemById(nodeId))->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*dynamic_cast<Element *>(scene.itemById(nodeId))), WirelessMode::Tx);
 
     // Undo again: stable across cycles
     scene.undoStack()->undo();
@@ -1516,7 +1517,7 @@ void TestSceneUndoredo::testWirelessRxModeUndoRestoresConnection()
     }
 
     // Set to Rx mode (hides input port)
-    nodeElm->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Rx);
 
     // Macro: UpdateCommand + DeleteItemsCommand for the input connection
     scene.undoStack()->beginMacro(QStringLiteral("Change wireless mode"));
@@ -1527,14 +1528,14 @@ void TestSceneUndoredo::testWirelessRxModeUndoRestoresConnection()
     // After: conn1 deleted, conn2 exists
     QVERIFY(scene.itemById(conn1Id) == nullptr);
     QVERIFY(scene.itemById(conn2Id) != nullptr);
-    QCOMPARE(dynamic_cast<Element *>(scene.itemById(nodeId))->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*dynamic_cast<Element *>(scene.itemById(nodeId))), WirelessMode::Rx);
 
     // Undo: conn1 restored
     scene.undoStack()->undo();
     auto *restoredConn1 = dynamic_cast<Connection *>(scene.itemById(conn1Id));
     QVERIFY2(restoredConn1 != nullptr, "Input connection must be restored on undo");
     QCOMPARE(restoredConn1->endPort()->element()->id(), nodeId);
-    QCOMPARE(dynamic_cast<Element *>(scene.itemById(nodeId))->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*dynamic_cast<Element *>(scene.itemById(nodeId))), WirelessMode::None);
 }
 
 void TestSceneUndoredo::testWirelessUndoRestoresPortVisibility()
@@ -1558,7 +1559,7 @@ void TestSceneUndoredo::testWirelessUndoRestoresPortVisibility()
     }
 
     // Change to Tx mode — output port hidden
-    nodeElm->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Tx);
     QVERIFY(nodeElm->inputPort()->isVisible());
     QVERIFY(!nodeElm->outputPort()->isVisible());
 
@@ -1592,7 +1593,7 @@ void TestSceneUndoredo::testWirelessUndoRestoresPortVisibility()
         elm->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
-    elm->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*elm, WirelessMode::Rx);
     QVERIFY(!elm->inputPort()->isVisible());
     QVERIFY(elm->outputPort()->isVisible());
 

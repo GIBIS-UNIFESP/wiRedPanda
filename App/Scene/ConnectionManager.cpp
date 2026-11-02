@@ -9,6 +9,7 @@
 
 #include "App/Core/SentryHelpers.h"
 #include "App/Element/Element.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/PortHoverLabel.h"
@@ -264,12 +265,12 @@ QString ConnectionManager::connectionRejectionReason(OutputPort *startPort, Inpu
     }
     // Rx nodes receive their signal over the air; a physical wire on the input
     // port would be silently overridden by the simulation (tunnel convention).
-    if (auto *elm = endPort->element(); elm && elm->wirelessMode() == WirelessMode::Rx) {
+    if (auto *elm = endPort->element(); elm && WirelessNode::mode(*elm) == WirelessMode::Rx) {
         return tr("This element receives wirelessly — no input wire needed.");
     }
     // Tx nodes are dead-end transmitters; their output port drives the wireless
     // channel only — no physical wire should bypass the channel (tunnel convention).
-    if (auto *elm = startPort->element(); elm && elm->wirelessMode() == WirelessMode::Tx) {
+    if (auto *elm = startPort->element(); elm && WirelessNode::mode(*elm) == WirelessMode::Tx) {
         return tr("This element transmits wirelessly — no output wire needed.");
     }
     return {};

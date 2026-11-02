@@ -25,6 +25,7 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -159,7 +160,7 @@ void TestElementHandler::testSetElementPropertiesAcceptsNegativeClockDelay()
 
     auto *element = dynamic_cast<Element *>(window.currentTab()->scene()->itemById(clockId));
     QVERIFY(element);
-    QCOMPARE(element->delay(), -0.25);
+    QCOMPARE(element->param<double>(ParamId::Delay), -0.25);
 }
 
 void TestElementHandler::testSetElementPropertiesAnswersAPushThatDropsWithAnError()
@@ -587,7 +588,7 @@ void TestElementHandler::testHandleSetElementPropertiesChangesColorWhenSupported
 
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"color", "Blue"}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(elementById(window, id)->color(), QStringLiteral("Blue"));
+    QCOMPARE(elementById(window, id)->param<QString>(ParamId::Colour), QStringLiteral("Blue"));
 }
 
 void TestElementHandler::testHandleSetElementPropertiesChangesFrequencyWhenSupported()
@@ -598,7 +599,7 @@ void TestElementHandler::testHandleSetElementPropertiesChangesFrequencyWhenSuppo
 
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"frequency", 2.5}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(elementById(window, id)->frequency(), 2.5);
+    QCOMPARE(elementById(window, id)->param<double>(ParamId::Frequency), 2.5);
 }
 
 void TestElementHandler::testHandleSetElementPropertiesRejectsInvalidFrequency()
@@ -673,7 +674,7 @@ void TestElementHandler::testHandleSetElementPropertiesChangesVolumeWhenSupporte
 
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"volume", 0.5}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(elementById(window, id)->volume(), 0.5);
+    QCOMPARE(elementById(window, id)->param<double>(ParamId::Volume), 0.5);
 }
 
 void TestElementHandler::testHandleSetElementPropertiesRejectsInvalidVolume()
@@ -737,12 +738,12 @@ void TestElementHandler::testHandleSetElementPropertiesChangesWirelessModeAndSev
     // that now-redundant output port must be severed (Rx would sever the *input* port instead).
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", nodeId}, {"wireless_mode", 1}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Tx);
     QCOMPARE(node->outputPort()->connections().size(), 0);
 
     // The mode and the wire it severed are one undo step
     scene->undoStack()->undo();
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
     QCOMPARE(node->outputPort()->connections().size(), 1);
 }
 
@@ -771,7 +772,7 @@ void TestElementHandler::testHandleSetElementPropertiesRxModeSeversInputConnecti
 
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", nodeId}, {"wireless_mode", 2}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(node->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Rx);
     QCOMPARE(node->inputPort()->connections().size(), 0);
 }
 
@@ -799,7 +800,7 @@ void TestElementHandler::testHandleSetElementPropertiesAcceptsWirelessModeNoneFo
     // pointer stays null and no connection is severed.
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", nodeId}, {"wireless_mode", 0}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
     QCOMPARE(node->outputPort()->connections().size(), 1);
 }
 
@@ -1017,8 +1018,8 @@ void TestElementHandler::testSetElementPropertiesReadsBackWhatTheElementTook()
     const QJsonObject response = handler.handleCommand("set_element_properties", {{"element_id", id}, {"volume", 0.3}}, 1);
     QVERIFY2(response.contains("result"), qPrintable(QJsonDocument(response).toJson()));
     QCOMPARE(response["result"].toObject()["new_properties"].toObject()["volume"].toDouble(),
-             elementById(window, id)->volume());
-    QCOMPARE(elementById(window, id)->volume(), 0.3);
+             elementById(window, id)->param<double>(ParamId::Volume));
+    QCOMPARE(elementById(window, id)->param<double>(ParamId::Volume), 0.3);
 }
 
 // ============================================================================
@@ -1754,8 +1755,8 @@ void TestElementHandler::testListElementsReportsAFilesValuesOutsideWhatMCPSets()
     ElementHandler handler(&window, nullptr);
     MCPValidator validator(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath("schema-mcp.json"));
     QVERIFY(validator.isSchemaLoaded());
-    elementById(window, createElement(handler, "Led"))->setColor("Orange");
-    elementById(window, createElement(handler, "Buzzer", 100, 0))->setVolume(1.5);
+    elementById(window, createElement(handler, "Led"))->setParam(ParamId::Colour, QStringLiteral("Orange"));
+    elementById(window, createElement(handler, "Buzzer", 100, 0))->setParam(ParamId::Volume, 1.5);
 
     const QJsonObject response = handler.handleCommand("list_elements", {}, 1);
     const ValidationResult valid = validator.validateResponse(response, "list_elements");

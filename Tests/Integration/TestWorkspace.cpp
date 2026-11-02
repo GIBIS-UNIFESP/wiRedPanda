@@ -1264,7 +1264,7 @@ void TestWorkspace::testOpeningAFileWithASoundThatIsGoneReportsIt()
         WorkSpace workspace;
         auto *audioBox = ElementFactory::buildElement(ElementType::AudioBox);
         workspace.scene()->addItem(audioBox);
-        audioBox->setAudio(wavPath);
+        audioBox->setParam(ParamId::AudioFile, wavPath);
         workspace.save(saveFile);
     }
     QVERIFY(QFile::remove(wavPath));

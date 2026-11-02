@@ -14,6 +14,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -91,7 +92,7 @@ QString ArduinoCodeGen::otherPortNameImpl(Port *port, QSet<Port *> &visited)
 
     // Wireless Rx: resolve via the Tx node's input (what drives the transmitter), over a wire that also reaches the Rx,
     // as the simulation does
-    if (auto *elm = port->element(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+    if (auto *elm = port->element(); elm && WirelessNode::mode(*elm) == WirelessMode::Rx && !elm->label().isEmpty()) {
         if (auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr)) {
             return otherPortNameImpl(txInputPort, visited);
         }
@@ -406,7 +407,7 @@ void ArduinoCodeGen::declareAuxVariablesRec(const QVector<Element *> &elements, 
             case ElementType::Clock: {
                 if (!isBox) {
                     m_stream << "elapsedMillis " << varName2 << "_elapsed = 0;" << Qt::endl;
-                    m_stream << "int " << varName2 << "_interval = " << (std::max)(1, static_cast<int>(1000.0 / elm->frequency())) << ";" << Qt::endl;
+                    m_stream << "int " << varName2 << "_interval = " << (std::max)(1, static_cast<int>(1000.0 / elm->param<double>(ParamId::Frequency))) << ";" << Qt::endl;
                 }
                 break;
             }
@@ -1264,7 +1265,7 @@ void ArduinoCodeGen::loop()
     for (const auto &pin : std::as_const(m_outputMap)) {
         if (pin.m_elm->elementType() == ElementType::Buzzer) {
             const QString inputSignal = otherPortName(pin.m_elm->inputPort(0));
-            const int frequency = static_cast<int>(pin.m_elm->frequency());
+            const int frequency = static_cast<int>(pin.m_elm->param<double>(ParamId::Frequency));
             m_stream << QString("    if (%1) {").arg(inputSignal) << Qt::endl;
             m_stream << QString("        tone(%1, %2);").arg(pin.m_varName).arg(frequency) << Qt::endl;
             m_stream << QString("    } else {") << Qt::endl;

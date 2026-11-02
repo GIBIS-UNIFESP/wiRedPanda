@@ -592,7 +592,7 @@ void TestElementSerializer::testAppearancesSaveAgainByteForByte()
     input.setOn(true);
     input.setAppearance(false, path);
     Element led{ElementType::Led};
-    led.setColor("Red");
+    led.setParam(ParamId::Colour, QStringLiteral("Red"));
     led.inputPort(0)->setStatus(Status::Active);
     led.refresh();
     led.setAppearance(false, path);

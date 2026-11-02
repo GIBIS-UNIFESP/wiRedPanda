@@ -11,6 +11,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -96,7 +97,7 @@ QString SystemVerilogCodeGen::otherPortName(Port *port)
 
     // Wireless Rx: resolve via the Tx node's input (what drives the transmitter), over a wire that also reaches the Rx,
     // as the simulation does. The Tx node is not an Rx, so this takes one step.
-    if (auto *elm = port->element(); elm && elm->wirelessMode() == WirelessMode::Rx && !elm->label().isEmpty()) {
+    if (auto *elm = port->element(); elm && WirelessNode::mode(*elm) == WirelessMode::Rx && !elm->label().isEmpty()) {
         if (auto *txInputPort = m_txInputPorts.value(elm->label(), nullptr)) {
             return otherPortName(txInputPort);
         }

@@ -64,5 +64,5 @@ void AudioOutput::setNote(Element &buzzer, const QString &note)
         return;
     }
 
-    buzzer.setFrequency(noteToFrequency(note));
+    buzzer.setParam(ParamId::Frequency, static_cast<double>(noteToFrequency(note)));
 }

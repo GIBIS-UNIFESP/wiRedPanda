@@ -68,7 +68,7 @@ struct ElementInfo<ElementType::AudioBox> {
         // directory already happened at load (ExternalFilePath::forReading()), so a path here is a resource or one
         // directly usable
         descriptor.reportFailedFiles = [](const Element &element) {
-            const QString path = element.audio();
+            const QString path = element.param<QString>(ParamId::AudioFile);
             const QFileInfo info(path);
             if (path.startsWith(":/") || info.isReadable()) {
                 return;

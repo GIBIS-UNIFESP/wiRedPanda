@@ -3,9 +3,11 @@
 
 #include "Tests/Unit/Elements/TestElement.h"
 
+#include <array>
 #include <cmath>
 #include <memory>
 #include <optional>
+#include <utility>
 
 #include <QCoreApplication>
 #include <QDirIterator>
@@ -26,6 +28,7 @@
 #include <QXmlStreamReader>
 
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
@@ -75,14 +78,14 @@ void TestElement::testElementSaveLoad()
 void TestElement::testElementSkin()
 {
     Element led{ElementType::Led};
-    QVERIFY(led.hasColors());
+    QVERIFY(led.offersParam(ParamId::Colour));
 }
 
 void TestElement::testElementAppearance()
 {
     Element led{ElementType::Led};
-    led.setColor("Red");
-    QCOMPARE(led.color(), QString("Red"));
+    led.setParam(ParamId::Colour, QStringLiteral("Red"));
+    QCOMPARE(led.param<QString>(ParamId::Colour), QString("Red"));
 }
 
 void TestElement::testElementHelpTextIsItsName()
@@ -125,7 +128,7 @@ void TestElement::testDisplay14Paint()
     WorkSpace workspace;
     auto *disp = ElementFactory::buildElement(ElementType::Display14);
     workspace.scene()->addItem(disp);
-    disp->setColor("Green");
+    disp->setParam(ParamId::Colour, QStringLiteral("Green"));
 
     // Set some segments to Active to exercise paint() branches
     for (int i = 0; i < disp->inputSize(); ++i) {
@@ -149,7 +152,7 @@ void TestElement::testDisplay16Paint()
     WorkSpace workspace;
     auto *disp = ElementFactory::buildElement(ElementType::Display16);
     workspace.scene()->addItem(disp);
-    disp->setColor("Blue");
+    disp->setParam(ParamId::Colour, QStringLiteral("Blue"));
 
     for (int i = 0; i < disp->inputSize(); ++i) {
         disp->inputPort(i)->setStatus(Status::Active);
@@ -386,20 +389,25 @@ void TestElement::testSceneEventSwallowsCtrlClickPress()
     QVERIFY2(gate.sceneEvent(&releaseEvent), "Ctrl+click release must also be swallowed");
 }
 
-void TestElement::testColorCycleFunctionsDefaultToWhiteForNonColoredElement()
+void TestElement::testColourCycleStartsAtWhiteFromANameOutsideIt()
 {
-    // The base Element::color() always returns an empty string; previousColor()/
-    // nextColor() must fall back to "White" (not an empty/garbage result) for an element type
-    // that never overrides color(), e.g. And.
-    Element gate{ElementType::And};
-    QCOMPARE(gate.color(), QString());
-    QCOMPARE(gate.previousColor(), QString("White"));
-    QCOMPARE(gate.nextColor(), QString("White"));
+    // A name outside the cycle, an empty one or one no type offers, steps to White either way, not to an empty or
+    // garbage name; an And has no colour at all
+    QVERIFY(!Element(ElementType::And).hasParam(ParamId::Colour));
+    for (const QString &name : {QString(), QStringLiteral("Orange")}) {
+        QCOMPARE(ElementColour::previous(name), QStringLiteral("White"));
+        QCOMPARE(ElementColour::next(name), QStringLiteral("White"));
+    }
+    // Within it, each steps one place, wrapping at both ends
+    QCOMPARE(ElementColour::next(QStringLiteral("White")), QStringLiteral("Red"));
+    QCOMPARE(ElementColour::next(QStringLiteral("Purple")), QStringLiteral("White"));
+    QCOMPARE(ElementColour::previous(QStringLiteral("White")), QStringLiteral("Purple"));
+    QCOMPARE(ElementColour::previous(QStringLiteral("Red")), QStringLiteral("White"));
 }
 
 void TestElement::testColorNameToIndexUnknownColorDefaultsToZero()
 {
-    QCOMPARE(Element::colorNameToIndex("NotARealColor"), 0);
+    QCOMPARE(ElementColour::indexOf("NotARealColor"), 0);
 }
 
 void TestElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
@@ -421,26 +429,26 @@ void TestElement::testIsValidPropagatesErrorStatusToConnectedOutputs()
     QCOMPARE(led->inputPort(0)->status(), Status::Error);
 }
 
-void TestElement::testBaseSettersAreNoOpsForUnsupportedProperties()
+void TestElement::testATypeHasNoneOfTheParametersOnlyOthersHave()
 {
-    // Element's default setColor()/setAudio()/setVolume()/setFrequency()/setDelay() are
-    // no-ops for element types that don't override them -- confirm the matching getters stay at
-    // their fixed defaults afterward.
+    // A gate has no colour, sound, volume, frequency or delay, and offers none; setting one is a broken invariant,
+    // which a debug build asserts and a release build refuses, changing nothing
     Element gate{ElementType::And};
-    gate.setColor("Red");
-    QCOMPARE(gate.color(), QString());
-
-    gate.setAudio("some/path.wav");
-    QCOMPARE(gate.audio(), QString());
-
-    gate.setVolume(0.5);
-    QCOMPARE(gate.volume(), 0.0);
-
-    gate.setFrequency(42.0);
-    QCOMPARE(gate.frequency(), 0.0);
-
-    gate.setDelay(42.0);
-    QCOMPARE(gate.delay(), 0.0);
+    const std::array<std::pair<ParamId, ParamValue>, 5> others{{{ParamId::Colour, QStringLiteral("Red")},
+                                                                {ParamId::AudioFile, QStringLiteral("some/path.wav")},
+                                                                {ParamId::Volume, 0.5},
+                                                                {ParamId::Frequency, 42.0},
+                                                                {ParamId::Delay, 42.0}}};
+    for (const auto &[id, value] : others) {
+        QVERIFY(!gate.hasParam(id));
+        QVERIFY(!gate.offersParam(id));
+#ifdef QT_NO_DEBUG
+        QVERIFY(!gate.setParam(id, value));
+        QVERIFY(!gate.hasParam(id));
+#else
+        Q_UNUSED(value)
+#endif
+    }
 }
 
 void TestElement::testBlobNameDefaultsToEmptyForNonIcElement()

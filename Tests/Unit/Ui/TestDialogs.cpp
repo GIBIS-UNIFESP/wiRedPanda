@@ -14,6 +14,7 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ClockDialog.h"
 #include "App/UI/ElementEditor.h"
@@ -208,7 +209,7 @@ void TestDialogs::testLengthDialogTitleAndRangeLabels()
 static Element *makeTxNode(Scene *scene, const QString &label)
 {
     auto *node = ElementFactory::buildElement(ElementType::Node);
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
     node->setLabel(label);
     scene->addItem(node);
     return node;
@@ -293,7 +294,7 @@ void TestDialogs::testElementEditorRejectsModeChangeToDuplicateTx()
     makeTxNode(f.workspace.scene(), "ADDR");
 
     auto *nodeB = ElementFactory::buildElement(ElementType::Node);
-    nodeB->setWirelessMode(WirelessMode::None);
+    WirelessNode::setMode(*nodeB, WirelessMode::None);
     nodeB->setLabel("ADDR");
     f.workspace.scene()->addItem(nodeB);
 
@@ -302,7 +303,7 @@ void TestDialogs::testElementEditorRejectsModeChangeToDuplicateTx()
     f.changeMode(WirelessMode::Tx); // would collide — rejected
 
     QVERIFY2(TestUtils::waitFor([&] { return dismisser.dismissCount() >= 1; }),"The duplicate-Tx rejection dialog must have appeared");
-    QCOMPARE(nodeB->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*nodeB), WirelessMode::None);
 }
 
 void TestDialogs::testElementEditorAllowsSelfRelabelTx()
@@ -315,7 +316,7 @@ void TestDialogs::testElementEditorAllowsSelfRelabelTx()
     f.changeLabel("CLK"); // same label — must not show dialog
 
     QCOMPARE(node->label(), QStringLiteral("CLK"));
-    QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Tx);
 }
 
 void TestDialogs::testElementEditorAllowsRxWithDuplicateLabel()
@@ -326,7 +327,7 @@ void TestDialogs::testElementEditorAllowsRxWithDuplicateLabel()
     makeTxNode(f.workspace.scene(), "SDA");
 
     auto *rxNode = ElementFactory::buildElement(ElementType::Node);
-    rxNode->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxNode, WirelessMode::Rx);
     rxNode->setLabel("SDA_OLD");
     f.workspace.scene()->addItem(rxNode);
 

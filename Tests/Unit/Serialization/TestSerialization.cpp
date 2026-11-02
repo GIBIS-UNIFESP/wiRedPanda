@@ -21,6 +21,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
@@ -618,7 +619,7 @@ void TestSerialization::testNonDefaultValuesRoundTrip()
 
     auto *led = ElementFactory::buildElement(ElementType::Led);
     QVERIFY2(led != nullptr, "Failed to create Led element");
-    led->setColor("Green");
+    led->setParam(ParamId::Colour, QStringLiteral("Green"));
     scene1->addItem(led);
 
     auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
@@ -628,7 +629,7 @@ void TestSerialization::testNonDefaultValuesRoundTrip()
 
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
     QVERIFY2(clock != nullptr, "Failed to create Clock");
-    clock->setFrequency(2.0);
+    clock->setParam(ParamId::Frequency, 2.0);
     scene1->addItem(clock);
 
     QByteArray data = saveToMemory(workspace1);
@@ -650,9 +651,9 @@ void TestSerialization::testNonDefaultValuesRoundTrip()
     QVERIFY(loadedAnd && loadedLed && loadedSw && loadedClock);
     QCOMPARE(loadedAnd->rotation(), 45.0);
     QCOMPARE(loadedAnd->label(), QString("NonDefault"));
-    QCOMPARE(loadedLed->color(), QString("Green"));
+    QCOMPARE(loadedLed->param<QString>(ParamId::Colour), QString("Green"));
     QVERIFY2(loadedSw->isOn(), "Non-default switch state must round-trip");
-    QCOMPARE(loadedClock->frequency(), 2.0);
+    QCOMPARE(loadedClock->param<double>(ParamId::Frequency), 2.0);
 }
 
 void TestSerialization::testTriggerLoadsAsSaved()
@@ -1522,7 +1523,7 @@ void TestSerialization::testWirelessTxNodePreservedInScene()
     auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(nodeElm != nullptr);
     nodeElm->setLabel("CLK");
-    nodeElm->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Tx);
     ws1.scene()->addItem(nodeElm);
 
     QByteArray data = saveToMemory(ws1);
@@ -1536,7 +1537,7 @@ void TestSerialization::testWirelessTxNodePreservedInScene()
 
     auto *loaded = elements.first();
     QCOMPARE(loaded->elementType(), ElementType::Node);
-    QCOMPARE(loaded->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*loaded), WirelessMode::Tx);
     QCOMPARE(loaded->label(), QStringLiteral("CLK"));
     QVERIFY(loaded->inputPort()->isRequired());
 }
@@ -1549,7 +1550,7 @@ void TestSerialization::testWirelessRxNodePreservedInScene()
     auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(nodeElm != nullptr);
     nodeElm->setLabel("DATA");
-    nodeElm->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*nodeElm, WirelessMode::Rx);
     ws1.scene()->addItem(nodeElm);
 
     QByteArray data = saveToMemory(ws1);
@@ -1559,7 +1560,7 @@ void TestSerialization::testWirelessRxNodePreservedInScene()
 
     auto *loaded = ws2.scene()->elements().first();
     QCOMPARE(loaded->elementType(), ElementType::Node);
-    QCOMPARE(loaded->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*loaded), WirelessMode::Rx);
     QCOMPARE(loaded->label(), QStringLiteral("DATA"));
     QVERIFY(!loaded->inputPort()->isRequired());
 }
@@ -1574,8 +1575,8 @@ void TestSerialization::testWirelessPairCircuit()
     auto *txElm = ElementFactory::buildElement(ElementType::Node);
     auto *rxElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txElm && rxElm);
-    txElm->setLabel("SIG"); txElm->setWirelessMode(WirelessMode::Tx);
-    rxElm->setLabel("SIG"); rxElm->setWirelessMode(WirelessMode::Rx);
+    txElm->setLabel("SIG"); WirelessNode::setMode(*txElm, WirelessMode::Tx);
+    rxElm->setLabel("SIG"); WirelessNode::setMode(*rxElm, WirelessMode::Rx);
     txElm->setPos(0, 0);
     rxElm->setPos(200, 0);
     scene1->addItem(txElm);
@@ -1593,8 +1594,8 @@ void TestSerialization::testWirelessPairCircuit()
     for (auto *elm : elements) {
         QCOMPARE(elm->elementType(), ElementType::Node);
         QCOMPARE(elm->label(), QStringLiteral("SIG"));
-        if (elm->wirelessMode() == WirelessMode::Tx) { ++txCount; }
-        else if (elm->wirelessMode() == WirelessMode::Rx) { ++rxCount; }
+        if (WirelessNode::mode(*elm) == WirelessMode::Tx) { ++txCount; }
+        else if (WirelessNode::mode(*elm) == WirelessMode::Rx) { ++rxCount; }
     }
     QCOMPARE(txCount, 1);
     QCOMPARE(rxCount, 1);
@@ -1618,7 +1619,7 @@ void TestSerialization::testWirelessNoneNodeInScene()
 
     auto *loaded = ws2.scene()->elements().first();
     QCOMPARE(loaded->elementType(), ElementType::Node);
-    QCOMPARE(loaded->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*loaded), WirelessMode::None);
     QVERIFY(loaded->inputPort()->isRequired());
 }
 

@@ -23,9 +23,9 @@ void TestFeatures::testAndGateFeatures()
     auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
 
     // AND gate should not have audio, frequency, delay, or colors by default
-    QVERIFY(!andGate->hasAudioBox());
-    QVERIFY(!andGate->hasFrequency());
-    QVERIFY(!andGate->hasDelay());
+    QVERIFY(!andGate->offersParam(ParamId::AudioFile));
+    QVERIFY(!andGate->offersParam(ParamId::Frequency));
+    QVERIFY(!andGate->offersParam(ParamId::Delay));
 
     // AND gate may have label
     QVERIFY(!andGate->hasLabel()); // Logic gates typically don't show labels
@@ -38,15 +38,15 @@ void TestFeatures::testInputElementFeatures()
 
     // Verify features return boolean values
     bool hasLabel = input->hasLabel();
-    bool hasColors = input->hasColors();
+    bool hasColors = input->offersParam(ParamId::Colour);
 
     // Node element has label (used as wireless channel name) but not colors
     QVERIFY(hasLabel);
     QVERIFY(!hasColors);
 
     // Input should not have frequency or delay
-    QVERIFY(!input->hasFrequency());
-    QVERIFY(!input->hasDelay());
+    QVERIFY(!input->offersParam(ParamId::Frequency));
+    QVERIFY(!input->offersParam(ParamId::Delay));
 }
 
 void TestFeatures::testDisplayElementFeatures()
@@ -55,7 +55,7 @@ void TestFeatures::testDisplayElementFeatures()
     auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
 
     // Display should have colors
-    QVERIFY(display->hasColors());
+    QVERIFY(display->offersParam(ParamId::Colour));
 
     // Display should have label
     QVERIFY(display->hasLabel());
@@ -67,27 +67,27 @@ void TestFeatures::testFrequencyFeature()
     auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
 
     // Clock should have frequency setting
-    QVERIFY(clock->hasFrequency());
+    QVERIFY(clock->offersParam(ParamId::Frequency));
 
     // Create a non-clock element
     auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(!andGate->hasFrequency());
+    QVERIFY(!andGate->offersParam(ParamId::Frequency));
 }
 
 void TestFeatures::testColorFeature()
 {
     // Display element has colors
     auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
-    bool displayHasColors = display->hasColors();
+    bool displayHasColors = display->offersParam(ParamId::Colour);
     QVERIFY(displayHasColors);
 
     // Logic gate typically doesn't have colors
     auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(!andGate->hasColors());
+    QVERIFY(!andGate->offersParam(ParamId::Colour));
 
     // Node (connector) does not have colors
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    bool nodeHasColors = node->hasColors();
+    bool nodeHasColors = node->offersParam(ParamId::Colour);
     QVERIFY(!nodeHasColors);
 }
 
@@ -101,8 +101,8 @@ void TestFeatures::testAudioFeature()
             continue;
         }
         const auto element = std::unique_ptr<Element>(ElementFactory::buildElement(type));
-        QVERIFY2(element->hasAudioBox() == (type == ElementType::AudioBox), metaEnum.key(i));
-        QVERIFY2(element->hasVolume() == ((type == ElementType::AudioBox) || (type == ElementType::Buzzer)),
+        QVERIFY2(element->offersParam(ParamId::AudioFile) == (type == ElementType::AudioBox), metaEnum.key(i));
+        QVERIFY2(element->offersParam(ParamId::Volume) == ((type == ElementType::AudioBox) || (type == ElementType::Buzzer)),
                  metaEnum.key(i));
     }
 }
@@ -111,10 +111,10 @@ void TestFeatures::testDelayFeature()
 {
     // Most elements don't have delay by default
     auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
-    QVERIFY(!andGate->hasDelay());
+    QVERIFY(!andGate->offersParam(ParamId::Delay));
 
     auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
-    QVERIFY(!display->hasDelay());
+    QVERIFY(!display->offersParam(ParamId::Delay));
 }
 
 void TestFeatures::testLabelFeature()
@@ -160,47 +160,47 @@ void TestFeatures::testMultipleElementsFeatures()
     auto andGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(andGate != nullptr);
     QVERIFY(!andGate->hasLabel());
-    QVERIFY(!andGate->hasColors());
-    QVERIFY(!andGate->hasFrequency());
-    QVERIFY(!andGate->hasDelay());
+    QVERIFY(!andGate->offersParam(ParamId::Colour));
+    QVERIFY(!andGate->offersParam(ParamId::Frequency));
+    QVERIFY(!andGate->offersParam(ParamId::Delay));
 
     // OR gate - no special features
     auto orGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Or));
     QVERIFY(orGate != nullptr);
     QVERIFY(!orGate->hasLabel());
-    QVERIFY(!orGate->hasColors());
-    QVERIFY(!orGate->hasFrequency());
-    QVERIFY(!orGate->hasDelay());
+    QVERIFY(!orGate->offersParam(ParamId::Colour));
+    QVERIFY(!orGate->offersParam(ParamId::Frequency));
+    QVERIFY(!orGate->offersParam(ParamId::Delay));
 
     // NOT gate - no special features
     auto notGate = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Not));
     QVERIFY(notGate != nullptr);
     QVERIFY(!notGate->hasLabel());
-    QVERIFY(!notGate->hasColors());
-    QVERIFY(!notGate->hasFrequency());
-    QVERIFY(!notGate->hasDelay());
+    QVERIFY(!notGate->offersParam(ParamId::Colour));
+    QVERIFY(!notGate->offersParam(ParamId::Frequency));
+    QVERIFY(!notGate->offersParam(ParamId::Delay));
 
     // Node - has label (for wireless channel name), no other special features
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(node != nullptr);
     QVERIFY(node->hasLabel());
-    QVERIFY(!node->hasColors());
-    QVERIFY(!node->hasFrequency());
-    QVERIFY(!node->hasDelay());
+    QVERIFY(!node->offersParam(ParamId::Colour));
+    QVERIFY(!node->offersParam(ParamId::Frequency));
+    QVERIFY(!node->offersParam(ParamId::Delay));
 
     // Clock - has frequency and delay
     auto clock = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Clock));
     QVERIFY(clock != nullptr);
     QVERIFY(clock->hasLabel());
-    QVERIFY(!clock->hasColors());
-    QVERIFY(clock->hasFrequency());
-    QVERIFY(clock->hasDelay());
+    QVERIFY(!clock->offersParam(ParamId::Colour));
+    QVERIFY(clock->offersParam(ParamId::Frequency));
+    QVERIFY(clock->offersParam(ParamId::Delay));
 
     // Display7 - has label and colors
     auto display = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Display7));
     QVERIFY(display != nullptr);
     QVERIFY(display->hasLabel());
-    QVERIFY(display->hasColors());
-    QVERIFY(!display->hasFrequency());
-    QVERIFY(!display->hasDelay());
+    QVERIFY(display->offersParam(ParamId::Colour));
+    QVERIFY(!display->offersParam(ParamId::Frequency));
+    QVERIFY(!display->offersParam(ParamId::Delay));
 }

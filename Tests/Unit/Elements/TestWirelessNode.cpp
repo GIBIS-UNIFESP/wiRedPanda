@@ -13,6 +13,7 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -25,17 +26,17 @@
 void TestWirelessNode::testDefaultModeIsNone()
 {
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
-    QVERIFY(node->hasWirelessMode());
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
+    QVERIFY(node->offersParam(ParamId::Wireless));
 }
 
 void TestWirelessNode::testSetTxMode()
 {
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
 
-    QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Tx);
     // Tx node still requires a physical input wire (the signal source)
     QVERIFY(node->inputPort()->isRequired());
 }
@@ -44,9 +45,9 @@ void TestWirelessNode::testSetRxMode()
 {
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
 
-    QCOMPARE(node->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Rx);
     // Rx node receives its signal wirelessly — input port must be optional
     QVERIFY(!node->inputPort()->isRequired());
 }
@@ -55,11 +56,11 @@ void TestWirelessNode::testSetNoneModeRestoresRequired()
 {
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
     QVERIFY(!node->inputPort()->isRequired());
 
-    node->setWirelessMode(WirelessMode::None);
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    WirelessNode::setMode(*node, WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
     QVERIFY(node->inputPort()->isRequired());
 }
 
@@ -68,7 +69,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
     // Save a Tx node, reload it, and verify the mode is preserved.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
     node->setLabel("CLK");
 
     QByteArray buffer;
@@ -87,7 +88,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
         node2->load(in, ctx);
     }
 
-    QCOMPARE(node2->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node2), WirelessMode::Tx);
     QCOMPARE(node2->label(), QStringLiteral("CLK"));
 }
 
@@ -96,14 +97,14 @@ void TestWirelessNode::testSetSameModeIdempotent()
     // Calling setWirelessMode with the current mode must not corrupt state.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Tx);
-    node->setWirelessMode(WirelessMode::Tx);   // second call — early-return guard makes this a true no-op
-    QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);   // second call — early-return guard makes this a true no-op
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Tx);
     QVERIFY(node->inputPort()->isRequired());
 
-    node->setWirelessMode(WirelessMode::Rx);
-    node->setWirelessMode(WirelessMode::Rx);   // second call — early-return guard makes this a true no-op
-    QCOMPARE(node->wirelessMode(), WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);   // second call — early-return guard makes this a true no-op
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Rx);
     QVERIFY(!node->inputPort()->isRequired());
 }
 
@@ -114,26 +115,26 @@ void TestWirelessNode::testAllTransitionsIsRequired()
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     // Initial state
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
     QVERIFY(node->inputPort()->isRequired());
 
-    node->setWirelessMode(WirelessMode::Tx);
-    QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Tx);
     QVERIFY(node->inputPort()->isRequired());      // Tx still needs a physical driver
 
-    node->setWirelessMode(WirelessMode::Rx);
-    QCOMPARE(node->wirelessMode(), WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Rx);
     QVERIFY(!node->inputPort()->isRequired());     // Rx receives wirelessly
 
-    node->setWirelessMode(WirelessMode::None);
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    WirelessNode::setMode(*node, WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
     QVERIFY(node->inputPort()->isRequired());      // back to normal node
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
     QVERIFY(!node->inputPort()->isRequired());
 
-    node->setWirelessMode(WirelessMode::Tx);
-    QCOMPARE(node->wirelessMode(), WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Tx);
     QVERIFY(node->inputPort()->isRequired());
 }
 
@@ -143,11 +144,11 @@ void TestWirelessNode::testSetNoneModeAfterTx()
     // mirroring testSetNoneModeRestoresRequired which only covers Rx → None.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
     QVERIFY(node->inputPort()->isRequired());   // Tx still requires a physical wire
 
-    node->setWirelessMode(WirelessMode::None);
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    WirelessNode::setMode(*node, WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
     QVERIFY(node->inputPort()->isRequired());   // must still be required after reset
 }
 
@@ -157,7 +158,7 @@ void TestWirelessNode::testSaveLoadRxMode()
     // branch of saveProperties()/loadProperties() is exercised.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
     node->setLabel(QStringLiteral("DATA"));
 
     QByteArray buffer;
@@ -176,7 +177,7 @@ void TestWirelessNode::testSaveLoadRxMode()
         node2->load(in, ctx);
     }
 
-    QCOMPARE(node2->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*node2), WirelessMode::Rx);
     QCOMPARE(node2->label(), QStringLiteral("DATA"));
     // Rx port must remain optional after round-trip
     QVERIFY(!node2->inputPort()->isRequired());
@@ -190,10 +191,10 @@ void TestWirelessNode::testLabelUsedAsChannelName()
     node->setLabel("DATA_BUS");
     QCOMPARE(node->label(), QStringLiteral("DATA_BUS"));
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
     // Mode and label are independent; label is still accessible after mode change
     QCOMPARE(node->label(), QStringLiteral("DATA_BUS"));
-    QCOMPARE(node->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::Rx);
 }
 
 void TestWirelessNode::testSaveLoadNoneMode()
@@ -201,9 +202,9 @@ void TestWirelessNode::testSaveLoadNoneMode()
     // A Node explicitly cycled through Tx and back to None must load back as None.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Tx);
-    node->setWirelessMode(WirelessMode::None);  // reset to None before saving
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::None);  // reset to None before saving
+    QCOMPARE(WirelessNode::mode(*node), WirelessMode::None);
 
     QByteArray buffer;
     {
@@ -221,7 +222,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
         node2->load(in, ctx);
     }
 
-    QCOMPARE(node2->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*node2), WirelessMode::None);
     // None mode must restore the port to required=true
     QVERIFY(node2->inputPort()->isRequired());
 }
@@ -233,13 +234,13 @@ void TestWirelessNode::testLabelPreservedAfterModeChange()
 
     node->setLabel("CHANNEL_A");
 
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
     QCOMPARE(node->label(), QStringLiteral("CHANNEL_A"));
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
     QCOMPARE(node->label(), QStringLiteral("CHANNEL_A"));
 
-    node->setWirelessMode(WirelessMode::None);
+    WirelessNode::setMode(*node, WirelessMode::None);
     QCOMPARE(node->label(), QStringLiteral("CHANNEL_A"));
 }
 
@@ -248,7 +249,7 @@ void TestWirelessNode::testHasWirelessModeFalseForNonNode()
     // hasWirelessMode() must return false for elements that are not Nodes.
     auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::And));
     QVERIFY(elm != nullptr);
-    QVERIFY(!elm->hasWirelessMode());
+    QVERIFY(!elm->offersParam(ParamId::Wireless));
 }
 
 void TestWirelessNode::testEditorShowsTheWirelessModeOnlyForANode()
@@ -270,7 +271,7 @@ void TestWirelessNode::testPortVisibilityTxMode()
     // Tx mode hides the output port (signal goes wireless) but keeps input visible.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
 
     QVERIFY(node->inputPort()->isVisible());
     QVERIFY(!node->outputPort()->isVisible());
@@ -281,7 +282,7 @@ void TestWirelessNode::testPortVisibilityRxMode()
     // Rx mode hides the input port (signal arrives wirelessly) but keeps output visible.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
 
     QVERIFY(!node->inputPort()->isVisible());
     QVERIFY(node->outputPort()->isVisible());
@@ -297,17 +298,17 @@ void TestWirelessNode::testPortVisibilityAllTransitions()
     QVERIFY(node->outputPort()->isVisible());
 
     // Tx: input visible, output hidden
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
     QVERIFY(node->inputPort()->isVisible());
     QVERIFY(!node->outputPort()->isVisible());
 
     // Rx: input hidden, output visible
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
     QVERIFY(!node->inputPort()->isVisible());
     QVERIFY(node->outputPort()->isVisible());
 
     // Back to None: both visible again
-    node->setWirelessMode(WirelessMode::None);
+    WirelessNode::setMode(*node, WirelessMode::None);
     QVERIFY(node->inputPort()->isVisible());
     QVERIFY(node->outputPort()->isVisible());
 }
@@ -345,7 +346,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
     }
 
     // Must clamp to None
-    QCOMPARE(loadNode->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*loadNode), WirelessMode::None);
     QVERIFY(loadNode->inputPort()->isRequired());
 }
 
@@ -373,7 +374,7 @@ void TestWirelessNode::testLoadNegativeWirelessModeClampsToNone()
         loadNode->load(in, ctx);
     }
 
-    QCOMPARE(loadNode->wirelessMode(), WirelessMode::None);
+    QCOMPARE(WirelessNode::mode(*loadNode), WirelessMode::None);
     QVERIFY(loadNode->inputPort()->isRequired());
 }
 
@@ -383,7 +384,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
     // input hidden, output visible.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*node, WirelessMode::Rx);
     node->setLabel("VIS_TEST");
 
     QByteArray buffer;
@@ -402,7 +403,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
         node2->load(in, ctx);
     }
 
-    QCOMPARE(node2->wirelessMode(), WirelessMode::Rx);
+    QCOMPARE(WirelessNode::mode(*node2), WirelessMode::Rx);
     QVERIFY(!node2->inputPort()->isVisible());
     QVERIFY(node2->outputPort()->isVisible());
 }
@@ -412,7 +413,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
     // Tx mode hides the output port. This must survive a save/load round-trip.
     auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
     node->setLabel("TX_VIS");
 
     QByteArray buffer;
@@ -431,7 +432,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
         node2->load(in, ctx);
     }
 
-    QCOMPARE(node2->wirelessMode(), WirelessMode::Tx);
+    QCOMPARE(WirelessNode::mode(*node2), WirelessMode::Tx);
     QVERIFY(node2->inputPort()->isVisible());
     QVERIFY(!node2->outputPort()->isVisible());
 }
@@ -448,7 +449,7 @@ void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
 
     auto *node = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(node != nullptr);
-    node->setWirelessMode(WirelessMode::Tx); // the presenter draws the indicator
+    WirelessNode::setMode(*node, WirelessMode::Tx); // the presenter draws the indicator
 
     Element vcc{ElementType::InputVcc};
     Element gnd{ElementType::InputGnd};
@@ -472,7 +473,7 @@ void TestWirelessNode::testANewLevelCarriedRepaintsTheNode()
     QGraphicsScene scene;
     auto *node = ElementFactory::buildElement(ElementType::Node); // the scene takes ownership
     scene.addItem(node);
-    node->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*node, WirelessMode::Tx);
     Element source{ElementType::InputVcc};
     source.initSimulationVectors(0, 1);
     node->initSimulationVectors(1, 1);
@@ -510,7 +511,7 @@ void TestWirelessNode::testAWirelessNodeLeftUndrivenCarriesUnknown()
     // An input with no driver reads its default, Unknown for a node, and the indicator shows it in place of the level
     // the node carried before
     Element node{ElementType::Node};
-    node.setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(node, WirelessMode::Tx);
     Element source{ElementType::InputVcc};
     source.initSimulationVectors(0, 1);
     node.initSimulationVectors(1, 1);
@@ -529,7 +530,7 @@ void TestWirelessNode::testLayingOutAnRxNodesPortsLeavesItsInputsLevel()
     // Each layout applies the node's attributes again, an Rx input's unchanged requirement among them; that must not
     // put the unconnected input back on its default and flash the level it shows until the simulation runs
     Element node{ElementType::Node};
-    node.setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(node, WirelessMode::Rx);
     node.inputPort()->setStatus(Status::Active);
     node.updatePortsProperties();
     QCOMPARE(node.inputPort()->status(), Status::Active);
@@ -546,7 +547,7 @@ void TestWirelessNode::testRxInputStaysOptionalThroughEditUndoRedo()
     auto *rx = ElementFactory::buildElement(ElementType::Node);
     builder.add(rx);
     rx->setLabel("A");
-    rx->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
 
     QByteArray oldData;
     QDataStream stream(&oldData, QIODevice::WriteOnly);
@@ -578,9 +579,9 @@ void TestWirelessNode::testAnUnwiredNodesInputStaysOptionalThroughItsModes()
     node.setParam(ParamId::Wired, false);
     QVERIFY(!node.inputPort()->isRequired());
 
-    node.setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(node, WirelessMode::Tx);
     QVERIFY(!node.inputPort()->isRequired());
-    node.setWirelessMode(WirelessMode::None);
+    WirelessNode::setMode(node, WirelessMode::None);
     QVERIFY(!node.inputPort()->isRequired());
     node.updatePortsProperties();
     QVERIFY(!node.inputPort()->isRequired());

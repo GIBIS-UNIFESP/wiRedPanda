@@ -172,14 +172,14 @@ void TestAudioService::testAnAudioBoxPlaysItsFileOrTheBuiltInSound()
 
     WorkSpace workspace;
     const Wired wired(workspace, ElementType::AudioBox);
-    wired.audio->setAudio(path);
+    wired.audio->setParam(ParamId::AudioFile, path);
     wired.set(workspace, true);
     QCOMPARE(AudioService::instance().playback(*wired.audio)->source, path);
 
     wired.set(workspace, false);
     QVERIFY(QFile::remove(path));
     wired.set(workspace, true);
-    QCOMPARE(wired.audio->audio(), path);
+    QCOMPARE(wired.audio->param<QString>(ParamId::AudioFile), path);
     QCOMPARE(AudioService::instance().playback(*wired.audio)->source, QString::fromLatin1(AudioOutput::kBuiltInSound));
 
     wired.set(workspace, false);
@@ -257,8 +257,8 @@ void TestAudioService::testAParameterChangedReachesTheVoice()
     WorkSpace workspace;
     const Wired buzzer(workspace, ElementType::Buzzer);
     buzzer.set(workspace, true);
-    buzzer.audio->setVolume(0.2);
-    buzzer.audio->setFrequency(880.0);
+    buzzer.audio->setParam(ParamId::Volume, 0.2);
+    buzzer.audio->setParam(ParamId::Frequency, 880.0);
     QCOMPARE(AudioService::instance().playback(*buzzer.audio)->volume, 0.2);
     QCOMPARE(AudioService::instance().playback(*buzzer.audio)->frequency, 880.0);
     QVERIFY(sounding(*buzzer.audio));
@@ -269,8 +269,8 @@ void TestAudioService::testAParameterChangedReachesTheVoice()
     TestAudioServiceHelpers::writeSound(path);
     const Wired box(workspace, ElementType::AudioBox);
     box.set(workspace, true);
-    box.audio->setAudio(path);
-    box.audio->setVolume(0.7);
+    box.audio->setParam(ParamId::AudioFile, path);
+    box.audio->setParam(ParamId::Volume, 0.7);
     QCOMPARE(AudioService::instance().playback(*box.audio)->source, path);
     QCOMPARE(AudioService::instance().playback(*box.audio)->volume, 0.7);
 }
@@ -312,7 +312,7 @@ void TestAudioService::testOnlyAnAudioElementThatPlayedGetsAVoice()
     wired.set(workspace, false);
     QVERIFY(!AudioService::instance().playback(*wired.audio));
 
-    wired.audio->setVolume(0.9);
+    wired.audio->setParam(ParamId::Volume, 0.9);
     QVERIFY(!AudioService::instance().playback(*wired.audio));
 
     // An element with no ParamId::Playing is not asked for it, which a debug build asserts
@@ -330,8 +330,8 @@ void TestAudioService::testTheHardwareFollowsTheVoice()
     WorkSpace workspace;
     const Wired buzzer(workspace, ElementType::Buzzer);
     buzzer.set(workspace, true);
-    buzzer.audio->setFrequency(880.0);
-    buzzer.audio->setVolume(0.2);
+    buzzer.audio->setParam(ParamId::Frequency, 880.0);
+    buzzer.audio->setParam(ParamId::Volume, 0.2);
     const auto &tone = *AudioService::instance().m_voices.at(buzzer.audio);
     QCOMPARE(tone.generator->frequency(), 880.0);
     QVERIFY(tone.generator->isOpen());
@@ -345,7 +345,7 @@ void TestAudioService::testTheHardwareFollowsTheVoice()
 
     const Wired box(workspace, ElementType::AudioBox);
     box.set(workspace, true);
-    box.audio->setVolume(0.3);
+    box.audio->setParam(ParamId::Volume, 0.3);
     const auto &sound = *AudioService::instance().m_voices.at(box.audio);
     QCOMPARE(sound.output->volume(), 0.3F);
     QCOMPARE(sound.player->source(), QUrl("qrc" + QString::fromLatin1(AudioOutput::kBuiltInSound)));

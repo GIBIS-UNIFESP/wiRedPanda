@@ -21,6 +21,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/WirelessNode.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
@@ -232,12 +233,12 @@ void TestSystemVerilogExport::testWirelessRxReachedByAWireFollowsItsTx()
     auto txNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(txNode);
     txNode->setLabel("CH");
-    txNode->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txNode, WirelessMode::Tx);
 
     auto rxNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(rxNode);
     rxNode->setLabel("CH");
-    rxNode->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxNode, WirelessMode::Rx);
 
     auto led = std::make_unique<Element>(ElementType::Led);
     led->setLabel("Shown");
@@ -282,12 +283,12 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     auto txNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(txNode);
     txNode->setLabel("CLK");
-    txNode->setWirelessMode(WirelessMode::Tx);
+    WirelessNode::setMode(*txNode, WirelessMode::Tx);
 
     auto rxNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(rxNode);
     rxNode->setLabel("CLK");
-    rxNode->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxNode, WirelessMode::Rx);
 
     auto led = std::make_unique<Element>(ElementType::Led);
 
@@ -359,7 +360,7 @@ void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
     auto rxNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(rxNode);
     rxNode->setLabel("MISSING_TX");
-    rxNode->setWirelessMode(WirelessMode::Rx);
+    WirelessNode::setMode(*rxNode, WirelessMode::Rx);
 
     auto led = std::make_unique<Element>(ElementType::Led);
 

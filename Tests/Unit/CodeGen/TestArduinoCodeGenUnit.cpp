@@ -542,7 +542,7 @@ void TestArduinoCodeGenUnit::testClockIntervalFollowsItsFrequency()
     auto *led = ElementFactory::buildElement(ElementType::Led);
     builder.add(clk, led);
     builder.connect(clk, 0, led, 0);
-    clk->setFrequency(4.0); // not the default, which the sketch would show all the same
+    clk->setParam(ParamId::Frequency, 4.0); // not the default, which the sketch would show all the same
 
     QTemporaryDir dir;
     const QString path = dir.path() + "/clock.ino";
@@ -564,7 +564,7 @@ void TestArduinoCodeGenUnit::testBuzzerToneFollowsItsFrequency()
     auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
     builder.add(sw, buzzer);
     builder.connect(sw, 0, buzzer, 0);
-    buzzer->setFrequency(880.0); // not the default, which the sketch would show all the same
+    buzzer->setParam(ParamId::Frequency, 880.0); // not the default, which the sketch would show all the same
 
     QTemporaryDir dir;
     const QString path = dir.path() + "/buzzer.ino";

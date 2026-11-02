@@ -4,6 +4,7 @@
 #include "Tests/Unit/Elements/TestDisplay.h"
 
 #include "App/Element/Element.h"
+#include "App/Element/ElementColour.h"
 #include "App/IO/SerializationContext.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -12,8 +13,8 @@ void TestDisplay::testDisplay14AllColors()
     Element display{ElementType::Display14};
     const QStringList colors = {"White", "Red", "Green", "Blue", "Purple"};
     for (const QString &color : colors) {
-        display.setColor(color);
-        QCOMPARE(display.color(), color);
+        display.setParam(ParamId::Colour, color);
+        QCOMPARE(display.param<QString>(ParamId::Colour), color);
     }
 }
 
@@ -22,41 +23,41 @@ void TestDisplay::testDisplay16AllColors()
     Element display{ElementType::Display16};
     const QStringList colors = {"White", "Red", "Green", "Blue", "Purple"};
     for (const QString &color : colors) {
-        display.setColor(color);
-        QCOMPARE(display.color(), color);
+        display.setParam(ParamId::Colour, color);
+        QCOMPARE(display.param<QString>(ParamId::Colour), color);
     }
 }
 
 void TestDisplay::testDisplay14NextPrevColor()
 {
     Element display{ElementType::Display14};
-    display.setColor("Red");
-    QString next = display.nextColor();
+    display.setParam(ParamId::Colour, QStringLiteral("Red"));
+    QString next = ElementColour::next(display.param<QString>(ParamId::Colour));
     QVERIFY(!next.isEmpty());
     QVERIFY(next != "Red");
 
-    display.setColor(next);
-    QString prev = display.previousColor();
+    display.setParam(ParamId::Colour, next);
+    QString prev = ElementColour::previous(display.param<QString>(ParamId::Colour));
     QCOMPARE(prev, QString("Red"));
 }
 
 void TestDisplay::testDisplay16NextPrevColor()
 {
     Element display{ElementType::Display16};
-    display.setColor("Red");
-    QString next = display.nextColor();
+    display.setParam(ParamId::Colour, QStringLiteral("Red"));
+    QString next = ElementColour::next(display.param<QString>(ParamId::Colour));
     QVERIFY(!next.isEmpty());
     QVERIFY(next != "Red");
 
-    display.setColor(next);
-    QString prev = display.previousColor();
+    display.setParam(ParamId::Colour, next);
+    QString prev = ElementColour::previous(display.param<QString>(ParamId::Colour));
     QCOMPARE(prev, QString("Red"));
 }
 
 void TestDisplay::testDisplay14Save()
 {
     Element display{ElementType::Display14};
-    display.setColor("Blue");
+    display.setParam(ParamId::Colour, QStringLiteral("Blue"));
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
@@ -67,7 +68,7 @@ void TestDisplay::testDisplay14Save()
 void TestDisplay::testDisplay16Save()
 {
     Element display{ElementType::Display16};
-    display.setColor("Purple");
+    display.setParam(ParamId::Colour, QStringLiteral("Purple"));
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);

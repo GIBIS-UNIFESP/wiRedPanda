@@ -431,7 +431,7 @@ void TestSimulationTraceSnapshot::testClocksHoldWhileStepped()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     auto *clock = ElementFactory::buildElement(ElementType::Clock);
-    clock->setFrequency(1000.0);
+    clock->setParam(ParamId::Frequency, 1000.0);
     scene->addItem(clock);
     auto *led = ElementFactory::buildElement(ElementType::Led);
     led->setPos(200, 0);

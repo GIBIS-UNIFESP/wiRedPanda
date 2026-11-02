@@ -59,9 +59,9 @@ void TestAppearanceKey::testAnEmptyTextsKeyHoldsItsHintInTheLanguageShown()
 void TestAppearanceKey::testAnUnlitDisplaysKeyLeavesOutItsColour()
 {
     const auto red = build(ElementType::Display7);
-    red->setColor("Red");
+    red->setParam(ParamId::Colour, QStringLiteral("Red"));
     const auto white = build(ElementType::Display7);
-    white->setColor("White");
+    white->setParam(ParamId::Colour, QStringLiteral("White"));
     QVERIFY(keyOf(*red) == keyOf(*white));
 
     // Lit, a segment shows the colour

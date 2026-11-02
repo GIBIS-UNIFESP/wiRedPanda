@@ -14,6 +14,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/DisplaySegments.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementColour.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementPorts.cpp
@@ -58,6 +59,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/LabelMeasure.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/WirelessNode.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Commands.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
@@ -94,6 +96,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Element.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementAppearance.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementChange.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementColour.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementFactory.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementInfo.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementOrientation.h
@@ -109,6 +112,7 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/Parameters.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PictureLibrary.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/PortAttributes.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/WirelessNode.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/ExternalFilePath.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/FileUtils.h
     ${CMAKE_CURRENT_LIST_DIR}/App/IO/Serialization.h

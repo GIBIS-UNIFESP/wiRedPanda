@@ -20,9 +20,11 @@
 #include "App/Element/BodyMeasure.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementChange.h"
+#include "App/Element/ElementColour.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
 #include "App/Element/LabelMeasure.h"
+#include "App/Element/WirelessNode.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Versions.h"
@@ -183,38 +185,38 @@ QList<Operation> operations(const QString &image, const QString &audio)
              return true;
          }},
         {"colour", Change::Parameter, [](Element &element, Scene &) {
-             if (!element.hasColors()) {
+             if (!element.offersParam(ParamId::Colour)) {
                  return false;
              }
-             element.setColor(element.nextColor());
+             element.setParam(ParamId::Colour, ElementColour::next(element.param<QString>(ParamId::Colour)));
              return true;
          }},
         {"frequency", Change::Parameter, [](Element &element, Scene &) {
-             if (!element.hasFrequency()) {
+             if (!element.offersParam(ParamId::Frequency)) {
                  return false;
              }
-             element.setFrequency(element.frequency() * 2 + 1);
+             element.setParam(ParamId::Frequency, element.param<double>(ParamId::Frequency) * 2 + 1);
              return true;
          }},
         {"delay", Change::Parameter, [](Element &element, Scene &) {
-             if (!element.hasDelay()) {
+             if (!element.offersParam(ParamId::Delay)) {
                  return false;
              }
-             element.setDelay(0.25);
+             element.setParam(ParamId::Delay, 0.25);
              return true;
          }},
         {"audio file", Change::Parameter, [audio](Element &element, Scene &) {
-             if (!element.hasAudioBox()) {
+             if (!element.offersParam(ParamId::AudioFile)) {
                  return false;
              }
-             element.setAudio(audio);
+             element.setParam(ParamId::AudioFile, audio);
              return true;
          }},
         {"volume", Change::Parameter, [](Element &element, Scene &) {
-             if (!element.hasVolume()) {
+             if (!element.offersParam(ParamId::Volume)) {
                  return false;
              }
-             element.setVolume(0.25);
+             element.setParam(ParamId::Volume, 0.25);
              return true;
          }},
         {"appearance", Change::Parameter, [image](Element &element, Scene &) {
@@ -278,10 +280,10 @@ QList<Operation> operations(const QString &image, const QString &audio)
              return true;
          }},
         {"wireless mode", Change::Parameter | Change::Ports, [](Element &element, Scene &) {
-             if (!element.hasWirelessMode()) {
+             if (!element.offersParam(ParamId::Wireless)) {
                  return false;
              }
-             element.setWirelessMode(WirelessMode::Tx);
+             WirelessNode::setMode(element, WirelessMode::Tx);
              return true;
          }},
         {"sub-circuit", Change::Parameter | Change::Ports, [](Element &element, Scene &) {

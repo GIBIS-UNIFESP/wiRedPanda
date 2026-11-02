@@ -48,7 +48,7 @@ void TestAudioBox::testConstructorInitialization()
     QVERIFY(audioBox.rotatesGraphic());
 
     // Verify has audio box feature
-    QVERIFY(audioBox.hasAudioBox());
+    QVERIFY(audioBox.offersParam(ParamId::AudioFile));
 }
 
 // ============================================================================
@@ -60,7 +60,7 @@ void TestAudioBox::testAudioPath()
     Element audioBox{ElementType::AudioBox};
 
     // Audio path should be the default audio file after construction
-    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
 void TestAudioBox::testAudioPathEmpty()
@@ -68,10 +68,10 @@ void TestAudioBox::testAudioPathEmpty()
     Element audioBox{ElementType::AudioBox};
 
     // Setting empty path should be a no-op
-    audioBox.setAudio("");
+    audioBox.setParam(ParamId::AudioFile, QStringLiteral(""));
 
     // Path should remain the default
-    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
 // ============================================================================
@@ -83,10 +83,10 @@ void TestAudioBox::testSetAudioWithQRCPath()
     Element audioBox{ElementType::AudioBox};
 
     // Set audio with QRC resource path
-    audioBox.setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    audioBox.setParam(ParamId::AudioFile, QStringLiteral(":/Components/Output/Audio/wiredpanda.wav"));
 
     // Audio path should be stored regardless of device availability
-    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
 void TestAudioBox::testAResourcePathIsNeverReportedAsAFileThatFailed()
@@ -94,8 +94,8 @@ void TestAudioBox::testAResourcePathIsNeverReportedAsAFileThatFailed()
     // A resource is no file of the user's: one the build does not hold is not reported when a file opens, whatever
     // plays, as a sound file the user can restore would be
     Element audioBox{ElementType::AudioBox};
-    audioBox.setAudio(":/Components/Output/Audio/no-such-sound.wav");
-    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/no-such-sound.wav"));
+    audioBox.setParam(ParamId::AudioFile, QStringLiteral(":/Components/Output/Audio/no-such-sound.wav"));
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/no-such-sound.wav"));
     try {
         audioBox.reportFailedFiles();
     } catch (const Pandaception &e) {
@@ -109,10 +109,10 @@ void TestAudioBox::testSetAudioWithEmptyPath()
     Element audioBox{ElementType::AudioBox};
 
     // Set audio with empty path - should be a no-op
-    audioBox.setAudio("");
+    audioBox.setParam(ParamId::AudioFile, QStringLiteral(""));
 
     // Path should remain the default
-    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
 void TestAudioBox::testSetAudioWithValidPath()
@@ -126,10 +126,10 @@ void TestAudioBox::testSetAudioWithValidPath()
     tempFile.close();
 
     // Set audio to temporary file
-    audioBox.setAudio(tempFile.fileName());
+    audioBox.setParam(ParamId::AudioFile, tempFile.fileName());
 
     // Audio path should be stored
-    QCOMPARE(audioBox.audio(), tempFile.fileName());
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), tempFile.fileName());
 }
 
 void TestAudioBox::testAudioPathPreservedAfterMultipleSets()
@@ -137,11 +137,11 @@ void TestAudioBox::testAudioPathPreservedAfterMultipleSets()
     Element audioBox{ElementType::AudioBox};
 
     // Set audio with empty path multiple times — should be a no-op each time
-    audioBox.setAudio("");
-    QString path1 = audioBox.audio();
+    audioBox.setParam(ParamId::AudioFile, QStringLiteral(""));
+    QString path1 = audioBox.param<QString>(ParamId::AudioFile);
 
-    audioBox.setAudio("");
-    QString path2 = audioBox.audio();
+    audioBox.setParam(ParamId::AudioFile, QStringLiteral(""));
+    QString path2 = audioBox.param<QString>(ParamId::AudioFile);
 
     // Both paths should remain the default
     QCOMPARE(path1, path2);
@@ -155,7 +155,7 @@ void TestAudioBox::testAudioPathPreservedAfterMultipleSets()
 void TestAudioBox::testSaveAudioPath()
 {
     Element audioBox{ElementType::AudioBox};
-    audioBox.setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    audioBox.setParam(ParamId::AudioFile, QStringLiteral(":/Components/Output/Audio/wiredpanda.wav"));
 
     // Save to stream
     QByteArray data;
@@ -172,7 +172,7 @@ void TestAudioBox::testLoadVersionOld()
     // Verify round-trip save/load with current format (version 4.1+)
     // This tests that AudioBox serialization/deserialization works correctly
     auto audioBox1 = std::make_unique<Element>(ElementType::AudioBox);
-    audioBox1->setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    audioBox1->setParam(ParamId::AudioFile, QStringLiteral(":/Components/Output/Audio/wiredpanda.wav"));
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -187,14 +187,14 @@ void TestAudioBox::testLoadVersionOld()
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded correctly
-    QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+    QCOMPARE(audioBox2->param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
 void TestAudioBox::testLoadVersionNew()
 {
     // Create audio box and save it
     auto audioBox1 = std::make_unique<Element>(ElementType::AudioBox);
-    audioBox1->setAudio(":/Components/Output/Audio/wiredpanda.wav");
+    audioBox1->setParam(ParamId::AudioFile, QStringLiteral(":/Components/Output/Audio/wiredpanda.wav"));
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -209,7 +209,7 @@ void TestAudioBox::testLoadVersionNew()
     audioBox2->load(loadStream, context);
 
     // Audio path should be loaded
-    QCOMPARE(audioBox2->audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+    QCOMPARE(audioBox2->param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
 void TestAudioBox::testSetAudioWithAbsolutePath()
@@ -224,9 +224,9 @@ void TestAudioBox::testSetAudioWithAbsolutePath()
     tempFile.close();
 
     Element audioBox{ElementType::AudioBox};
-    audioBox.setAudio(QFileInfo(tempFile.fileName()).absoluteFilePath());
+    audioBox.setParam(ParamId::AudioFile, QFileInfo(tempFile.fileName()).absoluteFilePath());
 
-    QCOMPARE(audioBox.audio(), QFileInfo(tempFile.fileName()).absoluteFilePath());
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), QFileInfo(tempFile.fileName()).absoluteFilePath());
 }
 
 void TestAudioBox::testSetAudioWithNonExistentPathKeepsItAndPlaysTheDefault()
@@ -239,11 +239,11 @@ void TestAudioBox::testSetAudioWithNonExistentPathKeepsItAndPlaysTheDefault()
 
     Element audioBox{ElementType::AudioBox};
     try {
-        audioBox.setAudio(path);
+        audioBox.setParam(ParamId::AudioFile, path);
     } catch (const Pandaception &e) {
         QFAIL(qPrintable(QString("setAudio() threw: %1").arg(e.what())));
     }
-    QCOMPARE(audioBox.audio(), path);
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), path);
     QCOMPARE(audioBox.externalFiles(), QStringList{path});
 
     QString message;
@@ -278,7 +278,7 @@ void TestAudioBox::testLoadResolvesBareFilenameAgainstContextDir()
     const QFileInfo tempInfo(tempFile.fileName());
 
     Element audioBox1{ElementType::AudioBox};
-    audioBox1.setAudio(tempInfo.absoluteFilePath());
+    audioBox1.setParam(ParamId::AudioFile, tempInfo.absoluteFilePath());
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -290,7 +290,7 @@ void TestAudioBox::testLoadResolvesBareFilenameAgainstContextDir()
     SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, tempInfo.absolutePath()};
     audioBox2.load(loadStream, context);
 
-    QCOMPARE(audioBox2.audio(), tempInfo.absoluteFilePath());
+    QCOMPARE(audioBox2.param<QString>(ParamId::AudioFile), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testLoadResolvesForeignPathViaBareFilenameFallback()
@@ -306,7 +306,7 @@ void TestAudioBox::testLoadResolvesForeignPathViaBareFilenameFallback()
     const QFileInfo tempInfo(tempFile.fileName());
 
     Element audioBox1{ElementType::AudioBox};
-    audioBox1.setAudio(tempInfo.absoluteFilePath());
+    audioBox1.setParam(ParamId::AudioFile, tempInfo.absoluteFilePath());
 
     QByteArray data;
     QDataStream saveStream(&data, QIODevice::WriteOnly);
@@ -336,7 +336,7 @@ void TestAudioBox::testLoadResolvesForeignPathViaBareFilenameFallback()
     SerializationContext context = {portMap, FormatRev::current, SerializationPurpose::PortableFile, tempInfo.absolutePath()};
     audioBox2.load(loadStream, context);
 
-    QCOMPARE(audioBox2.audio(), tempInfo.absoluteFilePath());
+    QCOMPARE(audioBox2.param<QString>(ParamId::AudioFile), tempInfo.absoluteFilePath());
 }
 
 void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
@@ -351,10 +351,10 @@ void TestAudioBox::testSaveStoresFilenameOnlyInProjectDir()
     const QFileInfo tempInfo(tempFile.fileName());
 
     Element audioBox{ElementType::AudioBox};
-    audioBox.setAudio(tempInfo.absoluteFilePath());
+    audioBox.setParam(ParamId::AudioFile, tempInfo.absoluteFilePath());
 
     // Verify internal state stores the full resolved path
-    QCOMPARE(audioBox.audio(), tempInfo.absoluteFilePath());
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), tempInfo.absoluteFilePath());
 
     // Save and read back the serialized audio path
     QByteArray data;
@@ -404,7 +404,7 @@ void TestAudioBox::testUpdateCommandUndoRedoPreservesFullAudioPath()
         audioBox->save(stream, {.purpose = SerializationPurpose::InMemorySnapshot});
     }
 
-    audioBox->setAudio(audioPath);
+    audioBox->setParam(ParamId::AudioFile, audioPath);
     QCOMPARE(audioBox->externalFiles(), QStringList{audioPath});
 
     workspace.scene()->undoStack()->push(new UpdateCommand({audioBox}, oldData, workspace.scene()));
@@ -427,7 +427,7 @@ void TestAudioBox::testLoadBeforeAudioExisted()
     AudioElementTestHelpers::testLoadBeforeAudioExisted(audioBox);
 
     // load() must have returned before touching anything AudioBox-specific.
-    QCOMPARE(audioBox.audio(), QString(":/Components/Output/Audio/wiredpanda.wav"));
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), QString(":/Components/Output/Audio/wiredpanda.wav"));
 }
 
 void TestAudioBox::testLoadOldFormatBareAudioPath()
@@ -466,5 +466,5 @@ void TestAudioBox::testLoadOldFormatBareAudioPath()
     audioBox.load(readStream, context);
 
     QCOMPARE(readStream.status(), QDataStream::Ok);
-    QCOMPARE(audioBox.audio(), absolutePath);
+    QCOMPARE(audioBox.param<QString>(ParamId::AudioFile), absolutePath);
 }
