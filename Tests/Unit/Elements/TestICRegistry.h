@@ -77,4 +77,5 @@ private slots:
     void testReloadAndUndoWhileTheSimulationRuns();
     void testFileInAnotherDirectoryReloads();
     void testNestedFileChangeReachesTheOuterInstance();
+    void testUndoOfANestedFilesReloadRestoresIt();
 };

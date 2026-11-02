@@ -1638,11 +1638,59 @@ void TestICRegistry::testNestedFileChangeReachesTheOuterInstance()
     // second input is cut when the inner IC reloads. Shown through the outer IC's own pins once it reloads.
     QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
     rewriteLater(leafPath, [&] { saveSwitchesToLeds(leafPath, 1); });
-    QEXPECT_FAIL("", "a nested IC file's change is not reported: the registry watches each instance's own file only", Continue);
     QVERIFY(definitionChangedSpy.wait());
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QVERIFY(scene->undoStack()->canUndo());
 }
 
 // ─── Undo probes: the redo of an embed ───
+
+void TestICRegistry::testUndoOfANestedFilesReloadRestoresIt()
+{
+    // The reload of a nested file reaches the outer instance, and its undo returns the inner IC to the definition it had:
+    // the outer instance's own file did not change, so its snapshot must not skip the carried files it reads
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("leaf_undo.panda");
+    saveSwitchesToLeds(leafPath, 2);
+
+    WorkSpace nester;
+    nester.scene()->setContextDir(dir.path());
+    CircuitBuilder nesterBuilder(nester.scene());
+    IC *nested = addFileIC(nesterBuilder, leafPath, dir.path());
+    auto *outerSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *outerLed = ElementFactory::buildElement(ElementType::Led);
+    nesterBuilder.add(outerSwitch, outerLed);
+    nesterBuilder.connect(outerSwitch, 0, nested, 1);
+    nesterBuilder.connect(nested, 1, outerLed, 0);
+    const QString outerPath = dir.filePath("outer_undo.panda");
+    QCOMPARE(nester.save(outerPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *outer = addFileIC(builder, outerPath, dir.path());
+    const auto innerOf = [](const IC *ic) {
+        for (auto *elm : ic->internalElements()) {
+            if (elm->elementType() == ElementType::IC) {
+                return static_cast<IC *>(elm);
+            }
+        }
+        return static_cast<IC *>(nullptr);
+    };
+    QVERIFY(innerOf(outer));
+    QCOMPARE(innerOf(outer)->inputSize(), 2);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    rewriteLater(leafPath, [&] { saveSwitchesToLeds(leafPath, 1); });
+    QVERIFY(definitionChangedSpy.wait());
+    QCOMPARE(innerOf(outer)->inputSize(), 1);
+
+    scene->undoStack()->undo();
+    QVERIFY(innerOf(outer));
+    QCOMPARE(innerOf(outer)->inputSize(), 2);
+}
 
 void TestICRegistry::testEmbeddedICRedoRestoresTheBlobAndTheInstance()
 {

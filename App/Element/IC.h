@@ -68,6 +68,9 @@ public:
 
     /// Returns the definition this file-backed IC holds, as its file was last read, or nothing when it holds none.
     QByteArray definitionFileBytes() const;
+
+    /// Returns the files this IC's circuit nests, as it read them, other than its own file (absolute paths).
+    QStringList nestedFiles() const;
     /// Lets this IC, a copy a snapshot is read into before \a live is (CommandUtils::readCopies()), keep the circuit
     /// \a live built instead of building it again from the same bytes: they load, and the copy is thrown away.
     void adoptLoadedCircuit(const IC &live);

@@ -221,7 +221,7 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Element/ElementSerializer.cpp:858` | `ElementSerializer::loadPixmapAppearanceName()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/GraphicElements/AudioBox.cpp:78` | The audio box's `reportFailedFiles` (its descriptor's, run by `Element::reportFailedFiles()`): a sound that is gone or unreadable, reported when a file opens (EB.3 made `setAudio()` fall back, where this site was, at line 81); a restore, and an IC's circuit read inside one, never reach it (EB.14) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6) |
 | `App/Element/GraphicElements/Demux.cpp:76` | The Demux's `checkLoad` (its descriptor's), run by `Element::loadState()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
-| `App/Element/IC.cpp:187` | `IC::loadState()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
+| `App/Element/IC.cpp:198` | `IC::loadState()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:157` | `ICLoader::loadFile()`: an IC's file that is gone or does not read: a snapshot restore reaches it (EB.4) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:237` | `ICLoader::loadFileDirectly()`: an IC's file that is gone or does not read: a snapshot restore reaches it (EB.4) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/Element/ICLoader.cpp:248` | `ICLoader::loadFileDirectly()`: an IC's file that is gone or does not read: a snapshot restore reaches it (EB.4) | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
@@ -263,12 +263,12 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/IO/Serialization.cpp:800` | `Serialization::readPreamble()`: a stream that does not read: a file, the clipboard, a drag, an IC's file; from UNDO and BUILD, the snapshot is the application's own | BUILD, CHILD, DROP, MCP, OPEN-Q, PALETTE, PASTE, UI, UNDO | E; I from UNDO and BUILD | Q: BUILD (EB.5); CHILD (EB.6); DROP (EB.8); OPEN-Q (EB.6); PALETTE (EB.6); PASTE (EB.6); UI (EB.6); UNDO (EB.5) |
 | `App/IO/Serialization.cpp:887` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/IO/Serialization.cpp:906` | `Serialization::copyPandaFile()`: a file that cannot be copied | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
-| `App/Scene/ICRegistry.cpp:163` | `ICRegistry::reloadFile()`: rethrow (catch at `:160`) | boundaries only | — | B: stays |
-| `App/Scene/ICRegistry.cpp:362` | `ICRegistry::embedICsByFile()`: rethrow (catch at `:360`) | boundaries only | — | B: stays |
-| `App/Scene/ICRegistry.cpp:382` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
-| `App/Scene/ICRegistry.cpp:389` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
-| `App/Scene/ICRegistry.cpp:446` | `ICRegistry::reloadTargetsAtomically()`: rethrow (catch at `:444`) | boundaries only | — | B: stays |
-| `App/Scene/ICRegistry.cpp:454` | `ICRegistry::makeBlobSelfContained()`: a sub-circuit that does not read | MCP, OPEN-Q, PASTE, UNDO | E | Q: OPEN-Q (EB.6); PASTE (EB.6); UNDO (EB.5) |
+| `App/Scene/ICRegistry.cpp:186` | `ICRegistry::reloadFile()`: rethrow (catch at `:160`) | boundaries only | — | B: stays |
+| `App/Scene/ICRegistry.cpp:392` | `ICRegistry::embedICsByFile()`: rethrow (catch at `:360`) | boundaries only | — | B: stays |
+| `App/Scene/ICRegistry.cpp:412` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
+| `App/Scene/ICRegistry.cpp:419` | `ICRegistry::extractToFile()`: a file that cannot be written | boundaries only | E | B: stays |
+| `App/Scene/ICRegistry.cpp:476` | `ICRegistry::reloadTargetsAtomically()`: rethrow (catch at `:444`) | boundaries only | — | B: stays |
+| `App/Scene/ICRegistry.cpp:484` | `ICRegistry::makeBlobSelfContained()`: a sub-circuit that does not read | MCP, OPEN-Q, PASTE, UNDO | E | Q: OPEN-Q (EB.6); PASTE (EB.6); UNDO (EB.5) |
 | `App/Scene/Workspace.cpp:319` | `WorkSpace::save()`: a file that cannot be written, or a sub-circuit that does not read to embed | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/Scene/Workspace.cpp:427` | `WorkSpace::save()`: a file that cannot be written, or a sub-circuit that does not read to embed | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
 | `App/Scene/Workspace.cpp:403` | `WorkSpace::save()`: a file that cannot be written, or a sub-circuit that does not read to embed | MCP, OPEN-Q | E | Q: OPEN-Q (EB.6) |
@@ -340,9 +340,9 @@ trip only reloads nodes), which each fix narrows by reading.
 | `App/Scene/Commands.cpp:1487` | `ChangePortSizeCommand::undo()` | A snapshot that does not read: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
 | `App/Scene/Commands.cpp:1776` | `UpdateBlobCommand::redo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
 | `App/Scene/Commands.cpp:1798` | `UpdateBlobCommand::undo()` | A snapshot that does not read, the registry's blob put back: the command drops itself, the scene unchanged, and the scene keeps the exception (`CommandUtils::drop()`) | Stays: EB.5 |
-| `App/Scene/ICRegistry.cpp:160` | `ICRegistry::reloadFile()` | A reload that fails: the scene marked for update, `definitionChanged` emitted, rethrown (`:163`) | Stays: rethrows to its `guardedSlot()` (WATCH) |
-| `App/Scene/ICRegistry.cpp:360` | `ICRegistry::embedICsByFile()` | A reload that fails: the new blob removed, rethrown (`:362`) | Stays: rethrows to the IC controller's guarded slots |
-| `App/Scene/ICRegistry.cpp:444` | `ICRegistry::reloadTargetsAtomically()` | A target that does not reload: the updated ones rolled back, rethrown (`:446`) | Stays: rolls back for its callers, `:160`, `:360` and the extraction |
+| `App/Scene/ICRegistry.cpp:183` | `ICRegistry::reloadFile()` | A reload that fails: the scene marked for update, `definitionChanged` emitted, rethrown (`:163`) | Stays: rethrows to its `guardedSlot()` (WATCH) |
+| `App/Scene/ICRegistry.cpp:390` | `ICRegistry::embedICsByFile()` | A reload that fails: the new blob removed, rethrown (`:362`) | Stays: rethrows to the IC controller's guarded slots |
+| `App/Scene/ICRegistry.cpp:474` | `ICRegistry::reloadTargetsAtomically()` | A target that does not reload: the updated ones rolled back, rethrown (`:446`) | Stays: rolls back for its callers, `:160`, `:360` and the extraction |
 | `App/Scene/Workspace.cpp:805` | `WorkSpace::autosaveOnTimer()` | An autosave that fails: reported the first time of a run, inside `guardedSlot()` (`:809`), logged after (EB.7) | Stays |
 | `App/Scene/Workspace.cpp:921` | `WorkSpace::saveChildICBlob()` | A target that does not reload: rolled back, the blob put back, rethrown (`:922`) | Stays: since EB.6 the child tab's `WorkSpace::save()` calls it directly (`:326`), its callers guarded, instead of through `icBlobSaved` |
 | `App/UI/ICController.cpp:67` | `ICController::runAsOneStep()` | A throw part way through the edits: those applied pushed as one step, rethrown (`:70`) | Stays: rethrows to the IC controller's guarded slots |
@@ -391,9 +391,9 @@ It does not cover a command the body pushes, directly or through the scene: that
 | `App/Scene/ICRegistry.cpp:106` | `ICRegistry::onFileChanged()` | Stays |
 | `App/Scene/Scene.cpp:100` | `Scene::Scene()`: the Undo action's lambda (EB.5) | Stays |
 | `App/Scene/Scene.cpp:110` | `Scene::Scene()`: the Redo action's lambda (EB.5) | Stays |
-| `App/Scene/Scene.cpp:692` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
-| `App/Scene/Scene.cpp:1082` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
-| `App/Scene/Scene.cpp:1527` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
+| `App/Scene/Scene.cpp:695` | `Scene::receiveCommand()`: every push of the interface (EB.13) | Stays |
+| `App/Scene/Scene.cpp:1085` | `Scene::contextMenu()`: the canvas menu's Paste (EB.6) | Stays |
+| `App/Scene/Scene.cpp:1530` | `Scene::dropEvent()`: the drop's handlers (EB.8) | Stays |
 | `App/Scene/Workspace.cpp:811` | `WorkSpace::autosaveOnTimer()`: the first failure of a run (EB.7) | Stays |
 | `App/Simulation/Simulation.cpp:42` | `Simulation::Simulation()` | Stays |
 | `App/UI/ExportController.cpp:114` | `ExportController::exportArduinoDialog()` | Stays |

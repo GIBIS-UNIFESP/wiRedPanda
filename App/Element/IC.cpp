@@ -108,6 +108,17 @@ QByteArray IC::definitionFileBytes() const
     return m_filesRead.value(m_file);
 }
 
+QStringList IC::nestedFiles() const
+{
+    QStringList files;
+    for (auto it = m_filesRead.cbegin(); it != m_filesRead.cend(); ++it) {
+        if (it.key() != m_file) {
+            files.append(it.key());
+        }
+    }
+    return files;
+}
+
 void IC::loadFileCopy(const QString &fileName, const QByteArray &bytes, const QString &contextDir)
 {
     // A definition replaces the ports and the body, and names the file: one change, also when the load throws.
@@ -236,9 +247,15 @@ void IC::loadState(QDataStream &stream, SerializationContext &context)
                 // bogus non-path string. A file whose bytes are those this IC built keeps its circuit, as a blob
                 // does above: a label edit's undo builds nothing again
                 const auto file = ICLoader::fileBytes(*this, name, context.contextDir);
+                // Every file the snapshot carries must be the one this IC read: a nested file's change is a change too
+                bool carriedUnchanged = true;
+                for (auto it = carried.cbegin(); it != carried.cend(); ++it) {
+                    carriedUnchanged = carriedUnchanged && (m_filesRead.value(it.key()) == it.value());
+                }
                 const bool fileUnchanged = file && (m_loaded || m_circuitAdopted) && !m_file.isEmpty()
                                          && (QFileInfo(m_file) == QFileInfo(file->first))
-                                         && (m_filesRead.value(file->first) == file->second);
+                                         && (m_filesRead.value(file->first) == file->second)
+                                         && carriedUnchanged;
                 if (!fileUnchanged) {
                     loadFile(name, context.contextDir);
                 }

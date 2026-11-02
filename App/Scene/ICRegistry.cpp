@@ -118,8 +118,31 @@ void ICRegistry::onFileChanged(const QString &filePath)
             }
         }
 
-        reloadFile(filePath);
+        // The instances of the file reload, and so do the instances of the files that nest it
+        const QStringList nesting = filesNesting(filePath);
+        if (!findICsByFile(filePath).isEmpty() || nesting.isEmpty()) {
+            reloadFile(filePath);
+        }
+        for (const auto &file : nesting) {
+            reloadFile(file);
+        }
     });
+}
+
+QStringList ICRegistry::filesNesting(const QString &filePath) const
+{
+    QStringList files;
+    for (auto *elm : m_scene->elements()) {
+        if (elm->elementType() != ElementType::IC) {
+            continue;
+        }
+        const auto *ic = static_cast<IC *>(elm);
+        if (!ic->file().isEmpty() && ic->file() != filePath && ic->nestedFiles().contains(filePath)
+            && !files.contains(ic->file())) {
+            files.append(ic->file());
+        }
+    }
+    return files;
 }
 
 void ICRegistry::reloadFile(const QString &filePath)
@@ -166,6 +189,13 @@ void ICRegistry::reloadFile(const QString &filePath)
 
     auto *cmd = new UpdateBlobCommand(targets, oldData, connections, m_scene);
     m_scene->receiveCommand(cmd);
+
+    // The reload read the files the instances now nest; a change to one of those reloads them too
+    for (auto *elm : targets) {
+        for (const auto &nested : static_cast<IC *>(elm)->nestedFiles()) {
+            watchFile(nested);
+        }
+    }
 
     emit definitionChanged(filePath);
 }

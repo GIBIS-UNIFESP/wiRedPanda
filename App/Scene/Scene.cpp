@@ -161,6 +161,9 @@ void Scene::addItem(QGraphicsItem *item)
         }
         if (auto *ic = qobject_cast<IC *>(elm); ic && !ic->file().isEmpty()) {
             m_icRegistry.watchFile(ic->file());
+            for (const auto &nested : ic->nestedFiles()) {
+                m_icRegistry.watchFile(nested);
+            }
         }
         // An audio element that comes back playing, as a deletion undone does, plays again, muted with the scene
         AudioService::instance().sync(*elm);

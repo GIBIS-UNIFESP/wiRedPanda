@@ -129,6 +129,9 @@ private:
     /// Reloads every IC instance of \a filePath from the file, after the file changed on disk; the undo of the reload
     /// returns the instances to their definitions before it.
     void reloadFile(const QString &filePath);
+
+    /// Returns the files of the scene's IC instances whose circuits nest \a filePath, other than \a filePath itself.
+    QStringList filesNesting(const QString &filePath) const;
     /// Maximum recursion depth for makeBlobSelfContained()'s dependency walk. Cycle detection via
     /// its \c visited set alone doesn't bound a long, non-cyclic chain of distinct legitimate
     /// files (A embeds B embeds C embeds ..., no repeats) — mirrors ICLoader's
