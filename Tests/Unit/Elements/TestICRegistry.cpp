@@ -117,11 +117,24 @@ void saveSwitchesToLeds(const QString &path, const int count)
     QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
 }
 
-// Rewrites \a path as saveSwitchesToLeds() does, in one write, as an editor's save is one write: a second change
-// (a modification time set after it) would be a second watcher report and a second undo step.
-void rewriteSwitchesToLeds(const QString &path, const int count)
+// Runs \a write, which rewrites \a path, then gives the file a modification time two seconds after its own before the
+// rewrite. Qt's Windows watcher compares a file's owner, group, permissions and modification time, never its size, so a
+// rewrite that keeps the time is no change there.
+template <typename Write>
+void rewriteLater(const QString &path, Write write)
 {
-    saveSwitchesToLeds(path, count);
+    const QDateTime before = QFileInfo(path).lastModified();
+    write();
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadWrite));
+    QVERIFY(file.setFileTime(before.addSecs(2), QFileDevice::FileModificationTime));
+}
+
+// Reports \a path to \a registry as the file watcher's fileChanged() does, on this thread: any reload has run when this
+// returns, so a check reads the state the report left, with no wait.
+void reportChanged(ICRegistry *registry, const QString &path)
+{
+    QVERIFY(QMetaObject::invokeMethod(registry, "onFileChanged", Qt::DirectConnection, Q_ARG(QString, path)));
 }
 } // namespace
 
@@ -157,14 +170,7 @@ void TestICRegistry::testICFileWatcher()
     // takes the "no targets" path and emits definitionChanged() synchronously after
     // invalidating, which QSignalSpy::wait() below robustly waits for.
     QSignalSpy definitionChangedSpy(registry, &ICRegistry::definitionChanged);
-    const QDateTime firstWrite = QFileInfo(path).lastModified();
-    writeChainedPandaFile(path, QStringLiteral("second_dep"));
-    // Qt's Windows watcher compares the modification time, never the size, so a rewrite within one tick of the first
-    // write would be no change there; the rewrite is given a later time.
-    QFile rewritten(path);
-    QVERIFY(rewritten.open(QIODevice::ReadWrite));
-    QVERIFY(rewritten.setFileTime(firstWrite.addSecs(2), QFileDevice::FileModificationTime));
-    rewritten.close();
+    rewriteLater(path, [&] { writeChainedPandaFile(path, QStringLiteral("second_dep")); });
     QVERIFY(definitionChangedSpy.wait());
 
     QVERIFY(file.open(QIODevice::ReadOnly));
@@ -265,8 +271,7 @@ void TestICRegistry::testOnFileChangedRewatchesAndEmitsWhenNoTargets()
     // Never call watchFile() -- the path is exists-on-disk but not in the watcher's file list,
     // which is exactly the "some OS removed the watch after a change event" re-add condition.
     QSignalSpy definitionChangedSpy(registry, &ICRegistry::definitionChanged);
-    QVERIFY(QMetaObject::invokeMethod(registry, "onFileChanged",
-                                      Qt::DirectConnection, Q_ARG(QString, path)));
+    reportChanged(registry, path);
 
     // No IC on the scene references this file, so onFileChanged() must emit immediately
     // without pushing an undo command.
@@ -581,12 +586,6 @@ void TestICRegistry::testRenameBlobSkipsSiblingBlobPredatingMetadata()
 }
 
 namespace {
-// Lets the file watcher's reports and the queued reloads they cause run, so a check reads the settled state.
-void settle()
-{
-    QTest::qWait(1500);
-}
-
 // Builds a file-backed IC of \a path in \a scene and returns it, added to the scene.
 IC *addFileIC(CircuitBuilder &builder, const QString &path, const QString &contextDir)
 {
@@ -610,8 +609,8 @@ void TestICRegistry::testIdenticalRewriteAddsNoUndoStep()
     CircuitBuilder builder(scene);
     IC *ic = addFileIC(builder, path, dir.path());
 
-    rewriteSwitchesToLeds(path, 2); // the same bytes again
-    settle();
+    saveSwitchesToLeds(path, 2); // the same bytes again
+    reportChanged(scene->icRegistry(), path);
     QCOMPARE(scene->undoStack()->count(), 0);
     QCOMPARE(ic->inputSize(), 2);
 }
@@ -633,7 +632,7 @@ void TestICRegistry::testTouchOnlyAddsNoUndoStep()
     QVERIFY(file.open(QIODevice::ReadWrite));
     QVERIFY(file.setFileTime(QFileInfo(path).lastModified().addSecs(2), QFileDevice::FileModificationTime));
     file.close();
-    settle();
+    reportChanged(scene->icRegistry(), path);
     QCOMPARE(scene->undoStack()->count(), 0);
     QCOMPARE(ic->inputSize(), 2);
 }
@@ -652,8 +651,13 @@ void TestICRegistry::testRenameOverReloadsInstance()
     CircuitBuilder builder(scene);
     IC *ic = addFileIC(builder, path, dir.path());
 
-    const QString temporary = dir.filePath("renamed.tmp");
+    // The saved file carries a time two seconds after the original's, as a later save does: the watcher compares times.
+    const QString temporary = dir.filePath("renamed-saving.panda");
     saveSwitchesToLeds(temporary, 1);
+    QFile saved(temporary);
+    QVERIFY(saved.open(QIODevice::ReadWrite));
+    QVERIFY(saved.setFileTime(QFileInfo(path).lastModified().addSecs(2), QFileDevice::FileModificationTime));
+    saved.close();
     QVERIFY(QFile::remove(path));
     QVERIFY(QFile::rename(temporary, path));
     QVERIFY2(TestUtils::waitFor([&] { return ic->inputSize() == 1; }),
@@ -679,7 +683,6 @@ void TestICRegistry::testDeletedFileKeepsInstanceAndStack()
     QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
     QVERIFY(QFile::remove(path));
     QVERIFY(definitionChangedSpy.wait());
-    settle();
     QCOMPARE(ic->inputSize(), 2);
     QCOMPARE(scene->undoStack()->count(), 0);
 
