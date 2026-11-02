@@ -34,7 +34,7 @@ jobs:
     # and qt_add_translations silently no-ops — leaving the WASM build with
     # no embedded translations and an English-only language menu.
     - name: Setup Qt (host, for LinguistTools)
-      uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
+      uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
       with:
         version: 6.9.3
         host: linux
@@ -48,7 +48,7 @@ jobs:
         aqtversion: ==3.*
 
     - name: Setup Qt for WASM
-      uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
+      uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
       with:
         version: 6.9.3
         host: all_os
