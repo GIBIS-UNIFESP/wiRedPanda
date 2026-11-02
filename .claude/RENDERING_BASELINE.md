@@ -44,8 +44,10 @@ A relwithdebinfo build.
 
 - Within 0.4% of the ceiling but `combinational_1000` zoomed to fit, 1.2% more.
 
-## Plan 3 (in progress)
+## Plan 3
 
-- Taken mid-plan, at the user's audit fixes (P3.9j, P3.12b): zoomed to fit, 2.2% less on `clocked_2000`, 7.0% less on
-  `combinational_1000` and 0.7% less on `ic_heavy` than plan 2c; at 1:1, 2.2% less on `combinational_1000`. The row at
-  plan 3's end replaces it.
+- Zoomed to fit, 2.2% less on `clocked_2000`, 5.9% less on `combinational_1000` and 0.6% less on `ic_heavy` than plan
+  2c; at 1:1, 2.2% less on `combinational_1000`, the others within 0.1%.
+- Within 0.05% of the count taken mid-plan (`2c33767a1`, the audit fixes P3.9j and P3.12b), but `combinational_1000`
+  zoomed to fit, 1.25% more: all of it in glibc's allocator (`_int_malloc`, `unlink_chunk`), no drawing or element
+  function differing above callgrind_annotate's threshold.
