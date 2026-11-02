@@ -82,6 +82,10 @@ public:
     /// labels show it when the pointer rests on the port (Scene::helpEvent()), so the port has no tooltip.
     QString name() const;
 
+    /// Returns the name as a function, evaluated each time it is called: a copy of the port keeps a derived name derived,
+    /// so the pin that copies it shows the current language.
+    std::function<QString()> nameFunction() const;
+
     /// Returns the label in the source language, which generated code names its signals from whatever the interface
     /// language is: the name source's own while the name is derived, otherwise the name itself unless setName() was
     /// given another.

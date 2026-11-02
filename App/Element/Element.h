@@ -531,10 +531,6 @@ public:
 
     // --- Virtual Methods ---
 
-    /// Returns what the element is set to, for the name of an IC's port it is the boundary of: the descriptor's (an
-    /// LED's colour), or nothing; a clock's override gives its frequency.
-    virtual QString genericProperties();
-
     /// Brings what the element shows of its inputs up to them: an LED's slot, a display's segments (the descriptor's
     /// slotFollowsInputs and pictureFollowsInputs).
     virtual void refresh();

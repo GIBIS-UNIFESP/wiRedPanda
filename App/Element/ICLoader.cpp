@@ -60,35 +60,51 @@ void sortPorts(QVector<Port *> &ports)
     std::stable_sort(ports.begin(), ports.end(), comparePorts);
 }
 
-// Builds each pin's label, and the same label in the source language from the ports' source names.
-void buildPortLabels(const QVector<Port *> &ports, QVector<QString> &labels, QVector<QString> &sourceLabels)
+// A boundary element's label, or its type's name where it has none: the name its pins go by, and its proxy node's label
+QString boundaryLabel(const Element *elm)
 {
-    for (int i = 0; i < ports.size(); ++i) {
-        auto *port = ports.at(i);
-        auto *elm = port->element();
-        if (!elm) {
-            continue; // LCOV_EXCL_LINE — same invariant as comparePorts() above: every port has a non-null owner from construction onward.
-        }
-        QString lb = elm->label();
-        QString sourceLb = lb;
+    return elm->label().isEmpty() ? ElementFactory::typeToText(elm->elementType()) : elm->label();
+}
 
-        if (!port->name().isEmpty()) {
-            lb += " " + port->name();
-        }
-        if (!port->sourceName().isEmpty()) {
-            sourceLb += " " + port->sourceName();
-        }
+// The source name a boundary element's pin is saved under: the label, then the port's source name when the element stands
+// for more than one pin, as loadBoundaryElement() names the proxy's port
+QString boundarySourceName(Port *port)
+{
+    const Element *elm = port->element();
+    const int pins = port->isOutput() ? elm->outputSize() : elm->inputSize();
+    const QString sourcePortName = port->sourceName();
+    return pins > 1 && !sourcePortName.isEmpty() ? boundaryLabel(elm) + " " + sourcePortName : boundaryLabel(elm);
+}
 
-        // Append generic properties (e.g. clock frequency) in brackets so the IC pin tooltip
-        // carries enough context for the user to identify the signal without opening the sub-circuit
-        if (!elm->genericProperties().isEmpty()) {
-            lb += " [" + elm->genericProperties() + "]";
-            sourceLb += " [" + elm->genericProperties() + "]";
-        }
-
-        labels[i] = lb;
-        sourceLabels[i] = sourceLb;
+// A pin's name is its boundary element's label, then the port's name when the element stands for more than one pin. The
+// name is a function, evaluated when asked, so a port named by its translated text (a display's segment) shows the
+// current language; the source name is the one generated code names its signals from.
+PinName pinNameOf(Port *port)
+{
+    auto *elm = port->element();
+    if (!elm) {
+        return {}; // LCOV_EXCL_LINE — same invariant as comparePorts() above: every port has a non-null owner from construction onward.
     }
+    const QString label = boundaryLabel(elm);
+    const auto portName = port->nameFunction();
+    const QString sourcePortName = port->sourceName();
+    return PinName{
+        [label, portName] {
+            const QString own = portName();
+            return own.isEmpty() ? label : label + " " + own;
+        },
+        sourcePortName.isEmpty() ? label : label + " " + sourcePortName,
+    };
+}
+
+QVector<PinName> pinNamesOf(const QVector<Port *> &ports)
+{
+    QVector<PinName> names;
+    names.reserve(ports.size());
+    for (auto *port : ports) {
+        names.append(pinNameOf(port));
+    }
+    return names;
 }
 
 // Maximum nesting depth for IC-within-IC blob loading.
@@ -376,14 +392,8 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     sortPorts(ic.m_internalInputs);
     sortPorts(ic.m_internalOutputs);
 
-    QVector<QString> inputLabels(ic.m_internalInputs.size());
-    QVector<QString> outputLabels(ic.m_internalOutputs.size());
-    QVector<QString> inputSourceLabels(ic.m_internalInputs.size());
-    QVector<QString> outputSourceLabels(ic.m_internalOutputs.size());
-    buildPortLabels(ic.m_internalInputs, inputLabels, inputSourceLabels);
-    buildPortLabels(ic.m_internalOutputs, outputLabels, outputSourceLabels);
-    loadBoundaryPorts(ic, true, inputLabels, inputSourceLabels);
-    loadBoundaryPorts(ic, false, outputLabels, outputSourceLabels);
+    loadBoundaryPorts(ic, true, pinNamesOf(ic.m_internalInputs));
+    loadBoundaryPorts(ic, false, pinNamesOf(ic.m_internalOutputs));
 
     // --- Update visual representation ---
     // The body is the footprint the ports give, and turns about its centre; the label goes below it
@@ -586,15 +596,13 @@ void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
     for (int p = 0; p < portCount; ++p) {
         auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
         nodeElm->setPos(elm->pos());
-        nodeElm->setLabel(elm->label().isEmpty()
-                              ? ElementFactory::typeToText(elm->elementType())
-                              : elm->label());
+        nodeElm->setLabel(boundaryLabel(elm));
 
         if (isInput) {
             auto *srcPort = elm->outputPort(p);
             auto *nodeInput = nodeElm->inputPort();
-            if (portCount > 1) {
-                nodeInput->setName(srcPort->name(), srcPort->sourceName());
+            if (portCount > 1 && !srcPort->sourceName().isEmpty()) {
+                nodeInput->setNameSource(srcPort->nameFunction(), srcPort->sourceName());
             }
             nodeElm->setParam(ParamId::Wired, elm->elementType() == ElementType::Clock);
             nodeInput->setDefaultStatus(srcPort->status());
@@ -609,8 +617,8 @@ void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
         } else {
             auto *srcPort = elm->inputPort(p);
             auto *nodeOutput = nodeElm->outputPort();
-            if (portCount > 1) {
-                nodeOutput->setName(srcPort->name(), srcPort->sourceName());
+            if (portCount > 1 && !srcPort->sourceName().isEmpty()) {
+                nodeOutput->setNameSource(srcPort->nameFunction(), srcPort->sourceName());
             }
             ic.m_internalOutputs.append(nodeOutput);
 
@@ -642,7 +650,7 @@ void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
     delete elm;
 }
 
-void ICLoader::loadBoundaryPorts(IC &ic, const bool isInput, const QVector<QString> &labels, const QVector<QString> &sourceLabels)
+void ICLoader::loadBoundaryPorts(IC &ic, const bool isInput, const QVector<PinName> &names)
 {
     const auto &internalPorts = isInput ? ic.m_internalInputs : ic.m_internalOutputs;
     const int count = static_cast<int>(internalPorts.size());
@@ -662,14 +670,14 @@ void ICLoader::loadBoundaryPorts(IC &ic, const bool isInput, const QVector<QStri
     for (int i = 0; i < count; ++i) {
         if (isInput) {
             auto *port = ic.inputPort(i);
-            port->setName(labels.at(i), sourceLabels.at(i));
+            port->setNameSource(names.at(i).name, names.at(i).sourceName);
             // Mirror required/default-status from the sub-circuit's input elements so that
             // unconnected optional inputs (e.g. enable lines) don't flag the IC as invalid
             port->setRequired(internalPorts.at(i)->isRequired());
             port->setDefaultStatus(internalPorts.at(i)->status());
             port->setStatus(internalPorts.at(i)->status());
         } else {
-            ic.outputPort(i)->setName(labels.at(i), sourceLabels.at(i));
+            ic.outputPort(i)->setNameSource(names.at(i).name, names.at(i).sourceName);
         }
     }
 
@@ -698,16 +706,13 @@ IC::PortMetadata ICLoader::buildPortMetadata(const QVector<Element *> &elements)
     meta.inputCount = static_cast<int>(inputPorts.size());
     meta.outputCount = static_cast<int>(outputPorts.size());
 
-    QVector<QString> inLabels(inputPorts.size());
-    QVector<QString> outLabels(outputPorts.size());
-    // The header names the pins as they are shown; naming them in the source language changes the file format.
-    QVector<QString> inSourceLabels(inputPorts.size());
-    QVector<QString> outSourceLabels(outputPorts.size());
-    buildPortLabels(inputPorts, inLabels, inSourceLabels);
-    buildPortLabels(outputPorts, outLabels, outSourceLabels);
-
-    meta.inputLabels = QStringList(inLabels.begin(), inLabels.end());
-    meta.outputLabels = QStringList(outLabels.begin(), outLabels.end());
+    // The header names the pins in the source language, so a file holds no name in the interface language
+    for (auto *port : inputPorts) {
+        meta.inputLabels.append(boundarySourceName(port));
+    }
+    for (auto *port : outputPorts) {
+        meta.outputLabels.append(boundarySourceName(port));
+    }
 
     return meta;
 }

@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <QByteArray>
+#include <QCoreApplication>
 #include <QDataStream>
 #include <QEnterEvent>
 #include <QFile>
@@ -25,10 +26,12 @@
 #include <QPixmap>
 #include <QPointF>
 #include <QSaveFile>
+#include <QScopeGuard>
 #include <QSignalSpy>
 #include <QString>
 #include <QStyleOptionGraphicsItem>
 #include <QTemporaryDir>
+#include <QTranslator>
 #include <QVariant>
 #include <QVersionNumber>
 
@@ -38,6 +41,7 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICLoader.h"
 #include "App/Element/ICPreviewCache.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Element/ICRenderer.h"
@@ -464,6 +468,182 @@ void TestICUnit::testAPreviewRendersOnlyWhenShown()
     const int beforeReload = ICPreviewCache::renderCount();
     QVERIFY(!ic.preview().isNull());
     QCOMPARE(ICPreviewCache::renderCount() - beforeReload, 0);
+}
+
+namespace {
+
+/// Tags every translated string, as a translation would, so a name shown in the current language reads differently
+/// from its source.
+class TagTranslator : public QTranslator
+{
+public:
+    QString translate(const char *, const char *sourceText, const char * = nullptr, int = -1) const override
+    {
+        return QString::fromUtf8(sourceText) + QStringLiteral("_T");
+    }
+};
+
+/// Saves a circuit of one 7-segment display, whose segments are the IC's pins, as a .panda file at \a path.
+void saveDisplayCircuit(const QString &path)
+{
+    WorkSpace workspace;
+    workspace.scene()->addItem(ElementFactory::buildElement(ElementType::Display7));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+}
+
+} // namespace
+
+void TestICUnit::testPinNameIsDerivedAndShowsTheCurrentLanguage()
+{
+    // A display's segment pins name themselves from its translated text: asked for under a translation, the name is
+    // translated, and its source name is not
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("display_pins.panda");
+    saveDisplayCircuit(path);
+
+    IC ic;
+    ic.loadFile(path, dir.path());
+    QVERIFY(ic.outputSize() > 0);
+    const QString source = ic.outputPort(0)->sourceName();
+    QVERIFY(!source.isEmpty());
+    QVERIFY(!ic.outputPort(0)->name().contains(QStringLiteral("_T")));
+
+    TagTranslator tagger;
+    QCoreApplication::installTranslator(&tagger);
+    QVERIFY2(ic.outputPort(0)->name().contains(QStringLiteral("_T")),
+             "a pin's name asked for under a translation must be translated");
+    QCOMPARE(ic.outputPort(0)->sourceName(), source);
+
+    QCoreApplication::removeTranslator(&tagger);
+    QVERIFY2(!ic.outputPort(0)->name().contains(QStringLiteral("_T")),
+             "a pin's name asked for after the translation is removed must be in the language current then");
+}
+
+void TestICUnit::testSavedHeaderNamesAreThePinsSourceNames()
+{
+    // The header names each pin as the loaded IC does: an unlabelled element by its type, a labelled one by its label, a
+    // pin of a multi-pin element with its port's name, and no name empty or led by a space
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    WorkSpace workspace;
+    CircuitBuilder builder(workspace.scene());
+    auto *clock = ElementFactory::buildElement(ElementType::Clock);
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    sw->setLabel("SW");
+    auto *rotary = ElementFactory::buildElement(ElementType::InputRotary);
+    auto *plainLed = ElementFactory::buildElement(ElementType::Led);
+    auto *namedLed = ElementFactory::buildElement(ElementType::Led);
+    namedLed->setLabel("L");
+    auto *display = ElementFactory::buildElement(ElementType::Display7);
+    clock->setPos(0, 0);
+    sw->setPos(0, 100);
+    rotary->setPos(0, 200);
+    plainLed->setPos(400, 0);
+    namedLed->setPos(400, 100);
+    display->setPos(400, 200);
+    builder.add(clock, sw, rotary, plainLed, namedLed, display);
+
+    const QString path = dir.filePath("header.panda");
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    QFile saved(path);
+    QVERIFY(saved.open(QIODevice::ReadOnly));
+    QByteArray savedBytes = saved.readAll();
+    QDataStream savedStream(&savedBytes, QIODevice::ReadOnly);
+    const QMap<QString, QVariant> metadata = Serialization::readPreamble(savedStream).metadata;
+    const QStringList inputLabels = metadata.value("inputLabels").toStringList();
+    const QStringList outputLabels = metadata.value("outputLabels").toStringList();
+    QVERIFY(inputLabels.contains("Clock"));
+    QVERIFY(inputLabels.contains("SW"));
+    QVERIFY(outputLabels.contains("Led"));
+    QVERIFY(outputLabels.contains("L"));
+
+    IC ic;
+    ic.loadFile(path, dir.path());
+
+    QCOMPARE(ic.inputSize(), inputLabels.size());
+    QCOMPARE(ic.outputSize(), outputLabels.size());
+    for (int i = 0; i < ic.inputSize(); ++i) {
+        const QString name = ic.inputPort(i)->sourceName();
+        QCOMPARE(name, inputLabels.at(i));
+        QVERIFY2(!name.isEmpty() && !name.startsWith(' '), qPrintable(name));
+    }
+    for (int i = 0; i < ic.outputSize(); ++i) {
+        const QString name = ic.outputPort(i)->sourceName();
+        QCOMPARE(name, outputLabels.at(i));
+        QVERIFY2(!name.isEmpty() && !name.startsWith(' '), qPrintable(name));
+    }
+}
+
+void TestICUnit::testSavedHeaderHoldsNoInterfaceLanguage()
+{
+    // A file saved under a translation names its pins in the source language
+    TagTranslator tagger;
+    QCoreApplication::installTranslator(&tagger);
+    const auto removeTagger = qScopeGuard([&tagger] { QCoreApplication::removeTranslator(&tagger); });
+
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("header.panda");
+    saveDisplayCircuit(path);
+
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    QDataStream stream(&file);
+    const auto preamble = Serialization::readPreamble(stream);
+    const QStringList header = preamble.metadata.value(QStringLiteral("outputLabels")).toStringList();
+    QVERIFY(!header.isEmpty());
+    for (const QString &name : header) {
+        QVERIFY2(!name.contains(QStringLiteral("_T")), qPrintable(QStringLiteral("saved pin name %1").arg(name)));
+    }
+}
+
+void TestICUnit::testPinNamesCarryNoGenericProperties()
+{
+    // A clock's frequency and an LED's colour are not part of the pin name
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("clock_led.panda");
+    {
+        WorkSpace workspace;
+        auto *clock = ElementFactory::buildElement(ElementType::Clock);
+        clock->setParam(ParamId::Frequency, 5.0);
+        auto *led = ElementFactory::buildElement(ElementType::Led);
+        led->setParam(ParamId::Colour, QStringLiteral("Red"));
+        workspace.scene()->addItem(clock);
+        workspace.scene()->addItem(led);
+        QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    }
+
+    IC ic;
+    ic.loadFile(path, dir.path());
+    QCOMPARE(ic.inputSize(), 1);
+    QCOMPARE(ic.outputSize(), 1);
+    QCOMPARE(ic.inputPort(0)->name(), QStringLiteral("Clock"));
+    QCOMPARE(ic.outputPort(0)->name(), QStringLiteral("Led"));
+}
+
+void TestICUnit::testEmbeddedICPinNamesAreDerivedToo()
+{
+    // An embedded IC, loaded from its blob, names its pins the same way: under a translation, then after it
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("embedded_display.panda");
+    saveDisplayCircuit(path);
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::ReadOnly));
+    const QByteArray blob = file.readAll();
+
+    IC ic;
+    ICLoader::loadFromBlob(ic, blob, dir.path());
+    QVERIFY(ic.outputSize() > 0);
+    QVERIFY(!ic.outputPort(0)->name().contains(QStringLiteral("_T")));
+
+    TagTranslator tagger;
+    QCoreApplication::installTranslator(&tagger);
+    QVERIFY2(ic.outputPort(0)->name().contains(QStringLiteral("_T")), "an embedded IC's pin must be derived too");
+    QCoreApplication::removeTranslator(&tagger);
+    QVERIFY(!ic.outputPort(0)->name().contains(QStringLiteral("_T")));
 }
 
 void TestICUnit::testLoadGrowsLinearlyInICs()

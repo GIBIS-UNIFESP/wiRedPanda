@@ -26,6 +26,13 @@ class Element;
 class ICDefinition;
 class QGraphicsItem;
 
+/// A pin of an IC: its name, evaluated when asked, and the same name in the source language.
+struct PinName
+{
+    std::function<QString()> name;
+    QString sourceName;
+};
+
 /**
  * \class ICLoader
  * \brief Loads an IC's sub-circuit (from file or embedded blob), migrates old-format
@@ -104,7 +111,6 @@ private:
     /// only deletes still-owned items on throw (no double-free).
     static void processLoadedItems(IC &ic, QList<QGraphicsItem *> &items);
     static void loadBoundaryElement(IC &ic, Element *elm, bool isInput);
-    /// Sizes ic's pins on one side to its boundary ports and names each from \a labels, in the source language from
-    /// \a sourceLabels.
-    static void loadBoundaryPorts(IC &ic, bool isInput, const QVector<QString> &labels, const QVector<QString> &sourceLabels);
+    /// Sizes ic's pins on one side to its boundary ports and names each from \a names.
+    static void loadBoundaryPorts(IC &ic, bool isInput, const QVector<PinName> &names);
 };

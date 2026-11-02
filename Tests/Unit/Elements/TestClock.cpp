@@ -545,24 +545,3 @@ void TestClock::testLoadWithNonNumericDelayFallsBackToZero()
     QCOMPARE(clock2->param<double>(ParamId::Frequency), 10.0); // unaffected sibling field still loads correctly
     QCOMPARE(clock2->param<double>(ParamId::Delay), 0.0);      // falls back to 0.0 rather than keeping stale/garbage state
 }
-
-// ============================================================================
-// Generic Properties Tests
-// ============================================================================
-
-void TestClock::testGenericProperties()
-{
-    Element clock{ElementType::Clock};
-
-    // Generic properties should return frequency in Hz format. genericProperties() is exactly
-    // QString::number(frequency()) + " Hz" -- assert the exact string, not a loose
-    // single-digit substring check that would pass for many wrong formatted values.
-    clock.setParam(ParamId::Frequency, 1.0);
-    QCOMPARE(clock.genericProperties(), QString("1 Hz"));
-
-    clock.setParam(ParamId::Frequency, 5.0);
-    QCOMPARE(clock.genericProperties(), QString("5 Hz"));
-
-    clock.setParam(ParamId::Frequency, 0.5);
-    QCOMPARE(clock.genericProperties(), QString("0.5 Hz"));
-}

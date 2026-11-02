@@ -185,10 +185,6 @@ struct ElementTypeDescriptor {
     /// The states a custom appearance can be chosen for, each its slot and its name (Element::appearanceStates());
     /// none, the one slot, named "Default".
     std::function<QList<std::pair<int, QString>>(const Element &element)> appearanceStates{};
-    /// What the element is set to, for the name of an IC's port it is the boundary of (Element::genericProperties()):
-    /// an LED's colour. None: nothing.
-    std::function<QString(const Element &element)> genericProperties{};
-
     /// Returns each slot's built-in picture, in the slots' order.
     QStringList defaultAppearances() const;
 

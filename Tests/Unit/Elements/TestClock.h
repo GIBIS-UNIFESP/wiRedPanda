@@ -51,5 +51,4 @@ private slots:
     void testLoadWithNonNumericDelayFallsBackToZero();
 
     // Generic properties tests
-    void testGenericProperties();
 };

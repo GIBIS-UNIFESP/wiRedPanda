@@ -701,11 +701,6 @@ void Element::setTrigger(const QKeySequence &trigger)
     updateLabel();
 }
 
-QString Element::genericProperties()
-{
-    return m_descriptor.genericProperties ? m_descriptor.genericProperties(*this) : QString();
-}
-
 void Element::updateLabel()
 {
     QString label = m_labelText;

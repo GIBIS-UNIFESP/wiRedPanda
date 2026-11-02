@@ -178,6 +178,14 @@ QString Port::name() const
     return m_nameSource ? m_nameSource() : m_name;
 }
 
+std::function<QString()> Port::nameFunction() const
+{
+    if (m_nameSource) {
+        return m_nameSource;
+    }
+    return [name = m_name] { return name; };
+}
+
 QString Port::sourceName() const
 {
     return m_sourceName;

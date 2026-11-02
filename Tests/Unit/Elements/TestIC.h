@@ -39,6 +39,11 @@ private slots:
     void testGeneratePreviewPixmapScalesAnExtentBeyondIntRange();
     void testAPreviewShowsTheDefaultForAPictureThatIsGone();
     void testAPreviewRendersOnlyWhenShown();
+    void testPinNameIsDerivedAndShowsTheCurrentLanguage();
+    void testSavedHeaderHoldsNoInterfaceLanguage();
+    void testSavedHeaderNamesAreThePinsSourceNames();
+    void testPinNamesCarryNoGenericProperties();
+    void testEmbeddedICPinNamesAreDerivedToo();
     void testLoadGrowsLinearlyInICs();
 
     // ICPreviewPopup::executeShow() and showForIC()'s remaining branches

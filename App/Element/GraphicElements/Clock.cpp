@@ -80,9 +80,6 @@ struct ElementInfo<ElementType::Clock> {
         descriptor.appearanceStates = [](const Element &) -> QList<std::pair<int, QString>> {
             return {{0, QCoreApplication::translate("Clock", "Low")}, {1, QCoreApplication::translate("Clock", "High")}};
         };
-        descriptor.genericProperties = [](const Element &element) {
-            return QString::number(element.param<double>(ParamId::Frequency)) + " Hz";
-        };
         descriptor.readBeforeMap = [](Element &element, QDataStream &stream, const SerializationContext &context) {
             // From 1.1 to 4.0 the frequency was a bare float, then from 3.1 the lock a bare bool
             if (!VersionInfo::hasClock(context.version)) {

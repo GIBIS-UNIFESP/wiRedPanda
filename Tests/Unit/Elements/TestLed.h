@@ -43,7 +43,6 @@ private slots:
     void testLoadColorDefault();
 
     // Generic properties tests
-    void testGenericProperties();
 
     // Appearance tests
     void testAppearanceStates();

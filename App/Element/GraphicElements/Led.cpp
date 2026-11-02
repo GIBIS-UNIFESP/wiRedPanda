@@ -197,7 +197,6 @@ struct ElementInfo<ElementType::Led> {
         descriptor.shownSlot = shownSlot;
         descriptor.slotFollowsInputs = true;
         descriptor.appearanceStates = appearanceStates;
-        descriptor.genericProperties = [](const Element &element) { return element.param<QString>(ParamId::Colour); };
         return descriptor;
     } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned ElementTypeDescriptor's QString/QStringList members, never reached after the return above.
 

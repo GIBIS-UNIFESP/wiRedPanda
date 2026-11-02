@@ -475,25 +475,6 @@ void TestLED::testLoadColorDefault()
     QCOMPARE(led.param<QString>(ParamId::Colour), QString("Blue"));
 }
 
-// ============================================================================
-// Generic Properties Tests
-// ============================================================================
-
-void TestLED::testGenericProperties()
-{
-    Element led{ElementType::Led};
-
-    // Generic properties should return the color
-    led.setParam(ParamId::Colour, QStringLiteral("Red"));
-    QCOMPARE(led.genericProperties(), QString("Red"));
-
-    led.setParam(ParamId::Colour, QStringLiteral("Green"));
-    QCOMPARE(led.genericProperties(), QString("Green"));
-
-    led.setParam(ParamId::Colour, QStringLiteral("White"));
-    QCOMPARE(led.genericProperties(), QString("White"));
-}
-
 void TestLED::testAppearanceStates()
 {
     // 1-input: Off/On
