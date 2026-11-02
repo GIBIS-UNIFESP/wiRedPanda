@@ -675,7 +675,7 @@ bool UpdateCommand::wirelessStateDiffers(const QVector<WirelessState> &before,
     // else), so a change here re-routes nothing until a full rebuild. A label change on
     // a node whose mode is None on both sides is decorative and keeps the fast path.
     if (before.size() != after.size()) {
-        return true; // LCOV_EXCL_LINE — hasWirelessMode() is purely type-based (Node always true, base class always false) and never reads instance state elm->load() could change; the same fixed elements() list can't change size between the before/after captures, so this can't currently be reached. Defensive: the set of wireless-capable elements itself changed.
+        return true; // LCOV_EXCL_LINE — hasWirelessMode() is purely type-based (Node always true, every other type false) and never reads instance state elm->load() could change; the same fixed elements() list can't change size between the before/after captures, so this can't currently be reached. Defensive: the set of wireless-capable elements itself changed.
     }
     for (int i = 0; i < before.size(); ++i) {
         const auto &b = before.at(i);

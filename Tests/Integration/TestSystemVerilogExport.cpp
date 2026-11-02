@@ -21,7 +21,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
@@ -231,12 +230,12 @@ void TestSystemVerilogExport::testWirelessRxReachedByAWireFollowsItsTx()
     wired->setLabel("Wired");
     auto air = std::make_unique<InputSwitch>();
     air->setLabel("Air");
-    auto txNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
+    auto txNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(txNode);
     txNode->setLabel("CH");
     txNode->setWirelessMode(WirelessMode::Tx);
 
-    auto rxNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
+    auto rxNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(rxNode);
     rxNode->setLabel("CH");
     rxNode->setWirelessMode(WirelessMode::Rx);
@@ -281,12 +280,12 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
     // A Tx and Rx node pair on the same channel. The Rx node's variable should be assigned the InputSwitch signal
     // rather than the default 1'b0, and the LED should read it.
     auto sw = std::make_unique<InputSwitch>();
-    auto txNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
+    auto txNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(txNode);
     txNode->setLabel("CLK");
     txNode->setWirelessMode(WirelessMode::Tx);
 
-    auto rxNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
+    auto rxNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(rxNode);
     rxNode->setLabel("CLK");
     rxNode->setWirelessMode(WirelessMode::Rx);
@@ -358,7 +357,7 @@ void TestSystemVerilogExport::testWirelessNodeGeneration()
 void TestSystemVerilogExport::testWirelessOrphanedRxCodegen()
 {
     // An Rx node with no matching Tx must not crash SystemVerilog code generation.
-    auto rxNode = std::unique_ptr<Node>(qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node)));
+    auto rxNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QVERIFY(rxNode);
     rxNode->setLabel("MISSING_TX");
     rxNode->setWirelessMode(WirelessMode::Rx);

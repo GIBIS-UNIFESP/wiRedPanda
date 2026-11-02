@@ -27,7 +27,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Text.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Presentation/LabelMetrics.h"
@@ -106,7 +105,7 @@ void TestElement::testElementDoubleClick()
 void TestElement::testTextElement()
 {
     WorkSpace workspace;
-    auto *text = new Text;
+    auto *text = ElementFactory::buildElement(ElementType::Text);
     workspace.scene()->addItem(text);
     QCOMPARE(text->elementType(), ElementType::Text);
     QVERIFY(!text->boundingRect().isNull());
@@ -230,7 +229,7 @@ namespace TestElementDetail {
 
 /// Whether \a text's own painting, without its child items (the label), draws below its 64x64 picture, where the
 /// empty-state hint goes.
-bool drawsHint(Text *text)
+bool drawsHint(Element *text)
 {
     QPixmap pixmap(400, 160);
     pixmap.fill(Qt::transparent);
@@ -247,7 +246,7 @@ void TestElement::testTextEmptyStateHintTogglesWithLabelContent()
 {
     using TestElementDetail::drawsHint;
     WorkSpace workspace;
-    auto *text = new Text;
+    auto *text = ElementFactory::buildElement(ElementType::Text);
     workspace.scene()->addItem(text);
 
     // A fresh Text starts empty, so the hint must be drawn immediately.
@@ -267,7 +266,7 @@ void TestElement::testTextEmptyStateHintFollowsALanguageChange()
 {
     // The hint is part of the body, whose width follows the hint's in the current language
     WorkSpace workspace;
-    auto *text = new Text;
+    auto *text = ElementFactory::buildElement(ElementType::Text);
     workspace.scene()->addItem(text);
     const qreal english = text->body().body.width();
 

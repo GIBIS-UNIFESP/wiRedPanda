@@ -19,7 +19,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -839,7 +838,7 @@ void TestSystemVerilogCodeGenUnit::testOutOfOrderNodeUpstreamResolution()
     // reads the Node's variable, and the Node's is assigned its own driver.
     auto sw1 = std::make_unique<InputSwitch>();
     auto sw2 = std::make_unique<InputSwitch>();
-    auto node = std::make_unique<Node>();
+    auto node = std::make_unique<Element>(ElementType::Node);
     auto andGate = std::make_unique<Element>(ElementType::And);
     auto led = std::make_unique<Element>(ElementType::Led);
 
@@ -882,8 +881,8 @@ void TestSystemVerilogCodeGenUnit::testWirelessNodeCycleReadsEachOthersVariable(
     // A combinational cycle must not recurse without end: two Nodes wired directly into each other (no real circuit
     // could be drawn this way through the UI, but nothing at the codegen level guards against a malformed/hand-built
     // graph), each reading the other's variable.
-    auto n1 = std::make_unique<Node>();
-    auto n2 = std::make_unique<Node>();
+    auto n1 = std::make_unique<Element>(ElementType::Node);
+    auto n2 = std::make_unique<Element>(ElementType::Node);
     auto led = std::make_unique<Element>(ElementType::Led);
 
     std::vector<std::unique_ptr<Connection>> conns;

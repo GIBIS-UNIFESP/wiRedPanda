@@ -44,7 +44,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Exercise/ExerciseEngine.h"
 #include "App/Exercise/ExerciseOverlay.h"
@@ -1578,7 +1577,7 @@ void TestMainWindowGui::testChangeDelay()
     ElementEditor editor;
     editor.setScene(workspace.scene());
 
-    auto *node = new Node();
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     workspace.scene()->addItem(node);
     node->setSelected(true);
     QCoreApplication::processEvents();

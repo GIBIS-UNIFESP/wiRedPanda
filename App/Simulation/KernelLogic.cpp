@@ -317,6 +317,25 @@ void truthTable(Element &element)
     }
 }
 
+// The node passes its input on, an Unknown or Error one included; a wireless node keeps the level it carries
+// (ParamId::Carried), which its indicator shows
+
+void node(Element &element)
+{
+    const auto carry = [&element](const Status status) {
+        if (element.wirelessMode() != WirelessMode::None) {
+            element.setParam(ParamId::Carried, static_cast<int>(status));
+        }
+    };
+    if (!element.simUpdateInputsAllowUnknown()) {
+        carry(Status::Unknown);
+        return;
+    }
+    const Status status = element.simInputs().at(0);
+    element.setOutputValue(status);
+    carry(status);
+}
+
 } // namespace KernelLogicDetail
 
 KernelLogic::Logic KernelLogic::of(const KernelKind kind)
@@ -341,9 +360,7 @@ KernelLogic::Logic KernelLogic::of(const KernelKind kind)
     case KernelKind::Demux:      return &KernelLogicDetail::demux;
     case KernelKind::TruthTable: return &KernelLogicDetail::truthTable;
 
-    // Computed by its family's subclass until that goes (P3.23)
-    case KernelKind::Node:
-        return nullptr;
+    case KernelKind::Node: return &KernelLogicDetail::node;
 
     // Not computed by logic: the sources drive their outputs themselves, and an IC is computed by its own subclass
     case KernelKind::None:

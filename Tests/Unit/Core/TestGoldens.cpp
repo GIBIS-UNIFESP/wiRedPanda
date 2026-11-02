@@ -22,7 +22,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/Goldens.h"
@@ -487,7 +486,7 @@ void TestGoldens::testLabelSceneTransform()
 {
     // The label's scene transform moves with its element and turns with a rotating one.
     WorkSpace workspace;
-    auto *node = new Node();
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     workspace.scene()->addItem(node);
     node->setLabel("Label");
     const QTransform before = SnapshotAccess::labelSceneTransform(node);

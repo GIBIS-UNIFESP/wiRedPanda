@@ -30,4 +30,5 @@ struct PortAttributes {
     std::optional<bool> required = std::nullopt;
     std::optional<Status> defaultStatus = std::nullopt;
     std::optional<QPointF> position = std::nullopt; ///< Where the port sits; unset, the port is placed in its column.
+    std::optional<bool> visible = std::nullopt; ///< Whether the port shows (a wireless node hides the one it replaces).
 };

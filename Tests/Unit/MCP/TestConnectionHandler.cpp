@@ -9,6 +9,7 @@
 #include <QTabWidget>
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"

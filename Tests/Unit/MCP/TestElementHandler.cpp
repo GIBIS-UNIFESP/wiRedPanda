@@ -26,7 +26,6 @@
 #include "App/Element/ElementInput.h"
 #include "App/Element/ElementTypeDescriptor.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -722,8 +721,9 @@ void TestElementHandler::testHandleSetElementPropertiesChangesWirelessModeAndSev
     auto *scene = window.currentTab()->scene();
 
     const int nodeId = createElement(handler, "Node");
-    auto *node = dynamic_cast<Node *>(elementById(window, nodeId));
+    auto *node = elementById(window, nodeId);
     QVERIFY(node);
+    QCOMPARE(node->elementType(), ElementType::Node);
 
     const int andId = createElement(handler, "And", 100, 100);
     auto *andGate = elementById(window, andId);
@@ -757,8 +757,9 @@ void TestElementHandler::testHandleSetElementPropertiesRxModeSeversInputConnecti
     auto *scene = window.currentTab()->scene();
 
     const int nodeId = createElement(handler, "Node");
-    auto *node = dynamic_cast<Node *>(elementById(window, nodeId));
+    auto *node = elementById(window, nodeId);
     QVERIFY(node);
+    QCOMPARE(node->elementType(), ElementType::Node);
 
     const int swId = createElement(handler, "InputSwitch", 100, 100);
     auto *sw = elementById(window, swId);
@@ -782,8 +783,9 @@ void TestElementHandler::testHandleSetElementPropertiesAcceptsWirelessModeNoneFo
     auto *scene = window.currentTab()->scene();
 
     const int nodeId = createElement(handler, "Node");
-    auto *node = dynamic_cast<Node *>(elementById(window, nodeId));
+    auto *node = elementById(window, nodeId);
     QVERIFY(node);
+    QCOMPARE(node->elementType(), ElementType::Node);
 
     const int andId = createElement(handler, "And", 100, 100);
     auto *andGate = elementById(window, andId);

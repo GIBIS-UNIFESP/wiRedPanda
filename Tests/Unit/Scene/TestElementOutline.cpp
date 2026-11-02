@@ -12,7 +12,8 @@
 #include <QResizeEvent>
 #include <QTest>
 
-#include "App/Element/GraphicElements/Node.h"
+#include "App/Element/Element.h"
+#include "App/Element/ElementFactory.h"
 #include "App/Scene/ClipboardManager.h"
 #include "App/Scene/GraphicsView.h"
 #include "App/Scene/Scene.h"
@@ -22,9 +23,9 @@
 namespace ElementOutlineDetail {
 
 /// Adds to \a scene a node at \a pos in \a mode.
-Node *addNode(Scene *scene, const QPointF &pos, const WirelessMode mode)
+Element *addNode(Scene *scene, const QPointF &pos, const WirelessMode mode)
 {
-    auto *node = new Node;
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     scene->addItem(node);
     node->setPos(pos);
     node->setWirelessMode(mode);
@@ -33,7 +34,7 @@ Node *addNode(Scene *scene, const QPointF &pos, const WirelessMode mode)
 
 /// A point of \a node's indicator, in the scene, outside its outline (a wireless node's indicator reaches above and
 /// beside it).
-QPointF decorationOnly(const Node *node)
+QPointF decorationOnly(const Element *node)
 {
     const QRectF decoration = node->body().decoration;
     return node->mapToScene(QPointF(decoration.center().x(), decoration.top() + 2));
@@ -46,12 +47,12 @@ using namespace ElementOutlineDetail;
 void TestElementOutline::testADecorationIsDrawnButIsNotTheOutline()
 {
     WorkSpace workspace;
-    const Node *plain = addNode(workspace.scene(), {0, 0}, WirelessMode::None);
+    const Element *plain = addNode(workspace.scene(), {0, 0}, WirelessMode::None);
     QVERIFY(plain->body().decoration.isNull());
     QCOMPARE(plain->boundingRect(), plain->outlineRect());
 
     for (const auto mode : {WirelessMode::Tx, WirelessMode::Rx}) {
-        const Node *node = addNode(workspace.scene(), {0, 0}, mode);
+        const Element *node = addNode(workspace.scene(), {0, 0}, mode);
         const QRectF decoration = node->body().decoration;
         QVERIFY(!decoration.isNull());
         QVERIFY(!node->outlineRect().contains(decoration));
@@ -66,7 +67,7 @@ void TestElementOutline::testAPressOnADecorationMissesTheElement()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     for (const auto mode : {WirelessMode::Tx, WirelessMode::Rx}) {
-        Node *node = addNode(scene, {200, 200}, mode);
+        Element *node = addNode(scene, {200, 200}, mode);
         const QPointF point = decorationOnly(node);
         QVERIFY(node->sceneBoundingRect().contains(point) && !node->sceneOutlineRect().contains(point));
         const QGraphicsScene *qtScene = scene;
@@ -80,7 +81,7 @@ void TestElementOutline::testARubberBandOverADecorationAloneSelectsNothing()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *node = addNode(scene, {200, 200}, WirelessMode::Tx);
+    Element *node = addNode(scene, {200, 200}, WirelessMode::Tx);
 
     QPainterPath band;
     band.addRect(QRectF(decorationOnly(node) - QPointF(1, 1), QSizeF(2, 2)));
@@ -99,8 +100,8 @@ void TestElementOutline::testAlignLeftUsesTheOutline()
     // their bounds, the plain node's outline would stick out to the left
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *plain = addNode(scene, {96, 0}, WirelessMode::None);
-    Node *wireless = addNode(scene, {0, 96}, WirelessMode::Rx);
+    Element *plain = addNode(scene, {96, 0}, WirelessMode::None);
+    Element *wireless = addNode(scene, {0, 96}, WirelessMode::Rx);
     plain->setSelected(true);
     wireless->setSelected(true);
 
@@ -115,9 +116,9 @@ void TestElementOutline::testDistributeHorizontallyUsesTheOutline()
     // 6 px, past the half grid's midpoint
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *left = addNode(scene, {0, 0}, WirelessMode::None);
-    Node *middle = addNode(scene, {96, 0}, WirelessMode::Rx);
-    Node *right = addNode(scene, {320, 0}, WirelessMode::None);
+    Element *left = addNode(scene, {0, 0}, WirelessMode::None);
+    Element *middle = addNode(scene, {96, 0}, WirelessMode::Rx);
+    Element *right = addNode(scene, {320, 0}, WirelessMode::None);
     for (auto *node : {left, middle, right}) {
         node->setSelected(true);
     }
@@ -137,8 +138,8 @@ void TestElementOutline::testAlignRightUsesTheOutline()
     // A Tx node's indicator reaches 12 px right of its outline
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *wireless = addNode(scene, {0, 0}, WirelessMode::Tx);
-    Node *plain = addNode(scene, {200, 96}, WirelessMode::None);
+    Element *wireless = addNode(scene, {0, 0}, WirelessMode::Tx);
+    Element *plain = addNode(scene, {200, 96}, WirelessMode::None);
     wireless->setSelected(true);
     plain->setSelected(true);
 
@@ -152,8 +153,8 @@ void TestElementOutline::testAlignTopUsesTheOutline()
     // A Tx node's indicator reaches 6 px above its outline
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *wireless = addNode(scene, {0, 8}, WirelessMode::Tx);
-    Node *plain = addNode(scene, {96, 96}, WirelessMode::None);
+    Element *wireless = addNode(scene, {0, 8}, WirelessMode::Tx);
+    Element *plain = addNode(scene, {96, 96}, WirelessMode::None);
     wireless->setSelected(true);
     plain->setSelected(true);
 
@@ -167,8 +168,8 @@ void TestElementOutline::testAlignHorizontalCenterUsesTheOutline()
     // A Tx node's indicator moves its bounds' centre 6 px right of its outline's
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *plain = addNode(scene, {0, 0}, WirelessMode::None);
-    Node *wireless = addNode(scene, {8, 96}, WirelessMode::Tx);
+    Element *plain = addNode(scene, {0, 0}, WirelessMode::None);
+    Element *wireless = addNode(scene, {8, 96}, WirelessMode::Tx);
     plain->setSelected(true);
     wireless->setSelected(true);
 
@@ -182,8 +183,8 @@ void TestElementOutline::testAlignVerticalCenterUsesTheOutline()
     // A Tx node's indicator moves its bounds' centre 3 px above its outline's
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *plain = addNode(scene, {0, 0}, WirelessMode::None);
-    Node *wireless = addNode(scene, {96, 8}, WirelessMode::Tx);
+    Element *plain = addNode(scene, {0, 0}, WirelessMode::None);
+    Element *wireless = addNode(scene, {96, 8}, WirelessMode::Tx);
     plain->setSelected(true);
     wireless->setSelected(true);
 
@@ -197,9 +198,9 @@ void TestElementOutline::testDistributeVerticallyUsesTheOutline()
     // The middle node goes where equal gaps between the outlines put it, on the grid line nearest
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *top = addNode(scene, {0, 0}, WirelessMode::None);
-    Node *middle = addNode(scene, {0, 48}, WirelessMode::Tx);
-    Node *bottom = addNode(scene, {0, 194}, WirelessMode::None);
+    Element *top = addNode(scene, {0, 0}, WirelessMode::None);
+    Element *middle = addNode(scene, {0, 48}, WirelessMode::Tx);
+    Element *bottom = addNode(scene, {0, 194}, WirelessMode::None);
     for (auto *node : {top, middle, bottom}) {
         node->setSelected(true);
     }
@@ -221,7 +222,7 @@ void TestElementOutline::testAlignBottomIsTheBoundsBottom()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     for (const auto mode : {WirelessMode::Tx, WirelessMode::Rx}) {
-        const Node *node = addNode(scene, {0, 0}, mode);
+        const Element *node = addNode(scene, {0, 0}, mode);
         QCOMPARE(node->sceneOutlineRect().bottom(), node->sceneBoundingRect().bottom());
     }
 }
@@ -230,7 +231,7 @@ void TestElementOutline::testTheCloneDragPictureFramesTheOutline()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *node = addNode(scene, {96, 96}, WirelessMode::Tx);
+    Element *node = addNode(scene, {96, 96}, WirelessMode::Tx);
     node->setSelected(true);
 
     const DragPreview::Picture picture = scene->clipboardManager()->selectionDragPicture(node->scenePos());
@@ -245,7 +246,7 @@ void TestElementOutline::testTheLabelEditorStartsOnTheOutline()
     // A node with no label yet: the editor opens on the node itself, at its outline's corner
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    Node *node = addNode(scene, {96, 96}, WirelessMode::Tx);
+    Element *node = addNode(scene, {96, 96}, WirelessMode::Tx);
 
     QGraphicsSceneMouseEvent doubleClick(QEvent::GraphicsSceneMouseDoubleClick);
     doubleClick.setScenePos(node->mapToScene(node->pixmapCenter()));
@@ -274,7 +275,7 @@ void TestElementOutline::testZoomToFitFramesTheOutline()
     QResizeEvent resize(view->size(), QSize());
     QCoreApplication::sendEvent(view, &resize);
 
-    Node *node = addNode(workspace.scene(), {96, 96}, WirelessMode::Tx);
+    Element *node = addNode(workspace.scene(), {96, 96}, WirelessMode::Tx);
     node->setSelected(true);
 
     view->zoomToFit();

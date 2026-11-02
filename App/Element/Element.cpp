@@ -191,6 +191,12 @@ bool Element::setParam(const ParamId id, const ParamValue &value)
     if (spec->showsPicture) {
         pictureReplaced();
     }
+    if (spec->repaints) {
+        pictureChanged();
+    }
+    if (spec->laysOutPorts) {
+        updatePortsProperties();
+    }
     parameterChanged(id, previous);
     return true;
 }
@@ -470,6 +476,9 @@ void applyAttributes(Port *port, const Element::PortAttributes &attributes)
     }
     if (attributes.defaultStatus) {
         port->setDefaultStatus(*attributes.defaultStatus);
+    }
+    if (attributes.visible) {
+        port->setVisible(*attributes.visible);
     }
 }
 

@@ -10,7 +10,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ElementEditor.h"
@@ -49,7 +48,7 @@ void TestElementTabNavigator::testReadingOrderIsRowMajor()
     // Two rows of two elements. Reading order must be row-major (top row left-to-right, then
     // bottom row left-to-right): a, b, c, d. The pre-fix code used X as the primary sort key
     // and would return column-major a, c, b, d — this is the direct guard for that bug.
-    Node a, b, c, d;
+    Element a{ElementType::Node}, b{ElementType::Node}, c{ElementType::Node}, d{ElementType::Node};
     a.setPos(0, 0);      // top-left
     b.setPos(100, 0);    // top-right
     c.setPos(0, 100);    // bottom-left
@@ -63,7 +62,7 @@ void TestElementTabNavigator::testReadingOrderIsRowMajor()
 void TestElementTabNavigator::testReadingOrderTieBreaksLeftToRight()
 {
     // Elements sharing a row (equal Y) are ordered left-to-right by X.
-    Node left, middle, right;
+    Element left{ElementType::Node}, middle{ElementType::Node}, right{ElementType::Node};
     left.setPos(0, 50);
     middle.setPos(100, 50);
     right.setPos(200, 50);
@@ -77,7 +76,7 @@ void TestElementTabNavigator::testReadingOrderEmptyAndSingle()
 {
     QVERIFY(ElementTabNavigator::readingOrder({}).isEmpty());
 
-    Node only;
+    Element only{ElementType::Node};
     only.setPos(42, 42);
     const QVector<Element *> one = {&only};
     QCOMPARE(ElementTabNavigator::readingOrder(one), one);

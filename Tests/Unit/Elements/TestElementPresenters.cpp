@@ -26,7 +26,6 @@
 #include "App/Element/BodyMeasure.h"
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Text.h"
 #include "App/Element/IC.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/Presentation/ElementPresenter.h"
@@ -180,7 +179,7 @@ void TestElementPresenters::testTextDrawsItsHintAsASimpleTextItemDid()
 {
     // An empty Text's hint was a child QGraphicsSimpleTextItem at the label's anchor: the presenter draws the same text
     // in the same font and colour, pixel for pixel, and keeps its box in the body
-    Text text;
+    Element text{ElementType::Text};
     QGraphicsSimpleTextItem item(QCoreApplication::translate("Text", "Double-click to add text"));
     QFont font = item.font();
     font.setItalic(true);
@@ -349,7 +348,7 @@ void TestElementPresenters::testTheLabelBoxFollowsTheTrigger()
 void TestElementPresenters::testTextsBodyHoldsItsLabel()
 {
     // A label longer than the hint widens a Text's body to hold it, so a click on any of it hits the element
-    Text text;
+    Element text{ElementType::Text};
     text.setLabel(QStringLiteral("A label much longer than the hint an empty text shows in its place"));
     QVERIFY(text.labelBoundingRect().width() > 200);
     QVERIFY(text.body().body.contains(text.labelBoundingRect()));

@@ -239,6 +239,11 @@ bool Port::isRequired() const
 
 void Port::setRequired(const bool required)
 {
+    // An unchanged requirement changes no validity: re-deriving the status then only flashes what the connections
+    // already set, until the simulation runs
+    if (m_required == required) {
+        return;
+    }
     m_required = required;
 
     // Requiredness feeds isValid(): re-derive the displayed status so a port

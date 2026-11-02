@@ -564,7 +564,7 @@ void ICLoader::loadBoundaryElement(IC &ic, Element *elm, const bool isInput)
             if (portCount > 1) {
                 nodeInput->setName(srcPort->name(), srcPort->sourceName());
             }
-            nodeInput->setRequired(elm->elementType() == ElementType::Clock);
+            nodeElm->setParam(ParamId::Wired, elm->elementType() == ElementType::Clock);
             nodeInput->setDefaultStatus(srcPort->status());
             nodeInput->setStatus(srcPort->status());
             ic.m_internalInputs.append(nodeInput);

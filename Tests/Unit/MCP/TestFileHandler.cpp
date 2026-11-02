@@ -18,7 +18,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -91,7 +90,7 @@ void TestFileHandler::testHandleLoadCircuitNamesDuplicateTxLabels()
     FileHandler handler(&window, nullptr);
     auto *scene = window.currentTab()->scene();
     for (const QString &label : {QStringLiteral("b"), QStringLiteral("a"), QStringLiteral("b"), QStringLiteral("a")}) {
-        auto *node = new Node;
+        auto *node = ElementFactory::buildElement(ElementType::Node);
         node->setWirelessMode(WirelessMode::Tx);
         node->setLabel(label);
         scene->receiveCommand(new AddItemsCommand({node}, scene));

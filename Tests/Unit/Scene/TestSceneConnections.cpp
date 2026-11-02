@@ -8,8 +8,8 @@
 
 #include <QTemporaryDir>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
@@ -358,15 +358,12 @@ void TestSceneConnections::testWirelessRxPortIsNotRequired()
     QVERIFY(nodeElm != nullptr);
     scene.addItem(nodeElm);
 
-    auto *node = qobject_cast<Node *>(nodeElm);
-    QVERIFY(node != nullptr);
-
     // Verify default state
-    QVERIFY(node->inputPort()->isRequired());
+    QVERIFY(nodeElm->inputPort()->isRequired());
 
     // Switch to Rx — port becomes optional
-    node->setWirelessMode(WirelessMode::Rx);
-    QVERIFY(!node->inputPort()->isRequired());
+    nodeElm->setWirelessMode(WirelessMode::Rx);
+    QVERIFY(!nodeElm->inputPort()->isRequired());
 
     // A connection can still be made to the port (it's optional, not forbidden)
     auto *src = ElementFactory::buildElement(ElementType::InputButton);
@@ -375,11 +372,11 @@ void TestSceneConnections::testWirelessRxPortIsNotRequired()
 
     auto *conn = new Connection();
     conn->setStartPort(src->outputPort(0));
-    conn->setEndPort(node->inputPort(0));
+    conn->setEndPort(nodeElm->inputPort(0));
     scene.addItem(conn);
 
-    QCOMPARE(node->inputPort(0)->connections().size(), 1);
-    QVERIFY(!node->inputPort()->isRequired());  // still optional after wiring
+    QCOMPARE(nodeElm->inputPort(0)->connections().size(), 1);
+    QVERIFY(!nodeElm->inputPort()->isRequired());  // still optional after wiring
 }
 
 void TestSceneConnections::testWirelessNoneModeNodePortIsRequired()
@@ -391,11 +388,8 @@ void TestSceneConnections::testWirelessNoneModeNodePortIsRequired()
     auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(nodeElm != nullptr);
     scene.addItem(nodeElm);
-
-    auto *node = qobject_cast<Node *>(nodeElm);
-    QVERIFY(node != nullptr);
-    QCOMPARE(node->wirelessMode(), WirelessMode::None);
-    QVERIFY(node->inputPort()->isRequired());
+    QCOMPARE(nodeElm->wirelessMode(), WirelessMode::None);
+    QVERIFY(nodeElm->inputPort()->isRequired());
 
     auto *src = ElementFactory::buildElement(ElementType::InputSwitch);
     QVERIFY(src != nullptr);
@@ -403,9 +397,9 @@ void TestSceneConnections::testWirelessNoneModeNodePortIsRequired()
 
     auto *conn = new Connection();
     conn->setStartPort(src->outputPort(0));
-    conn->setEndPort(node->inputPort(0));
+    conn->setEndPort(nodeElm->inputPort(0));
     scene.addItem(conn);
 
-    QCOMPARE(node->inputPort(0)->connections().size(), 1);
-    QVERIFY(node->inputPort()->isRequired());  // required status unchanged by a connection
+    QCOMPARE(nodeElm->inputPort(0)->connections().size(), 1);
+    QVERIFY(nodeElm->inputPort()->isRequired());  // required status unchanged by a connection
 }

@@ -10,7 +10,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -758,8 +757,8 @@ void TestSimulation::testWirelessTxRxPropagation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel("SIG");
@@ -792,9 +791,9 @@ void TestSimulation::testWirelessMultiRxFanOut()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx1 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx2 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx1 = ElementFactory::buildElement(ElementType::Node);
+    auto *rx2 = ElementFactory::buildElement(ElementType::Node);
     Element led1{ElementType::Led}, led2{ElementType::Led};
 
     tx->setLabel("BUS");
@@ -831,7 +830,7 @@ void TestSimulation::testWirelessOrphanedRx()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     rx->setLabel("ORPHAN");
@@ -916,9 +915,9 @@ void TestSimulation::testWirelessDuplicateTxIgnored()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    auto *tx1 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *tx2 = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx  = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx1 = ElementFactory::buildElement(ElementType::Node);
+    auto *tx2 = ElementFactory::buildElement(ElementType::Node);
+    auto *rx  = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx1->setLabel("DUP");
@@ -969,8 +968,8 @@ void TestSimulation::testWirelessEmptyLabelIgnored()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel("");
@@ -1000,8 +999,8 @@ void TestSimulation::testWirelessLabelMismatchIsolation()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel("A");
@@ -1031,10 +1030,10 @@ void TestSimulation::testWirelessMultipleIndependentChannels()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    auto *txA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rxA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *txB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rxB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *txA = ElementFactory::buildElement(ElementType::Node);
+    auto *rxA = ElementFactory::buildElement(ElementType::Node);
+    auto *txB = ElementFactory::buildElement(ElementType::Node);
+    auto *rxB = ElementFactory::buildElement(ElementType::Node);
     Element led1{ElementType::Led}, led2{ElementType::Led};
 
     txA->setLabel("CH_A"); txA->setWirelessMode(WirelessMode::Tx);
@@ -1079,8 +1078,8 @@ void TestSimulation::testWirelessTxUnconnectedInput()
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
 
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel("OPEN");
@@ -1110,8 +1109,8 @@ void TestSimulation::testWirelessLabelCaseSensitive()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel("CLK");
@@ -1142,9 +1141,9 @@ void TestSimulation::testWirelessNoneModeNodeDoesNotInterfere()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx   = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx   = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *none = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx   = ElementFactory::buildElement(ElementType::Node);
+    auto *rx   = ElementFactory::buildElement(ElementType::Node);
+    auto *none = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel("SIG");   tx->setWirelessMode(WirelessMode::Tx);
@@ -1173,8 +1172,8 @@ void TestSimulation::testWirelessLabelSetAfterMode()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     // Set mode first, label second
@@ -1204,10 +1203,10 @@ void TestSimulation::testWirelessCascadeThroughWire()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *txA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rxA = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *txB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rxB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *txA = ElementFactory::buildElement(ElementType::Node);
+    auto *rxA = ElementFactory::buildElement(ElementType::Node);
+    auto *txB = ElementFactory::buildElement(ElementType::Node);
+    auto *rxB = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     txA->setLabel("A"); txA->setWirelessMode(WirelessMode::Tx);
@@ -1238,8 +1237,8 @@ void TestSimulation::testWirelessRxFeedsCombinationalLogic()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -1281,7 +1280,7 @@ void TestSimulation::testWirelessOrphanedTxDoesNotCrash()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw1, sw2, sw3;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
     Element andGate{ElementType::And};
     Element led{ElementType::Led};
 
@@ -1314,7 +1313,7 @@ void TestSimulation::testWirelessOrphanedRxWithPhysicalWire()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     rx->setLabel("NO_TX");
@@ -1344,8 +1343,8 @@ void TestSimulation::testWirelessOverridesPhysicalWire()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch swPhys, swWireless;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel("CH"); tx->setWirelessMode(WirelessMode::Tx);
@@ -1382,8 +1381,8 @@ void TestSimulation::testWirelessFeedbackLoop()
 
     InputSwitch sw;
     Element andGate{ElementType::And};
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element notGate{ElementType::Not};
     Element led{ElementType::Led};
 
@@ -1417,8 +1416,8 @@ void TestSimulation::testWirelessUnicodeLabels()
     CircuitBuilder builder(workspace.scene());
 
     InputSwitch sw;
-    auto *tx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
-    auto *rx = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     Element led{ElementType::Led};
 
     tx->setLabel(QStringLiteral("信号")); tx->setWirelessMode(WirelessMode::Tx);

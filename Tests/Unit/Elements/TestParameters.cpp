@@ -23,7 +23,6 @@
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/Parameters.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Versions.h"
@@ -74,6 +73,7 @@ QString name(const ParamId id)
     case ParamId::Playing:   return QStringLiteral("Playing");
     case ParamId::Lit:       return QStringLiteral("Lit");
     case ParamId::Carried:   return QStringLiteral("Carried");
+    case ParamId::Wired:     return QStringLiteral("Wired");
     }
     return {};
 }
@@ -117,16 +117,21 @@ qint64 loadMap(Element &element, const QMap<QString, QVariant> &map, const QVers
 }
 
 /// A node counting what it is told of its parameters.
-class CountingNode : public Node
+class CountingNode : public Element
 {
 public:
+    CountingNode()
+        : Element(ElementType::Node)
+    {
+    }
+
     int changes = 0;
     ParamValue previous;
 
 protected:
     void parameterChanged(const ParamId id, const ParamValue &before) override
     {
-        Node::parameterChanged(id, before);
+        Element::parameterChanged(id, before);
         ++changes;
         previous = before;
     }
@@ -150,7 +155,7 @@ void TestParameters::testEachTypeHasTheParametersOfItsSchema_data()
         {ElementType::InputSwitch, {"On false isOn", "Locked false locked"}},
         {ElementType::InputRotary, {"Position 0 currentPort", "Locked false locked"}},
         {ElementType::Clock, {"On false -", "Locked false locked", "Frequency 1 frequency", "Delay 0 delay"}},
-        {ElementType::Node, {"Wireless 0 wirelessMode", "Carried -1 -"}},
+        {ElementType::Node, {"Wireless 0 wirelessMode", "Carried -1 -", "Wired true -"}},
         {ElementType::Led, {"Colour \"White\" color", "Lit 0 -"}},
         {ElementType::Display7, {"Colour \"Red\" color"}},
         {ElementType::Display14, {"Colour \"Red\" color"}},
@@ -276,7 +281,7 @@ void TestParameters::testTheStoreRefusesWhatItsTypeDoesNotHave()
 
 void TestParameters::testSetParamTakesAValueAsItsSpecDoes()
 {
-    Node node;
+    Element node{ElementType::Node};
 
     QVERIFY(node.setParam(ParamId::Wireless, static_cast<int>(WirelessMode::Rx)));
     QCOMPARE(node.wirelessMode(), WirelessMode::Rx);
@@ -615,7 +620,7 @@ void TestParameters::testALoadReadsEachValueFromTheVersionItMeansSomething()
     QCOMPARE(buzzer.frequency(), 300.0);
 
     // A node's map came in 4.4: an older file holds none, and nothing is read
-    Node node;
+    Element node{ElementType::Node};
     QCOMPARE(loadMap(node, {{"wirelessMode", 1}}, QVersionNumber(4, 3)), qint64{0});
     QCOMPARE(node.wirelessMode(), WirelessMode::None);
     loadMap(node, {{"wirelessMode", 1}}, QVersionNumber(4, 4));

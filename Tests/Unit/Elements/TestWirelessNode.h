@@ -40,7 +40,13 @@ private slots:
     // The level the indicator shows: a bus conflict's Error, and a repaint for each new level
     void testWirelessIndicatorHandlesBusConflictError();
     void testANewLevelCarriedRepaintsTheNode();
+    void testAPlainNodeCarriesNothing();
+    void testAWirelessNodeLeftUndrivenCarriesUnknown();
+    void testLayingOutAnRxNodesPortsLeavesItsInputsLevel();
 
     // An edit's update of a live Rx node leaves the requirement its mode set
     void testRxInputStaysOptionalThroughEditUndoRedo();
+
+    // An IC's proxy of an input that needs no wire (ParamId::Wired) keeps it optional through a layout
+    void testAnUnwiredNodesInputStaysOptionalThroughItsModes();
 };

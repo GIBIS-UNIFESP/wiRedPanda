@@ -30,7 +30,6 @@
 #include "App/Element/GraphicElements/Clock.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Presentation/ElementPictures.h"
 #include "App/Scene/ICRegistry.h"
@@ -157,7 +156,7 @@ void TestElementEditor::initTestCase()
     // test's own showAndActivate() (confirmed via CI: re-introduced the failure this was meant to
     // fix) -- hence handling the icon-cache warm-up above as a plain function call instead.
     WorkSpace workspace;
-    auto *node = new Node();
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     workspace.scene()->addItem(node);
     ElementEditor editor(&workspace);
     editor.setScene(workspace.scene());
@@ -365,7 +364,7 @@ void TestElementEditor::testSelectionDoesNotPushPortSizeCommandB21()
 void TestElementEditor::testRenameActionFocusesAndSelectsLabelField()
 {
     WorkSpace workspace;
-    auto *node = new Node(); // Node has hasLabel == true.
+    auto *node = ElementFactory::buildElement(ElementType::Node); // Node has hasLabel == true.
     workspace.scene()->addItem(node);
 
     ElementEditor editor(&workspace);
@@ -410,7 +409,7 @@ void TestElementEditor::testContextMenuRenameActionFocusesLabelField()
     QSKIP("macOS's real Cocoa windowing makes dismisserForMenuAction()'s QMenu::exec()-driven context-menu tests unreliable outside the offscreen QPA platform");
 #endif
     WorkSpace workspace;
-    auto *node = new Node(); // Node has hasLabel == true.
+    auto *node = ElementFactory::buildElement(ElementType::Node); // Node has hasLabel == true.
     workspace.scene()->addItem(node);
 
     ElementEditor editor(&workspace);
@@ -834,8 +833,8 @@ void TestElementEditor::testPickingAPictureThatDoesNotLoadForAStateChangesNothin
 void TestElementEditor::testApplyCapabilitiesMixedWirelessModeShowsPlaceholder()
 {
     WorkSpace workspace;
-    auto *node1 = new Node();
-    auto *node2 = new Node();
+    auto *node1 = ElementFactory::buildElement(ElementType::Node);
+    auto *node2 = ElementFactory::buildElement(ElementType::Node);
     workspace.scene()->addItem(node1);
     workspace.scene()->addItem(node2);
     node1->setWirelessMode(WirelessMode::Tx);
@@ -1016,7 +1015,7 @@ void TestElementEditor::testApplyWirelessModeChangeSeversExistingConnection()
 {
     WorkSpace workspace;
     CircuitBuilder builder(workspace.scene());
-    auto *node = new Node();
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     auto *sink = ElementFactory::buildElement(ElementType::And);
     builder.add(node, sink);
     auto *conn = builder.connect(node, 0, sink, 0);
@@ -1046,11 +1045,11 @@ void TestElementEditor::testApplyWirelessModeChangeSeversExistingConnection()
 void TestElementEditor::testRefusesALabelAnotherTxHas()
 {
     WorkSpace workspace;
-    auto *first = new Node();
+    auto *first = ElementFactory::buildElement(ElementType::Node);
     first->setWirelessMode(WirelessMode::Tx);
     first->setLabel("x");
     workspace.scene()->addItem(first);
-    auto *second = new Node();
+    auto *second = ElementFactory::buildElement(ElementType::Node);
     second->setWirelessMode(WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
@@ -1076,8 +1075,8 @@ void TestElementEditor::testRefusesTwoSelectedNodesBecomingOneTxChannel()
 {
     // Neither node is a Tx yet, so no Tx in the scene has the label: the two would be the first to share it
     WorkSpace workspace;
-    auto *first = new Node();
-    auto *second = new Node();
+    auto *first = ElementFactory::buildElement(ElementType::Node);
+    auto *second = ElementFactory::buildElement(ElementType::Node);
     first->setLabel("z");
     second->setLabel("z");
     workspace.scene()->addItem(first);
@@ -1106,11 +1105,11 @@ void TestElementEditor::testRefusesALabelAnotherTxHasWithANonNodeSelected()
     // A switch selected with the Tx hides the wireless field, but the label, which both take, still names the Tx's
     // channel
     WorkSpace workspace;
-    auto *first = new Node();
+    auto *first = ElementFactory::buildElement(ElementType::Node);
     first->setWirelessMode(WirelessMode::Tx);
     first->setLabel("x");
     workspace.scene()->addItem(first);
-    auto *second = new Node();
+    auto *second = ElementFactory::buildElement(ElementType::Node);
     second->setWirelessMode(WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
@@ -1141,11 +1140,11 @@ void TestElementEditor::testTypingPastAnotherTxsLabelDoesNotWarn()
 {
     // "ab" is typed one key at a time and passes through "a", another Tx's channel, on the way
     WorkSpace workspace;
-    auto *first = new Node();
+    auto *first = ElementFactory::buildElement(ElementType::Node);
     first->setWirelessMode(WirelessMode::Tx);
     first->setLabel("a");
     workspace.scene()->addItem(first);
-    auto *second = new Node();
+    auto *second = ElementFactory::buildElement(ElementType::Node);
     second->setWirelessMode(WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
@@ -1169,11 +1168,11 @@ void TestElementEditor::testFinishingOnAnotherTxsLabelWarnsAndRestoresTheField()
 {
     // The field is left on another Tx's channel: one warning, the label stays, and the field shows it again
     WorkSpace workspace;
-    auto *first = new Node();
+    auto *first = ElementFactory::buildElement(ElementType::Node);
     first->setWirelessMode(WirelessMode::Tx);
     first->setLabel("a");
     workspace.scene()->addItem(first);
-    auto *second = new Node();
+    auto *second = ElementFactory::buildElement(ElementType::Node);
     second->setWirelessMode(WirelessMode::Tx);
     second->setLabel("y");
     workspace.scene()->addItem(second);
@@ -1201,11 +1200,11 @@ void TestElementEditor::testLeavingTheFieldOnASharedLabelDoesNotWarn()
 {
     // Two Tx nodes already share a label, as a file or a paste may leave them: leaving the field unedited is no edit
     WorkSpace workspace;
-    auto *first = new Node();
+    auto *first = ElementFactory::buildElement(ElementType::Node);
     first->setWirelessMode(WirelessMode::Tx);
     first->setLabel("dup");
     workspace.scene()->addItem(first);
-    auto *second = new Node();
+    auto *second = ElementFactory::buildElement(ElementType::Node);
     second->setWirelessMode(WirelessMode::Tx);
     second->setLabel("dup");
     workspace.scene()->addItem(second);

@@ -7,7 +7,6 @@
 
 #include "App/Core/StatusOps.h"
 #include "App/Element/Element.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "Tests/Common/TestUtils.h"
 
 using S = Status;
@@ -595,7 +594,7 @@ void TestStatusOps::testTruthTableUnknownInput()
 
 void TestStatusOps::testNodePassesUnknownAndError()
 {
-    Node node; Element src{ElementType::InputVcc};
+    Element node{ElementType::Node}; Element src{ElementType::InputVcc};
     initElm(node); initSrc(src);
     node.connectPredecessor(0, &src, 0);
 

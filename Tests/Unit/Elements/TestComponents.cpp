@@ -8,7 +8,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Scene/Scene.h"
 #include "App/Simulation/Simulation.h"
@@ -17,7 +16,7 @@
 
 void TestComponents::testNode()
 {
-    Node elm;
+    Element elm{ElementType::Node};
     QCOMPARE(elm.inputSize(), 1);
     QCOMPARE(elm.outputSize(), 1);
     QCOMPARE(elm.minInputSize(), 1);
@@ -59,6 +58,24 @@ void TestComponents::testICData(IC *ic)
     QCOMPARE(ic->inputPort(2)->status(), Status::Error);
     QCOMPARE(ic->inputPort(3)->status(), Status::Active);
     QCOMPARE(ic->inputPort(4)->status(), Status::Active);
+}
+
+void TestComponents::testICProxiesKeepTheirRequirementThroughALayout()
+{
+    // Each boundary input's proxy node holds what the IC's input requires (a clock's alone needs a wire) as one of its
+    // parameters, so laying the proxy out again, which applies its attributes, leaves the requirement as the load set it
+    const QString examplesPath = TestUtils::examplesDir();
+    IC ic;
+    ic.loadFile(examplesPath + "jkflipflop.panda", examplesPath);
+    const QList<bool> required{false, false, true, false, false};
+    QCOMPARE(ic.internalInputs().size(), required.size());
+    for (int i = 0; i < required.size(); ++i) {
+        Element *proxy = ic.internalInputs().at(i)->element();
+        QCOMPARE(proxy->elementType(), ElementType::Node);
+        proxy->updatePortsProperties();
+        QCOMPARE(ic.internalInputs().at(i)->isRequired(), required.at(i));
+        QCOMPARE(ic.inputPort(i)->isRequired(), required.at(i));
+    }
 }
 
 void TestComponents::testIC()

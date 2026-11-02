@@ -16,6 +16,7 @@ private slots:
     void testVCC();
     void testGND();
     void testIC();
+    void testICProxiesKeepTheirRequirementThroughALayout();
     void testICs();
 
 private:

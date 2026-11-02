@@ -5,8 +5,8 @@
 
 #include <QTest>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::initSrc;
@@ -30,7 +30,7 @@ void TestNodeLogic::cleanup()
 void TestNodeLogic::testNodeChainPropagation()
 {
     // Three Nodes in series: input -> n1 -> n2 -> n3
-    Node n1, n2, n3;
+    Element n1{ElementType::Node}, n2{ElementType::Node}, n3{ElementType::Node};
     initElm(n1); initElm(n2); initElm(n3);
     n1.connectPredecessor(0, m_inputs.at(0), 0);
     n2.connectPredecessor(0, &n1, 0);
@@ -51,7 +51,7 @@ void TestNodeLogic::testNodeChainPropagation()
 
 void TestNodeLogic::testNodeFanOut()
 {
-    Node node;
+    Element node{ElementType::Node};
     Element and1{ElementType::And}, and2{ElementType::And};
     initElm(node); initElm(and1); initElm(and2);
 

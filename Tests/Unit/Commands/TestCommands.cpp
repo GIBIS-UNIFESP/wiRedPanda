@@ -22,7 +22,6 @@
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -78,8 +77,8 @@ public:
 
 private:
     InputSwitch *m_source = new InputSwitch();
-    Node *m_tx = new Node();
-    Node *m_rx = new Node();
+    Element *m_tx = ElementFactory::buildElement(ElementType::Node);
+    Element *m_rx = ElementFactory::buildElement(ElementType::Node);
 };
 
 /// Whether \a pos lies off the half grid elements snap to.
@@ -1044,9 +1043,9 @@ void TestCommands::testUpdateCommandWirelessLabelRewiresChannel()
     CircuitBuilder builder(scene);
     auto *swA = new InputSwitch();
     auto *swB = new InputSwitch();
-    auto *txA = new Node();
-    auto *txB = new Node();
-    auto *rx = new Node();
+    auto *txA = ElementFactory::buildElement(ElementType::Node);
+    auto *txB = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     builder.add(swA, swB, txA, txB, rx);
     txA->setLabel("A");
     txA->setWirelessMode(WirelessMode::Tx);
@@ -1089,7 +1088,7 @@ void TestCommands::testUpdateCommandNonWirelessNodeEditKeepsFastPath()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     RebuildProbe probe(scene);
-    auto *node = new Node(); // plain junction, WirelessMode::None
+    auto *node = ElementFactory::buildElement(ElementType::Node); // plain junction, WirelessMode::None
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{node}, scene));
 
     auto *sim = scene->simulation();
@@ -2581,9 +2580,9 @@ void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
     CircuitBuilder builder(scene);
     auto *swA = new InputSwitch();
     auto *swB = new InputSwitch();
-    auto *txA = new Node();
-    auto *txB = new Node();
-    auto *rx = new Node();
+    auto *txA = ElementFactory::buildElement(ElementType::Node);
+    auto *txB = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     builder.add(swA, swB, txA, txB, rx);
     txA->setLabel("A");
     txA->setWirelessMode(WirelessMode::Tx);
@@ -2615,7 +2614,7 @@ void TestCommands::testSetPropertyCommandNonWirelessLabelDoesNotRebuild()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     RebuildProbe probe(scene);
-    auto *node = new Node();
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{node}, scene));
     auto *sim = scene->simulation();
     sim->update(); // the structural edit's rebuild
@@ -2635,7 +2634,7 @@ void TestCommands::testSetPropertyCommandRefusesASecondTxOnAChannel()
     WorkSpace workspace;
     auto *scene = workspace.scene();
     const auto wirelessNode = [scene](const QString &label, const WirelessMode mode) {
-        auto *node = new Node();
+        auto *node = ElementFactory::buildElement(ElementType::Node);
         node->setLabel(label);
         node->setWirelessMode(mode);
         scene->addItem(node);

@@ -21,7 +21,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -1522,7 +1521,7 @@ void TestSerialization::testWirelessTxNodePreservedInScene()
     auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(nodeElm != nullptr);
     nodeElm->setLabel("CLK");
-    qobject_cast<Node *>(nodeElm)->setWirelessMode(WirelessMode::Tx);
+    nodeElm->setWirelessMode(WirelessMode::Tx);
     ws1.scene()->addItem(nodeElm);
 
     QByteArray data = saveToMemory(ws1);
@@ -1534,8 +1533,8 @@ void TestSerialization::testWirelessTxNodePreservedInScene()
     auto elements = ws2.scene()->elements();
     QCOMPARE(elements.size(), 1);
 
-    auto *loaded = qobject_cast<Node *>(elements.first());
-    QVERIFY(loaded != nullptr);
+    auto *loaded = elements.first();
+    QCOMPARE(loaded->elementType(), ElementType::Node);
     QCOMPARE(loaded->wirelessMode(), WirelessMode::Tx);
     QCOMPARE(loaded->label(), QStringLiteral("CLK"));
     QVERIFY(loaded->inputPort()->isRequired());
@@ -1549,7 +1548,7 @@ void TestSerialization::testWirelessRxNodePreservedInScene()
     auto *nodeElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(nodeElm != nullptr);
     nodeElm->setLabel("DATA");
-    qobject_cast<Node *>(nodeElm)->setWirelessMode(WirelessMode::Rx);
+    nodeElm->setWirelessMode(WirelessMode::Rx);
     ws1.scene()->addItem(nodeElm);
 
     QByteArray data = saveToMemory(ws1);
@@ -1557,8 +1556,8 @@ void TestSerialization::testWirelessRxNodePreservedInScene()
     WorkSpace ws2;
     loadFromMemory(ws2, data);
 
-    auto *loaded = qobject_cast<Node *>(ws2.scene()->elements().first());
-    QVERIFY(loaded != nullptr);
+    auto *loaded = ws2.scene()->elements().first();
+    QCOMPARE(loaded->elementType(), ElementType::Node);
     QCOMPARE(loaded->wirelessMode(), WirelessMode::Rx);
     QCOMPARE(loaded->label(), QStringLiteral("DATA"));
     QVERIFY(!loaded->inputPort()->isRequired());
@@ -1574,8 +1573,8 @@ void TestSerialization::testWirelessPairCircuit()
     auto *txElm = ElementFactory::buildElement(ElementType::Node);
     auto *rxElm = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txElm && rxElm);
-    txElm->setLabel("SIG"); qobject_cast<Node *>(txElm)->setWirelessMode(WirelessMode::Tx);
-    rxElm->setLabel("SIG"); qobject_cast<Node *>(rxElm)->setWirelessMode(WirelessMode::Rx);
+    txElm->setLabel("SIG"); txElm->setWirelessMode(WirelessMode::Tx);
+    rxElm->setLabel("SIG"); rxElm->setWirelessMode(WirelessMode::Rx);
     txElm->setPos(0, 0);
     rxElm->setPos(200, 0);
     scene1->addItem(txElm);
@@ -1591,11 +1590,10 @@ void TestSerialization::testWirelessPairCircuit()
 
     int txCount = 0, rxCount = 0;
     for (auto *elm : elements) {
-        auto *n = qobject_cast<Node *>(elm);
-        QVERIFY(n != nullptr);
-        QCOMPARE(n->label(), QStringLiteral("SIG"));
-        if (n->wirelessMode() == WirelessMode::Tx) { ++txCount; }
-        else if (n->wirelessMode() == WirelessMode::Rx) { ++rxCount; }
+        QCOMPARE(elm->elementType(), ElementType::Node);
+        QCOMPARE(elm->label(), QStringLiteral("SIG"));
+        if (elm->wirelessMode() == WirelessMode::Tx) { ++txCount; }
+        else if (elm->wirelessMode() == WirelessMode::Rx) { ++rxCount; }
     }
     QCOMPARE(txCount, 1);
     QCOMPARE(rxCount, 1);
@@ -1617,8 +1615,8 @@ void TestSerialization::testWirelessNoneNodeInScene()
     WorkSpace ws2;
     loadFromMemory(ws2, data);
 
-    auto *loaded = qobject_cast<Node *>(ws2.scene()->elements().first());
-    QVERIFY(loaded != nullptr);
+    auto *loaded = ws2.scene()->elements().first();
+    QCOMPARE(loaded->elementType(), ElementType::Node);
     QCOMPARE(loaded->wirelessMode(), WirelessMode::None);
     QVERIFY(loaded->inputPort()->isRequired());
 }

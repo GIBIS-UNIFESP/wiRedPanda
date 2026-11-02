@@ -26,8 +26,6 @@
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
-#include "App/Element/GraphicElements/Text.h"
 #include "App/Element/IC.h"
 #include "App/Element/LabelMeasure.h"
 #include "App/IO/SerializationContext.h"
@@ -286,11 +284,10 @@ QList<Operation> operations(const QString &image, const QString &audio)
              return true;
          }},
         {"wireless mode", Change::Parameter | Change::Ports, [](Element &element, Scene &) {
-             auto *node = qobject_cast<Node *>(&element);
-             if (!node) {
+             if (!element.hasWirelessMode()) {
                  return false;
              }
-             node->setWirelessMode(WirelessMode::Tx);
+             element.setWirelessMode(WirelessMode::Tx);
              return true;
          }},
         {"sub-circuit", Change::Parameter | Change::Ports, [](Element &element, Scene &) {
@@ -491,7 +488,7 @@ void TestElementChanges::testBoundsThatMoveAreReportedAsBody()
 
     Scene scene;
     ElementChangesTestDetail::Recorder recorder(scene);
-    auto *text = new Text;
+    auto *text = ElementFactory::buildElement(ElementType::Text);
     auto *input = new InputSwitch;
     auto *demux = ElementFactory::buildElement(ElementType::Demux);
     scene.addItem(text);
@@ -592,7 +589,7 @@ void TestElementChanges::testElementsOutOfASceneMeasureTheirBoundsLive()
     const QString longLabel = QStringLiteral("A label long enough to be wider than the hint it replaces");
 
     // Out of a scene, the bounds are measured whenever they are asked for.
-    auto *text = new Text;
+    auto *text = ElementFactory::buildElement(ElementType::Text);
     const QRectF unlabelled = text->boundingRect();
     text->setLabel(longLabel);
     QVERIFY(text->boundingRect() != unlabelled);

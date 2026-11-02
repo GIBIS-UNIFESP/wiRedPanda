@@ -10,7 +10,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/Clock.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/TestUtils.h"
@@ -630,7 +629,7 @@ void TestElementProperties::testPortListIntegrity()
 void TestElementProperties::testWirelessModeProperty()
 {
     // hasWirelessMode() must return true for Node and false for all other elements.
-    Node node;
+    Element node{ElementType::Node};
     QVERIFY(node.hasWirelessMode());
     QCOMPARE(node.wirelessMode(), WirelessMode::None);
 
@@ -652,7 +651,7 @@ void TestElementProperties::testWirelessModePortRequired()
 {
     // isRequired() on the input port must track the wireless mode:
     //   None → required, Tx → required, Rx → NOT required.
-    Node node;
+    Element node{ElementType::Node};
     QVERIFY(node.inputPort()->isRequired());
 
     node.setWirelessMode(WirelessMode::Tx);
@@ -667,8 +666,8 @@ void TestElementProperties::testWirelessModePortRequired()
 
 void TestElementProperties::testNodeHasLabel()
 {
-    // Node::hasLabel must be true — the label is the wireless channel name.
-    Node node;
+    // A node must have a label — the label is the wireless channel name.
+    Element node{ElementType::Node};
     QVERIFY(node.hasLabel());
 
     node.setLabel("CHANNEL_X");

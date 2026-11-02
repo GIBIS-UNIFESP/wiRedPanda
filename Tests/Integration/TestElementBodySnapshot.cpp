@@ -29,7 +29,6 @@
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/ElementInput.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Presentation/ElementPresenter.h"
 #include "App/Scene/Scene.h"
@@ -172,7 +171,7 @@ void driveInputs(Element *element, const quint32 pattern)
 }
 
 /// Has \a node's simulation see \a status on its input, which colours its wireless indicator.
-void driveNode(Node *node, const Status status)
+void driveNode(Element *node, const Status status)
 {
     const std::unique_ptr<Element> source(ElementFactory::buildElement(ElementType::InputVcc));
     source->initSimulationVectors(0, 1);
@@ -333,12 +332,11 @@ QList<BodyState> nodeStates()
     QList<BodyState> states{{"none", [](Element *) {}}};
     for (const auto mode : {WirelessMode::Tx, WirelessMode::Rx}) {
         const QString modeName = (mode == WirelessMode::Tx) ? "Tx" : "Rx";
-        states.append({modeName, [mode](Element *e) { static_cast<Node *>(e)->setWirelessMode(mode); }});
+        states.append({modeName, [mode](Element *e) { e->setWirelessMode(mode); }});
         for (const auto status : {Status::Inactive, Status::Active, Status::Error}) {
             states.append({modeName + ' ' + TestUtils::snapshotStatus(status), [mode, status](Element *e) {
-                               auto *node = static_cast<Node *>(e);
-                               node->setWirelessMode(mode);
-                               driveNode(node, status);
+                               e->setWirelessMode(mode);
+                               driveNode(e, status);
                            }});
         }
     }

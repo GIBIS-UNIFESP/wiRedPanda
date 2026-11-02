@@ -27,7 +27,6 @@ QString TestArduino::s_cliCachePath;
 #include "App/Element/Element.h"
 #include "App/Element/ElementInput.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/Core/Priorities.h"
 #include "App/Wiring/Connection.h"
@@ -1715,12 +1714,12 @@ void TestArduino::testWirelessNodeGeneration()
     // assigned from whatever drives the Tx input, not from LOW (the default for
     // unconnected ports).
     auto *sw = new InputSwitch();
-    auto *txNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txNode);
     txNode->setLabel("CLK");
     txNode->setWirelessMode(WirelessMode::Tx);
 
-    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(rxNode);
     rxNode->setLabel("CLK");
     rxNode->setWirelessMode(WirelessMode::Rx);
@@ -1757,12 +1756,12 @@ void TestArduino::testWirelessRxReachedByAWireFollowsItsTx()
     wired->setLabel("Wired");
     auto *air = new InputSwitch();
     air->setLabel("Air");
-    auto *txNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *txNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(txNode);
     txNode->setLabel("CH");
     txNode->setWirelessMode(WirelessMode::Tx);
 
-    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(rxNode);
     rxNode->setLabel("CH");
     rxNode->setWirelessMode(WirelessMode::Rx);
@@ -1797,7 +1796,7 @@ void TestArduino::testWirelessOrphanedRxCodegen()
 {
     // An Rx node with no matching Tx must not crash the code generator and
     // should produce a LOW default for the node's output variable.
-    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(rxNode);
     rxNode->setLabel("MISSING_TX");
     rxNode->setWirelessMode(WirelessMode::Rx);

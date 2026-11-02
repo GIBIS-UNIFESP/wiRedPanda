@@ -12,8 +12,8 @@
 #include <QTest>
 #include <QTimer>
 
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Workspace.h"
 #include "App/UI/ClockDialog.h"
 #include "App/UI/ElementEditor.h"
@@ -205,9 +205,9 @@ void TestDialogs::testLengthDialogTitleAndRangeLabels()
 // ============================================================================
 
 // Build a Tx Node, add it to the scene, and return it.
-static Node *makeTxNode(Scene *scene, const QString &label)
+static Element *makeTxNode(Scene *scene, const QString &label)
 {
-    auto *node = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     node->setWirelessMode(WirelessMode::Tx);
     node->setLabel(label);
     scene->addItem(node);
@@ -292,7 +292,7 @@ void TestDialogs::testElementEditorRejectsModeChangeToDuplicateTx()
     EditorFixture f;
     makeTxNode(f.workspace.scene(), "ADDR");
 
-    auto *nodeB = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *nodeB = ElementFactory::buildElement(ElementType::Node);
     nodeB->setWirelessMode(WirelessMode::None);
     nodeB->setLabel("ADDR");
     f.workspace.scene()->addItem(nodeB);
@@ -325,7 +325,7 @@ void TestDialogs::testElementEditorAllowsRxWithDuplicateLabel()
     EditorFixture f;
     makeTxNode(f.workspace.scene(), "SDA");
 
-    auto *rxNode = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *rxNode = ElementFactory::buildElement(ElementType::Node);
     rxNode->setWirelessMode(WirelessMode::Rx);
     rxNode->setLabel("SDA_OLD");
     f.workspace.scene()->addItem(rxNode);

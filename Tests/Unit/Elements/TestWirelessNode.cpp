@@ -13,7 +13,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Commands.h"
@@ -25,18 +24,14 @@
 
 void TestWirelessNode::testDefaultModeIsNone()
 {
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
     QCOMPARE(node->wirelessMode(), WirelessMode::None);
     QVERIFY(node->hasWirelessMode());
 }
 
 void TestWirelessNode::testSetTxMode()
 {
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Tx);
 
@@ -47,9 +42,7 @@ void TestWirelessNode::testSetTxMode()
 
 void TestWirelessNode::testSetRxMode()
 {
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Rx);
 
@@ -60,9 +53,7 @@ void TestWirelessNode::testSetRxMode()
 
 void TestWirelessNode::testSetNoneModeRestoresRequired()
 {
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Rx);
     QVERIFY(!node->inputPort()->isRequired());
@@ -75,9 +66,7 @@ void TestWirelessNode::testSetNoneModeRestoresRequired()
 void TestWirelessNode::testSaveLoadRoundTrip()
 {
     // Save a Tx node, reload it, and verify the mode is preserved.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Tx);
     node->setLabel("CLK");
@@ -89,9 +78,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qobject_cast<Node *>(elm2.get());
-    QVERIFY(node2 != nullptr);
+    auto node2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
@@ -107,9 +94,7 @@ void TestWirelessNode::testSaveLoadRoundTrip()
 void TestWirelessNode::testSetSameModeIdempotent()
 {
     // Calling setWirelessMode with the current mode must not corrupt state.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Tx);
     node->setWirelessMode(WirelessMode::Tx);   // second call — early-return guard makes this a true no-op
@@ -126,9 +111,7 @@ void TestWirelessNode::testAllTransitionsIsRequired()
 {
     // Walk through every meaningful mode transition and verify isRequired() at each step.
     // None(T) → Tx(T) → Rx(F) → None(T) → Rx(F) → Tx(T)
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     // Initial state
     QCOMPARE(node->wirelessMode(), WirelessMode::None);
@@ -158,9 +141,7 @@ void TestWirelessNode::testSetNoneModeAfterTx()
 {
     // Tx → None must restore the input port to required=true,
     // mirroring testSetNoneModeRestoresRequired which only covers Rx → None.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Tx);
     QVERIFY(node->inputPort()->isRequired());   // Tx still requires a physical wire
@@ -174,9 +155,7 @@ void TestWirelessNode::testSaveLoadRxMode()
 {
     // Identical to testSaveLoadRoundTrip but for Rx mode — ensures the Rx
     // branch of saveProperties()/loadProperties() is exercised.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Rx);
     node->setLabel(QStringLiteral("DATA"));
@@ -188,9 +167,7 @@ void TestWirelessNode::testSaveLoadRxMode()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qobject_cast<Node *>(elm2.get());
-    QVERIFY(node2 != nullptr);
+    auto node2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
@@ -207,9 +184,7 @@ void TestWirelessNode::testSaveLoadRxMode()
 
 void TestWirelessNode::testLabelUsedAsChannelName()
 {
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     // The label field doubles as the wireless channel name
     node->setLabel("DATA_BUS");
@@ -224,9 +199,7 @@ void TestWirelessNode::testLabelUsedAsChannelName()
 void TestWirelessNode::testSaveLoadNoneMode()
 {
     // A Node explicitly cycled through Tx and back to None must load back as None.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Tx);
     node->setWirelessMode(WirelessMode::None);  // reset to None before saving
@@ -239,9 +212,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qobject_cast<Node *>(elm2.get());
-    QVERIFY(node2 != nullptr);
+    auto node2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
@@ -258,9 +229,7 @@ void TestWirelessNode::testSaveLoadNoneMode()
 void TestWirelessNode::testLabelPreservedAfterModeChange()
 {
     // Switching wireless mode must never modify the element label.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setLabel("CHANNEL_A");
 
@@ -299,9 +268,7 @@ void TestWirelessNode::testEditorShowsTheWirelessModeOnlyForANode()
 void TestWirelessNode::testPortVisibilityTxMode()
 {
     // Tx mode hides the output port (signal goes wireless) but keeps input visible.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Tx);
 
@@ -312,9 +279,7 @@ void TestWirelessNode::testPortVisibilityTxMode()
 void TestWirelessNode::testPortVisibilityRxMode()
 {
     // Rx mode hides the input port (signal arrives wirelessly) but keeps output visible.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Rx);
 
@@ -325,9 +290,7 @@ void TestWirelessNode::testPortVisibilityRxMode()
 void TestWirelessNode::testPortVisibilityAllTransitions()
 {
     // Walk through every mode and verify both ports' visibility.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     // None: both visible
     QVERIFY(node->inputPort()->isVisible());
@@ -372,9 +335,7 @@ void TestWirelessNode::testLoadCorruptedWirelessModeClampsToNone()
     }
 
     // Load it back
-    auto loadElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *loadNode = qobject_cast<Node *>(loadElm.get());
-    QVERIFY(loadNode != nullptr);
+    auto loadNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     {
         QDataStream in(&finalBuffer, QIODevice::ReadOnly);
@@ -403,9 +364,7 @@ void TestWirelessNode::testLoadNegativeWirelessModeClampsToNone()
         out << map;
     }
 
-    auto loadElm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *loadNode = qobject_cast<Node *>(loadElm.get());
-    QVERIFY(loadNode != nullptr);
+    auto loadNode = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
@@ -422,9 +381,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
 {
     // After saving and loading an Rx node, port visibility must be preserved:
     // input hidden, output visible.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Rx);
     node->setLabel("VIS_TEST");
@@ -436,9 +393,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qobject_cast<Node *>(elm2.get());
-    QVERIFY(node2 != nullptr);
+    auto node2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
@@ -455,9 +410,7 @@ void TestWirelessNode::testSaveLoadRxPortVisibility()
 void TestWirelessNode::testSaveLoadTxPortVisibility()
 {
     // Tx mode hides the output port. This must survive a save/load round-trip.
-    auto elm = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node = qobject_cast<Node *>(elm.get());
-    QVERIFY(node != nullptr);
+    auto node = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     node->setWirelessMode(WirelessMode::Tx);
     node->setLabel("TX_VIS");
@@ -469,9 +422,7 @@ void TestWirelessNode::testSaveLoadTxPortVisibility()
         node->save(out, {.purpose = SerializationPurpose::PortableFile});
     }
 
-    auto elm2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
-    auto *node2 = qobject_cast<Node *>(elm2.get());
-    QVERIFY(node2 != nullptr);
+    auto node2 = std::unique_ptr<Element>(ElementFactory::buildElement(ElementType::Node));
 
     {
         QDataStream in(&buffer, QIODevice::ReadOnly);
@@ -495,7 +446,7 @@ void TestWirelessNode::testWirelessIndicatorHandlesBusConflictError()
     auto *scene = workspace.scene();
     CircuitBuilder builder(scene);
 
-    auto *node = qobject_cast<Node *>(ElementFactory::buildElement(ElementType::Node));
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     QVERIFY(node != nullptr);
     node->setWirelessMode(WirelessMode::Tx); // the presenter draws the indicator
 
@@ -519,7 +470,7 @@ void TestWirelessNode::testANewLevelCarriedRepaintsTheNode()
 {
     // The presenter draws the indicator in the colour of the level the node carries, so a new level repaints it
     QGraphicsScene scene;
-    auto *node = new Node; // the scene takes ownership
+    auto *node = ElementFactory::buildElement(ElementType::Node); // the scene takes ownership
     scene.addItem(node);
     node->setWirelessMode(WirelessMode::Tx);
     Element source{ElementType::InputVcc};
@@ -540,15 +491,59 @@ void TestWirelessNode::testANewLevelCarriedRepaintsTheNode()
     node->connectPredecessor(0, nullptr, 0);
 }
 
+void TestWirelessNode::testAPlainNodeCarriesNothing()
+{
+    // Only a wireless node has an indicator: a plain one passes its input on and carries no level
+    Element node{ElementType::Node};
+    Element source{ElementType::InputVcc};
+    source.initSimulationVectors(0, 1);
+    node.initSimulationVectors(1, 1);
+    node.connectPredecessor(0, &source, 0);
+    source.setOutputValue(Status::Active);
+    node.updateLogic();
+    QCOMPARE(node.outputValue(0), Status::Active);
+    QCOMPARE(node.param<int>(ParamId::Carried), static_cast<int>(Status::Unknown));
+}
+
+void TestWirelessNode::testAWirelessNodeLeftUndrivenCarriesUnknown()
+{
+    // An input with no driver reads its default, Unknown for a node, and the indicator shows it in place of the level
+    // the node carried before
+    Element node{ElementType::Node};
+    node.setWirelessMode(WirelessMode::Tx);
+    Element source{ElementType::InputVcc};
+    source.initSimulationVectors(0, 1);
+    node.initSimulationVectors(1, 1);
+    node.connectPredecessor(0, &source, 0);
+    source.setOutputValue(Status::Active);
+    node.updateLogic();
+    QCOMPARE(node.param<int>(ParamId::Carried), static_cast<int>(Status::Active));
+
+    node.connectPredecessor(0, nullptr, 0);
+    node.updateLogic();
+    QCOMPARE(node.param<int>(ParamId::Carried), static_cast<int>(Status::Unknown));
+}
+
+void TestWirelessNode::testLayingOutAnRxNodesPortsLeavesItsInputsLevel()
+{
+    // Each layout applies the node's attributes again, an Rx input's unchanged requirement among them; that must not
+    // put the unconnected input back on its default and flash the level it shows until the simulation runs
+    Element node{ElementType::Node};
+    node.setWirelessMode(WirelessMode::Rx);
+    node.inputPort()->setStatus(Status::Active);
+    node.updatePortsProperties();
+    QCOMPARE(node.inputPort()->status(), Status::Active);
+}
+
 void TestWirelessNode::testRxInputStaysOptionalThroughEditUndoRedo()
 {
     // An edit reloads the live node from a snapshot: its ports are updated while it is already Rx, and setting the
-    // same mode again changes nothing, so the input stays optional only because the update leaves the requirement
-    // that the mode set alone (the node's attributes place its ports and set nothing else).
+    // same mode again changes nothing, so the input stays optional only because the update applies the node's
+    // attributes, which follow its mode.
     WorkSpace workspace;
     auto *scene = workspace.scene();
     CircuitBuilder builder(scene);
-    auto *rx = new Node();
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
     builder.add(rx);
     rx->setLabel("A");
     rx->setWirelessMode(WirelessMode::Rx);
@@ -571,4 +566,25 @@ void TestWirelessNode::testRxInputStaysOptionalThroughEditUndoRedo()
     QCOMPARE(rx->label(), QStringLiteral("B"));
     QVERIFY(!rx->inputPort()->isRequired());
     QVERIFY(rx->inputPort()->status() != Status::Error);
+}
+
+void TestWirelessNode::testAnUnwiredNodesInputStaysOptionalThroughItsModes()
+{
+    // An IC's proxy of a boundary input other than a clock's needs no wire (ICLoader): a layout, which a change of the
+    // mode makes, applies the node's attributes, and they keep the input optional rather than require it again.
+    Element node{ElementType::Node};
+    QVERIFY(node.inputPort()->isRequired());
+
+    node.setParam(ParamId::Wired, false);
+    QVERIFY(!node.inputPort()->isRequired());
+
+    node.setWirelessMode(WirelessMode::Tx);
+    QVERIFY(!node.inputPort()->isRequired());
+    node.setWirelessMode(WirelessMode::None);
+    QVERIFY(!node.inputPort()->isRequired());
+    node.updatePortsProperties();
+    QVERIFY(!node.inputPort()->isRequired());
+
+    node.setParam(ParamId::Wired, true);
+    QVERIFY(node.inputPort()->isRequired());
 }

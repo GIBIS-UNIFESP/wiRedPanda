@@ -43,7 +43,6 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Element/IC.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ClipboardManager.h"
@@ -1418,9 +1417,9 @@ void TestScene::testDuplicateTxLabel()
         {"a", "a", WirelessMode::Tx}, {"b", "dup", WirelessMode::Tx}, {"c", "dup", WirelessMode::Tx},
         {"d", "a", WirelessMode::None}, {"e", "", WirelessMode::None},
     };
-    QHash<QString, Node *> byName;
+    QHash<QString, Element *> byName;
     for (const auto &[name, label, mode] : nodes) {
-        auto *node = new Node;
+        auto *node = ElementFactory::buildElement(ElementType::Node);
         node->setWirelessMode(mode);
         node->setLabel(label);
         scene->addItem(node);
@@ -1442,11 +1441,11 @@ void TestScene::testInlineLabelEditorRefusesADuplicateTxLabel()
 {
     WorkSpace workspace;
     auto *scene = workspace.scene();
-    auto *first = new Node;
+    auto *first = ElementFactory::buildElement(ElementType::Node);
     first->setWirelessMode(WirelessMode::Tx);
     first->setLabel("x");
     scene->addItem(first);
-    auto *second = new Node;
+    auto *second = ElementFactory::buildElement(ElementType::Node);
     second->setWirelessMode(WirelessMode::Tx);
     second->setLabel("y");
     second->setPos(100, 0);
@@ -1523,9 +1522,9 @@ void TestScene::testInlineLabelEditorRelabelsAnICWithoutReadingItsFile()
 
 namespace TestSceneTxHelpers {
 
-Node *addWirelessNode(Scene *scene, const QString &label, const WirelessMode mode, const QPointF pos)
+Element *addWirelessNode(Scene *scene, const QString &label, const WirelessMode mode, const QPointF pos)
 {
-    auto *node = new Node;
+    auto *node = ElementFactory::buildElement(ElementType::Node);
     node->setWirelessMode(mode);
     node->setLabel(label);
     node->setPos(pos);

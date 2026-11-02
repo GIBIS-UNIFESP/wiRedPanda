@@ -9,7 +9,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
@@ -237,12 +236,9 @@ void TestConnectionValidity::testIsConnectionAllowedRejectsRxPort()
     auto *rxElm = ElementFactory::buildElement(ElementType::Node);
     scene.addItem(src);
     scene.addItem(rxElm);
+    rxElm->setWirelessMode(WirelessMode::Rx);
 
-    auto *node = qobject_cast<Node *>(rxElm);
-    QVERIFY(node != nullptr);
-    node->setWirelessMode(WirelessMode::Rx);
-
-    QVERIFY(!Scene::isConnectionAllowed(src->outputPort(0), node->inputPort(0)));
+    QVERIFY(!Scene::isConnectionAllowed(src->outputPort(0), rxElm->inputPort(0)));
 }
 
 void TestConnectionValidity::testIsConnectionAllowedRejectsTxOutputPort()
@@ -255,12 +251,9 @@ void TestConnectionValidity::testIsConnectionAllowedRejectsTxOutputPort()
     auto *dstElm = ElementFactory::buildElement(ElementType::InputSwitch);
     scene.addItem(txElm);
     scene.addItem(dstElm);
+    txElm->setWirelessMode(WirelessMode::Tx);
 
-    auto *txNode = qobject_cast<Node *>(txElm);
-    QVERIFY(txNode != nullptr);
-    txNode->setWirelessMode(WirelessMode::Tx);
-
-    QVERIFY(!Scene::isConnectionAllowed(txNode->outputPort(0), dstElm->inputPort(0)));
+    QVERIFY(!Scene::isConnectionAllowed(txElm->outputPort(0), dstElm->inputPort(0)));
 }
 
 void TestConnectionValidity::testIsConnectionAllowedPermitsNonePort()
@@ -275,11 +268,8 @@ void TestConnectionValidity::testIsConnectionAllowedPermitsNonePort()
     scene.addItem(noneElm);
     scene.addItem(dst);
 
-    auto *noneNode = qobject_cast<Node *>(noneElm);
-    QVERIFY(noneNode != nullptr);
-
-    QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), noneNode->inputPort(0)));
-    QVERIFY(Scene::isConnectionAllowed(noneNode->outputPort(0), dst->inputPort(0)));
+    QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), noneElm->inputPort(0)));
+    QVERIFY(Scene::isConnectionAllowed(noneElm->outputPort(0), dst->inputPort(0)));
 }
 
 void TestConnectionValidity::testIsConnectionAllowedPermitsTxInputPort()
@@ -292,12 +282,9 @@ void TestConnectionValidity::testIsConnectionAllowedPermitsTxInputPort()
     auto *txElm = ElementFactory::buildElement(ElementType::Node);
     scene.addItem(src);
     scene.addItem(txElm);
+    txElm->setWirelessMode(WirelessMode::Tx);
 
-    auto *txNode = qobject_cast<Node *>(txElm);
-    QVERIFY(txNode != nullptr);
-    txNode->setWirelessMode(WirelessMode::Tx);
-
-    QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), txNode->inputPort(0)));
+    QVERIFY(Scene::isConnectionAllowed(src->outputPort(0), txElm->inputPort(0)));
 }
 
 void TestConnectionValidity::testIsConnectionAllowedPermitsRxOutputPort()
@@ -310,12 +297,9 @@ void TestConnectionValidity::testIsConnectionAllowedPermitsRxOutputPort()
     auto *dst   = ElementFactory::buildElement(ElementType::Led);
     scene.addItem(rxElm);
     scene.addItem(dst);
+    rxElm->setWirelessMode(WirelessMode::Rx);
 
-    auto *rxNode = qobject_cast<Node *>(rxElm);
-    QVERIFY(rxNode != nullptr);
-    rxNode->setWirelessMode(WirelessMode::Rx);
-
-    QVERIFY(Scene::isConnectionAllowed(rxNode->outputPort(0), dst->inputPort(0)));
+    QVERIFY(Scene::isConnectionAllowed(rxElm->outputPort(0), dst->inputPort(0)));
 }
 
 void TestConnectionValidity::testConnectionRejectionReasonMessages()
@@ -332,13 +316,8 @@ void TestConnectionValidity::testConnectionRejectionReasonMessages()
     scene.addItem(andElm);
     scene.addItem(rxElm);
     scene.addItem(txElm);
-
-    auto *rx = qobject_cast<Node *>(rxElm);
-    QVERIFY(rx != nullptr);
-    rx->setWirelessMode(WirelessMode::Rx);
-    auto *tx = qobject_cast<Node *>(txElm);
-    QVERIFY(tx != nullptr);
-    tx->setWirelessMode(WirelessMode::Tx);
+    rxElm->setWirelessMode(WirelessMode::Rx);
+    txElm->setWirelessMode(WirelessMode::Tx);
 
     // Allowed: no message.
     QVERIFY(ConnectionManager::connectionRejectionReason(src->outputPort(0), andElm->inputPort(0)).isEmpty());
@@ -347,9 +326,9 @@ void TestConnectionValidity::testConnectionRejectionReasonMessages()
     QVERIFY(!ConnectionManager::connectionRejectionReason(andElm->outputPort(0), andElm->inputPort(0)).isEmpty());
 
     // The wireless cases spell out why no wire is needed.
-    const QString rxReason = ConnectionManager::connectionRejectionReason(src->outputPort(0), rx->inputPort(0));
+    const QString rxReason = ConnectionManager::connectionRejectionReason(src->outputPort(0), rxElm->inputPort(0));
     QVERIFY2(rxReason.contains("wirelessly"), qPrintable(rxReason));
-    const QString txReason = ConnectionManager::connectionRejectionReason(tx->outputPort(0), andElm->inputPort(0));
+    const QString txReason = ConnectionManager::connectionRejectionReason(txElm->outputPort(0), andElm->inputPort(0));
     QVERIFY2(txReason.contains("wirelessly"), qPrintable(txReason));
 
     // The reason and the bool verdict stay in agreement.

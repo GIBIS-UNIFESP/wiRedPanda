@@ -443,11 +443,10 @@ QGraphicsObject
         │     ├── InputButton     (momentary press)
         │     ├── InputRotary     (multi-position rotary switch)
         │     └── Clock           (frequency-driven square wave)
-        ├── IC                    (sub-circuit / integrated circuit)
-        └── Node, Text            (structural/annotation)
+        └── IC                    (sub-circuit / integrated circuit)
 ```
 
-The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND) and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
+The gates, the flip-flops and the latches, the multiplexers (Mux, Demux) and the truth table, the LED, the 7-, 14- and 16-segment displays, the buzzer and the audio box, the constants (VCC and GND), the node, the text and Line have no class of their own: each is an `Element` of its type, which its descriptor describes and, for a type with logic, `KernelLogic` computes.
 
 ### Element: The Base Class
 

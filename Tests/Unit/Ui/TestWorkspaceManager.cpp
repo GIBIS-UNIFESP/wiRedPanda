@@ -15,8 +15,8 @@
 
 #include "App/Core/Application.h"
 #include "App/Core/Settings.h"
+#include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -301,7 +301,7 @@ void saveTxNodes(const QString &path, const QStringList &labels)
 {
     WorkSpace workspace;
     for (int i = 0; i < labels.size(); ++i) {
-        auto *node = new Node;
+        auto *node = ElementFactory::buildElement(ElementType::Node);
         node->setWirelessMode(WirelessMode::Tx);
         node->setLabel(labels.at(i));
         node->setPos(64 * i, 0);

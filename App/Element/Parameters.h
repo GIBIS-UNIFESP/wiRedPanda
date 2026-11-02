@@ -35,10 +35,12 @@ enum class ParamId {
     Playing,   ///< Whether an audio output plays, which its input being Active starts; no file keeps it.
     Lit,       ///< The picture slot an LED's colour and inputs lit at its last refresh; no file keeps it.
     Carried,   ///< The Status a wireless node's input carried at its last update, as an int; no file keeps it.
+    Wired,     ///< Whether a node's input needs a wire, which an IC's proxy of an input but a clock's does not; no file
+               ///< keeps it.
 };
 
 /// The number of parameter ids.
-inline constexpr int kParamIdCount = static_cast<int>(ParamId::Carried) + 1;
+inline constexpr int kParamIdCount = static_cast<int>(ParamId::Wired) + 1;
 
 /// A parameter's value: one kind per parameter, the kind of its default.
 using ParamValue = std::variant<bool, int, double, QString, QBitArray>;
@@ -98,6 +100,13 @@ struct ParamSpec {
 
     /// Whether the value picks the picture the presenter shows (an LED's lit slot), so a new one replaces the picture.
     bool showsPicture = false;
+
+    /// Whether the presenter draws the value over the picture (a wireless node's indicator), so a new one repaints it.
+    bool repaints = false;
+
+    /// Whether the type's port attributes follow the value (a node's wireless mode), so a new one applies them again
+    /// and the ports are reported changed.
+    bool laysOutPorts = false;
 };
 
 /**

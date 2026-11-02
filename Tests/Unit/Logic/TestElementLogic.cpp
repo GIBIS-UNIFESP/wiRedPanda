@@ -5,7 +5,6 @@
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
-#include "App/Element/GraphicElements/Node.h"
 #include "Tests/Common/TestUtils.h"
 
 using TestUtils::initSrc;
@@ -40,7 +39,7 @@ void TestElementLogic::testNode()
     QFETCH(bool, input);
     QFETCH(bool, expected);
 
-    Node elm; initElm(elm);
+    Element elm{ElementType::Node}; initElm(elm);
     elm.connectPredecessor(0, m_inputs.at(0), 0);
 
     m_inputs.at(0)->setOutputValue(input);
