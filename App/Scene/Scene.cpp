@@ -159,6 +159,9 @@ void Scene::addItem(QGraphicsItem *item)
         if (!elm) {
             return; // LCOV_EXCL_LINE — item->type() == Element::Type is Element's own hardcoded type() override, so qgraphicsitem_cast to Element can never fail for an item reporting that exact type.
         }
+        if (auto *ic = qobject_cast<IC *>(elm)) {
+            ic->setFileCache(&m_icRegistry);
+        }
         if (auto *ic = qobject_cast<IC *>(elm); ic && !ic->file().isEmpty()) {
             m_icRegistry.watchFile(ic->file());
             for (const auto &nested : ic->nestedFiles()) {

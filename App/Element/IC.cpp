@@ -330,7 +330,16 @@ void IC::adoptLoadedCircuit(const IC &live)
     m_file = live.m_file;
     m_filesRead = live.m_filesRead;
     m_circuitAdopted = live.m_loaded || live.m_circuitAdopted;
-    m_filesScene = qobject_cast<Scene *>(live.scene());
+    m_filesCache = live.m_filesCache;
+    m_definition = live.m_definition;
+}
+
+QVariant IC::itemChange(const GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemSceneChange) {
+        m_filesCache = nullptr;
+    }
+    return Element::itemChange(change, value);
 }
 
 void IC::loadFromBlob(const QByteArray &blob, const QString &contextDir)

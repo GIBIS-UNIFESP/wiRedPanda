@@ -1062,6 +1062,7 @@ add_test(NAME TestFileUtils COMMAND test_wiredpanda TestFileUtils WORKING_DIRECT
 add_test(NAME TestGraphicsView COMMAND test_wiredpanda TestGraphicsView WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICDropZone COMMAND test_wiredpanda TestICDropZone WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICController COMMAND test_wiredpanda TestICController WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestICDefinition COMMAND test_wiredpanda TestICDefinition WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICRegistry COMMAND test_wiredpanda TestICRegistry WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestICUnit COMMAND test_wiredpanda TestICUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestLabeledSlider COMMAND test_wiredpanda TestLabeledSlider WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1245,7 +1246,7 @@ set(ALL_TESTS
     TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
     TestTrashButton TestWorkspaceManager
     TestConnection TestConnectionManager TestElementOutline TestGraphicsView TestPropertyShortcutHandler TestPort TestSceneDropHandler
-    TestDemux TestDisplay TestDisplay7 TestElement TestICRegistry TestICUnit TestMux
+    TestDemux TestDisplay TestDisplay7 TestElement TestICDefinition TestICRegistry TestICUnit TestMux
     TestDolphinClipboard TestDolphinEdits TestDolphinExporter TestDolphinFile TestDolphinModelBuilder
     TestDolphinSerializer TestDolphinZoom TestSignalDelegate TestWaveformSimulator TestFileUtils TestRecentFilesUnit
     TestFileHandlerSecurity TestICHandlerSecurity TestMCPProcessor TestMCPValidator TestElementHandler TestBaseHandler TestThemeHandler TestHistoryHandler TestServerInfoHandler TestConnectionHandler TestSimulationHandler TestFileHandler TestICHandler

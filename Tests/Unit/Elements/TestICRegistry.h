@@ -54,6 +54,7 @@ private slots:
     void testEmbeddedICRedoRestoresTheBlobAndTheInstance();
     void testEmbedThenUndoThenRedoRestoresTheEmbeddedIC();
     void testCorruptFileKeepsInstanceAndStack();
+    void testCorruptElementsKeepInstanceAndDropItsDefinition();
     void testEmptiedFileKeepsInstanceAndStack();
     void testLockedFileKeepsInstanceAndStack();
     void testTwoWritesInARowSettleToTheLast();

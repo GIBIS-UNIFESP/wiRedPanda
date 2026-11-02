@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <QByteArray>
 #include <QMap>
 #include <QPixmap>
@@ -17,6 +19,8 @@
 #include "App/IO/SerializationContext.h"
 
 class Connection;
+class ICDefinition;
+class ICFileCache;
 class Scene;
 
 /**
@@ -74,6 +78,12 @@ public:
     /// Lets this IC, a copy a snapshot is read into before \a live is (CommandUtils::readCopies()), keep the circuit
     /// \a live built instead of building it again from the same bytes: they load, and the copy is thrown away.
     void adoptLoadedCircuit(const IC &live);
+
+    /// Returns the file cache this IC reads its file through, or nothing when it has none.
+    ICFileCache *fileCache() const { return m_filesCache; }
+
+    /// Sets the file cache this IC reads its file through. The scene gives its registry as the IC is added.
+    void setFileCache(ICFileCache *cache) { m_filesCache = cache; }
 
     void loadFromDrop(const QString &fileName, const QString &contextDir) override;
 
@@ -157,6 +167,9 @@ protected:
     /// \reimp
     void loadState(QDataStream &stream, SerializationContext &context) override;
 
+    /// \reimp A change of scene drops the file cache: the scene the IC joins gives its own.
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
 private:
     Q_DISABLE_COPY_MOVE(IC)
 
@@ -174,8 +187,11 @@ private:
     bool m_loaded = false;
     /// Whether this IC, a copy, took over the record of a circuit another IC built (adoptLoadedCircuit()).
     bool m_circuitAdopted = false;
-    /// The scene whose file cache this IC, a copy outside any scene, reads its file through, as the live IC does.
-    Scene *m_filesScene = nullptr;
+    /// The file cache this IC reads its file through: its scene's, or for a copy outside any scene the live IC's
+    /// (adoptLoadedCircuit()).
+    ICFileCache *m_filesCache = nullptr;
+    /// The definition the elements were built from, held for as long as the IC is loaded, so it stays in use.
+    std::shared_ptr<const ICDefinition> m_definition;
     /// Bytes last successfully loaded via loadFromBlob(), so IC::loadState() can skip re-loading
     /// an embedded sub-circuit whose blob reference and content are both unchanged (a
     /// label-only property edit) instead of always tearing down and rebuilding it.

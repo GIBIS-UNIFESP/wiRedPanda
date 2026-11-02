@@ -17,14 +17,14 @@
 #include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/ICDefinition.h"
+#include "App/Element/ICFileCache.h"
 #include "App/Element/ICRenderer.h"
 #include "App/IO/ExternalFilePath.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
 #include "App/IO/VersionInfo.h"
-#include "App/Scene/ICRegistry.h"
-#include "App/Scene/Scene.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 
@@ -142,7 +142,7 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
         QString path;
         if (const QByteArray *carried = carriedICFile(fileInfo, fileName, path)) {
             const QFileInfo carriedInfo(path);
-            deserializeAndLoad(ic, *carried, carriedInfo.absolutePath());
+            deserializeAndLoad(ic, *carried, carriedInfo.absolutePath(), path);
             recordICFileRead(path, *carried);
             ic.m_blobName.clear();
             ic.m_file = path;
@@ -161,12 +161,11 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     // the file is not found and an exception is thrown above.
     ic.m_blobName.clear();
 
-    // Use cached file bytes from ICRegistry when available (avoids re-reading from disk)
-    if (auto *scene_ = filesScene(ic)) {
-        auto *reg = scene_->icRegistry();
-        const QByteArray &cached = reg->cachedFileBytes(fileInfo.absoluteFilePath());
+    // Use the cached file bytes of the file cache the IC reads through, when there is one (avoids re-reading from disk)
+    if (ICFileCache *cache = ic.fileCache()) {
+        const QByteArray &cached = cache->cachedFileBytes(fileInfo.absoluteFilePath());
         if (!cached.isEmpty()) {
-            deserializeAndLoad(ic, cached, fileInfo.absolutePath());
+            deserializeAndLoad(ic, cached, fileInfo.absolutePath(), fileInfo.absoluteFilePath());
             recordICFileRead(fileInfo.absoluteFilePath(), cached);
             ic.m_file = fileInfo.absoluteFilePath();
             if (ic.label().isEmpty()) {
@@ -187,14 +186,6 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     qCDebug(zero) << "Finished reading IC.";
 }
 
-Scene *ICLoader::filesScene(const IC &ic)
-{
-    if (auto *scene = qobject_cast<Scene *>(ic.scene())) {
-        return scene;
-    }
-    return ic.m_filesScene;
-}
-
 std::optional<std::pair<QString, QByteArray>> ICLoader::fileBytes(const IC &ic, const QString &fileName,
                                                                   const QString &contextDir)
 {
@@ -212,8 +203,8 @@ std::optional<std::pair<QString, QByteArray>> ICLoader::fileBytes(const IC &ic, 
     }
 
     const QString path = fileInfo.absoluteFilePath();
-    if (auto *scene = filesScene(ic)) {
-        if (const QByteArray &cached = scene->icRegistry()->cachedFileBytes(path); !cached.isEmpty()) {
+    if (ICFileCache *cache = ic.fileCache()) {
+        if (const QByteArray &cached = cache->cachedFileBytes(path); !cached.isEmpty()) {
             return std::pair(path, cached);
         }
     }
@@ -258,14 +249,15 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     file.close(); // must be closed before QSaveFile can write on Windows (mandatory file locking)
     recordICFileRead(fileInfo.absoluteFilePath(), bytes);
 
-    QDataStream stream(&bytes, QIODevice::ReadOnly);
-    auto preamble = Serialization::readPreamble(stream);
-    auto fileRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
+    const auto definition = ICDefinition::acquire(fileInfo.absoluteFilePath(), bytes);
+    const QVersionNumber version = definition->version();
+    QMap<QString, QByteArray> fileRegistry = definition->blobRegistry();
 
     QHash<quint64, Port *> portMap;
-    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = fileInfo.absolutePath(), .fallBackOnFailedFiles = s_icRestoring};
+    SerializationContext subCtx = {.portMap = portMap, .version = version, .purpose = SerializationPurpose::PortableFile, .contextDir = fileInfo.absolutePath(), .fallBackOnFailedFiles = s_icRestoring};
     subCtx.blobRegistry = fileRegistry.isEmpty() ? nullptr : &fileRegistry;
-    QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
+    QByteArray records = definition->records();
+    QDataStream elementsStream(&records, QIODevice::ReadOnly);
     elementsStream.setVersion(QDataStream::Qt_5_12);
     QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
 
@@ -287,8 +279,8 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
         qDeleteAll(items);
     });
 
-    if ((preamble.version < FormatRev::current) && Application::migrationEnabled) {
-        migrateFile(fileInfo, items, preamble.version, fileRegistry);
+    if ((version < FormatRev::current) && Application::migrationEnabled) {
+        migrateFile(fileInfo, items, version, fileRegistry);
     }
 
     // Parsing (and migration, if triggered) succeeded — only now is it safe to
@@ -296,6 +288,7 @@ void ICLoader::loadFileDirectly(IC &ic, const QFileInfo &fileInfo)
     // step above had thrown, resetInternalState() would never have run and the
     // IC's previous internal graph would remain intact.
     ic.resetInternalState();
+    ic.m_definition = definition;
     processLoadedItems(ic, items);
     ic.m_previewSource.clear();
     ic.m_previewContextDir = fileInfo.absolutePath();
@@ -407,7 +400,7 @@ void ICLoader::processLoadedItems(IC &ic, QList<QGraphicsItem *> &items)
     ic.m_loaded = true;
 }
 
-void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir)
+void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir, const QString &path)
 {
     if (s_icLoadDepth >= kMaxICNestingDepth) {
         throw PANDACEPTION("IC nesting depth limit (%1) exceeded — blob may be maliciously crafted",
@@ -417,17 +410,16 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
     ++s_icLoadDepth;
     const auto depthGuard = qScopeGuard([] { --s_icLoadDepth; });
 
-    // Parse the bytes before clearing state so a corrupt input leaves the IC unchanged.
-    QByteArray data(bytes);
-    QDataStream stream(&data, QIODevice::ReadOnly);
-
-    auto preamble = Serialization::readPreamble(stream);
-    auto blobRegistry = Serialization::deserializeBlobRegistry(preamble.metadata, preamble.version);
+    // Parse the bytes (once, shared with the other instances that load them) before clearing state, so a corrupt input
+    // leaves the IC unchanged.
+    const auto definition = ICDefinition::acquire(path, bytes);
 
     QHash<quint64, Port *> portMap;
-    SerializationContext subCtx = {.portMap = portMap, .version = preamble.version, .purpose = SerializationPurpose::PortableFile, .contextDir = contextDir, .fallBackOnFailedFiles = s_icRestoring};
+    QMap<QString, QByteArray> blobRegistry = definition->blobRegistry();
+    SerializationContext subCtx = {.portMap = portMap, .version = definition->version(), .purpose = SerializationPurpose::PortableFile, .contextDir = contextDir, .fallBackOnFailedFiles = s_icRestoring};
     subCtx.blobRegistry = blobRegistry.isEmpty() ? nullptr : &blobRegistry;
-    QDataStream elementsStream(&preamble.remainingPayload, QIODevice::ReadOnly);
+    QByteArray records = definition->records();
+    QDataStream elementsStream(&records, QIODevice::ReadOnly);
     elementsStream.setVersion(QDataStream::Qt_5_12);
     QList<QGraphicsItem *> items = Serialization::deserialize(elementsStream, subCtx);
 
@@ -453,6 +445,7 @@ void ICLoader::deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString
 
     // Parsing succeeded — now clear old state and apply
     ic.resetInternalState();
+    ic.m_definition = definition;
     processLoadedItems(ic, items);
     ic.m_previewSource = bytes;
     ic.m_previewContextDir = contextDir;
@@ -563,7 +556,7 @@ void ICLoader::loadFromBlob(IC &ic, const QByteArray &blob, const QString &conte
 void ICLoader::loadFileCopy(IC &ic, const QString &fileName, const QByteArray &bytes, const QString &contextDir)
 {
     const QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
-    deserializeAndLoad(ic, bytes, fileInfo.absolutePath());
+    deserializeAndLoad(ic, bytes, fileInfo.absolutePath(), fileInfo.absoluteFilePath());
     recordICFileRead(fileInfo.absoluteFilePath(), bytes);
     ic.m_blobName.clear();
     ic.m_file = fileInfo.absoluteFilePath();

@@ -174,6 +174,7 @@
 #include "Tests/Unit/Elements/TestFeatures.h"
 #include "Tests/Unit/Elements/TestGeometry.h"
 #include "Tests/Unit/Elements/TestElementAdvanced.h"
+#include "Tests/Unit/Elements/TestICDefinition.h"
 #include "Tests/Unit/Elements/TestICRegistry.h"
 #include "Tests/Unit/Elements/TestInputElements.h"
 #include "Tests/Unit/Elements/TestMux.h"
@@ -440,6 +441,7 @@ int main(int argc, char **argv)
         {"TestParameters", []() -> QObject * { return new TestParameters; }},
         {"TestSequentialLogic", []() -> QObject * { return new TestSequentialLogic; }},
         {"TestTruthTable", []() -> QObject * { return new TestTruthTable; }},
+        {"TestICDefinition", []() -> QObject * { return new TestICDefinition; }},
         {"TestICRegistry", []() -> QObject * { return new TestICRegistry; }},
         {"TestElementFactory", []() -> QObject * { return new TestElementFactory; }},
         {"TestElementLogic", []() -> QObject * { return new TestElementLogic; }},

@@ -53,6 +53,7 @@ set(MODEL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xnor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/GraphicElements/Xor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICDefinition.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/InputLevel.cpp
@@ -105,6 +106,8 @@ set(MODEL_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementSimState.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ElementTypeDescriptor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/IC.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICDefinition.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICFileCache.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICLoader.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/ICSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Element/InputLevel.h
@@ -503,6 +506,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICDefinition.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.cpp
@@ -748,6 +752,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestFeatures.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestGeometry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestIC.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICDefinition.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputElements.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Elements/TestInputRotary.h

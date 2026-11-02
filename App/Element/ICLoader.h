@@ -23,7 +23,6 @@
 #include "App/Element/IC.h"
 
 class Element;
-class Scene;
 class QGraphicsItem;
 
 /**
@@ -90,13 +89,13 @@ public:
     static void restoreCapturedFiles(const std::function<void()> &load);
 
 private:
-    /// The scene whose file cache \a ic reads through: its own, or for a copy outside one the live IC's.
-    static Scene *filesScene(const IC &ic);
     static void loadFileDirectly(IC &ic, const QFileInfo &fileInfo);
     /// Re-saves \a fileInfo in the current format. Pure: touches only its parameters, no IC state.
     static void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
                              const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
-    static void deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir);
+    /// Builds \a ic's elements from the .panda \a bytes, through the shared definition of \a bytes read from \a path
+    /// (empty for a blob).
+    static void deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir, const QString &path = {});
 
     /// Transfers ownership of \a items into ic's internal-element/connection vectors,
     /// deleting boundary Input/Output elements after their ports are proxied. Removes

@@ -147,7 +147,7 @@ QStringList ICRegistry::filesNesting(const QString &filePath) const
 
 void ICRegistry::reloadFile(const QString &filePath)
 {
-    // Invalidate the cached definition so it's rebuilt on next access
+    // Forget the file's cached bytes, so the next read is from disk
     invalidate(filePath);
 
     // Re-add the watch (some OS remove it after a file change event)

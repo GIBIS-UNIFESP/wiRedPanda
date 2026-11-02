@@ -14,6 +14,8 @@
 #include <QObject>
 #include <QSet>
 
+#include "App/Element/ICFileCache.h"
+
 class Element;
 class IC;
 class QUndoCommand;
@@ -23,11 +25,11 @@ class Scene;
  * \class ICRegistry
  * \brief Manages IC definitions, file watching, and embedded blob storage.
  *
- * \details Owned by Scene. Caches ICDefinition objects keyed by canonical file
- * path. Watches IC files for changes and reloads all IC instances referencing
- * a changed file.
+ * \details Owned by Scene. Keeps the bytes each IC file was last read as, keyed by
+ * path, and the blob registry. Watches IC files for changes and reloads all IC
+ * instances referencing a changed file.
  */
-class ICRegistry : public QObject
+class ICRegistry : public QObject, public ICFileCache
 {
     Q_OBJECT
 
@@ -35,9 +37,9 @@ public:
     explicit ICRegistry(Scene *scene);
 
     /// Returns cached file bytes, reading from disk on first access. Returns empty on failure.
-    const QByteArray &cachedFileBytes(const QString &filePath);
+    const QByteArray &cachedFileBytes(const QString &filePath) override;
 
-    /// Invalidates a cached definition (e.g., after file change).
+    /// Forgets the cached bytes of \a filePath, so the next read is from disk (e.g., after a file change).
     void invalidate(const QString &filePath);
 
     /// Registers a file for watching. Called when an IC element is added to the scene.
@@ -52,22 +54,21 @@ public:
     bool hasBlob(const QString &name) const;
     /// Returns the raw .panda bytes for the embedded IC named \a name.
     QByteArray blob(const QString &name) const;
-    /// Stores or replaces the blob \a data under \a name and invalidates the cached definition.
+    /// Stores or replaces the blob \a data under \a name.
     void setBlob(const QString &name, const QByteArray &data);
-    /// Stores blob \a data under \a name, made self-contained (selfContainedBlob()), without invalidating the
-    /// definition cache.
+    /// Stores blob \a data under \a name, made self-contained (selfContainedBlob()).
     void registerBlob(const QString &name, const QByteArray &data);
     /// Returns blob \a data, named \a name, with every IC it depends on embedded in it, as registerBlob() stores it,
     /// without storing it; throws if \a data or a dependency does not read.
     QByteArray selfContainedBlob(const QString &name, const QByteArray &data);
     /// Removes the blob named \a name from the registry.
     void removeBlob(const QString &name);
-    /// Renames a blob from \a oldName to \a newName, updating the cache key.
+    /// Renames a blob from \a oldName to \a newName, and the IC instances that embed it.
     void renameBlob(const QString &oldName, const QString &newName);
     /// Returns a const reference to the full blob map (name → .panda bytes).
     const QMap<QString, QByteArray> &blobMap() const { return m_blobs; }
     /// Returns a mutable reference to the blob map (used by serialization).
-    /// Prefer setBlob() for individual updates — it triggers cache invalidation.
+    /// Prefer setBlob() for individual updates.
     /// Use blobMapRef() only when the whole map is being replaced atomically
     /// (e.g., during deserialization of a .panda file).
     QMap<QString, QByteArray> &blobMapRef() { return m_blobs; }
@@ -111,7 +112,7 @@ public:
     void reloadChangedFileCopies(const QMap<QString, QByteArray> &copies, const QString &contextDir);
 
 signals:
-    /// Emitted when an IC definition file changes on disk and its cached definition is invalidated.
+    /// Emitted when an IC definition file changes on disk, after the IC instances built from it are reloaded.
     void definitionChanged(const QString &filePath);
 
     /// Emitted when renameBlob() actually renames a blob (not on its no-op guard cases), so
@@ -119,7 +120,7 @@ signals:
     void blobRenamed(const QString &oldName, const QString &newName);
 
 private slots:
-    /// Handles QFileSystemWatcher notifications; invalidates the definition and reloads IC instances.
+    /// Handles QFileSystemWatcher notifications; forgets the file's cached bytes and reloads IC instances.
     void onFileChanged(const QString &filePath);
 
     /// Handles directory notifications for a watched IC file that was deleted: once the file is back, it is reloaded.

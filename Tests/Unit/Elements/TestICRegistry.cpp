@@ -23,6 +23,7 @@
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
+#include "App/Element/ICDefinition.h"
 #include "App/IO/Serialization.h"
 #include "App/Scene/ICRegistry.h"
 #include "App/Scene/Scene.h"
@@ -940,6 +941,37 @@ void TestICRegistry::testCorruptFileKeepsInstanceAndStack()
     reportChanged(scene->icRegistry(), path);
     QCOMPARE(definitionChangedSpy.count(), 2);
     QCOMPARE(ic->inputSize(), 1);
+}
+
+void TestICRegistry::testCorruptElementsKeepInstanceAndDropItsDefinition()
+{
+    // A file whose header reads but whose elements do not: the reload throws after its definition is parsed. The instance
+    // keeps its inputs and its preview, and holds no definition of the bytes it failed on. The budget is 0 for the check,
+    // so a definition nothing holds is parsed again, and one the instance held would not be.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("bad-elements.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    QVERIFY(!ic->preview().isNull());
+
+    const QByteArray badBytes = buildBlobBytes({}, QByteArray("\x01\x02"));
+    writeBytes(path, badBytes);
+    const qsizetype budget = ICDefinition::budget();
+    ICDefinition::setBudget(0);
+    reportChanged(scene->icRegistry(), path);
+
+    QCOMPARE(ic->inputSize(), 2);
+    QVERIFY(!ic->preview().isNull());
+    const int parses = ICDefinition::parseCount();
+    QVERIFY(ICDefinition::acquire(path, badBytes) != nullptr);
+    QCOMPARE(ICDefinition::parseCount() - parses, 1);
+    ICDefinition::setBudget(budget);
 }
 
 void TestICRegistry::testEmptiedFileKeepsInstanceAndStack()
