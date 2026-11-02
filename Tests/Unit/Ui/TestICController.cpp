@@ -6,6 +6,10 @@
 #include <functional>
 #include <memory>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 #include <QDir>
 #include <QFile>
 #include <QInputDialog>
@@ -1174,4 +1178,78 @@ void TestICController::testUndoingAnICFileRemovalPutsTheFileBack()
     undoStack->undo();
     QVERIFY(QFileInfo::exists(filePath));
     QCOMPARE(f.tab.scene()->elements().size(), 1);
+}
+
+// ─── Undo probes: the removal of an IC file ───
+
+void TestICController::testRemoveICFileTrashesAgainOnEachRedo()
+{
+    // Each redo moves the file to the trash again and each undo takes it back out, so the file is where the step
+    // says it is after every step.
+    ICControllerFixture f;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    f.host.currentDirValue = QDir(dir.path());
+    const QString filePath = dir.filePath("cycle.panda");
+    QFile icFile(filePath);
+    QVERIFY(icFile.open(QIODevice::WriteOnly));
+    icFile.write(minimalPandaBytes());
+    icFile.close();
+
+    auto *ic = new IC();
+    f.tab.scene()->addItem(ic);
+    ic->loadFile(filePath, dir.path());
+    const int id = ic->id();
+    auto *undoStack = f.tab.scene()->undoStack();
+
+    ICController controller(f.host);
+    controller.removeICFile(QStringLiteral("cycle.panda"));
+    QVERIFY(!QFileInfo::exists(filePath));
+
+    for (int round = 0; round < 3; ++round) {
+        undoStack->undo();
+        QVERIFY(QFileInfo::exists(filePath));
+        QVERIFY(dynamic_cast<IC *>(f.tab.scene()->itemById(id)) != nullptr);
+        undoStack->redo();
+        QVERIFY(!QFileInfo::exists(filePath));
+        QVERIFY(f.tab.scene()->elements().isEmpty());
+    }
+}
+
+void TestICController::testRemoveICFileRefusedByTheTrashLeavesNoStep()
+{
+    // A file the trash refuses is not removed: the instances stay on the scene, the file stays where it was, and no
+    // step is pushed. The refusal is a Windows case here: another program holds the file open without sharing it, so the
+    // trash cannot take it. The other platforms' trash does not refuse a file in a test directory, so they skip it.
+#ifdef Q_OS_WIN
+    ICControllerFixture f;
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    f.host.currentDirValue = QDir(dir.path());
+    const QString filePath = dir.filePath("refused.panda");
+    QFile icFile(filePath);
+    QVERIFY(icFile.open(QIODevice::WriteOnly));
+    icFile.write(minimalPandaBytes());
+    icFile.close();
+
+    auto *ic = new IC();
+    f.tab.scene()->addItem(ic);
+    ic->loadFile(filePath, dir.path());
+    const int id = ic->id();
+    auto *undoStack = f.tab.scene()->undoStack();
+    const int countBefore = undoStack->count();
+
+    const HANDLE lock = CreateFileW(reinterpret_cast<const wchar_t *>(filePath.utf16()), GENERIC_READ,
+                                    0 /* no sharing */, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    QVERIFY(lock != INVALID_HANDLE_VALUE);
+    ICController controller(f.host);
+    QVERIFY_THROWS_EXCEPTION(std::exception, controller.removeICFile(QStringLiteral("refused.panda")));
+    CloseHandle(lock);
+
+    QVERIFY(QFileInfo::exists(filePath));
+    QCOMPARE(undoStack->count(), countBefore);
+    QVERIFY(dynamic_cast<IC *>(f.tab.scene()->itemById(id)) != nullptr);
+#else
+    QSKIP("A file the trash refuses is made by an exclusive lock, which only the Windows recycle bin honours here");
+#endif
 }

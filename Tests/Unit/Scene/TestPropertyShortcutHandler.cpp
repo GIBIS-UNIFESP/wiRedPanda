@@ -391,3 +391,102 @@ void TestPropertyShortcutHandler::testMultiElementMorphPrevIsSingleUndoStep()
     undoStack->undo();
     QCOMPARE(workspace.scene()->elements().size(), 2);
 }
+
+// ─── Undo probes: the shortcut cycles through redo and with a port change ───
+
+void TestPropertyShortcutHandler::testMultiElementMorphNextRedoIsSingleStep()
+{
+    // A morph of two elements is one step each way: the undo brings both back, the redo morphs both again.
+    WorkSpace workspace;
+    auto *and1 = ElementFactory::buildElement(ElementType::And);
+    auto *and2 = ElementFactory::buildElement(ElementType::And);
+    and2->setPos(200, 0);
+    workspace.scene()->addItem(and1);
+    workspace.scene()->addItem(and2);
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    and1->setSelected(true);
+    and2->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+    handler.nextElement();
+    QCOMPARE(undoStack->count(), countBefore + 1);
+
+    undoStack->undo();
+    for (auto *elm : workspace.scene()->elements()) {
+        QCOMPARE(elm->elementType(), ElementType::And);
+    }
+    QCOMPARE(workspace.scene()->elements().size(), 2);
+
+    undoStack->redo();
+    QCOMPARE(workspace.scene()->elements().size(), 2);
+    for (auto *elm : workspace.scene()->elements()) {
+        QCOMPARE(elm->elementType(), ElementType::Or);
+    }
+    QCOMPARE(undoStack->count(), countBefore + 1);
+}
+
+void TestPropertyShortcutHandler::testMultiElementShortcutRedoIsSingleStep()
+{
+    // A property cycle over two elements is one step: the undo gives both their old value, and the redo gives both
+    // the new one again, as one step.
+    WorkSpace workspace;
+    auto *clock1 = ElementFactory::buildElement(ElementType::Clock);
+    auto *clock2 = ElementFactory::buildElement(ElementType::Clock);
+    workspace.scene()->addItem(clock1);
+    workspace.scene()->addItem(clock2);
+    const double originalFreq1 = clock1->param<double>(ParamId::Frequency);
+    const double originalFreq2 = clock2->param<double>(ParamId::Frequency);
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    clock1->setSelected(true);
+    clock2->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+    handler.nextMainProperty();
+    QCOMPARE(undoStack->count(), countBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(clock1->param<double>(ParamId::Frequency), originalFreq1);
+    QCOMPARE(clock2->param<double>(ParamId::Frequency), originalFreq2);
+
+    undoStack->redo();
+    QCOMPARE(clock1->param<double>(ParamId::Frequency), originalFreq1 + 0.5);
+    QCOMPARE(clock2->param<double>(ParamId::Frequency), originalFreq2 + 0.5);
+    QCOMPARE(undoStack->count(), countBefore + 1);
+    QCOMPARE(undoStack->index(), countBefore + 1);
+}
+
+void TestPropertyShortcutHandler::testCycleWithAPortChangeRedoesAsOneStep()
+{
+    // A property cycle that changes an element's input count is one step, and its undo and redo each change the count
+    // back and forth with the step.
+    WorkSpace workspace;
+    auto *gate = ElementFactory::buildElement(ElementType::And);
+    workspace.scene()->addItem(gate);
+    const int gateId = gate->id();
+
+    PropertyShortcutHandler handler(workspace.scene());
+    workspace.scene()->clearSelection();
+    gate->setSelected(true);
+
+    auto *undoStack = workspace.scene()->undoStack();
+    const int countBefore = undoStack->count();
+    const int inputsBefore = gate->inputSize();
+    handler.nextMainProperty();
+    auto *changed = dynamic_cast<Element *>(workspace.scene()->itemById(gateId));
+    QVERIFY(changed != nullptr);
+    const int inputsAfter = changed->inputSize();
+    QVERIFY(inputsAfter != inputsBefore);
+    QCOMPARE(undoStack->count(), countBefore + 1);
+
+    undoStack->undo();
+    QCOMPARE(dynamic_cast<Element *>(workspace.scene()->itemById(gateId))->inputSize(), inputsBefore);
+    undoStack->redo();
+    QCOMPARE(dynamic_cast<Element *>(workspace.scene()->itemById(gateId))->inputSize(), inputsAfter);
+    QCOMPARE(undoStack->count(), countBefore + 1);
+}

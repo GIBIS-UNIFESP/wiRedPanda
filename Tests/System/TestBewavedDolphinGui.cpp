@@ -2431,3 +2431,24 @@ void TestBewavedDolphinGui::testUndoCombinationalRevertsColumnGrowth()
     dolphin->m_undoStack.undo();
     QCOMPARE(model->columnCount(), columnsBefore);
 }
+
+void TestBewavedDolphinGui::testRedoCombinationalFillsTheCellsAgain()
+{
+    // The redo of the combinational fill fills the values again after an undo has reverted them.
+    auto ws = createAndCircuit();
+    std::unique_ptr<BewavedDolphin> dolphin(createDolphin(ws.get()));
+    auto *model = dolphin->model();
+    const int inputCount = static_cast<int>(dolphin->inputElements().size());
+    const int outputRow = inputCount;
+
+    auto *action = dolphin->findChild<QAction *>("actionCombinational");
+    QVERIFY(action);
+    action->trigger();
+    QCOMPARE(model->index(outputRow, 3).data().toInt(), 1);
+
+    dolphin->m_undoStack.undo();
+    QCOMPARE(model->index(outputRow, 3).data().toInt(), 0);
+
+    dolphin->m_undoStack.redo();
+    QCOMPARE(model->index(outputRow, 3).data().toInt(), 1);
+}

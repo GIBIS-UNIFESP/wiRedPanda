@@ -2629,6 +2629,92 @@ void TestCommands::testSetPropertyCommandRxLabelRewiresChannel()
     QCOMPARE(rx->outputValue(0), Status::Active);
 }
 
+void TestCommands::testSetPropertyCommandRxLabelRewiresOnEveryRedo()
+{
+    // Each redo of a label edit writes the label back and rebuilds the channels: the Rx follows its new channel on
+    // every redo, and back on every undo, not only on the first apply (testSetPropertyCommandRxLabelRewiresChannel)
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+    auto *swA = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *swB = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *txA = ElementFactory::buildElement(ElementType::Node);
+    auto *txB = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
+    builder.add(swA, swB, txA, txB, rx);
+    txA->setLabel("A");
+    WirelessNode::setMode(*txA, WirelessMode::Tx);
+    txB->setLabel("B");
+    WirelessNode::setMode(*txB, WirelessMode::Tx);
+    rx->setLabel("A");
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
+    builder.connect(swA, 0, txA, 0);
+    builder.connect(swB, 0, txB, 0);
+    auto *sim = builder.initSimulation();
+    swA->setOn(true);
+    swB->setOn(false);
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Active);
+
+    scene->receiveCommand(SetPropertyCommand::apply({rx}, ElementProperty::label(), QString("B"), scene).command);
+    for (int cycle = 0; cycle < 3; ++cycle) {
+        sim->update();
+        QCOMPARE(rx->label(), QString("B"));
+        QCOMPARE(rx->outputValue(0), Status::Inactive);
+
+        scene->undoStack()->undo();
+        sim->update();
+        QCOMPARE(rx->label(), QString("A"));
+        QCOMPARE(rx->outputValue(0), Status::Active);
+
+        scene->undoStack()->redo();
+    }
+    sim->update();
+    QCOMPARE(rx->label(), QString("B"));
+    QCOMPARE(rx->outputValue(0), Status::Inactive);
+}
+
+void TestCommands::testSetPropertyCommandWirelessModeRewiresOnEveryRedo()
+{
+    // A mode edit that turns a Tx into an Rx takes its channel's sender away: the Rx that listened to it has no
+    // predecessor, so its output is Unknown. Every redo of the mode edit rebuilds the channels to show that, and every
+    // undo brings the sender back and the signal with it
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    CircuitBuilder builder(scene);
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *tx = ElementFactory::buildElement(ElementType::Node);
+    auto *rx = ElementFactory::buildElement(ElementType::Node);
+    builder.add(sw, tx, rx);
+    tx->setLabel("E");
+    WirelessNode::setMode(*tx, WirelessMode::Tx);
+    rx->setLabel("E");
+    WirelessNode::setMode(*rx, WirelessMode::Rx);
+    builder.connect(sw, 0, tx, 0);
+    auto *sim = builder.initSimulation();
+    sw->setOn(true);
+    sim->update();
+    QCOMPARE(rx->outputValue(0), Status::Active);
+
+    const auto mode = ElementProperty::parameter(ParamId::Wireless);
+    scene->receiveCommand(SetPropertyCommand::apply({tx}, mode, static_cast<int>(WirelessMode::Rx), scene).command);
+    for (int cycle = 0; cycle < 3; ++cycle) {
+        sim->update();
+        QCOMPARE(WirelessNode::mode(*tx), WirelessMode::Rx);
+        QCOMPARE(rx->outputValue(0), Status::Unknown);
+
+        scene->undoStack()->undo();
+        sim->update();
+        QCOMPARE(WirelessNode::mode(*tx), WirelessMode::Tx);
+        QCOMPARE(rx->outputValue(0), Status::Active);
+
+        scene->undoStack()->redo();
+    }
+    sim->update();
+    QCOMPARE(WirelessNode::mode(*tx), WirelessMode::Rx);
+    QCOMPARE(rx->outputValue(0), Status::Unknown);
+}
+
 void TestCommands::testSetPropertyCommandNonWirelessLabelDoesNotRebuild()
 {
     // A label of a node with no mode names no channel: no rebuild
@@ -2792,4 +2878,202 @@ void TestCommands::testLoadListGrowsLinearly()
     qInfo().noquote() << QString("growth %1; %2").arg(growth).arg(times);
     QVERIFY2(growth < 4.0, qPrintable(QString("against a walk of the same items, loadList() took %1 times as long "
                                               "at 128 times the elements (%2)").arg(growth).arg(times)));
+}
+
+// ─── Undo probes: a truth table's output and its wire, a split's wire ends and ten
+// cycles, a morph's frequency through redo ───
+
+void TestCommands::testToggleTruthTableOutputKeepsItsWireAndRedoes()
+{
+    // A truth table output toggled, undone and redone: the key keeps its full size at each step, and the wire from
+    // the output stays on the same two ports through all of them.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+
+    auto *truthTable = ElementFactory::buildElement(ElementType::TruthTable);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    truthTable->setPos(0, 0);
+    led->setPos(300, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{truthTable, led}, scene));
+    auto *conn = new Connection();
+    conn->setStartPort(truthTable->outputPort(0));
+    conn->setEndPort(led->inputPort(0));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    const int tableId = truthTable->id();
+    const int ledId = led->id();
+    const int wireId = conn->id();
+
+    auto table = [&scene, tableId] { return dynamic_cast<Element *>(scene->itemById(tableId)); };
+    auto wireJoinsThem = [&scene, wireId, tableId, ledId] {
+        auto *wire = dynamic_cast<Connection *>(scene->itemById(wireId));
+        return wire != nullptr && wire->startPort()->element()->id() == tableId && wire->endPort()->element()->id() == ledId;
+    };
+    const QBitArray initial = table()->param<QBitArray>(ParamId::Table);
+    QVERIFY(initial.size() == 2048);
+    QVERIFY(wireJoinsThem());
+
+    scene->receiveCommand(new ToggleTruthTableOutputCommand(table(), 5, scene));
+    QVERIFY(table()->param<QBitArray>(ParamId::Table).at(5));
+    QVERIFY(table()->param<QBitArray>(ParamId::Table).size() == 2048);
+    QVERIFY(wireJoinsThem());
+
+    scene->undoStack()->undo();
+    QVERIFY(table()->param<QBitArray>(ParamId::Table) == initial);
+    QVERIFY(wireJoinsThem());
+
+    scene->undoStack()->redo();
+    QVERIFY(table()->param<QBitArray>(ParamId::Table).at(5));
+    QVERIFY(table()->param<QBitArray>(ParamId::Table).size() == 2048);
+    QVERIFY(wireJoinsThem());
+    QCOMPARE(led->inputPort(0)->connections().size(), 1);
+}
+
+void TestCommands::testSplitCommandKeepsTheWireEndsAcrossUndoAndRedo()
+{
+    // A split joins the source to the new node and the node to the sink; the undo joins the source to the sink
+    // again; the redo splits it the same way.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    sw->setPos(0, 0);
+    led->setPos(200, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    const int swId = sw->id();
+    const int ledId = led->id();
+    const int connId = conn->id();
+
+    auto nodeCount = [&scene] {
+        int count = 0;
+        for (auto *elm : scene->elements()) {
+            if (elm->elementType() == ElementType::Node) {
+                ++count;
+            }
+        }
+        return count;
+    };
+    auto sourceReachesSinkDirectly = [&scene, swId, ledId] {
+        auto *source = dynamic_cast<Element *>(scene->itemById(swId));
+        const auto wires = source->outputPort()->connections();
+        return wires.size() == 1 && wires.constFirst()->endPort()->element()->id() == ledId;
+    };
+    QVERIFY(sourceReachesSinkDirectly());
+
+    scene->receiveCommand(new SplitCommand(dynamic_cast<Connection *>(scene->itemById(connId)), QPointF(100, 0), scene));
+    QCOMPARE(nodeCount(), 1);
+    QVERIFY(!sourceReachesSinkDirectly());
+    auto *source = dynamic_cast<Element *>(scene->itemById(swId));
+    const auto *toNode = source->outputPort()->connections().constFirst();
+    QCOMPARE(toNode->endPort()->element()->elementType(), ElementType::Node);
+    const auto *fromNode = toNode->endPort()->element()->outputPort()->connections().constFirst();
+    QCOMPARE(fromNode->endPort()->element()->id(), ledId);
+
+    scene->undoStack()->undo();
+    QCOMPARE(nodeCount(), 0);
+    QVERIFY(sourceReachesSinkDirectly());
+
+    scene->undoStack()->redo();
+    QCOMPARE(nodeCount(), 1);
+    QVERIFY(!sourceReachesSinkDirectly());
+}
+
+void TestCommands::testSplitCommandTenCyclesKeepOneNodeAndOneSplit()
+{
+    // split, undo, redo, undo, ten times over. Each split adds one node and each undo takes it away, so
+    // the wire count and the node count are the same at the start of every round.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    sw->setPos(0, 0);
+    led->setPos(200, 0);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{sw, led}, scene));
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort());
+    conn->setEndPort(led->inputPort());
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{conn}, scene));
+    const int connId = conn->id();
+    QUndoStack *stack = scene->undoStack();
+    const int depth = stack->index();
+
+    auto nodes = [&scene] {
+        int count = 0;
+        for (auto *elm : scene->elements()) {
+            if (elm->elementType() == ElementType::Node) {
+                ++count;
+            }
+        }
+        return count;
+    };
+    auto wire = [&scene, connId] { return dynamic_cast<Connection *>(scene->itemById(connId)); };
+
+    for (int cycle = 0; cycle < 10; ++cycle) {
+        QVERIFY(wire() != nullptr);
+        stack->push(new SplitCommand(wire(), QPointF(100, 0), scene));
+        QCOMPARE(nodes(), 1);
+        QCOMPARE(scene->elements().size(), 3);
+        QCOMPARE(stack->index(), depth + 1);
+        stack->undo();
+        QCOMPARE(nodes(), 0);
+        QCOMPARE(scene->elements().size(), 2);
+        QCOMPARE(stack->index(), depth);
+        QVERIFY(wire() != nullptr);
+        stack->redo();
+        QCOMPARE(nodes(), 1);
+        stack->undo();
+        QCOMPARE(nodes(), 0);
+        QCOMPARE(stack->index(), depth);
+    }
+}
+
+void TestCommands::testMorphFrequencyRedoKeepsIt()
+{
+    // A morph's frequency carries through a redo as well as through its undo.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *buzzer = ElementFactory::buildElement(ElementType::Buzzer);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{buzzer}, scene));
+    buzzer->setParam(ParamId::Frequency, 123.0);
+
+    scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::Clock, scene));
+    undoStack->undo();
+    QCOMPARE(scene->elements().first()->elementType(), ElementType::Buzzer);
+    undoStack->redo();
+    auto *morphed = scene->elements().first();
+    QCOMPARE(morphed->elementType(), ElementType::Clock);
+    QCOMPARE(morphed->param<double>(ParamId::Frequency), 123.0);
+
+    undoStack->undo();
+    QCOMPARE(scene->elements().first()->param<double>(ParamId::Frequency), 123.0);
+}
+
+void TestCommands::testMorphColourRedoKeepsIt()
+{
+    // A morph's colour carries through its redo as well as through its undo.
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{led}, scene));
+    QVERIFY(led->setParam(ParamId::Colour, QStringLiteral("Blue")));
+
+    scene->receiveCommand(new MorphCommand(scene->elements().toList(), ElementType::Display7, scene));
+    undoStack->undo();
+    QCOMPARE(scene->elements().first()->elementType(), ElementType::Led);
+    QCOMPARE(scene->elements().first()->param<QString>(ParamId::Colour), QStringLiteral("Blue"));
+
+    undoStack->redo();
+    auto *morphed = scene->elements().first();
+    QCOMPARE(morphed->elementType(), ElementType::Display7);
+    QCOMPARE(morphed->param<QString>(ParamId::Colour), QStringLiteral("Blue"));
+
+    undoStack->undo();
+    QCOMPARE(scene->elements().first()->param<QString>(ParamId::Colour), QStringLiteral("Blue"));
 }

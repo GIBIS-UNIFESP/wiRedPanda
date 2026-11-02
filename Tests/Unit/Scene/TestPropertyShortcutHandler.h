@@ -11,6 +11,9 @@ class TestPropertyShortcutHandler : public QObject
     Q_OBJECT
 
 private slots:
+    void testMultiElementMorphNextRedoIsSingleStep();
+    void testMultiElementShortcutRedoIsSingleStep();
+    void testCycleWithAPortChangeRedoesAsOneStep();
 
     void testGateInputCountNext();
     void testGateInputCountPrev();

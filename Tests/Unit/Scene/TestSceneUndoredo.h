@@ -11,6 +11,9 @@ class TestSceneUndoredo : public QObject
     Q_OBJECT
 
 private slots:
+    void testSavedMorphWithItsWireReopensAsSaved();
+    void testDroppedUndoLeavesTheStackAndTheSceneAsTheyAre();
+    void testLongHistoryUndoesAndRedoesEveryStep();
     void initTestCase();
 
     // Undo/Redo & Scene State Tests
@@ -119,6 +122,37 @@ private slots:
     void testDeleteUndoRedoConnectionCountStable();       // connection count stable across cycles
     void testDeleteChainMiddleUndoRestoresTopology();     // A→B→C: delete B, undo, verify chain
     void testDeleteUndoSimulationCorrectness();           // AND gate truth table survives delete+undo
+
+    // Undo probes: save and reopen, the clean state
+    void testReopenedDocumentStartsWithAnEmptyUndoStack();
+    void testSavedAfterDoReopensWithTheDoAndNoStep();
+    void testSaveAfterUndoReopensTheSavedState();
+    void testUndoAfterSaveLeavesTheSavedFileAsItWas();
+    void testReopenedDocumentUndoesOnlyItsNewEdits();
+    void testSaveMakesTheStackCleanAndUndoBackToIt();
+
+    // Undo probes: ten cycles of each command, and ten mixed commands undone and redone
+    void testTenRotateCyclesReturnToTheStart();
+    void testTenMoveCyclesReturnToTheStart();
+    void testTenFlipCyclesReturnToTheStart();
+    void testTenMorphCyclesKeepTheWire();
+    void testTenPortSizeCyclesCutAndRestoreTheWire();
+    void testTenDeleteCyclesRestoreTheWire();
+    void testTenMixedCommandsUndoAllRedoAll();
+
+    // Undo probes: a new edit after an undo discards the redo
+    void testRotateAfterUndoDiscardsTheRedo();
+    void testMoveAfterUndoDiscardsTheRedo();
+    void testFlipAfterUndoDiscardsTheRedo();
+    void testPortSizeAfterUndoDiscardsTheRedo();
+    void testMorphAfterUndoDiscardsTheRedo();
+    void testPasteAfterUndoDiscardsTheRedo();
+    void testDeleteAfterUndoDiscardsTheRedo();
+
+    // Undo probes: the ends of a wire after a step
+    void testMoveUndoKeepsWireEndsOnTheirPorts();
+    void testRotateUndoKeepsWireEndsOnTheirPorts();
+    void testFlipUndoKeepsWireEndsOnTheirPorts();
 
 private:
     QTemporaryDir m_tempDir;

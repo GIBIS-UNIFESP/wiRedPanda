@@ -11,6 +11,7 @@ class TestWorkspace : public QObject
     Q_OBJECT
 
 private slots:
+    void testAutosaveLeavesTheUndoStackAsItWas();
     void initTestCase();
     void init();
 

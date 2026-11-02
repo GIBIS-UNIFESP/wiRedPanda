@@ -10,6 +10,11 @@ class TestCommands : public QObject
     Q_OBJECT
 
 private slots:
+    void testMorphColourRedoKeepsIt();
+    void testToggleTruthTableOutputKeepsItsWireAndRedoes();
+    void testSplitCommandKeepsTheWireEndsAcrossUndoAndRedo();
+    void testSplitCommandTenCyclesKeepOneNodeAndOneSplit();
+    void testMorphFrequencyRedoKeepsIt();
     // Basic add/delete operations
     void testAddItemsCommand();
     void testDeleteItemsCommand();
@@ -91,6 +96,8 @@ private slots:
     void testSetPropertyCommandMergedBackIsNoStep();
     void testSetPropertyCommandMergesOnlyTheSameChanges();
     void testSetPropertyCommandRxLabelRewiresChannel();
+    void testSetPropertyCommandRxLabelRewiresOnEveryRedo();
+    void testSetPropertyCommandWirelessModeRewiresOnEveryRedo();
     void testSetPropertyCommandNonWirelessLabelDoesNotRebuild();
     void testSetPropertyCommandRefusesASecondTxOnAChannel();
 

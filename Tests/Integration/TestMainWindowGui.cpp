@@ -3857,10 +3857,18 @@ void TestMainWindowGui::testRemoveICFileIsUndoableA14()
 
     // The load-bearing regression: the IC removal went through the undo
     // stack — pre-fix it was a bare removeItem + delete with no command
-    // pushed. The file-restoration on undo is out of scope (the .panda was
-    // deleted by QFile::remove and isn't part of the undo command).
+    // pushed.
     QVERIFY2(undoStack->count() > stackBefore,
              "removeICFile must push a DeleteItemsCommand on the undo stack");
+
+    // The removal is undoable: the undo takes the file back out of the trash and brings the instance back, and the redo
+    // removes both again (the file went to the trash, not to QFile::remove).
+    undoStack->undo();
+    QVERIFY2(QFile::exists(icPath), "the undo must take the file back out of the trash");
+    QCOMPARE(countMatchingICs(), 1);
+    undoStack->redo();
+    QCOMPARE(countMatchingICs(), 0);
+    QVERIFY2(!QFile::exists(icPath), "the redo must trash the file again");
 
     Application::interactiveMode = prevInteractive;
     FileDialogs::setProvider(prevProvider);

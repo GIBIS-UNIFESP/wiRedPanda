@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <utility>
 
 #include <QDataStream>
@@ -24,6 +25,7 @@
 #include "App/Scene/Workspace.h"
 #include "App/Simulation/Simulation.h"
 #include "App/Wiring/Connection.h"
+#include "App/Wiring/Port.h"
 #include "Tests/Common/TestUtils.h"
 
 void TestSceneUndoredo::initTestCase()
@@ -2542,4 +2544,713 @@ void TestSceneUndoredo::testDeleteUndoSimulationCorrectness()
         sim->update();
         QCOMPARE(TestUtils::inputStatus(led), TestUtils::level(row.second));
     }
+}
+
+// ─── Undo probes: save and reopen, the clean state, repetition, new edits, wire ends ───
+
+namespace {
+// The element with \a id in \a scene, or nullptr once it is gone.
+Element *probeElement(Scene &scene, const int id)
+{
+    return dynamic_cast<Element *>(scene.itemById(id));
+}
+
+// Every element of \a scene by id, each with its type, position, rotation, mirror flags and input count, and the wire
+// count: one string, so a whole state is compared in one check.
+QString probeSceneState(Scene &scene)
+{
+    QVector<Element *> elms = scene.elements();
+    std::sort(elms.begin(), elms.end(), [](const Element *a, const Element *b) { return a->id() < b->id(); });
+    QString state;
+    for (const auto *elm : std::as_const(elms)) {
+        state += QStringLiteral("[%1 t%2 %3,%4 r%5 x%6 y%7 in%8]")
+                     .arg(elm->id())
+                     .arg(static_cast<int>(elm->elementType()))
+                     .arg(elm->pos().x())
+                     .arg(elm->pos().y())
+                     .arg(elm->rotation())
+                     .arg(elm->isFlippedX() ? 1 : 0)
+                     .arg(elm->isFlippedY() ? 1 : 0)
+                     .arg(elm->inputSize());
+    }
+    return state + QStringLiteral("|wires %1").arg(TestUtils::countConnections(&scene));
+}
+
+// Where a wire's two ends are: the element and port each end joins, and each port's position in the scene.
+QString probeWireEnds(const Connection *conn)
+{
+    const Port *start = conn->startPort();
+    const Port *end = conn->endPort();
+    return QStringLiteral("%1.%2 at %3,%4 -> %5.%6 at %7,%8")
+        .arg(start->element()->id())
+        .arg(start->index())
+        .arg(start->scenePos().x())
+        .arg(start->scenePos().y())
+        .arg(end->element()->id())
+        .arg(end->index())
+        .arg(end->scenePos().x())
+        .arg(end->scenePos().y());
+}
+
+// \a cycles rounds of push, undo, redo, undo with the command \a make returns. The state \a state reads is
+// \a before at the start of each round and \a after once the command is pushed, and the stack's depth is the same at
+// the end of every round.
+template <typename MakeCommand, typename ReadState>
+void checkUndoRedoCycles(Scene &scene, const int cycles, MakeCommand make, ReadState state, const QString &before,
+                         const QString &after)
+{
+    QUndoStack *stack = scene.undoStack();
+    const int depth = stack->index();
+    for (int cycle = 0; cycle < cycles; ++cycle) {
+        stack->push(make());
+        QCOMPARE(stack->index(), depth + 1);
+        QCOMPARE(state(), after);
+        stack->undo();
+        QCOMPARE(stack->index(), depth);
+        QCOMPARE(state(), before);
+        stack->redo();
+        QCOMPARE(stack->index(), depth + 1);
+        QCOMPARE(state(), after);
+        stack->undo();
+        QCOMPARE(stack->index(), depth);
+        QCOMPARE(state(), before);
+    }
+}
+
+// \a makeFirst is pushed and undone, then \a makeSecond is pushed. The redo of the first is gone: the
+// stack holds one command, the undo returns to the state before either, and the redo gives the second's state.
+template <typename MakeFirst, typename MakeSecond, typename ReadState>
+void checkNewEditDiscardsRedo(Scene &scene, MakeFirst makeFirst, MakeSecond makeSecond, ReadState state)
+{
+    QUndoStack *stack = scene.undoStack();
+    const QString start = state();
+    stack->push(makeFirst());
+    stack->undo();
+    QCOMPARE(state(), start);
+    QVERIFY(stack->canRedo());
+    stack->push(makeSecond());
+    QVERIFY(!stack->canRedo());
+    QCOMPARE(stack->count(), 1);
+    const QString secondDone = state();
+    stack->undo();
+    QCOMPARE(state(), start);
+    QCOMPARE(stack->count(), 1);
+    stack->redo();
+    QCOMPARE(state(), secondDone);
+}
+
+// An AND gate at the origin, an LED at (200, 0), and a wire from the gate's output to the LED's input. Returns the
+// wire's id.
+int buildAndToLedWire(Scene &scene, Element *&andGate, Element *&led)
+{
+    andGate = ElementFactory::buildElement(ElementType::And);
+    led = ElementFactory::buildElement(ElementType::Led);
+    andGate->setPos(0, 0);
+    led->setPos(200, 0);
+    scene.addItem(andGate);
+    scene.addItem(led);
+    auto *conn = new Connection();
+    conn->setStartPort(andGate->outputPort(0));
+    conn->setEndPort(led->inputPort(0));
+    scene.addItem(conn);
+    return conn->id();
+}
+} // namespace
+
+// ── Save and reopen, the clean state and the empty stack of a reopened document ──
+
+void TestSceneUndoredo::testReopenedDocumentStartsWithAnEmptyUndoStack()
+{
+    // A document saved with an edit and reopened has no history: its stack is empty, and its undo does nothing.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("reopen_empty.panda");
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{andGate}, scene));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(path);
+    auto *reopenedScene = reopened.scene();
+    QCOMPARE(reopenedScene->elements().size(), 1);
+    QCOMPARE(reopenedScene->undoStack()->count(), 0);
+    QVERIFY(!reopenedScene->undoStack()->canUndo());
+    QVERIFY(!reopenedScene->undoStack()->canRedo());
+    reopenedScene->undoStack()->undo();
+    QCOMPARE(reopenedScene->elements().size(), 1);
+}
+
+void TestSceneUndoredo::testSavedAfterDoReopensWithTheDoAndNoStep()
+{
+    // Edits saved and reopened are in the file, and the reopened document has no step to undo them with.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("saved_do.panda");
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::And)}, scene));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::Led)}, scene));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(path);
+    QCOMPARE(reopened.scene()->elements().size(), 2);
+    QCOMPARE(reopened.scene()->undoStack()->count(), 0);
+    reopened.scene()->undoStack()->undo();
+    QCOMPARE(reopened.scene()->elements().size(), 2);
+}
+
+void TestSceneUndoredo::testSaveAfterUndoReopensTheSavedState()
+{
+    // An edit undone before the save is not in the file; the save leaves the stack clean; the reopened file holds
+    // the saved state, and its redo has nothing to do.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("saved_undone.panda");
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::And)}, scene));
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::Led)}, scene));
+    scene->undoStack()->undo();
+    QCOMPARE(scene->elements().size(), 1);
+
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    QVERIFY(scene->undoStack()->isClean());
+
+    WorkSpace reopened;
+    reopened.load(path);
+    QCOMPARE(reopened.scene()->elements().size(), 1);
+    QCOMPARE(reopened.scene()->undoStack()->count(), 0);
+    reopened.scene()->undoStack()->redo();
+    QCOMPARE(reopened.scene()->elements().size(), 1);
+}
+
+void TestSceneUndoredo::testUndoAfterSaveLeavesTheSavedFileAsItWas()
+{
+    // An undo after a save changes the open document, not the file: reopened, the file still holds the saved edit.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("save_then_undo.panda");
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::And)}, scene));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+
+    scene->undoStack()->undo();
+    QCOMPARE(scene->elements().size(), 0);
+    QVERIFY(!scene->undoStack()->isClean());
+
+    WorkSpace reopened;
+    reopened.load(path);
+    QCOMPARE(reopened.scene()->elements().size(), 1);
+}
+
+void TestSceneUndoredo::testReopenedDocumentUndoesOnlyItsNewEdits()
+{
+    // A reopened document undoes what was done after it was reopened, and nothing before.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("reopen_then_edit.panda");
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::And)}, scene));
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(path);
+    auto *reopenedScene = reopened.scene();
+    reopenedScene->undoStack()->undo();
+    QCOMPARE(reopenedScene->elements().size(), 1);
+
+    reopenedScene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::Led)}, reopenedScene));
+    QCOMPARE(reopenedScene->elements().size(), 2);
+    QCOMPARE(reopenedScene->undoStack()->count(), 1);
+    reopenedScene->undoStack()->undo();
+    QCOMPARE(reopenedScene->elements().size(), 1);
+    reopenedScene->undoStack()->redo();
+    QCOMPARE(reopenedScene->elements().size(), 2);
+}
+
+void TestSceneUndoredo::testSaveMakesTheStackCleanAndUndoBackToIt()
+{
+    // A save makes the stack clean; a command after it is dirty; undoing back to the save point is clean again;
+    // undoing past it is dirty.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("clean_points.panda");
+
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *stack = scene->undoStack();
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::And)}, scene));
+    QVERIFY(!stack->isClean());
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+    QVERIFY(stack->isClean());
+
+    scene->receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::Led)}, scene));
+    QVERIFY(!stack->isClean());
+    stack->undo();
+    QVERIFY(stack->isClean());
+    stack->redo();
+    QVERIFY(!stack->isClean());
+    stack->undo();
+    QVERIFY(stack->isClean());
+
+    stack->undo();
+    QVERIFY(!stack->isClean());
+    QCOMPARE(scene->elements().size(), 0);
+}
+
+// ── Ten cycles: each command's do, undo, redo and undo, ten times, from the same start ──
+
+void TestSceneUndoredo::testTenRotateCyclesReturnToTheStart()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+
+    checkUndoRedoCycles(
+        scene, 10, [&] { return new RotateCommand({current()}, 90, &scene); },
+        [&] { return QString::number(current()->rotation()); }, QStringLiteral("0"), QStringLiteral("90"));
+}
+
+void TestSceneUndoredo::testTenMoveCyclesReturnToTheStart()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    elm->setPos(0, 0);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+
+    checkUndoRedoCycles(
+        scene, 10,
+        [&] {
+            // The element moves before its command is made, as a drag leaves it; the command takes that move as its step.
+            current()->setPos(96, 96);
+            return new MoveCommand({current()}, {QPointF(0, 0)}, &scene);
+        },
+        [&] { return QStringLiteral("%1,%2").arg(current()->pos().x()).arg(current()->pos().y()); },
+        QStringLiteral("0,0"), QStringLiteral("96,96"));
+}
+
+void TestSceneUndoredo::testTenFlipCyclesReturnToTheStart()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+
+    checkUndoRedoCycles(
+        scene, 10, [&] { return new FlipCommand({current()}, 0, &scene); },
+        [&] { return QStringLiteral("x%1 y%2").arg(current()->isFlippedX() ? 1 : 0).arg(current()->isFlippedY() ? 1 : 0); },
+        QStringLiteral("x0 y0"), QStringLiteral("x1 y0"));
+}
+
+void TestSceneUndoredo::testTenMorphCyclesKeepTheWire()
+{
+    Scene scene;
+    Element *andGate = nullptr;
+    Element *led = nullptr;
+    buildAndToLedWire(scene, andGate, led);
+    const int id = andGate->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+
+    checkUndoRedoCycles(
+        scene, 10, [&] { return new MorphCommand({current()}, ElementType::Or, &scene); },
+        [&] {
+            return QStringLiteral("type %1 wires %2").arg(static_cast<int>(current()->elementType()))
+                .arg(TestUtils::countConnections(&scene));
+        },
+        QStringLiteral("type %1 wires 1").arg(static_cast<int>(ElementType::And)),
+        QStringLiteral("type %1 wires 1").arg(static_cast<int>(ElementType::Or)));
+    QVERIFY(!current()->outputPort(0)->connections().isEmpty());
+}
+
+void TestSceneUndoredo::testTenPortSizeCyclesCutAndRestoreTheWire()
+{
+    Scene scene;
+    auto *andGate = ElementFactory::buildElement(ElementType::And);
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    andGate->setPos(0, 0);
+    sw->setPos(-200, 0);
+    scene.addItem(andGate);
+    scene.addItem(sw);
+    const int id = andGate->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+
+    // An AND gate has at least two inputs, so the wire goes on a third, made by a step of its own. Shrinking back to two
+    // cuts that wire; the undo restores it, the redo cuts it again.
+    scene.undoStack()->push(new ChangePortSizeCommand({current()}, 3, &scene, true));
+    auto *conn = new Connection();
+    conn->setStartPort(sw->outputPort(0));
+    conn->setEndPort(current()->inputPort(2));
+    scene.addItem(conn);
+    checkUndoRedoCycles(
+        scene, 10, [&] { return new ChangePortSizeCommand({current()}, 2, &scene, true); },
+        [&] { return QStringLiteral("in%1 wires %2").arg(current()->inputSize()).arg(TestUtils::countConnections(&scene)); },
+        QStringLiteral("in3 wires 1"), QStringLiteral("in2 wires 0"));
+}
+
+void TestSceneUndoredo::testTenDeleteCyclesRestoreTheWire()
+{
+    Scene scene;
+    Element *andGate = nullptr;
+    Element *led = nullptr;
+    buildAndToLedWire(scene, andGate, led);
+    const int id = andGate->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+
+    checkUndoRedoCycles(
+        scene, 10,
+        [&] { return new DeleteItemsCommand({static_cast<QGraphicsItem *>(current())}, &scene); },
+        [&] { return QStringLiteral("elements %1 wires %2").arg(scene.elements().size()).arg(TestUtils::countConnections(&scene)); },
+        QStringLiteral("elements 2 wires 1"), QStringLiteral("elements 1 wires 0"));
+    QCOMPARE(led->inputPort(0)->connections().size(), 1);
+}
+
+void TestSceneUndoredo::testTenMixedCommandsUndoAllRedoAll()
+{
+    // Ten different commands, one after another, undone all the way back and redone all the way
+    // forward, twice. Each step's state is recorded when it is pushed and must come back on the matching undo or redo.
+    Scene scene;
+    Element *andGate = nullptr;
+    Element *led = nullptr;
+    buildAndToLedWire(scene, andGate, led);
+    const int andId = andGate->id();
+    const int ledId = led->id();
+    auto gate = [&scene, andId] { return probeElement(scene, andId); };
+    auto light = [&scene, ledId] { return probeElement(scene, ledId); };
+
+    using Step = std::function<QUndoCommand *()>;
+    const QVector<Step> steps{
+        [&] {
+            gate()->setPos(96, 0);
+            return new MoveCommand({gate()}, {QPointF(0, 0)}, &scene);
+        },
+        [&] { return new RotateCommand({gate()}, 90, &scene); },
+        [&] { return new FlipCommand({gate()}, 0, &scene); },
+        [&] { return new FlipCommand({gate()}, 1, &scene); },
+        [&] { return new ChangePortSizeCommand({gate()}, 3, &scene, true); },
+        [&] { return new MorphCommand({gate()}, ElementType::Or, &scene); },
+        [&] { return new RotateCommand({light()}, 90, &scene); },
+        [&] {
+            light()->setPos(208, 0);
+            return new MoveCommand({light()}, {QPointF(200, 0)}, &scene);
+        },
+        [&] {
+            auto *not1 = ElementFactory::buildElement(ElementType::Not);
+            not1->setPos(0, 200);
+            return new AddItemsCommand(QList<QGraphicsItem *>{not1}, &scene);
+        },
+        // An item takes its id when it joins the scene, so the NOT is found by its type, not by an id taken before.
+        [&] {
+            Element *notGate = nullptr;
+            for (auto *elm : std::as_const(scene).elements()) {
+                if (elm->elementType() == ElementType::Not) {
+                    notGate = elm;
+                }
+            }
+            return new DeleteItemsCommand({static_cast<QGraphicsItem *>(notGate)}, &scene);
+        },
+    };
+
+    QUndoStack *stack = scene.undoStack();
+    const QString initial = probeSceneState(scene);
+    QVector<QString> afterStep;
+    for (const auto &step : steps) {
+        stack->push(step());
+        afterStep.append(probeSceneState(scene));
+    }
+    QCOMPARE(stack->count(), static_cast<int>(steps.size()));
+    QCOMPARE(stack->index(), static_cast<int>(steps.size()));
+
+    for (int round = 0; round < 2; ++round) {
+        for (int i = static_cast<int>(steps.size()) - 1; i >= 0; --i) {
+            stack->undo();
+            QCOMPARE(probeSceneState(scene), i == 0 ? initial : afterStep.at(i - 1));
+        }
+        QCOMPARE(stack->index(), 0);
+        for (int i = 0; i < static_cast<int>(steps.size()); ++i) {
+            stack->redo();
+            QCOMPARE(probeSceneState(scene), afterStep.at(i));
+        }
+        QCOMPARE(stack->index(), static_cast<int>(steps.size()));
+    }
+}
+
+// ── A new edit after an undo discards the redo ──
+
+void TestSceneUndoredo::testRotateAfterUndoDiscardsTheRedo()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+    checkNewEditDiscardsRedo(
+        scene, [&] { return new RotateCommand({current()}, 90, &scene); },
+        [&] { return new RotateCommand({current()}, 180, &scene); },
+        [&] { return QString::number(current()->rotation()); });
+}
+
+void TestSceneUndoredo::testMoveAfterUndoDiscardsTheRedo()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    elm->setPos(0, 0);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+    checkNewEditDiscardsRedo(
+        scene,
+        [&] {
+            current()->setPos(96, 0);
+            return new MoveCommand({current()}, {QPointF(0, 0)}, &scene);
+        },
+        [&] {
+            current()->setPos(0, 96);
+            return new MoveCommand({current()}, {QPointF(0, 0)}, &scene);
+        },
+        [&] { return QStringLiteral("%1,%2").arg(current()->pos().x()).arg(current()->pos().y()); });
+}
+
+void TestSceneUndoredo::testFlipAfterUndoDiscardsTheRedo()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+    checkNewEditDiscardsRedo(
+        scene, [&] { return new FlipCommand({current()}, 0, &scene); },
+        [&] { return new FlipCommand({current()}, 1, &scene); },
+        [&] { return QStringLiteral("x%1 y%2").arg(current()->isFlippedX() ? 1 : 0).arg(current()->isFlippedY() ? 1 : 0); });
+}
+
+void TestSceneUndoredo::testPortSizeAfterUndoDiscardsTheRedo()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+    checkNewEditDiscardsRedo(
+        scene, [&] { return new ChangePortSizeCommand({current()}, 3, &scene, true); },
+        [&] { return new ChangePortSizeCommand({current()}, 4, &scene, true); },
+        [&] { return QString::number(current()->inputSize()); });
+}
+
+void TestSceneUndoredo::testMorphAfterUndoDiscardsTheRedo()
+{
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(elm);
+    const int id = elm->id();
+    auto current = [&scene, id] { return probeElement(scene, id); };
+    checkNewEditDiscardsRedo(
+        scene, [&] { return new MorphCommand({current()}, ElementType::Or, &scene); },
+        [&] { return new MorphCommand({current()}, ElementType::Xor, &scene); },
+        [&] { return QString::number(static_cast<int>(current()->elementType())); });
+}
+
+void TestSceneUndoredo::testPasteAfterUndoDiscardsTheRedo()
+{
+    Scene scene;
+    auto *second = ElementFactory::buildElement(ElementType::Or);
+    checkNewEditDiscardsRedo(
+        scene, [&] { return new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::Led)}, &scene); },
+        [&] { return new AddItemsCommand(QList<QGraphicsItem *>{second}, &scene); },
+        [&] { return probeSceneState(scene); });
+}
+
+void TestSceneUndoredo::testDeleteAfterUndoDiscardsTheRedo()
+{
+    Scene scene;
+    auto *first = ElementFactory::buildElement(ElementType::And);
+    auto *second = ElementFactory::buildElement(ElementType::Or);
+    scene.addItem(first);
+    scene.addItem(second);
+    const int firstId = first->id();
+    const int secondId = second->id();
+    checkNewEditDiscardsRedo(
+        scene, [&] { return new DeleteItemsCommand({static_cast<QGraphicsItem *>(probeElement(scene, firstId))}, &scene); },
+        [&] { return new DeleteItemsCommand({static_cast<QGraphicsItem *>(probeElement(scene, secondId))}, &scene); },
+        [&] { return probeSceneState(scene); });
+}
+
+// ── The ends of a wire after a step: the ports it joins and where they sit, before and after ──
+
+void TestSceneUndoredo::testMoveUndoKeepsWireEndsOnTheirPorts()
+{
+    Scene scene;
+    Element *andGate = nullptr;
+    Element *led = nullptr;
+    const int wireId = buildAndToLedWire(scene, andGate, led);
+    const int andId = andGate->id();
+    auto wire = [&scene, wireId] { return dynamic_cast<Connection *>(scene.itemById(wireId)); };
+    const QString before = probeWireEnds(wire());
+
+    andGate->setPos(96, 96);
+    scene.undoStack()->push(new MoveCommand({andGate}, {QPointF(0, 0)}, &scene));
+    const QString moved = probeWireEnds(wire());
+    QVERIFY(moved != before);
+    QCOMPARE(wire()->startPort()->element()->id(), andId);
+
+    scene.undoStack()->undo();
+    QCOMPARE(probeWireEnds(wire()), before);
+    scene.undoStack()->redo();
+    QCOMPARE(probeWireEnds(wire()), moved);
+}
+
+void TestSceneUndoredo::testRotateUndoKeepsWireEndsOnTheirPorts()
+{
+    Scene scene;
+    Element *andGate = nullptr;
+    Element *led = nullptr;
+    const int wireId = buildAndToLedWire(scene, andGate, led);
+    const int andId = andGate->id();
+    auto wire = [&scene, wireId] { return dynamic_cast<Connection *>(scene.itemById(wireId)); };
+    const QString before = probeWireEnds(wire());
+
+    scene.undoStack()->push(new RotateCommand({andGate}, 90, &scene));
+    const QString rotated = probeWireEnds(wire());
+    QVERIFY(rotated != before);
+    QCOMPARE(wire()->startPort()->element()->id(), andId);
+
+    scene.undoStack()->undo();
+    QCOMPARE(probeWireEnds(wire()), before);
+    scene.undoStack()->redo();
+    QCOMPARE(probeWireEnds(wire()), rotated);
+}
+
+void TestSceneUndoredo::testFlipUndoKeepsWireEndsOnTheirPorts()
+{
+    Scene scene;
+    Element *andGate = nullptr;
+    Element *led = nullptr;
+    const int wireId = buildAndToLedWire(scene, andGate, led);
+    // A second wire into the gate's second input: a vertical flip moves an input but not the output at the centre.
+    auto *sw = ElementFactory::buildElement(ElementType::InputSwitch);
+    sw->setPos(-200, 80);
+    scene.addItem(sw);
+    auto *inputWire = new Connection();
+    inputWire->setStartPort(sw->outputPort(0));
+    inputWire->setEndPort(andGate->inputPort(1));
+    scene.addItem(inputWire);
+    const int inputWireId = inputWire->id();
+    const int andId = andGate->id();
+    auto ends = [&scene, wireId, inputWireId] {
+        return probeWireEnds(dynamic_cast<Connection *>(scene.itemById(wireId))) + QStringLiteral(" / ")
+               + probeWireEnds(dynamic_cast<Connection *>(scene.itemById(inputWireId)));
+    };
+    const QString before = ends();
+
+    // A flip on each axis: the gate's ports change sides after either, and the undo puts them back.
+    scene.undoStack()->push(new FlipCommand({andGate}, 0, &scene));
+    const QString flippedX = ends();
+    QVERIFY(flippedX != before);
+    scene.undoStack()->undo();
+    QCOMPARE(ends(), before);
+
+    scene.undoStack()->push(new FlipCommand({andGate}, 1, &scene));
+    const QString flippedY = ends();
+    QVERIFY(flippedY != before);
+    QCOMPARE(dynamic_cast<Connection *>(scene.itemById(wireId))->startPort()->element()->id(), andId);
+    scene.undoStack()->undo();
+    QCOMPARE(ends(), before);
+    scene.undoStack()->redo();
+    QCOMPARE(ends(), flippedY);
+}
+
+// ── A dropped command and a long history ──
+
+void TestSceneUndoredo::testDroppedUndoLeavesTheStackAndTheSceneAsTheyAre()
+{
+    // An undo whose snapshot does not load drops its command: the stack loses that command, the scene keeps the state
+    // the command left, and the failure reaches the caller once the stack has returned.
+    Scene scene;
+    auto *elm = ElementFactory::buildElement(ElementType::And);
+    scene.addItem(elm);
+    const int id = elm->id();
+    scene.undoStack()->push(new UpdateCommand({elm}, QByteArrayLiteral("not a snapshot"), &scene));
+    QCOMPARE(scene.undoStack()->count(), 1);
+    QCOMPARE(scene.undoStack()->index(), 1);
+    const QString stateBefore = probeSceneState(scene);
+
+    QVERIFY_THROWS_EXCEPTION(std::exception, scene.undo());
+    QCOMPARE(scene.undoStack()->count(), 0);
+    QCOMPARE(scene.undoStack()->index(), 0);
+    QCOMPARE(probeSceneState(scene), stateBefore);
+    QVERIFY(probeElement(scene, id) != nullptr);
+}
+
+void TestSceneUndoredo::testLongHistoryUndoesAndRedoesEveryStep()
+{
+    // A history of 200 commands undoes to the start and redoes to the end, one step at a time, and the scene counts each
+    // step. It checks the depth of the history, not a time.
+    Scene scene;
+    auto *stack = scene.undoStack();
+    for (int i = 0; i < 200; ++i) {
+        scene.receiveCommand(new AddItemsCommand(QList<QGraphicsItem *>{ElementFactory::buildElement(ElementType::And)}, &scene));
+    }
+    QCOMPARE(stack->count(), 200);
+    QCOMPARE(scene.elements().size(), 200);
+
+    for (int i = 200; i > 0; --i) {
+        QCOMPARE(scene.elements().size(), i);
+        stack->undo();
+    }
+    QCOMPARE(scene.elements().size(), 0);
+    QCOMPARE(stack->index(), 0);
+
+    for (int i = 1; i <= 200; ++i) {
+        stack->redo();
+        QCOMPARE(scene.elements().size(), i);
+    }
+    QCOMPARE(stack->index(), 200);
+}
+
+void TestSceneUndoredo::testSavedMorphWithItsWireReopensAsSaved()
+{
+    // a morph with a wire, undone and redone before the save, reopens with the morph's type and the wire as
+    // the save had them: the wire stays on the morph's output, and the reopened document has no step to undo.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("morph_wire_reopen.panda");
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    Element *andGate = nullptr;
+    Element *led = nullptr;
+    buildAndToLedWire(*scene, andGate, led);
+    scene->undoStack()->push(new MorphCommand({andGate}, ElementType::Or, scene));
+    scene->undoStack()->undo();
+    scene->undoStack()->redo();
+    QCOMPARE(workspace.save(path), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(path);
+    Scene *reopenedScene = reopened.scene();
+    QCOMPARE(reopenedScene->elements().size(), 2);
+    QCOMPARE(TestUtils::countConnections(reopenedScene), 1);
+    int orGates = 0;
+    for (auto *elm : reopenedScene->elements()) {
+        if (elm->elementType() == ElementType::Or) {
+            ++orGates;
+            QCOMPARE(elm->outputPort(0)->connections().size(), 1);
+        }
+    }
+    QCOMPARE(orGates, 1);
+    QCOMPARE(reopenedScene->undoStack()->count(), 0);
 }

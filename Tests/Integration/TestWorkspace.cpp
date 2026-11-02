@@ -1278,3 +1278,32 @@ void TestWorkspace::testOpeningAFileWithASoundThatIsGoneReportsIt()
     }
     QVERIFY2(message.contains("custom.wav") && message.contains("does not exist"), qPrintable(message));
 }
+
+void TestWorkspace::testAutosaveLeavesTheUndoStackAsItWas()
+{
+    // An autosave writes the document and changes nothing on the undo stack: the count, the position, the clean state
+    // and the pending redo are the same after it as before.
+    Settings::setAutosaveFiles({});
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *undoStack = scene->undoStack();
+    undoStack->push(new AddItemsCommand({ElementFactory::buildElement(ElementType::And)}, scene));
+    undoStack->push(new AddItemsCommand({ElementFactory::buildElement(ElementType::Led)}, scene));
+    undoStack->undo();
+    QVERIFY(!undoStack->isClean());
+    const int count = undoStack->count();
+    const int index = undoStack->index();
+    const QString redoText = undoStack->redoText();
+
+    workspace.flushPendingAutosave();
+    QVERIFY2(!Settings::autosaveFiles().isEmpty(), "Precondition: the autosave must have written an entry");
+    QCOMPARE(undoStack->count(), count);
+    QCOMPARE(undoStack->index(), index);
+    QVERIFY(!undoStack->isClean());
+    QVERIFY(undoStack->canRedo());
+    QCOMPARE(undoStack->redoText(), redoText);
+
+    undoStack->redo();
+    QCOMPARE(scene->elements().size(), 2);
+}

@@ -20,6 +20,8 @@ private:
     IC *selectFileBackedIC(WorkSpace &tab, const QString &fileName);
 
 private slots:
+    void testRemoveICFileTrashesAgainOnEachRedo();
+    void testRemoveICFileRefusedByTheTrashLeavesNoStep();
 
     void testEmbedSelectedICNoOpWithNoCurrentTab();
     void testEmbedSelectedICNoOpWithEmptySelection();

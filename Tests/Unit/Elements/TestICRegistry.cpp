@@ -3,16 +3,23 @@
 
 #include "Tests/Unit/Elements/TestICRegistry.h"
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 #include <QByteArray>
 #include <QDataStream>
 #include <QDateTime>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QRectF>
 #include <QSignalSpy>
 #include <QTemporaryDir>
+#include <QUndoCommand>
 #include <QUndoStack>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Element/ElementFactory.h"
 #include "App/Element/IC.h"
@@ -892,4 +899,648 @@ void TestICRegistry::testDeletedFileKeepsInstanceAndStack()
     const bool reloaded = TestUtils::waitFor([&] { return ic->inputSize() == 1; });
     QCOMPARE(reloaded, true);
     QCOMPARE(scene->undoStack()->count(), 1);
+}
+
+// --- Edge cases of a reload and its undo ---
+
+namespace {
+
+// Writes \a bytes to \a path, replacing what it holds.
+void writeBytes(const QString &path, const QByteArray &bytes)
+{
+    QFile file(path);
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    QCOMPARE(file.write(bytes), bytes.size());
+}
+
+} // namespace
+
+void TestICRegistry::testCorruptFileKeepsInstanceAndStack()
+{
+    // A file that does not load: the instance keeps its definition, no undo step is pushed, and a good file after it
+    // reloads.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("corrupt.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    writeBytes(path, QByteArray("not a circuit at all"));
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+    QCOMPARE(scene->undoStack()->count(), 0);
+
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 2);
+    QCOMPARE(ic->inputSize(), 1);
+}
+
+void TestICRegistry::testEmptiedFileKeepsInstanceAndStack()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("emptied.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    writeBytes(path, QByteArray());
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(scene->undoStack()->count(), 0);
+}
+
+void TestICRegistry::testLockedFileKeepsInstanceAndStack()
+{
+    // A file another program holds open without sharing it: the reload cannot read it, so the instance keeps its
+    // definition and no undo step is pushed.
+#ifdef Q_OS_WIN
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("locked.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    const HANDLE lock = CreateFileW(reinterpret_cast<const wchar_t *>(path.utf16()), GENERIC_READ,
+                                    0 /* no sharing */, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    QVERIFY(lock != INVALID_HANDLE_VALUE);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(scene->undoStack()->count(), 0);
+    CloseHandle(lock);
+#else
+    QSKIP("An exclusive lock on a file is a Windows case; the other platforms' unreadable file is not simulated");
+#endif
+}
+
+void TestICRegistry::testTwoWritesInARowSettleToTheLast()
+{
+    // Two saves in quick succession: whatever the watcher reports, the instance ends on the last file, and undoing
+    // every step returns to the first state, with its wire.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("burst.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    rewriteLater(path, [&] { saveSwitchesToLeds(path, 1); });
+    rewriteLater(path, [&] { saveSwitchesToLeds(path, 3); });
+    QVERIFY(TestUtils::waitFor([&] { return ic->inputSize() == 3; }));
+    QCOMPARE(ic->inputSize(), 3);
+
+    while (scene->undoStack()->canUndo()) {
+        scene->undoStack()->undo();
+    }
+    QEXPECT_FAIL("", "the undo of a growing reload keeps the added input", Continue);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testChangedBackToItsOriginalUndoesToIt()
+{
+    // The file goes from two inputs to one and back to two: undoing both reloads returns to the first state.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("back.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    saveSwitchesToLeds(path, 2);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 2);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(scene->undoStack()->count(), 2);
+
+    scene->undoStack()->undo();
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testChangeAfterUndoDiscardsTheRedo()
+{
+    // Undo a reload, then the file changes again: the undone reload is gone, and undoing the new one returns to the
+    // state the undo left.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("after.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 2);
+
+    saveSwitchesToLeds(path, 3);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 2);
+    QCOMPARE(ic->inputSize(), 3);
+    QCOMPARE(scene->undoStack()->count(), 1);
+
+    scene->undoStack()->undo();
+    QEXPECT_FAIL("", "the undo of a growing reload keeps the added input", Continue);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testOutputWireCutAndRestoredByUndo()
+{
+    // The reload removes an output as well as an input: the wire from the removed output is cut, and its undo
+    // restores it.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("outs.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *led = ElementFactory::buildElement(ElementType::Led);
+    builder.add(led);
+    builder.connect(ic, 1, led, 0);
+    QCOMPARE(led->inputPort(0)->connections().size(), 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(ic->outputSize(), 1);
+    QVERIFY(led->inputPort(0)->connections().isEmpty());
+
+    scene->undoStack()->undo();
+    QCOMPARE(ic->outputSize(), 2);
+    QCOMPARE(led->inputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testUndoBeyondTheStackIsNoOp()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("empty.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    scene->undoStack()->undo();
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(scene->undoStack()->count(), 0);
+}
+
+void TestICRegistry::testUndoOfAnUnrelatedEditLeavesTheReload()
+{
+    // A command pushed after the reload is undone first; the reload's undo is still the next step, and it works.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("between.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    scene->undoStack()->push(new QUndoCommand(QStringLiteral("unrelated")));
+    QCOMPARE(scene->undoStack()->count(), 2);
+
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 1);
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testDeletedInstanceChangeLeavesNoUndoStep()
+{
+    // The file of an instance the scene no longer holds changes: no undo step, no crash.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("gone.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    scene->removeItem(ic);
+    delete ic;
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(definitionChangedSpy.count(), 1);
+    QCOMPARE(scene->undoStack()->count(), 0);
+}
+
+void TestICRegistry::testTwoFilesChangeAtOnce()
+{
+    // Two IC files change together: each instance reloads, and each reload is its own undo step.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString firstPath = dir.filePath("first.panda");
+    const QString secondPath = dir.filePath("second.panda");
+    saveSwitchesToLeds(firstPath, 2);
+    saveSwitchesToLeds(secondPath, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *first = addFileIC(builder, firstPath, dir.path());
+    IC *second = addFileIC(builder, secondPath, dir.path());
+    auto *firstSource = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *secondSource = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(firstSource, secondSource);
+    builder.connect(firstSource, 0, first, 1);
+    builder.connect(secondSource, 0, second, 1);
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(firstPath, 1);
+    reportChanged(scene->icRegistry(), firstPath);
+    saveSwitchesToLeds(secondPath, 1);
+    reportChanged(scene->icRegistry(), secondPath);
+    QCOMPARE(definitionChangedSpy.count(), 2);
+    QCOMPARE(first->inputSize(), 1);
+    QCOMPARE(second->inputSize(), 1);
+    QCOMPARE(scene->undoStack()->count(), 2);
+
+    scene->undoStack()->undo();
+    scene->undoStack()->undo();
+    QCOMPARE(first->inputSize(), 2);
+    QCOMPARE(second->inputSize(), 2);
+    QCOMPARE(firstSource->outputPort(0)->connections().size(), 1);
+    QCOMPARE(secondSource->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testEmbedThenUndoRestoresTheFileBackedIC()
+{
+    // Embedding a file-backed IC is an undoable change of its definition: the undo makes it file-backed again.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("embed.panda");
+    saveSwitchesToLeds(path, 2);
+    const QString oneInput = dir.filePath("one.panda");
+    saveSwitchesToLeds(oneInput, 1);
+    QFile oneFile(oneInput);
+    QVERIFY(oneFile.open(QIODevice::ReadOnly));
+    const QByteArray oneBytes = oneFile.readAll();
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QCOMPARE(scene->icRegistry()->embedICsByFile(path, oneBytes, "embedded_one"), 1);
+    QVERIFY(ic->isEmbedded());
+    QCOMPARE(ic->inputSize(), 1);
+
+    scene->undoStack()->undo();
+    QVERIFY(!ic->isEmbedded());
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testExtractThenUndoRestoresTheEmbeddedIC()
+{
+    // Extracting an embedded IC writes its file and makes it file-backed; the undo makes it embedded again.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("leaf_source.panda");
+    saveSwitchesToLeds(leafPath, 2);
+    QFile leafFile(leafPath);
+    QVERIFY(leafFile.open(QIODevice::ReadOnly));
+    const QByteArray leafBytes = leafFile.readAll();
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = scene->icRegistry()->createEmbeddedIC("leaf", leafBytes, dir.path());
+    QVERIFY(ic);
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+    QVERIFY(ic->isEmbedded());
+
+    const QString extracted = dir.filePath("extracted.panda");
+    QCOMPARE(scene->icRegistry()->extractToFile("leaf", extracted), 1);
+    QVERIFY(QFileInfo::exists(extracted));
+    QVERIFY(!ic->isEmbedded());
+
+    scene->undoStack()->undo();
+    QVERIFY(ic->isEmbedded());
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+}
+
+void TestICRegistry::testReopenAfterGrowingUndoKeepsTheRestoredDefinition()
+{
+    // A growing reload, undone, then saved and reopened: the document keeps the restored definition (one input), so
+    // the file's new one does not come back. Expected to fail until the reopen keeps the restored definition.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("grow_reopen.panda");
+    saveSwitchesToLeds(path, 1);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 2);
+    reportChanged(scene->icRegistry(), path);
+    scene->undoStack()->undo();
+
+    const QString savedPath = dir.filePath("grow_reopened.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QEXPECT_FAIL("", "a reopened document brings the file's new definition back", Continue);
+    QCOMPARE(reopenedIC->inputSize(), 1);
+    Q_UNUSED(ic)
+}
+
+void TestICRegistry::testSaveWithoutUndoReopensTheNewDefinition()
+{
+    // The control: a reload not undone is saved as the file's definition, and reopens as the file has it.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("control.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, path, dir.path());
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+
+    const QString savedPath = dir.filePath("control_saved.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QCOMPARE(reopenedIC->inputSize(), 1);
+}
+
+void TestICRegistry::testReloadAndUndoWhileTheSimulationRuns()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("running.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+    Simulation *simulation = builder.initSimulation();
+    simulation->start();
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    saveSwitchesToLeds(path, 1);
+    reportChanged(scene->icRegistry(), path);
+    QCOMPARE(ic->inputSize(), 1);
+
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+
+    // The simulation still runs after the undo: the restored wire drives the restored input, so a switch set on reaches
+    // it through the running simulation.
+    source->setOn(true);
+    QVERIFY(TestUtils::waitFor([&] { return TestUtils::inputStatus(ic, 1) == TestUtils::level(true); }));
+    simulation->stop();
+}
+
+void TestICRegistry::testFileInAnotherDirectoryReloads()
+{
+    // The IC's file is in a subdirectory; the scene's context directory is its parent. The reload reads the file where
+    // it is.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    QVERIFY(QDir(dir.path()).mkpath("parts"));
+    const QString path = dir.filePath("parts/sub.panda");
+    saveSwitchesToLeds(path, 2);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    rewriteLater(path, [&] { saveSwitchesToLeds(path, 1); });
+    QVERIFY(definitionChangedSpy.wait());
+    QCOMPARE(ic->inputSize(), 1);
+    scene->undoStack()->undo();
+    QCOMPARE(ic->inputSize(), 2);
+}
+
+void TestICRegistry::testNestedFileChangeReachesTheOuterInstance()
+{
+    // An IC file that nests another IC file: a change to the nested file reaches the outer instance, whose own file
+    // did not change.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("leaf.panda");
+    saveSwitchesToLeds(leafPath, 2);
+
+    WorkSpace nester;
+    nester.scene()->setContextDir(dir.path());
+    CircuitBuilder nesterBuilder(nester.scene());
+    IC *nested = addFileIC(nesterBuilder, leafPath, dir.path());
+    auto *outerSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *outerLed = ElementFactory::buildElement(ElementType::Led);
+    nesterBuilder.add(outerSwitch, outerLed);
+    nesterBuilder.connect(outerSwitch, 0, nested, 1);
+    nesterBuilder.connect(nested, 1, outerLed, 0);
+    const QString outerPath = dir.filePath("outer.panda");
+    QCOMPARE(nester.save(outerPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *outer = addFileIC(builder, outerPath, dir.path());
+    QCOMPARE(outer->inputSize(), 1);
+    QCOMPARE(outer->outputSize(), 1);
+
+    // The leaf now has one input. The outer instance's inner IC is the leaf: its wire from the outer switch to the
+    // second input is cut when the inner IC reloads. Shown through the outer IC's own pins once it reloads.
+    QSignalSpy definitionChangedSpy(scene->icRegistry(), &ICRegistry::definitionChanged);
+    rewriteLater(leafPath, [&] { saveSwitchesToLeds(leafPath, 1); });
+    QEXPECT_FAIL("", "a nested IC file's change is not reported: the registry watches each instance's own file only", Continue);
+    QVERIFY(definitionChangedSpy.wait());
+}
+
+// ─── Undo probes: the redo of an embed ───
+
+void TestICRegistry::testEmbeddedICRedoRestoresTheBlobAndTheInstance()
+{
+    // An embed that succeeded is one step: its undo takes the blob and the instance away, and its redo puts both back.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("leaf_redo.panda");
+    saveMinimalCircuit(leafPath);
+    QFile leafFile(leafPath);
+    QVERIFY(leafFile.open(QIODevice::ReadOnly));
+    const QByteArray leafBytes = leafFile.readAll();
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    ICRegistry *registry = scene->icRegistry();
+    QUndoStack *undoStack = scene->undoStack();
+
+    IC *ic = registry->createEmbeddedIC("leaf_redo", leafBytes, dir.path());
+    QVERIFY(ic);
+    const int id = ic->id();
+    undoStack->undo();
+    QVERIFY(!registry->hasBlob("leaf_redo"));
+    QVERIFY(scene->elements().isEmpty());
+
+    undoStack->redo();
+    QVERIFY(registry->hasBlob("leaf_redo"));
+    QCOMPARE(scene->elements().size(), 1);
+    auto *restored = dynamic_cast<IC *>(scene->itemById(id));
+    QVERIFY(restored != nullptr);
+    QVERIFY(restored->isEmbedded());
+    QCOMPARE(restored->blobName(), QStringLiteral("leaf_redo"));
+    QCOMPARE(undoStack->count(), 1);
+    QCOMPARE(undoStack->index(), 1);
+}
+
+void TestICRegistry::testEmbedThenUndoThenRedoRestoresTheEmbeddedIC()
+{
+    // An embed is one step; after its undo the redo embeds the IC again, with its input count and with the wire to the
+    // input the embed removed cut once more.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = dir.filePath("embed_redo.panda");
+    saveSwitchesToLeds(path, 2);
+    const QString oneInput = dir.filePath("one_redo.panda");
+    saveSwitchesToLeds(oneInput, 1);
+    QFile oneFile(oneInput);
+    QVERIFY(oneFile.open(QIODevice::ReadOnly));
+    const QByteArray oneBytes = oneFile.readAll();
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    IC *ic = addFileIC(builder, path, dir.path());
+    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+    builder.add(source);
+    builder.connect(source, 0, ic, 1);
+
+    QCOMPARE(scene->icRegistry()->embedICsByFile(path, oneBytes, "embedded_redo"), 1);
+    QVERIFY(ic->isEmbedded());
+    QCOMPARE(ic->inputSize(), 1);
+    QVERIFY(source->outputPort(0)->connections().isEmpty());
+
+    scene->undoStack()->undo();
+    QVERIFY(!ic->isEmbedded());
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(source->outputPort(0)->connections().size(), 1);
+
+    scene->undoStack()->redo();
+    QVERIFY(ic->isEmbedded());
+    QCOMPARE(ic->blobName(), QStringLiteral("embedded_redo"));
+    QCOMPARE(ic->inputSize(), 1);
+    QVERIFY(source->outputPort(0)->connections().isEmpty());
+    QVERIFY(scene->icRegistry()->hasBlob("embedded_redo"));
 }
