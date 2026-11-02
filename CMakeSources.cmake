@@ -95,6 +95,8 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitRecorder.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitRecorderDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.cpp
@@ -113,6 +115,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindow.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MainWindowUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/MinimapWidget.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/RecordingOverlay.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SceneUiBinder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
@@ -250,6 +253,10 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourOverlay.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Tour/TourStep.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitExporter.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitRecorder.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/CircuitRecorderDialog.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/RecordingOverlay.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/gif.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialog.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
@@ -517,6 +524,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitRecorder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementContextMenu.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.cpp
@@ -742,6 +750,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitExporter.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestCircuitRecorder.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestDialogs.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementContextMenu.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestElementEditor.h

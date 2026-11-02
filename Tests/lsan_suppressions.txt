@@ -6,6 +6,14 @@
 # Only third-party libraries belong here.  Application leaks must be fixed,
 # not suppressed.
 
+# Qt Wayland / xkbcommon / libffi: one-time per-process keyboard mappings and compose table
+# allocations in libxkbcommon during Wayland display connection; not under our control.
+leak:libxkbcommon.so
+leak:libQt6WaylandClient.so
+leak:libqwayland.so
+leak:libffi.so
+leak:xkb_
+
 # Qt Multimedia / PulseAudio: pa_context_get_source_info_by_index leaks an
 # 88-byte allocation per process when audio sinks are enumerated.  Surfaces
 # in TestBuzzer because it exercises Qt's audio output path; not under our

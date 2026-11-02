@@ -11,6 +11,7 @@
 #include <QString>
 
 class MainWindowHost;
+class CircuitRecorder;
 
 /**
  * \class ExportController
@@ -28,6 +29,7 @@ class ExportController : public QObject
 
 public:
     explicit ExportController(MainWindowHost &host, QObject *parent = nullptr);
+    ~ExportController() override;
 
     // --- Headless export cores (called by CLI batch mode and the MCP server) ---
 
@@ -43,6 +45,9 @@ public:
     /// Prints the beWavedDolphin waveform of the current circuit to the terminal.
     void exportToWaveFormTerminal();
 
+    /// Returns the owned CircuitRecorder instance.
+    CircuitRecorder *recorder();
+
 public slots:
     // --- Interactive dialog handlers (wired to the Export menu actions) ---
 
@@ -50,7 +55,11 @@ public slots:
     void exportSystemVerilogDialog();
     void exportImageDialog();
     void exportPdfDialog();
+    void recordSimulationDialog();
+    void toggleRecording();
+    void stopRecording();
 
 private:
     MainWindowHost &m_host;
+    std::unique_ptr<CircuitRecorder> m_recorder;
 };
