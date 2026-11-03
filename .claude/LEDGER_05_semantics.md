@@ -7,7 +7,7 @@ sub-ID of the item it belongs to (`P5.6a`, `P5.6b`, ...) and a line in the log. 
 (committed), `blocked` (on what, in the notes) or `dropped` (why, with the user's decision). The Commits column lists
 every commit of the item. Every status change gets a dated line in the log.
 
-**Branch:** `05-semantics`, from `04-ics-and-format` once plan 4 has landed; not created yet.
+**Branch:** `05-semantics`, from `04-ics-and-format` at `85c69ada8`, created 2026-11-03 at the user's word to start before the prerequisite rows closed (see the log).
 
 **Open decisions:** none (P5.25 decided on 2026-10-21: the spec takes the covering rule, P5.D21).
 
@@ -15,7 +15,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
-| P5.1 | The trace walks in the test library behind an engine; plan 1's goldens unchanged (§4.1) | todo | | Shown to fail: an engine that drops a step's input change fails plan 1's goldens |
+| P5.1 | The trace walks in the test library behind an engine; plan 1's goldens unchanged (§4.1) | doing | | Shown to fail: an engine that drops a step's input change fails plan 1's goldens |
 | P5.2 | The spec, a section of the developer guide, written before the reference (§4.2) | todo | | Each rule re-examined as the oracles land; a change goes into the spec first, then the oracles and the reference |
 | P5.3 | The random circuits and their walks (§4.3) | todo | | The walks assert that trips, cut-short settles, edits, mode switches, warnings and the budget each happen; shown to fail by a generator that drops the late wiring or the chain past the budget |
 | P5.4 | The reference: the circuit read in one place, ICs flattened, aliases, wireless per scope, two drivers, IC boundaries, kernels (§4.4) | todo | | The wiring tests; shown to fail by an alias that costs a round, a duplicated label read from its lowest-id Tx, a clock pin read from its element |
@@ -46,6 +46,9 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 
 ## Log
 
+- 2026-11-03: plan 5 started on `05-semantics` from `04-ics-and-format` (`85c69ada8`) at the user's word ("start now"), before
+  the rules' gate closed: P4.11 and P3.26 are todo, carried by plan 8's P8.15, and QC.2b (the Qt ceiling) is blocked on a
+  branch-protection setting. Those rows stay as they are; plan 5 builds on the branches as they stand. P5.1 doing.
 - 2026-10-21: the plan file and this ledger written on `gpu-canvas`, every row `todo`.
 - 2026-10-21: P5.25 done: the exact oracle with delays, run as a probe on `gpu-canvas` (`b28bb61ad`), found 7 unsound
   outputs in two circuits of the delayed draw; the spec takes the covering rule (P5.D21, the user's "yes"), built as
