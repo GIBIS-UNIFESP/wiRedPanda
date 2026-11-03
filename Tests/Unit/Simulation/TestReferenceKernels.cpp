@@ -238,3 +238,25 @@ void TestReferenceKernels::testMemoryMatchesMasterOnStableData()
         }
     }
 }
+
+void TestReferenceKernels::testChangingDataIsUnknownWhereItDiffers()
+{
+    // Data that does not change in the round is the same as the flip-flop with it: a rising edge loads it
+    QCOMPARE(referenceDFlipFlopChangingData(Status::Active, Status::Active, Status::Active, Status::Inactive,
+                                            Status::Inactive),
+             Status::Active);
+    // A rising edge with old and new data that differ stores Unknown (§2.6)
+    QCOMPARE(referenceDFlipFlopChangingData(Status::Active, Status::Inactive, Status::Active, Status::Inactive,
+                                            Status::Inactive),
+             Status::Unknown);
+    QCOMPARE(referenceDFlipFlopChangingData(Status::Inactive, Status::Active, Status::Active, Status::Inactive,
+                                            Status::Active),
+             Status::Unknown);
+    // No edge: the data is not loaded, so changing it changes nothing and the stored output holds
+    QCOMPARE(referenceDFlipFlopChangingData(Status::Active, Status::Inactive, Status::Inactive, Status::Inactive,
+                                            Status::Active),
+             Status::Active);
+    QCOMPARE(referenceDFlipFlopChangingData(Status::Active, Status::Inactive, Status::Active, Status::Active,
+                                            Status::Inactive),
+             Status::Inactive);
+}

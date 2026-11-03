@@ -30,6 +30,13 @@ Status referenceGate(ElementType type, const QVector<Status> &inputs);
 Status referenceDFlipFlop(const QVector<Status> &inputs);
 
 /**
+ * \brief The value of a D flip-flop whose data changes in the clock's round, on \a oldData and \a newData, ordered as
+ * referenceDFlipFlop() orders its inputs but with the data given twice: the value is what the two data readings agree
+ * on, and Unknown where the old and new data give different values (§2.6).
+ */
+Status referenceDFlipFlopChangingData(Status oldData, Status newData, Status clock, Status lastClock, Status stored);
+
+/**
  * \brief The value of a D latch on \a inputs, ordered enable, data, and the stored output: transparent while enabled.
  */
 Status referenceDLatch(const QVector<Status> &inputs);

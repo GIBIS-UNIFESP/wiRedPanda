@@ -20,4 +20,5 @@ private slots:
     void testMemoryIsMonotoneOffTheKeptClock();
     void testMemoryHoldsLoadsAndKeepsItsClock();
     void testMemoryMatchesMasterOnStableData();
+    void testChangingDataIsUnknownWhereItDiffers();
 };

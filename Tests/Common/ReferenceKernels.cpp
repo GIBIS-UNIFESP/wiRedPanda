@@ -115,6 +115,14 @@ Status referenceDFlipFlop(const QVector<Status> &inputs)
     });
 }
 
+Status referenceDFlipFlopChangingData(const Status oldData, const Status newData, const Status clock,
+                                      const Status lastClock, const Status stored)
+{
+    const Status before = referenceDFlipFlop({oldData, clock, lastClock, stored});
+    const Status after = referenceDFlipFlop({newData, clock, lastClock, stored});
+    return (before == after) ? before : Status::Unknown;
+}
+
 Status referenceDLatch(const QVector<Status> &inputs)
 {
     // Order: enable, data, stored output. Level-sensitive: transparent while enabled, holding otherwise.
