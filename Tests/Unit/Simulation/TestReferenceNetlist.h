@@ -26,4 +26,6 @@ private slots:
     void testIcOutputReadsItsInsideDriver();
     void testIcInputsReadTheOutsideDrivers();
     void testWirelessIsPerScope();
+    void testReaderAgreesWithTheLoader();
+    void testPinOrderFallsBackToPositions();
 };

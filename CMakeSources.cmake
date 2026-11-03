@@ -340,6 +340,7 @@ endif()
 
 set(TEST_UTILS_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/PandaFile.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/RandomCircuit.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceNetlist.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
@@ -349,6 +350,7 @@ set(TEST_UTILS_SOURCES
 set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/PandaFile.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/RandomCircuit.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceNetlist.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h

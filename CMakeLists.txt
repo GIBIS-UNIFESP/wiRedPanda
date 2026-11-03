@@ -742,6 +742,10 @@ add_library(test_utils STATIC ${TEST_UTILS_SOURCES} ${TEST_UTILS_HEADERS})
 # $<COMPILE_ONLY> propagates wiredpanda_lib's include/define/feature usage
 # requirements without adding it to the link.
 target_link_libraries(test_utils PUBLIC "$<COMPILE_ONLY:wiredpanda_lib>")
+# PandaFile.cpp includes zlib.h, which wiredpanda_lib gets only as a link-only dependency
+target_link_libraries(test_utils PRIVATE $<LINK_ONLY:${WIREDPANDA_ZLIB}>)
+target_include_directories(test_utils SYSTEM PRIVATE
+    $<TARGET_PROPERTY:${WIREDPANDA_ZLIB},INTERFACE_INCLUDE_DIRECTORIES>)
 target_compile_definitions(test_utils PRIVATE CURRENTDIR=${CMAKE_CURRENT_SOURCE_DIR}/Tests)
 
 # ---- Single consolidated test executable ----

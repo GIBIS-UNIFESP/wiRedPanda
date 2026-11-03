@@ -4,7 +4,9 @@
 #include "Tests/Unit/Simulation/TestReferenceNetlist.h"
 
 #include <functional>
+#include <memory>
 
+#include <QFile>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -15,6 +17,8 @@
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
 #include "App/Wiring/Port.h"
+#include "Tests/Common/PandaFile.h"
+#include "Tests/Common/RandomCircuit.h"
 #include "Tests/Common/ReferenceNetlist.h"
 #include "Tests/Common/TestUtils.h"
 
@@ -57,8 +61,11 @@ IC *instance(CircuitBuilder &builder, const QString &path, const QString &dir)
 /// Two switches into an And, its output into an LED: the definition the IC tests instance.
 void buildAndBlock(CircuitBuilder &builder)
 {
+    // The first switch lies below the second, so the pin order, which is by position, puts the second switch first
     auto *first = make(ElementType::InputSwitch);
+    first->setPos(QPointF(0, 100));
     auto *second = make(ElementType::InputSwitch);
+    second->setPos(QPointF(0, 0));
     auto *gate = make(ElementType::And);
     auto *led = make(ElementType::Led);
     builder.add(first, second, gate, led);
@@ -256,13 +263,14 @@ void TestReferenceNetlist::testIcOutputReadsItsInsideDriver()
     // The driver is the And inside the IC, not any element of the instance.
     QVERIFY(driver.element != ic);
     QVERIFY(driver.element->elementType() == ElementType::And);
-    // The And's inputs read the switches wired to the IC's pins outside it.
-    const NetDriver pinOne = netlist.driver(driver.element, 0);
-    QVERIFY(pinOne.kind == NetKind::Slot);
-    QCOMPARE(pinOne.element, first);
-    const NetDriver pinTwo = netlist.driver(driver.element, 1);
-    QVERIFY(pinTwo.kind == NetKind::Slot);
-    QCOMPARE(pinTwo.element, second);
+    // The IC's pin 0 is the switch inside it that lies higher, the second, so the And's input 0, which is the first
+    // switch inside, reads the outside switch on pin 1, which is the second: the pins cross
+    const NetDriver inputZero = netlist.driver(driver.element, 0);
+    QVERIFY(inputZero.kind == NetKind::Slot);
+    QCOMPARE(inputZero.element, second);
+    const NetDriver inputOne = netlist.driver(driver.element, 1);
+    QVERIFY(inputOne.kind == NetKind::Slot);
+    QCOMPARE(inputOne.element, first);
     QCOMPARE(netlist.errorNets(), 0);
 }
 
@@ -281,13 +289,17 @@ void TestReferenceNetlist::testIcInputsReadTheOutsideDrivers()
     builder.connect(first, 0, ic, 0);
     builder.connect(ic, 0, out, 0);
 
-    // The second pin is left open, so the And inside reads its default through the IC.
+    // Pin 1 is left open. Pin 1 is the first switch inside, which feeds the And's input 0, so that input reads the
+    // default through the IC; the outside switch on pin 0 feeds the And's input 1.
     const ReferenceNetlist netlist(workspace->scene());
     const NetDriver driver = netlist.driver(out, 0);
     QVERIFY(driver.kind == NetKind::Slot);
-    const NetDriver open = netlist.driver(driver.element, 1);
+    const NetDriver open = netlist.driver(driver.element, 0);
     QVERIFY(open.kind == NetKind::Default);
     QCOMPARE(open.status, ic->inputPort(1)->defaultValue());
+    const NetDriver wired = netlist.driver(driver.element, 1);
+    QVERIFY(wired.kind == NetKind::Slot);
+    QCOMPARE(wired.element, first);
     QCOMPARE(netlist.errorNets(), 0);
 }
 
@@ -323,4 +335,49 @@ void TestReferenceNetlist::testWirelessIsPerScope()
     QVERIFY(driver.kind == NetKind::Slot);
     QCOMPARE(driver.element, outer);
     QCOMPARE(netlist.errorNets(), 0);
+}
+
+void TestReferenceNetlist::testReaderAgreesWithTheLoader()
+{
+    // The second reader and the app's loader read the same building blocks: each pin count the reader finds is the one
+    // the loader gives the IC, on both sides
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QStringList files = buildingBlockFiles(dir.path());
+    QVERIFY(!files.isEmpty());
+    for (const QString &file : files) {
+        QFile input(file);
+        QVERIFY(input.open(QIODevice::ReadOnly));
+        const auto read = readPandaFile(input.readAll());
+        QVERIFY2(read.has_value(), qPrintable(file));
+
+        auto ic = std::make_unique<IC>();
+        ic->loadFile(file, dir.path());
+        QCOMPARE(read->pinOrder(true).size(), static_cast<qsizetype>(ic->inputSize()));
+        QCOMPARE(read->pinOrder(false).size(), static_cast<qsizetype>(ic->outputSize()));
+    }
+}
+
+void TestReferenceNetlist::testPinOrderFallsBackToPositions()
+{
+    // A file without a saved order gives its pins by position: the switch that lies higher is the first pin
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("and-block"), buildAndBlock);
+    QFile input(path);
+    QVERIFY(input.open(QIODevice::ReadOnly));
+    auto read = readPandaFile(input.readAll());
+    QVERIFY(read.has_value());
+
+    read->metadata.remove(QStringLiteral("inputOrder"));
+    const QVector<quint64> order = read->pinOrder(true);
+    QCOMPARE(order.size(), 2);
+    const PandaElement *higher = nullptr;
+    for (const PandaElement &element : read->elements) {
+        if ((element.type == ElementType::InputSwitch) && (element.pos.y() == 0)) {
+            higher = &element;
+        }
+    }
+    QVERIFY(higher);
+    QCOMPARE(order.first(), higher->outputKeys.first());
 }
