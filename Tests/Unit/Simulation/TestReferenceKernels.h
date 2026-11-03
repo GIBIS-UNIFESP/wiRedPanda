@@ -19,4 +19,5 @@ private slots:
     void testNonLevelsReadBothWays();
     void testMemoryIsMonotoneOffTheKeptClock();
     void testMemoryHoldsLoadsAndKeepsItsClock();
+    void testMemoryMatchesMasterOnStableData();
 };

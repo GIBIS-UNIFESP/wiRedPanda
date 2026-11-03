@@ -193,3 +193,47 @@ void TestReferenceKernels::testMemoryHoldsLoadsAndKeepsItsClock()
     QCOMPARE(referenceDLatch({Status::Active, Status::Active, Status::Inactive}), Status::Active);
     QCOMPARE(referenceDLatch({Status::Inactive, Status::Active, Status::Inactive}), Status::Inactive);
 }
+
+void TestReferenceKernels::testMemoryMatchesMasterOnStableData()
+{
+    // Data is held at one level for a whole run, so no data change falls in an edge's round, the case where the two
+    // readings of a flip-flop's data part ways (§2.6 leaves it open). The clock follows every sequence of levels after a
+    // first step that keeps it Inactive; the reference is given each step's clock, the clock's last level and the stored
+    // output that master itself last showed.
+    constexpr int steps = 4;
+    for (int data = 0; data < 2; ++data) {
+        for (int sequence = 0; sequence < (1 << steps); ++sequence) {
+            auto workspace = TestUtils::createWorkspace();
+            CircuitBuilder builder(workspace->scene());
+            auto *flipFlop = ElementFactory::buildElement(ElementType::DFlipFlop);
+            builder.addElement(flipFlop);
+            auto *dataSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+            auto *clockSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+            builder.add(dataSwitch, clockSwitch);
+            builder.connect(dataSwitch, 0, flipFlop, 0);
+            builder.connect(clockSwitch, 0, flipFlop, 1);
+            // Its preset and clear are left open, held at their inactive level
+            for (int input = 2; input < flipFlop->inputSize(); ++input) {
+                flipFlop->inputPort(input)->setDefaultStatus(Status::Active);
+            }
+            dataSwitch->setOn(data != 0);
+
+            const auto engine = makeMasterTraceEngine(workspace->scene());
+            clockSwitch->setOn(false);
+            engine->step();
+            Status previousClock = Status::Inactive;
+            Status stored = engine->observed(flipFlop).first();
+            const Status dataLevel = (data != 0) ? Status::Active : Status::Inactive;
+            for (int step = 0; step < steps; ++step) {
+                const bool level = ((sequence >> step) & 1) != 0;
+                clockSwitch->setOn(level);
+                engine->step();
+                const Status clock = level ? Status::Active : Status::Inactive;
+                const Status expected = referenceDFlipFlop({dataLevel, clock, previousClock, stored});
+                QCOMPARE(engine->observed(flipFlop).first(), expected);
+                stored = expected;
+                previousClock = clock;
+            }
+        }
+    }
+}
