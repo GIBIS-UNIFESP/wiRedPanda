@@ -47,19 +47,12 @@ Status referenceGate(const ElementType type, const QVector<Status> &inputs)
 {
     // The inputs that are not levels, each read both ways: a reading is one choice of level for each of them
     QVector<int> open;
-    bool anyUnknown = false;
     for (int index = 0; index < inputs.size(); ++index) {
-        if (inputs.at(index) == Status::Unknown) {
-            anyUnknown = true;
-        }
         if ((inputs.at(index) == Status::Unknown) || (inputs.at(index) == Status::Error)) {
             open.append(index);
         }
     }
-
-    bool sawInactive = false;
-    bool sawActive = false;
-    for (int reading = 0; reading < (1 << open.size()); ++reading) {
+    const auto bitsOf = [&inputs, &open](const int reading) {
         QVector<bool> bits(inputs.size());
         for (int index = 0; index < inputs.size(); ++index) {
             bits[index] = (inputs.at(index) == Status::Active);
@@ -67,11 +60,33 @@ Status referenceGate(const ElementType type, const QVector<Status> &inputs)
         for (int slot = 0; slot < open.size(); ++slot) {
             bits[open.at(slot)] = ((reading >> slot) & 1) != 0;
         }
-        (levelOf(type, bits) ? sawActive : sawInactive) = true;
+        return bits;
+    };
+
+    bool sawInactive = false;
+    bool sawActive = false;
+    for (int reading = 0; reading < (1 << open.size()); ++reading) {
+        (levelOf(type, bitsOf(reading)) ? sawActive : sawInactive) = true;
+    }
+    if (!(sawInactive && sawActive)) {
+        return sawActive ? Status::Active : Status::Inactive;
     }
 
-    if (sawInactive && sawActive) {
-        return anyUnknown ? Status::Unknown : Status::Error;
+    // The readings disagree. An Unknown input decides the gate when some setting of the other open inputs makes its own
+    // level change the output; then the gate is Unknown, and otherwise the disagreement is Error's alone.
+    for (int unknown : open) {
+        if (inputs.at(unknown) != Status::Unknown) {
+            continue;
+        }
+        for (int reading = 0; reading < (1 << open.size()); ++reading) {
+            QVector<bool> low = bitsOf(reading);
+            QVector<bool> high = low;
+            low[unknown] = false;
+            high[unknown] = true;
+            if (levelOf(type, low) != levelOf(type, high)) {
+                return Status::Unknown;
+            }
+        }
     }
-    return sawActive ? Status::Active : Status::Inactive;
+    return Status::Error;
 }
