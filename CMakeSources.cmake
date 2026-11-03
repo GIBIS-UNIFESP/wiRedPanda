@@ -101,6 +101,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WarningsPanel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
@@ -254,6 +255,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WarningsPanel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h

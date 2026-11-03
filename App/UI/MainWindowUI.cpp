@@ -3,9 +3,12 @@
 
 #include "App/UI/MainWindowUI.h"
 
+#include <QDockWidget>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
 #include <QtGui/QIcon>
+
+#include "App/UI/WarningsPanel.h"
 
 void MainWindowUi::setupUi(QMainWindow *MainWindow)
 {
@@ -184,6 +187,10 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionShowMinimap = new QAction(MainWindow);
     actionShowMinimap->setObjectName("actionShowMinimap");
     actionShowMinimap->setCheckable(true);
+    actionShowWarnings = new QAction(MainWindow);
+    actionShowWarnings->setObjectName("actionShowWarnings");
+    actionShowWarnings->setCheckable(true);
+    actionShowWarnings->setChecked(true);
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -206,7 +213,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     gridLayout_8->setContentsMargins(11, 11, 11, 11);
     gridLayout_8->setObjectName("gridLayout_8");
     // --- Main horizontal splitter ---
-    // Left child = component palette + element editor; right child = canvas tabs.
+    // Left child = component palette + element editor; middle = canvas tabs;
+    // right child = live warnings and errors.
     splitter = new QSplitter(centralWidget);
     splitter->setObjectName("splitter");
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -584,6 +592,17 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     tab->setMovable(true); // let users drag tabs to reorder them
     splitter->addWidget(tab);
 
+    warningsPanel = new WarningsPanel(MainWindow);
+    warningsPanel->setObjectName("warningsPanel");
+    warningsDock = new QDockWidget(MainWindow);
+    warningsDock->setObjectName("warningsDock");
+    warningsDock->setWidget(warningsPanel);
+    MainWindow->addDockWidget(Qt::RightDockWidgetArea, warningsDock);
+    warningsDock->setWindowTitle(QCoreApplication::translate("MainWindow", "Warnings"));
+    actionShowWarnings->setCheckable(true);
+    actionShowWarnings->setChecked(true);
+    QObject::connect(actionShowWarnings, &QAction::toggled, warningsDock, &QDockWidget::setVisible);
+
     gridLayout_8->addWidget(splitter, 0, 0, 1, 1);
 
     MainWindow->setCentralWidget(centralWidget);
@@ -726,6 +745,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addSeparator();
     menuView->addAction(actionFastMode);
     menuView->addAction(actionShowMinimap);
+    menuView->addAction(actionShowWarnings);
     menuView->addSeparator();
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
@@ -844,6 +864,7 @@ void MainWindowUi::retranslateUi()
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionICPreview->setText(QCoreApplication::translate("MainWindow", "Show IC Preview"));
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
+    actionShowWarnings->setText(QCoreApplication::translate("MainWindow", "Show Warnings"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));

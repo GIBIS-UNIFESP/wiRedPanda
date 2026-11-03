@@ -101,6 +101,7 @@ public:
     QAction *actionICPreview = nullptr;
     QAction *actionCheckForUpdates = nullptr;
     QAction *actionShowMinimap = nullptr;
+    QAction *actionShowWarnings = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;
     QAction *actionSystemTheme = nullptr;
@@ -222,6 +223,8 @@ public:
     // --- Element Editor Panel ---
 
     ElementEditor *elementEditor = nullptr;
+    QDockWidget *warningsDock = nullptr;
+    class WarningsPanel *warningsPanel = nullptr;
 
     // --- Toolbars & Status ---
 

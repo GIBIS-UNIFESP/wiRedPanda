@@ -59,6 +59,14 @@ class GraphicElement : public QGraphicsObject, public ItemWithId
 {
     Q_OBJECT
 public:
+    // --- Validity ---
+
+    /// Returns every input port that currently violates its connection requirement.
+    QVector<InputPort *> invalidInputs() const;
+
+    /// Returns true when at least one input port has a connection issue.
+    bool hasPortIssues() const;
+
     // --- Type Info ---
 
     enum { Type = QGraphicsItem::UserType + 3 };
@@ -80,7 +88,6 @@ signals:
     /// directly and this signal never fires for them). The owning Scene listens and drives the
     /// actual inline edit widget -- see InlineLabelEditor.
     void inlineEditRequested(GraphicElement *element);
-
 public:
     // --- External file dependencies ---
 

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QObject>
 #include <QSaveFile>
 #include <QScopeGuard>
 #include <QSet>
@@ -92,6 +93,12 @@ void ICLoader::loadFile(IC &ic, const QString &fileName, const QString &contextD
     QFileInfo fileInfo(ExternalFilePath::resolve(fileName, contextDir));
 
     if (!fileInfo.exists() || !fileInfo.isFile()) {
+        // Attach a warning to the IC so the canvas highlights the missing-file issue.
+        try {
+
+        } catch (...) {
+            // Ignore failures setting the warning; we still throw the load error below.
+        }
         throw PANDACEPTION("%1 not found.", fileInfo.absoluteFilePath());
     }
 

@@ -15,6 +15,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <QPolygonF>
 #include <QRegularExpression>
 #include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
@@ -203,6 +204,19 @@ void GraphicElement::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(option)
 
     m_appearance.render(painter, boundingRect(), isSelected());
+
+    if (hasPortIssues()) {
+        painter->save();
+
+        const QRectF body = renderBodyBounds().adjusted(1.5, 1.5, -1.5, -1.5);
+        const ThemeAttributes theme = ThemeManager::attributes();
+        QPen pen(theme.m_connectionError, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        painter->setPen(pen);
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRoundedRect(body, 4, 4);
+
+        painter->restore();
+    }
 }
 
 void GraphicElement::invalidateRenderCache()
@@ -825,6 +839,23 @@ void GraphicElement::retranslate()
 
     setPortName(m_translatedName);
     setToolTip(m_translatedName);
+}
+
+QVector<InputPort *> GraphicElement::invalidInputs() const
+{
+    QVector<InputPort *> invalid;
+    for (auto *input : m_ports.inputs()) {
+        if (input && !input->isValid()) {
+            invalid.append(input);
+        }
+    }
+    return invalid;
+}
+
+bool GraphicElement::hasPortIssues() const
+{
+    return std::any_of(m_ports.inputs().cbegin(), m_ports.inputs().cend(),
+                       [](const InputPort *input) { return input && !input->isValid(); });
 }
 
 void GraphicElement::loadFromDrop(const QString &fileName, const QString &contextDir)
