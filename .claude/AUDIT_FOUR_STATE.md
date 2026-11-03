@@ -45,18 +45,25 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
   (NAND and NOR were probed only at the arities listed.)
 - Decision needed: §2.2 literal (Unknown) or §2.3 (dominance). The reference follows §2.3.
 
-### F3. Mux, demux and truth tables force their output instead of reading both ways (high; spec violation)
+### F3. Mux, demux and truth tables force their output to a select's or an input's status (high; spec violation)
 
-- Code: `App/Simulation/KernelLogic.cpp`, `mux` (244): any select Unknown or Error sets the output to the select's
-  status, whatever the data. `demux` (263): any select Unknown or Error sets every output to it, whatever the data.
-  `truthTable` (291): any Unknown or Error input leaves the whole row Unknown.
-- Spec: §2.3: "Mux, Demux, truth tables and memory samples read both ways explicitly".
-- Reproduced: a mux with an Unknown select between two Active data inputs. `master` gives Unknown. The rule gives Active,
-  since both readings of the select give Active.
-- By reading the code, not probed: a demux whose data is Inactive with an Unknown select gives Unknown on every output;
-  the rule gives Inactive on every output. A truth table whose Unknown input does not change its row gives Unknown; the
-  rule gives the row's value.
-- Also: `mux` with Error select gives Error where the rule may give Active or Unknown.
+- Code: `App/Simulation/KernelLogic.cpp`. `mux` (251-257): a select line Unknown or Error sets the output to that status,
+  whatever the data, so the readings are not taken. `demux` (270-278): a select line Unknown or Error sets every output
+  to it. `truthTable` (297-305): the first Unknown or Error input sets every output to that input's status.
+- Spec: §2.3, "Mux, Demux, truth tables and memory samples read both ways explicitly".
+- Swept (wired Unknown, from a Not with an unconnected Unknown default, and wired Error, from two drivers):
+  - mux, 3 / 4 / 5 / 6 inputs: 11 of 56, 91 of 240, 344 of 992, 1,141 of 4,032 four-valued steps differ.
+  - demux, 2 / 3 / 4 / 8 outputs: 3 of 12, 32 of 56, 40 of 56, 210 of 240.
+  - truth table, 2 inputs with 1 / 2 outputs: 5 of 12, 7 of 12; 3 inputs with 1 / 2 outputs: 19 of 56, 29 of 56.
+- Examples: mux, data 0 and 0, select Unknown: `master` `U`, the rule `0`. Mux, data 0 and 0, select Error: `master`
+  `E`, the rule `0`. Demux, data 0, select Unknown: `master` `UUU` on three outputs, the rule `000`. Truth table, A
+  Unknown, B Active: `master` `U`, the rule `1` (the row for B = 1 is 1 whichever A is).
+- The first-found rule also picks the wrong status: a truth table with A Error and B Unknown gives `master` Error, and
+  the rule Unknown, since B's readings decide it.
+- The sweep shows no mux mismatch with a defined select (all 11 mux 3 mismatches have a Unknown or Error select). So an
+  unselected wired Unknown does not reach the output. The default case is different: an unconnected input whose default
+  is Unknown makes any combinational node output Unknown whatever its select (F2).
+- Decision: the kernels should read both ways, as the gates do. The spec is explicit, so this is a code change.
 
 ### F4. Unknown preset and clear are ignored in the flip-flops (high; spec violation)
 
@@ -94,8 +101,11 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
 
 - Code: `App/Simulation/KernelLogic.cpp`. `dFlipFlop` (90-95), `tFlipFlop` (115-118), `jkFlipFlop` (138-141) and
   `srFlipFlop` (170-173) return when `simUpdateInputs()` fails, after setting only the kept clock to Unknown. `dLatch`
-  (199-201) and `srLatch` (217-219) return on the same test. None of them sets the outputs, so the outputs keep the
-  values they had. The gates instead use `simUpdateInputsAllowUnknown()` and read both ways.
+  (199-201) and `srLatch` (217-219) return on the same test. `ElementSimState::updateInputs` (78-87) does write Unknown
+  into the element's outputs when an input fails, but a sequential element publishes its outputs from the staging
+  buffer taken before the tick (`commitDeferredOutputs`, `Simulation.cpp:185-193`). That buffer holds the old values,
+  so the Unknown is overwritten and the outputs hold. The gates instead use `simUpdateInputsAllowUnknown()` and read
+  both ways.
 - Spec: §2.3, "every kernel and every memory sample reads an Unknown or Error input both as Inactive and as Active".
 - Swept (memory sweep, after power-on, four-valued steps): D flip-flop 15,605 of 21,216 steps differ from the rule; T
   the same; JK 81,363 of 112,398; SR flip-flop the same as JK; D latch 393 of 624; SR latch 515 of 624.
@@ -132,6 +142,20 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
 - Count: 1 of 9,477 defined steps in the JK sweep.
 - Decision: what a JK does from Q = ~Q = 1 when clocked with J = K = 1.
 
+### F10. Out-of-range select under an Error select (spec silent)
+
+- Code: `mux` (259-260) and `demux` (280-287) treat a select value that addresses no data input or output as Unknown
+  (the comment at 239-242 says so). A select line that is Error is handled first and gives Error (`mux` 252-256).
+- A select with a defined value, out of range, gives Unknown in both `master` and the rule: no mismatch in the sweep.
+- With an Error select line and a reading that is out of range, `master` gives Error and the rule gives Unknown. The
+  rule's Unknown follows §2.3's "Unknown if a reading is Unknown", which the spec does not extend to a reading that
+  addresses nothing.
+- Examples: mux with 4 inputs (two data, two select), data 0 and 0, select lines 0 and Error: `master` `E`, the rule
+  `U`. The second select line read as 1 addresses input 2, which does not exist, so one reading is Unknown. Of the 91
+  mux-4 mismatches, 87 are Error from `master` against Unknown from the rule. I did not split those 87 between this case
+  and a wired Unknown data input that the select reaches.
+- Decision: under an Error select that can reach an out-of-range value, should the output be Error or Unknown?
+
 ### Conventions taken from `master` (spec silent)
 
 - SR flip-flop with S and R both Active at a rising edge: Q 1 and ~Q 1 (`master`). SR latch with both Active: Q 0 and
@@ -145,6 +169,8 @@ Method, in `Tests/Unit/Simulation/TestReferenceKernels.cpp` as a throwaway probe
 - Each input is one of five kinds: a switch that changes over time, an unconnected default Inactive, an unconnected
   default Active, an unconnected default Unknown, or two switches driving it (an Error). Every combination of kinds is
   swept: 5^4 for the D and T flip-flops, 5^5 for JK and SR, 5^2 for the latches.
+- The Unknown kind is an unconnected default. For a memory node a wired Unknown takes the same path, since
+  `updateInputs(false)` fails on any Unknown whatever its source.
 - Each combination runs 40 steps, the first being the power-on step. Random switch levels come from a fixed seed.
   A switch on a clock or enable does not change at its own edge, and the other switches hold their level at that step,
   so no data changes in an edge's round. This keeps the §2.6 changed-data case out of the sweep; that case waits for
@@ -164,6 +190,33 @@ Method, in `Tests/Unit/Simulation/TestReferenceKernels.cpp` as a throwaway probe
 The defined-input column is the control: where no input is Unknown or Error, master and the reference agree, apart from
 the one F9 case. The four-valued column is where the rule and master part ways, and its causes are F4, F7 and F8.
 
+## Routing and truth-table sweep (this round)
+
+Method, as the memory sweep, with a throwaway probe (kept at the scratchpad path above). Each input is a switch, a
+wired Unknown (a Not with an unconnected Unknown default drives it), or a wired Error (two drivers). Every combination of
+kinds is swept, with every level for the switches: 4^n steps for n inputs. The truth tables take random tables, fixed
+by a seed. A mux's select lines are its last inputs; a demux's are the lines after its data input.
+
+| Kind | Steps (defined) | Defined-input mismatches | Four-valued mismatches |
+|---|---|---|---|
+| mux, 3 inputs | 64 (8) | 0 | 11 of 56 |
+| mux, 4 inputs | 256 (16) | 0 | 91 of 240 |
+| mux, 5 inputs | 1,024 (32) | 0 | 344 of 992 |
+| mux, 6 inputs | 4,096 (64) | 0 | 1,141 of 4,032 |
+| demux, 2 outputs | 16 (4) | 0 | 3 of 12 |
+| demux, 3 outputs | 64 (8) | 0 | 32 of 56 |
+| demux, 4 outputs | 64 (8) | 0 | 40 of 56 |
+| demux, 8 outputs | 256 (16) | 0 | 210 of 240 |
+| truth table, 2 in / 1 out | 16 (4) | 0 | 5 of 12 |
+| truth table, 2 in / 2 out | 16 (4) | 0 | 7 of 12 |
+| truth table, 3 in / 1 out | 64 (8) | 0 | 19 of 56 |
+| truth table, 3 in / 2 out | 64 (8) | 0 | 29 of 56 |
+
+The defined-input column is the control: where no input is Unknown or Error, `master` and the reference agree. The
+four-valued column is F3 and F10. The earlier run used an unconnected Unknown default for its Unknown input, which
+makes every output Unknown through F2 and inflated the counts (mux 6: 908 of 4,032 that way); the table above uses a
+wired Unknown.
+
 ## Checked and agreeing
 
 - Dominance and levels in every fold and `statusNot`: correct for Inactive and Active inputs, and for Inactive or Active
@@ -174,6 +227,8 @@ the one F9 case. The four-valued column is where the rule and master part ways, 
 - Flip-flop edge rule and the kept clock (`dFlipFlop`, lines 87-110): matches the reference's stable-data cases.
 - Memory with defined inputs (the sweep above): D, T and SR flip-flops and both latches agree with the reference on
   every step after power-on, with presets and clears defined. JK agrees except for F9.
+- Routing and truth tables with defined inputs (the sweep above): mux, demux and truth tables agree with the reference in
+  every case.
 - Exporters: `DolphinExporter.cpp:88-89` writes Unknown as `x` and Error as `E`, one character each, as the comment
   requires. `WaveformSimulator.cpp:52-53` restores four-state values rather than a `bool`, which would conflate them.
 - Presentation: `PicturePresenters.cpp:337-340` and `Connection.cpp:232-235` colour all four values.
@@ -185,15 +240,30 @@ the one F9 case. The four-valued column is where the rule and master part ways, 
 - Memory kernels: T, JK and SR flip-flops and the SR latch are swept now (above). The sweep holds data fixed at each edge
   and does not cover the §2.6 changed-data case, which waits for the sampling ruling. A whole-circuit comparison is not
   run: `ReferenceNetlist` has no reference kernels for those kinds yet (plan 5, P5.5).
+- Whole-circuit sweeps: not run. The sweeps here are single elements, exhaustive over kinds and levels, with random
+  sequences for memory. `ReferenceNetlist` has no reference kernels for T, JK, SR, mux, demux or truth tables yet (plan
+  5, P5.5), so a circuit-level comparison has to wait for that.
+- Node, Tx and Rx, ICs, clocks and probes are not swept for four-state behaviour.
 - ASan and UBSan were not run, per the project's rules.
 
 ## Decisions for the user, in order of effect
 
-1. F1: the combiners rank Error over Unknown; the spec ranks Unknown first.
-2. F2: a default-Unknown input: outputs Unknown (§2.2) or is decided by a dominating level (§2.3).
-3. F3 and F4: mux, demux, truth tables and the flip-flop presets should read both ways, as §2.3 says. Once F1 and F2
-   are settled, this is a code change.
-4. F5: combinational outputs start Unknown (§2.4) or Inactive (the code).
+Code changes the spec already settles (no ruling needed; each moves code and, where pinned, tests):
+
+1. F7 and F4: memory kernels read Unknown and Error inputs both ways, and their presets and clears are read too. The
+   outputs must not hold through an Unknown or Error input.
+2. F8: a fresh flip-flop takes its last clock from its first level, so no edge is fabricated at power-on.
+3. F3: mux, demux and truth tables read both ways, as the gates do.
+
+Rulings (the spec is silent or contradicts itself):
+
+4. F1: the combiners rank Error over Unknown; the spec ranks Unknown first.
+5. F2: a default-Unknown input: outputs Unknown (§2.2) or is decided by a dominating level (§2.3).
+6. F9 and the SR conventions: a JK clocked with J = K = 1 from Q = ~Q = 1 (complement or swap), and an SR flip-flop or
+   latch with S and R both Active (master's (1, 1) and (0, 0)).
+7. F10: an Error select that can reach an out-of-range value: Error (master) or Unknown (the rule).
+8. F5: combinational outputs start Unknown (§2.4) or Inactive (the code).
+9. The two sampling readings (ledger, PENDING).
 
 Until these are decided, the reference follows the spec (§2.3 Unknown first; dominance), and the master divergences
 above stay recorded as divergences, not as defects to match.
