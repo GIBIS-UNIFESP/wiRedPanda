@@ -197,9 +197,9 @@ void TestReferenceKernels::testMemoryHoldsLoadsAndKeepsItsClock()
 void TestReferenceKernels::testMemoryMatchesMasterOnStableData()
 {
     // Data is held at one level for a whole run, so no data change falls in an edge's round, the case where the two
-    // readings of a flip-flop's data part ways (§2.6 leaves it open). The clock follows every sequence of levels after a
-    // first step that keeps it Inactive; the reference is given each step's clock, the clock's last level and the stored
-    // output that master itself last showed.
+    // readings of a flip-flop's data part ways (§2.6 leaves it open). The clock follows every sequence of levels after
+    // a first step that keeps it Inactive; the reference is given each step's clock, the clock's last level and the
+    // stored output that master itself last showed.
     constexpr int steps = 4;
     for (int data = 0; data < 2; ++data) {
         for (int sequence = 0; sequence < (1 << steps); ++sequence) {
