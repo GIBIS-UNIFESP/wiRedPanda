@@ -1017,6 +1017,7 @@ add_test(NAME TestSignalDelegate COMMAND test_wiredpanda TestSignalDelegate WORK
 add_test(NAME TestSimulation COMMAND test_wiredpanda TestSimulation WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationBlocker COMMAND test_wiredpanda TestSimulationBlocker WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestRandomCircuit COMMAND test_wiredpanda TestRandomCircuit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestReferenceNetlist COMMAND test_wiredpanda TestReferenceNetlist WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestSimulationTraceSnapshot COMMAND test_wiredpanda TestSimulationTraceSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStackingSnapshot COMMAND test_wiredpanda TestStackingSnapshot WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestStatusOps COMMAND test_wiredpanda TestStatusOps WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1190,7 +1191,7 @@ set_tests_properties(TestPerfProbe PROPERTIES LABELS "perf")
 
 # Core Functionality Tests - Unit category
 foreach(TEST TestAudioService TestCommands TestCommon TestEnums TestGoldens TestModelIncludeCheck TestNotifyCatch
-        TestPortReaders TestPriorities TestRandomCircuit TestRecentFiles TestSettings TestThemeManager)
+        TestPortReaders TestPriorities TestRandomCircuit TestReferenceNetlist TestRecentFiles TestSettings TestThemeManager)
     set_tests_properties(${TEST} PROPERTIES LABELS "unit")
 endforeach()
 
@@ -1238,7 +1239,7 @@ set(ALL_TESTS
     TestSceneConnections TestSceneState TestSceneUndoredo
     TestSerialization TestSimulationBlocker
     TestDanglingPointer
-    TestCommands TestCommon TestEnums TestNotifyCatch TestPortReaders TestPriorities TestRandomCircuit TestRecentFiles TestSettings
+    TestCommands TestCommon TestEnums TestNotifyCatch TestPortReaders TestPriorities TestRandomCircuit TestReferenceNetlist TestRecentFiles TestSettings
     TestThemeManager
     TestApplication TestAudioService TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestGoldens TestInstallRelativePaths TestUpdateChecker

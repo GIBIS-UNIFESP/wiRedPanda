@@ -341,6 +341,7 @@ endif()
 set(TEST_UTILS_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/RandomCircuit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceNetlist.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TraceEngine.cpp
 )
@@ -349,6 +350,7 @@ set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/RandomCircuit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceNetlist.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubMainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.h
@@ -571,6 +573,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestRandomCircuit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestReferenceNetlist.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.cpp
@@ -819,6 +822,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestRandomCircuit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestReferenceNetlist.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Tour/TestTourEngine.h
