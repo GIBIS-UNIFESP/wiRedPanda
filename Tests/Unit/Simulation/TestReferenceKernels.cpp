@@ -56,31 +56,47 @@ QVector<QVector<Status>> everyVector(const int count)
 
 void TestReferenceKernels::testLevelsMatchMaster()
 {
+    // Each input is either wired to a switch, or left open with a level for its default: every mix of the two, and every
+    // level the switches take, is settled by master and compared with the reference's value of the same levels
     for (const GateCase &gateCase : gateCases()) {
-        auto workspace = TestUtils::createWorkspace();
-        CircuitBuilder builder(workspace->scene());
-        auto *gate = ElementFactory::buildElement(gateCase.type);
-        TestUtils::applyPortCounts(gate, gateCase.inputs, 1);
-        builder.addElement(gate);
-        QVector<Element *> switches;
-        for (int input = 0; input < gateCase.inputs; ++input) {
-            auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
-            builder.add(source);
-            builder.connect(source, 0, gate, input);
-            switches.append(source);
-        }
+        for (int openMask = 0; openMask < (1 << gateCase.inputs); ++openMask) {
+            for (int defaultMask = 0; defaultMask < (1 << gateCase.inputs); ++defaultMask) {
+                auto workspace = TestUtils::createWorkspace();
+                CircuitBuilder builder(workspace->scene());
+                auto *gate = ElementFactory::buildElement(gateCase.type);
+                TestUtils::applyPortCounts(gate, gateCase.inputs, 1);
+                builder.addElement(gate);
+                QVector<Element *> switches(gateCase.inputs, nullptr);
+                QVector<Status> openValues(gateCase.inputs, Status::Unknown);
+                for (int input = 0; input < gateCase.inputs; ++input) {
+                    if ((openMask >> input) & 1) {
+                        const Status level = ((defaultMask >> input) & 1) ? Status::Active : Status::Inactive;
+                        gate->inputPort(input)->setDefaultStatus(level);
+                        openValues[input] = level;
+                        continue;
+                    }
+                    auto *source = ElementFactory::buildElement(ElementType::InputSwitch);
+                    builder.add(source);
+                    builder.connect(source, 0, gate, input);
+                    switches[input] = source;
+                }
 
-        // Each level vector drives the switches, and master's engine settles the gate to its value
-        const auto engine = makeMasterTraceEngine(workspace->scene());
-        for (int mask = 0; mask < (1 << gateCase.inputs); ++mask) {
-            QVector<Status> levels;
-            for (int input = 0; input < gateCase.inputs; ++input) {
-                const bool level = ((mask >> input) & 1) != 0;
-                switches.at(input)->setOn(level);
-                levels.append(level ? Status::Active : Status::Inactive);
+                const auto engine = makeMasterTraceEngine(workspace->scene());
+                for (int mask = 0; mask < (1 << gateCase.inputs); ++mask) {
+                    QVector<Status> levels;
+                    for (int input = 0; input < gateCase.inputs; ++input) {
+                        const bool level = ((mask >> input) & 1) != 0;
+                        if (switches.at(input)) {
+                            switches.at(input)->setOn(level);
+                            levels.append(level ? Status::Active : Status::Inactive);
+                        } else {
+                            levels.append(openValues.at(input));
+                        }
+                    }
+                    engine->step();
+                    QCOMPARE(engine->observed(gate).first(), referenceGate(gateCase.type, levels));
+                }
             }
-            engine->step();
-            QCOMPARE(engine->observed(gate).first(), referenceGate(gateCase.type, levels));
         }
     }
 }
