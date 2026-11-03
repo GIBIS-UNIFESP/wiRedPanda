@@ -15,6 +15,7 @@ class TestRandomCircuit : public QObject
 
 private slots:
     void testSameSeedBuildsSameCircuit();
+    void testBuildingBlocksLoad();
     void testEveryFeatureIsGenerated();
     void testWalksRunOnMasterEngine();
 };

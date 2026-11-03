@@ -3,8 +3,11 @@
 
 #include "Tests/Unit/Simulation/TestRandomCircuit.h"
 
+#include <QFileInfo>
+#include <QTemporaryDir>
 #include <QTest>
 
+#include "App/Element/IC.h"
 #include "App/Scene/Workspace.h"
 #include "Tests/Common/RandomCircuit.h"
 #include "Tests/Common/TraceEngine.h"
@@ -25,13 +28,32 @@ void TestRandomCircuit::testSameSeedBuildsSameCircuit()
     QVERIFY2(distinct.size() > 10, "different seeds should build different circuits");
 }
 
+void TestRandomCircuit::testBuildingBlocksLoad()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QStringList blocks = buildingBlockFiles(dir.path());
+    QCOMPARE(blocks.size(), 8);
+    for (const QString &path : blocks) {
+        QVERIFY2(QFileInfo::exists(path), qPrintable(path));
+        auto *ic = new IC();
+        ic->loadFile(path, dir.path());
+        QVERIFY2(ic->inputSize() > 0, qPrintable(QString("%1 has no inputs").arg(path)));
+        QVERIFY2(ic->outputSize() > 0, qPrintable(QString("%1 has no outputs").arg(path)));
+        delete ic;
+    }
+}
+
 void TestRandomCircuit::testEveryFeatureIsGenerated()
 {
     // Each feature must appear in some circuit of the 300 seeds, or a walk over them never meets it.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QStringList blocks = buildingBlockFiles(dir.path());
     RandomCircuitFeatures total;
     for (quint32 seed = 1; seed <= 300; ++seed) {
         SeededChoices choices(seed);
-        const auto circuit = makeRandomCircuit(choices);
+        const auto circuit = makeRandomCircuit(choices, blocks);
         total.openInputs += circuit.features.openInputs;
         total.doubleDriven += circuit.features.doubleDriven;
         total.feedbackWires += circuit.features.feedbackWires;
@@ -41,6 +63,13 @@ void TestRandomCircuit::testEveryFeatureIsGenerated()
         total.muxElements += circuit.features.muxElements;
         total.truthTables += circuit.features.truthTables;
         total.delayedElements += circuit.features.delayedElements;
+        total.wirelessNodes += circuit.features.wirelessNodes;
+        total.wiredReceivers += circuit.features.wiredReceivers;
+        total.memoryClockOwn += circuit.features.memoryClockOwn;
+        total.memoryClockInput += circuit.features.memoryClockInput;
+        total.memoryClockClock += circuit.features.memoryClockClock;
+        total.icInstances += circuit.features.icInstances;
+        total.rippleChains += circuit.features.rippleChains;
     }
     QVERIFY2(total.openInputs > 0, "no input was left open");
     QVERIFY2(total.doubleDriven > 0, "no input had two drivers");
@@ -51,13 +80,23 @@ void TestRandomCircuit::testEveryFeatureIsGenerated()
     QVERIFY2(total.muxElements > 0, "no multiplexer was generated");
     QVERIFY2(total.truthTables > 0, "no truth table was generated");
     QVERIFY2(total.delayedElements > 0, "no element had a temporal delay");
+    QVERIFY2(total.wirelessNodes > 0, "no wireless node was generated");
+    QVERIFY2(total.wiredReceivers > 0, "no receiver was wired");
+    QVERIFY2(total.memoryClockOwn > 0, "no memory clock came from its own output");
+    QVERIFY2(total.memoryClockInput > 0, "no memory clock came from an input");
+    QVERIFY2(total.memoryClockClock > 0, "no memory clock came from a clock");
+    QVERIFY2(total.icInstances > 0, "no building-block IC was instanced");
+    QVERIFY2(total.rippleChains > 0, "no ripple chain past the round budget was generated");
 }
 
 void TestRandomCircuit::testWalksRunOnMasterEngine()
 {
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QStringList blocks = buildingBlockFiles(dir.path());
     for (quint32 seed = 1; seed <= 100; ++seed) {
         SeededChoices build(seed);
-        auto circuit = makeRandomCircuit(build);
+        auto circuit = makeRandomCircuit(build, blocks);
         const auto engine = makeMasterTraceEngine(circuit.workspace->scene());
         QVERIFY2(!engine->timerRuns(), "the simulation's timer must not run during a walk");
         SeededChoices walk(seed + 1000);
@@ -66,7 +105,7 @@ void TestRandomCircuit::testWalksRunOnMasterEngine()
 
         // The same seed builds the same circuit and walks it the same way.
         SeededChoices buildAgain(seed);
-        auto again = makeRandomCircuit(buildAgain);
+        auto again = makeRandomCircuit(buildAgain, blocks);
         const auto engineAgain = makeMasterTraceEngine(again.workspace->scene());
         SeededChoices walkAgain(seed + 1000);
         QCOMPARE(randomCircuitWalk(again, *engineAgain, walkAgain, 40), lines);
