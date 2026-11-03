@@ -21,12 +21,11 @@
 #include "App/Element/ElementFactory.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
-#include "App/Simulation/Simulation.h"
-#include "App/Simulation/SimulationThrottleDisabler.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/Goldens.h"
 #include "Tests/Common/TestUtils.h"
+#include "Tests/Common/TraceEngine.h"
 
 namespace SimulationTraceSnapshot {
 
@@ -93,47 +92,6 @@ QString statuses(const QVector<Status> &values)
     }
     return text;
 }
-
-/**
- * \brief What \a element drives, read from its output ports, or, when it drives nothing, what its input ports carry,
- * which is what a display or an Led paints from: the 7-, 14- and 16-segment displays have no logic of their own, so
- * nothing refreshes their simulation inputs.
- */
-QVector<Status> observed(const Element *element)
-{
-    QVector<Status> values;
-    if (element->outputSize() > 0) {
-        for (int index = 0; index < element->outputSize(); ++index) {
-            values << element->outputPort(index)->status();
-        }
-        return values;
-    }
-    for (int index = 0; index < element->inputSize(); ++index) {
-        values << element->inputPort(index)->status();
-    }
-    return values;
-}
-
-/// Steps \a scene's simulation by hand: one update() per step, every phase complete whatever the interactive mode
-/// says, its timer never started, so a clock keeps the level the first update gives it.
-class Stepper
-{
-public:
-    explicit Stepper(Scene *scene)
-        : m_simulation(scene->simulation())
-        , m_noThrottle(m_simulation)
-    {
-    }
-
-    /// Whether the simulation's timer runs, which would let clocks follow the wall clock.
-    bool timerRuns() { return m_simulation->isRunning(); }
-
-    void step() { m_simulation->update(); }
-
-private:
-    Simulation *m_simulation;
-    SimulationThrottleDisabler m_noThrottle;
-};
 
 /// Drives \a input one step of \a walk: a rotary selects one of its positions, any other input takes a level.
 void drive(Element *input, Lcg &walk)
@@ -217,15 +175,15 @@ QStringList elementRun(const ElementType type, const int inputs, const int outpu
         switches << source;
     }
 
-    Stepper stepper(scene);
-    if (stepper.timerRuns()) {
+    const auto engine = makeMasterTraceEngine(scene);
+    if (engine->timerRuns()) {
         QTest::qFail("the simulation's timer runs", __FILE__, __LINE__);
         return {};
     }
     QStringList steps;
     const auto step = [&] {
-        stepper.step();
-        steps << statuses(observed(element));
+        engine->step();
+        steps << statuses(engine->observed(element));
     };
 
     step();
@@ -288,11 +246,11 @@ QString elementTraces()
 }
 
 /// One step of a circuit: what each observed element produced, or a hash of that when it is too wide to read.
-QString circuitStep(const QList<const Element *> &elements)
+QString circuitStep(const TraceEngine &engine, const QList<const Element *> &elements)
 {
     QStringList parts;
     for (const auto *element : elements) {
-        parts << statuses(observed(element));
+        parts << statuses(engine.observed(element));
     }
     const QString text = parts.join(' ');
     if (text.size() <= kMaxStepWidth) {
@@ -323,22 +281,22 @@ QString circuitTrace(const QString &filePath, const int steps)
         }
     }
 
-    Stepper stepper(scene);
-    if (stepper.timerRuns()) {
+    const auto engine = makeMasterTraceEngine(scene);
+    if (engine->timerRuns()) {
         QTest::qFail("the simulation's timer runs", __FILE__, __LINE__);
         return {};
     }
     QStringList lines{QString("inputs=%1 observed=%2").arg(QString::number(inputs.size()), QString::number(traced.size()))};
-    stepper.step();
-    lines << QString("  0: %1").arg(circuitStep(traced));
+    engine->step();
+    lines << QString("  0: %1").arg(circuitStep(*engine, traced));
 
     Lcg walk(seedOf(QFileInfo(filePath).completeBaseName()));
     for (int step = 1; step <= steps; ++step) {
         for (auto *input : std::as_const(inputs)) {
             drive(input, walk);
         }
-        stepper.step();
-        lines << QString("  %1: %2").arg(QString::number(step), circuitStep(traced));
+        engine->step();
+        lines << QString("  %1: %2").arg(QString::number(step), circuitStep(*engine, traced));
     }
     return lines.join('\n') + '\n';
 }
@@ -441,14 +399,14 @@ void TestSimulationTraceSnapshot::testClocksHoldWhileStepped()
     wire->setEndPort(led->inputPort());
     scene->addItem(wire);
 
-    SimulationTraceSnapshot::Stepper stepper(scene);
-    QVERIFY(!stepper.timerRuns());
-    stepper.step();
+    const auto engine = makeMasterTraceEngine(scene);
+    QVERIFY(!engine->timerRuns());
+    engine->step();
     QCOMPARE(led->inputPort()->status(), Status::Active);
     for (int step = 1; step <= 8; ++step) {
         // Two half-periods, so an advancing clock is due to toggle whenever this step's update runs.
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        stepper.step();
+        engine->step();
         QCOMPARE(led->inputPort()->status(), Status::Active);
     }
 }

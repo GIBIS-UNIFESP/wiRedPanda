@@ -341,6 +341,7 @@ endif()
 set(TEST_UTILS_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TraceEngine.cpp
 )
 
 set(TEST_UTILS_HEADERS
@@ -349,6 +350,7 @@ set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubMainWindowHost.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TraceEngine.h
 )
 
 set(TEST_WIREDPANDA_SOURCES
