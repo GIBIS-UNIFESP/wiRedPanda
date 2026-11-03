@@ -27,6 +27,22 @@ If you are looking for build instructions, see [BUILD.md](BUILD.md). For contrib
   - [Simulation Loop](#simulation-loop)
   - [Topological Sorting](#topological-sorting)
   - [Feedback Loop Handling](#feedback-loop-handling)
+- [Simulation Semantics (the spec)](#simulation-semantics-the-spec)
+  - [Values and Time](#values-and-time)
+  - [Wiring](#wiring)
+  - [What Each Node Computes](#what-each-node-computes)
+  - [Power-On](#power-on)
+  - [Rounds](#rounds)
+  - [Memory](#memory)
+  - [Zero-Delay Loops](#zero-delay-loops)
+  - [Pulses and Divergent Unknowns](#pulses-and-divergent-unknowns)
+  - [Trips and the Budget](#trips-and-the-budget)
+  - [Delays and Ties](#delays-and-ties)
+  - [Clocks](#clocks)
+  - [Ticks and Settles](#ticks-and-settles)
+  - [ICs and the Reset Source](#ics-and-the-reset-source)
+  - [Rebuilds, Mode Switches and Snapshots](#rebuilds-mode-switches-and-snapshots)
+  - [What the Model Promises](#what-the-model-promises)
 - [Ports and Connections (App/Wiring)](#ports-and-connections-appwiring)
 - [The Scene and Undo/Redo System (App/Scene)](#the-scene-and-undoredo-system-appscene)
 - [User Interface (App/UI)](#user-interface-appui)
@@ -872,6 +888,198 @@ Some circuits have feedback (e.g., an SR latch where outputs feed back to inputs
 1. Any element in a cycle is marked as a **feedback node** — including a single element whose own output feeds directly back into its own input (a size-1 strongly connected component via self-loop).
 2. Instead of a single-pass evaluation, the engine uses **iterative settling**: it runs `updateLogic()` on all elements, checks if any output changed, and repeats — up to 10 iterations or until convergence.
 3. If the circuit does not converge (e.g., a ring oscillator), a warning is emitted via the status bar.
+
+---
+
+## Simulation Semantics (the spec)
+
+This section states the rules the simulation follows, in both modes. Functional mode is the same rules with every delay
+zero and the clocks on wall time. It is the spec that the reference simulator in `Tests/Common` will implement and that
+the oracles will check. The reference does not exist yet, and the engine in `App/Simulation`, described above, does not
+follow these rules yet. The causes file, which lists each trace where the two differ, is written with the tests. A rule
+changes here first, then in the oracles and the reference, and every trace a change moves is named by its cause.
+
+### Values and Time
+
+- Four values, one byte each: Inactive, Active, Unknown and Error. Unknown is below the two levels and Error. Error and
+  the levels are unordered among themselves (the flat order), so an input lowered to Unknown may lower an output to
+  Unknown, but never move it to another value.
+- Temporal mode simulates nanoseconds. Functional mode runs the clocks and the user's changes on wall time. An instant
+  is one time, settled in rounds.
+
+### Wiring
+
+- One node per element that computes: logic, memory, sources and clocks. A junction, an IC pin and a wireless Tx or Rx
+  alias the slot that drives them, inside loops too, and cost no time. ICs are flattened into their nodes.
+- An input nothing drives reads its port's default, and a combinational node with such an input whose default is Unknown
+  outputs Unknown. A loop of aliases with no node in it reads Unknown.
+- A net with more than one driver reads Error and warns once: two wires into one input, a label on more than one Tx in a
+  scope, or an Rx that a wire also reaches.
+- Wireless labels resolve once per scope (the top level and each IC instance), after the IC boundaries are mapped, so an
+  Rx reads its scope's Tx's driver.
+- A node with outputs has at most 11 inputs (a Mux's 8 data and 3 select lines), and a memory node at most 5.
+
+### What Each Node Computes
+
+- Every kernel and every memory sample reads an Unknown or Error input both as Inactive and as Active, and outputs what
+  every reading agrees on. Where the readings disagree the output is Unknown if a reading is Unknown or an Unknown input
+  decides it, and Error otherwise, since IEEE 1164 ranks Unknown first.
+- So every kernel is monotone in the flat order, with one exception: a flip-flop's clock held at Unknown has no edge.
+- A flip-flop stores on a rising edge, meaning its clock has gone from Inactive to Active since it last sampled. A clock
+  that kept its value since then, Unknown both times included, does not rise, and one cause taking a clock from Active
+  to Unknown makes no edge, since no reading of it rises. Preset and clear are active low and override the data, and
+  latches are level-sensitive. So a falling clock with Unknown data holds, an asserted preset sets Q whatever the data,
+  and a JK flip-flop with J Unknown, K low and Q high stays high.
+
+### Power-On
+
+- Sources sit at their levels, clocks start HIGH shifted by their phase, memory starts at its power-on state (Q low, ~Q
+  high), and combinational outputs are Unknown until their inputs decide them. A reset source is Active through the
+  power-on instant (see ICs and the Reset Source).
+- A node whose outputs change with no changing input, as at power-on, is the cause of that change.
+- The power-on settle cannot oscillate: a monotone gate changes at most once from Unknown.
+
+### Rounds
+
+- A change's cause is the node that made it, and changes with different causes happen in any order. An instant runs
+  rounds: the due publications apply, each changed slot with its publisher as its cause; the combinational nodes that
+  read a change run in topological order; the memory nodes whose inputs changed sample once their round's logic has
+  settled; zero-delay loops settle; memory nodes and loops publish after the round, which starts the next round; and the
+  instant ends when a round publishes nothing.
+- A node whose changing inputs follow several causes is read over every order of them. Where every order takes its
+  output once from the old value to the new, that is an event of its own; where every order keeps it, it does not
+  change; otherwise (a third value, or the old value after the new) it may pulse.
+- All memory nodes read before any publishes, so a shift register shifts one stage per edge, and a ripple counter
+  ripples one stage per round within one instant.
+- Nothing is canonicalised. The topological order only orders evaluation within a round, and nothing observable depends
+  on it or on where an element sits on the canvas. A ring oscillator or a raced latch reads Unknown because its phase or
+  its outcome is.
+- Independent changes that meet in one round read Unknown where they reach memory or a loop, which is the round barrier:
+  a cause that reaches a memory node or a loop through another one comes after the direct causes. Settling each cause
+  fully before the next would read Unknown wherever a change through memory could arrive first, and would assume a skew
+  between inputs. Outside a zero-delay loop, a hazard that only some delays produce does not pulse. Inside one, ternary
+  iteration reads it Unknown where it can latch.
+
+### Memory
+
+- A memory node stores what every order of its input changes in the round agrees on, and Unknown where they disagree. An
+  input that may pulse takes every value at every step, after the last event too. A clock that may pulse has not kept its
+  value.
+- So a flip-flop whose data changes in its edge's round stores Unknown where the old and the new data differ. The same
+  holds for a latch closing as its data changes, a preset or clear released at an edge, and both released together.
+- A fresh memory node, new at power-on or at a rebuild, samples once a round publishes nothing, from its last control
+  levels taken from its inputs. Preset, clear and an enabled latch apply, and nothing fabricates an edge.
+
+### Zero-Delay Loops
+
+- A zero-delay loop, a set of combinational nodes that read each other, settles by ternary iteration. After each event it
+  runs Eichelberger's algorithm A (the changing inputs read Unknown, iterated to a fixed point), then B (their new
+  values). An input that may pulse takes every value at every step, and B runs with the pulses' actual values once every
+  event has happened.
+- Every order of the events is followed. Up to five events, that means enumerating the orders. Past five, a search over
+  subsets of the events keeps the distinct states each reaches, within a work limit of 2^18 member evaluations, which is
+  named apart from the round budget. Past that limit the orders are followed again with A alone between events, within
+  a limit of its own. Past that, or past four inputs that move at will (3^4 combinations), a fallback applies in which
+  every changed input reads Unknown in A, and what A makes Unknown pulses. Each settle past the work limit is counted.
+- A ternary loop cannot oscillate: a ring that cannot settle settles at Unknown.
+
+### Pulses and Divergent Unknowns
+
+- A loop, and a memory node without delay, follows each order's path of every output. An output that some order moves
+  twice, or that moves while the merge keeps its published Unknown, publishes as a pulse after the round. A delay swallows
+  a pulse, as it does a gate's.
+- A pulse moves at will at every step, after the last event too. Memory and loops take every value of a pulsing input.
+- An Unknown merged within an instant from orders, branches or runs that disagree is divergent: it stands for one value
+  per order until the instant ends. Loops set it, since ternary iteration does not tell a race from an Unknown input,
+  and so do memory nodes, gates and the temporal tie merge (see Delays and Ties). Memory and loops take each of its
+  values for a whole branch, and gates read a divergent input that did not change at each of its levels. An output that
+  stays Unknown while its divergent mark turns on or off moved in some order, so it publishes as a pulse. A delayed
+  publication lands in a later instant as a plain value.
+- An event is a change of the four-state value, as in Verilog, where a net that stays `x` has no edge. A slot that stays
+  Unknown while its inputs change wakes nothing, and from one instant to the next an Unknown is a value.
+
+### Trips and the Budget
+
+- When an instant's rounds repeat a state (memory clocking itself), the memory nodes that cycled store Unknown, and the
+  user is warned once ("oscillation"). The state includes the pulses the round's publications made, and a memory node
+  that published a pulse counts as cycled. A round that repeats an earlier state does not read its pulses again, and a
+  pulse that changed its slot's value becomes that change, an event of its publisher.
+- A budget of 1,000 rounds stops an instant, with a warning of its own. A trip never makes memory sample a cone that has
+  not settled.
+- No fixture, example or IC component reaches the budget or trips unless it is meant to, so a budget set too small shows
+  in the test suite.
+
+### Delays and Ties
+
+- A node with a delay evaluates at its inputs' new values and schedules its result at `t + d`, superseding any
+  publication it has pending (inertial delay). A loop with a delay in it runs in simulated time and may oscillate. That
+  is behaviour, not a trip.
+- A delayed node whose publication falls due in an instant's first round, at the time one of its inputs changes from
+  another cause, publishes the merge of its old value and the due one: Unknown, or a pulse where the old value was
+  Unknown. Its readers run again. A tie that the first round's pass finds undoes that pass, which runs again from the
+  round's start with the merge.
+- A covering rule applies: a memory node whose clock reaches Unknown through a divergent Unknown, one level in each
+  order, may have seen an edge, so it stores Unknown rather than holding. The rule that a clock taken from a level to
+  Unknown by one cause holds stays, for an Unknown that is no level. The exact oracle with delays shows the covering rule
+  is needed.
+
+### Clocks
+
+- Functional mode, on wall time: an edge comes once more than a half period has passed since the clock's reference, which
+  then advances by exactly a half period, so drift does not skew the frequency. A tick runs every edge due since the last
+  one, each at its time.
+- Temporal mode: a clock's edges are events at `phase + k · half period` of simulated time, for k of at least 1. The speed
+  only maps simulated time to wall time, so it changes nothing a clock does.
+- A locked clock stops. Unlocked, it shows the level its schedule gives, with missed edges dropped rather than replayed:
+  at the rebuild that unlocks it, the grid edges since its stored reference are counted, the reference advances by that
+  many half periods, and the output flips if the count is odd. From then on it matches a never-locked clock at every tick,
+  with no state of its own while locked.
+- A settle holds the temporal clocks for the simulated time it took, a locked one included. A lock changes what a clock
+  shows, not where its edges fall.
+
+### Ticks and Settles
+
+- A functional tick runs everything due since the last tick in time order, with each distinct time an instant of its own:
+  each clock edge at its due time, each user change at the time it was made. A temporal tick runs the user's changes
+  first, as an instant of their own, then drains a window of simulated time. A temporal start with no change due runs no
+  instant of its own.
+- Both check one wall-time deadline between instants. A tick cut by it stops time at the next instant due, and the next
+  tick goes on from there, so what remains runs later, in the same order, and nothing a tick shows is invented.
+- A timed change waits for its time. An untimed one is seeded at the start of the tick that sees it, so the runner stamps
+  each user change with the time it was made. A parameter or structural edit takes effect at the next tick's first
+  instant. Only the changed sources are seeded (every input after a rebuild). A source seeded back to its published level
+  drops the publication it had pending, and a tick with nothing due does nothing.
+- A settle runs instants while one is due, each at the earliest time something is due, within a budget of instants. It
+  seeds no clock and holds the temporal clocks.
+
+### ICs and the Reset Source
+
+- An unconnected IC input reads the level that the input element it stands for has inside the IC: a switch's, a button's
+  or a rotary's. A clock pin, which is required, reads Unknown.
+- A reset source is Active through the power-on instant in functional mode, and is released at time 1: the second tick,
+  or a settle that runs the power-on instant. In temporal mode it is Active for its width (1,000 ns by default), and its
+  release is an instant of its own. A reset that survives a rebuild keeps its state. A reset that a rebuild adds reads
+  Inactive at once.
+
+### Rebuilds, Mode Switches and Snapshots
+
+- A rebuild keeps the outputs and memory state of the nodes that survive it, and fabricates no edge. A node whose element
+  keeps its id and output count keeps its published outputs whatever its inputs did, so an edit that changes no output
+  changes none: an And that loses an input keeps its value. A memory node keeps its stored state, last control levels and
+  clock phase when its kind and port counts are unchanged, and otherwise starts fresh (Q low, control levels from the
+  published inputs). A new combinational node starts at its result against the published values, not at its power-on
+  Unknown. A new element, or one morphed to another type, is a new node, and loading a file is power-on.
+- An IC's nodes survive a rebuild when the IC keeps the definitions it was built from. Each node is placed by its top-level
+  element and its index path through the ICs nested in it.
+- A switch between functional and temporal mode keeps every value, Unknown included, and seeds nothing.
+- A snapshot holds the run's state with its publications in flight, so a sweep resumes a live run exactly.
+
+### What the Model Promises
+
+The rules trade precision for correctness. A value that every order agrees on can still read Unknown where two changes
+reach memory or a loop through a merge, because the rounds do not canonicalise the order of causes. The model promises
+that a value it reads as a level is the value every order of the changes gives, and it does not promise a level wherever
+the orders agree. Unknown is the honest answer where they do not.
 
 ---
 
