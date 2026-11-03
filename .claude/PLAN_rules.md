@@ -67,7 +67,7 @@ was ever finished.
 - **One concern at a time, finished.** Each plan holds one concern and is finished before the next starts, each of its
   commits leaving the application working.
 - **Nothing in prose only.** An open item, a user choice or an unchecked claim written anywhere gets a ledger row in the
-  same change, and every commit is listed in its row. On 2026-10-20 an audit of the branch's ledger gave 19 items the
+  same change, and every code commit is listed in its row (a record commit is named in the log). On 2026-10-20 an audit of the branch's ledger gave 19 items the
   row they lacked and found 41 code commits that no row listed.
 - **A check counts once it has failed.** A golden, a test or a probe is broken on purpose once (an order reversed, a
   render skipped, a type removed from a list, a fixed defect put back) and must fail before it is trusted, and a probe
@@ -104,7 +104,7 @@ was ever finished.
   (`P1.D1`, `QF.D1`, `MC.D1`, ...). The ledger has a row for every item, and for every open item, user choice and
   unchecked claim, written in the change that finds it; a task found along the way gets the next free sub-ID of its item
   (`P1.4a`) and a log line. A row's status is `todo`, `doing`, `done` (committed), `blocked` (on what, in its notes) or
-  `dropped` (why, with the user's decision); every commit is listed in its row; every status change gets a dated line
+  `dropped` (why, with the user's decision); every code commit is listed in its row; every status change gets a dated line
   in the ledger's log. The plan is implemented on its own branch (§1), started from the branch before it once that
   plan has landed.
 - **Slices.** A plan's steps are grouped in slices, its ledger naming each step's: a slice is a stretch of commits that
