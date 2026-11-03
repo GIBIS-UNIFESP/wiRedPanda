@@ -65,6 +65,11 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
 - Spec: §2.3: "~Preset and ~Clear are active low and override"; every kernel reads Unknown inputs both ways.
 - Reproduced: a D flip-flop with Q at power-on (Inactive), no clock edge, and an Unknown preset. `master` leaves Q at
   Inactive. The rule gives Unknown: one reading sets Q, the other leaves it.
+- Swept (memory sweep, below): every step with an Unknown or Error preset or clear mismatches, in each flip-flop kind
+  (D flip-flop: 1,053 of 1,053 steps with the preset Unknown, and the same with it Error; T, JK and SR the same).
+  Example: D flip-flop, data Unknown, preset asserted (Inactive), clear Active, Q 0. `master` keeps Q 0 (`01`); the rule
+  gives Q 1 (`10`). §2.3 says "an asserted ~Preset sets Q whatever the data", so this is the case the spec names.
+  The cause is F7: the kernel returns before the overrides are applied.
 
 ### F5. Combinational outputs start Inactive, not Unknown (medium; spec deviation, acknowledged in code)
 
@@ -82,6 +87,82 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
 - Probed: a D flip-flop with two drivers on its data and no clock edge gives Inactive, which agrees with the rule. So the
   Error-to-Unknown conversion did not show there. The case is still open for a flip-flop with a clock edge, and for the
   combiners under `!allowUnknown`.
+- Swept: for a memory node, an Error input does not become Unknown. The memory kernels return early and keep their
+  outputs (F7). The combinational path is not swept here.
+
+### F7. Memory nodes keep their outputs whenever an input is Unknown or Error (high; spec violation)
+
+- Code: `App/Simulation/KernelLogic.cpp`. `dFlipFlop` (90-95), `tFlipFlop` (115-118), `jkFlipFlop` (138-141) and
+  `srFlipFlop` (170-173) return when `simUpdateInputs()` fails, after setting only the kept clock to Unknown. `dLatch`
+  (199-201) and `srLatch` (217-219) return on the same test. None of them sets the outputs, so the outputs keep the
+  values they had. The gates instead use `simUpdateInputsAllowUnknown()` and read both ways.
+- Spec: §2.3, "every kernel and every memory sample reads an Unknown or Error input both as Inactive and as Active".
+- Swept (memory sweep, after power-on, four-valued steps): D flip-flop 15,605 of 21,216 steps differ from the rule; T
+  the same; JK 81,363 of 112,398; SR flip-flop the same as JK; D latch 393 of 624; SR latch 515 of 624.
+- Examples: D latch, data Unknown, enable Active, Q 0: `master` `01` (held), the rule `UU`. SR latch, set Unknown,
+  reset Inactive, Q 0 and ~Q 1: `master` `01`, the rule `UU`.
+- Consequence: an enabled latch does not follow its Unknown data, a rising edge with Unknown data is dropped, and a
+  flip-flop keeps its old value where §2.3 gives Unknown.
+- Decision: the spec is explicit, so the code should read memory inputs both ways as the gates do. Tests that pin the
+  freeze were not searched for.
+
+### F8. A flip-flop whose clock is High at power-on loads a value no input gave (high; spec violation)
+
+- Code: the power-on kernel history is set in `DFlipFlop.cpp:53`, `TFlipFlop.cpp:53`, `JKFlipFlop.cpp:56` and
+  `SRFlipFlop.cpp:55`. D and T start with last clock Inactive and last data Active. JK starts with last clock Inactive
+  and both last J and last K Active. SR starts with all three Inactive. With the clock High at the first evaluation,
+  the edge test in `dFlipFlop` (101-104) fires against that history: D stores the stale Active, and T and JK toggle Q
+  from 0 to 1.
+- Spec: §2.6, "a fresh memory node ... samples once a round publishes nothing, its last control levels taken from its
+  inputs ... and nothing fabricates an edge". §2.4 says clocks start HIGH, shifted by their phase, so a High clock at
+  power-on is the ordinary case for a real circuit.
+- Swept (power-on step only): D flip-flop 8 of 625 configurations, T 8 of 625, JK 30 of 3,125. SR flip-flop and both
+  latches 0, which fits SR's Inactive history. All 46 give `master` Q 1 and the rule Q 0, whatever the data.
+- Consequence: a flip-flop whose clock starts High can begin with Q 1 that no input supplied.
+- Decision: the fix that §2.6 describes is to take the fresh node's last clock from its first level, so no edge is
+  fabricated. This is a code change to the kernel history, which I have not made.
+
+### F9. JK toggle from both outputs Active (spec silent)
+
+- Code: `jkFlipFlop`, toggle branch (149-150), swaps Q and ~Q. The rule complements each output. They agree in every
+  state where Q and ~Q differ, so the disagreement is only in a state where both are Active.
+- That state arises when both ~Preset and ~Clear are asserted (§2.3's override gives Q 1 and ~Q 1), and §2.3 does not
+  say what a clock does from it.
+- Sample: JK with J and K Active, clock rising, stored (1, 1): `master` `11`; complement `00`.
+- Count: 1 of 9,477 defined steps in the JK sweep.
+- Decision: what a JK does from Q = ~Q = 1 when clocked with J = K = 1.
+
+### Conventions taken from `master` (spec silent)
+
+- SR flip-flop with S and R both Active at a rising edge: Q 1 and ~Q 1 (`master`). SR latch with both Active: Q 0 and
+  ~Q 0 (`master`). The reference uses these, so the sweep does not check them against the spec. §2 needs a ruling.
+
+## Memory sweep (this round)
+
+Method, in `Tests/Unit/Simulation/TestReferenceKernels.cpp` as a throwaway probe (not committed; kept at
+`/tmp/claude-1000/-home-torres-wiredpanda/e445d050-0180-4a3b-b949-b79465438de0/scratchpad/probe/`):
+
+- Each input is one of five kinds: a switch that changes over time, an unconnected default Inactive, an unconnected
+  default Active, an unconnected default Unknown, or two switches driving it (an Error). Every combination of kinds is
+  swept: 5^4 for the D and T flip-flops, 5^5 for JK and SR, 5^2 for the latches.
+- Each combination runs 40 steps, the first being the power-on step. Random switch levels come from a fixed seed.
+  A switch on a clock or enable does not change at its own edge, and the other switches hold their level at that step,
+  so no data changes in an edge's round. This keeps the §2.6 changed-data case out of the sweep; that case waits for
+  the sampling ruling.
+- The reference is fed master's previous output as the stored value at each step. At power-on it is fed Q 0 and ~Q 1,
+  with the last clock equal to the clock, so no edge is fabricated.
+
+| Kind | Steps after power-on | Defined-input mismatches | Power-on mismatches | Four-valued mismatches |
+|---|---|---|---|---|
+| D flip-flop | 24,375 (3,159 defined) | 0 | 8 of 625 | 15,605 of 21,216 |
+| T flip-flop | 24,375 (3,159 defined) | 0 | 8 of 625 | 15,605 of 21,216 |
+| JK flip-flop | 121,875 (9,477 defined) | 1 (F9) | 30 of 3,125 | 81,363 of 112,398 |
+| SR flip-flop | 121,875 (9,477 defined) | 0 | 0 of 3,125 | 81,363 of 112,398 |
+| D latch | 975 (351 defined) | 0 | 0 of 25 | 393 of 624 |
+| SR latch | 975 (351 defined) | 0 | 0 of 25 | 515 of 624 |
+
+The defined-input column is the control: where no input is Unknown or Error, master and the reference agree, apart from
+the one F9 case. The four-valued column is where the rule and master part ways, and its causes are F4, F7 and F8.
 
 ## Checked and agreeing
 
@@ -91,6 +172,8 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
   `ElementSimState.cpp:69`.
 - Error-only vectors through the gates: 0 mismatches against the rule.
 - Flip-flop edge rule and the kept clock (`dFlipFlop`, lines 87-110): matches the reference's stable-data cases.
+- Memory with defined inputs (the sweep above): D, T and SR flip-flops and both latches agree with the reference on
+  every step after power-on, with presets and clears defined. JK agrees except for F9.
 - Exporters: `DolphinExporter.cpp:88-89` writes Unknown as `x` and Error as `E`, one character each, as the comment
   requires. `WaveformSimulator.cpp:52-53` restores four-state values rather than a `bool`, which would conflate them.
 - Presentation: `PicturePresenters.cpp:337-340` and `Connection.cpp:232-235` colour all four values.
@@ -99,8 +182,9 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
 
 - `Element::isValid` (`Element.cpp:850-853`) sends Error down the outputs of an element with an invalid input. §2 does
   not say what an invalid element outputs, so this is a gap in the spec rather than a defect in the code.
-- Memory kernels other than the D flip-flop and D latch: T, JK, SR flip-flops and the SR latch are not checked against
-  the rule.
+- Memory kernels: T, JK and SR flip-flops and the SR latch are swept now (above). The sweep holds data fixed at each edge
+  and does not cover the §2.6 changed-data case, which waits for the sampling ruling. A whole-circuit comparison is not
+  run: `ReferenceNetlist` has no reference kernels for those kinds yet (plan 5, P5.5).
 - ASan and UBSan were not run, per the project's rules.
 
 ## Decisions for the user, in order of effect
