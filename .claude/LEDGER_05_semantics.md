@@ -16,7 +16,7 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 | ID | Item | Status | Commits | Notes |
 |---|---|---|---|---|
 | P5.1 | The trace walks in the test library behind an engine; plan 1's goldens unchanged (§4.1) | done | `b145de8c0` | Shown to fail: an engine that drops a step's input change fails plan 1's goldens |
-| P5.2 | The spec, a section of the developer guide, written before the reference (§4.2) | todo | | Each rule re-examined as the oracles land; a change goes into the spec first, then the oracles and the reference |
+| P5.2 | The spec, a section of the developer guide, written before the reference (§4.2) | done | `d50b478f8` | Each rule re-examined as the oracles land; a change goes into the spec first, then the oracles and the reference. The section says the reference does not exist yet and the application's engine does not follow it |
 | P5.3 | The random circuits and their walks (§4.3) | todo | | The walks assert that trips, cut-short settles, edits, mode switches, warnings and the budget each happen; shown to fail by a generator that drops the late wiring or the chain past the budget |
 | P5.4 | The reference: the circuit read in one place, ICs flattened, aliases, wireless per scope, two drivers, IC boundaries, kernels (§4.4) | todo | | The wiring tests; shown to fail by an alias that costs a round, a duplicated label read from its lowest-id Tx, a clock pin read from its element |
 | P5.5 | The kernels checked three ways: against `master` on levels, against the rule on non-levels, the flat-order sweep (§4.5) | todo | | Shown to fail: a gate ranking Error over Unknown, a kernel reading a non-level one way, the old combiner on stored state (as on the branch) |
@@ -55,3 +55,4 @@ Each row's notes say how its check is shown to fail; "as on the branch" marks a 
 - 2026-10-21: P5.25 done: the exact oracle with delays, run as a probe on `gpu-canvas` (`b28bb61ad`), found 7 unsound
   outputs in two circuits of the delayed draw; the spec takes the covering rule (P5.D21, the user's "yes"), built as
   the new row P5.25a. The every-order walks run in CI on a release build (P5.D20, P5.26; the user's word).
+- 2026-11-03: P5.2 done (`2b1ad484c`): the spec is a section of the developer guide, its rules of §2 stated in both modes. Slice 1 (P5.1, P5.2) complete; checked by the build and `TestSimulationTraceSnapshot` (86 passed).
