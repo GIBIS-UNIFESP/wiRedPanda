@@ -120,11 +120,13 @@ QStringList IC::nestedFiles() const
     return files;
 }
 
-void IC::loadFileCopy(const QString &fileName, const QByteArray &bytes, const QString &contextDir)
+void IC::loadFileCopy(const QString &fileName, const QByteArray &bytes, const QString &contextDir,
+                      const QMap<QString, QByteArray> *fileCopies)
 {
     // A definition replaces the ports and the body, and names the file: one change, also when the load throws.
     const ChangeBatch batch(*this, ElementChange::Parameter | ElementChange::Ports);
-    m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFileCopy(*this, fileName, bytes, contextDir); });
+    m_filesRead = ICLoader::recordFilesRead(
+        [&] { ICLoader::loadFileCopy(*this, fileName, bytes, contextDir, fileCopies); });
 }
 
 namespace {
@@ -183,7 +185,7 @@ void IC::loadState(QDataStream &stream, SerializationContext &context)
         // separator on Unix, so a Windows path like "C:\...\sub.panda" would be kept as-is.
         m_file = QFileInfo(QString(m_file).replace('\\', '/')).fileName();
 
-        loadFile(m_file, context.contextDir);
+        loadFile(m_file, context.contextDir, context.fileCopies);
     }
 
     // New format (V_4_1+): IC data stored in a QMap for extensibility
@@ -239,7 +241,7 @@ void IC::loadState(QDataStream &stream, SerializationContext &context)
             } else if (const std::optional<QByteArray> copy = savedFileCopy(context, name); copy) {
                 // The document's copy stands for the file: unchanged or gone, it is the definition; changed, it is loaded
                 // over afterwards as a reload, whose undo returns to the copy (WorkSpace::load())
-                loadFileCopy(name, *copy, context.contextDir);
+                loadFileCopy(name, *copy, context.contextDir, context.fileCopies);
             } else {
                 // Don't assign m_file until loadFile() has confirmed name actually resolves to a
                 // real file — ICLoader::loadFile() itself sets ic.m_file, but only once validated,
@@ -258,7 +260,7 @@ void IC::loadState(QDataStream &stream, SerializationContext &context)
                                          && (m_filesRead.value(file->first) == file->second)
                                          && carriedUnchanged;
                 if (!fileUnchanged) {
-                    loadFile(name, context.contextDir);
+                    loadFile(name, context.contextDir, context.fileCopies);
                 }
             }
         });
@@ -317,11 +319,11 @@ void IC::resetInternalState()
     Q_ASSERT(m_boundaryInputElements.isEmpty());
 }
 
-void IC::loadFile(const QString &fileName, const QString &contextDir)
+void IC::loadFile(const QString &fileName, const QString &contextDir, const QMap<QString, QByteArray> *fileCopies)
 {
     // A definition replaces the ports and the body, and names the file: one change, also when the load throws.
     const ChangeBatch batch(*this, ElementChange::Parameter | ElementChange::Ports);
-    m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFile(*this, fileName, contextDir); });
+    m_filesRead = ICLoader::recordFilesRead([&] { ICLoader::loadFile(*this, fileName, contextDir, fileCopies); });
 }
 
 void IC::adoptLoadedCircuit(const IC &live)

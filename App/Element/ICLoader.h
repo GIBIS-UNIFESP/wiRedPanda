@@ -52,14 +52,18 @@ class ICLoader
 
 public:
     /// Loads \a ic's circuit from \a fileName and rebuilds the logic mapping.
-    static void loadFile(IC &ic, const QString &fileName, const QString &contextDir = {});
+    /// \a fileCopies, when given, are the document's copies of its file-backed ICs' definitions, which the files \a ic
+    /// nests load from in place of the files on disk.
+    static void loadFile(IC &ic, const QString &fileName, const QString &contextDir = {},
+                         const QMap<QString, QByteArray> *fileCopies = nullptr);
 
     /// Loads \a ic from in-memory blob bytes (full .panda file format).
     static void loadFromBlob(IC &ic, const QByteArray &blob, const QString &contextDir);
 
     /// Loads \a ic from \a bytes, a document's copy of the definition of the file \a fileName, as loadFile() loads the
     /// file: \a ic is file-backed, and the file is recorded as read.
-    static void loadFileCopy(IC &ic, const QString &fileName, const QByteArray &bytes, const QString &contextDir);
+    static void loadFileCopy(IC &ic, const QString &fileName, const QByteArray &bytes, const QString &contextDir,
+                             const QMap<QString, QByteArray> *fileCopies = nullptr);
 
     /// Returns the stored form of a file copy: the hash of the file as it was when saved, and the definition's \a bytes.
     static QByteArray packFileCopy(const QByteArray &hash, const QByteArray &bytes);
@@ -99,13 +103,14 @@ public:
     static void restoreCapturedFiles(const std::function<void()> &load);
 
 private:
-    static void loadFileDirectly(IC &ic, const QFileInfo &fileInfo);
+    static void loadFileDirectly(IC &ic, const QFileInfo &fileInfo, const QMap<QString, QByteArray> *fileCopies);
     /// Re-saves \a fileInfo in the current format. Pure: touches only its parameters, no IC state.
     static void migrateFile(const QFileInfo &fileInfo, const QList<QGraphicsItem *> &items,
                              const QVersionNumber &version, const QMap<QString, QByteArray> &fileRegistry);
     /// Builds \a ic's elements from the .panda \a bytes, through the shared definition of \a bytes read from \a path
     /// (empty for a blob).
-    static void deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir, const QString &path = {});
+    static void deserializeAndLoad(IC &ic, const QByteArray &bytes, const QString &contextDir, const QString &path = {},
+                                   const QMap<QString, QByteArray> *fileCopies = nullptr);
 
     /// Transfers ownership of \a items into ic's internal-element/connection vectors,
     /// deleting boundary Input/Output elements after their ports are proxied. Removes

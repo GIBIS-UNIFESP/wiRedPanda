@@ -118,12 +118,7 @@ void ICRegistry::onFileChanged(const QString &filePath)
             }
         }
 
-        // The instances of the file reload, and so do the instances of the files that nest it
-        const QStringList nesting = filesNesting(filePath);
-        if (!findICsByFile(filePath).isEmpty() || nesting.isEmpty()) {
-            reloadFile(filePath);
-        }
-        for (const auto &file : nesting) {
+        for (const auto &file : filesToReload(filePath)) {
             reloadFile(file);
         }
     });
@@ -142,6 +137,19 @@ QStringList ICRegistry::filesNesting(const QString &filePath) const
             files.append(ic->file());
         }
     }
+    return files;
+}
+
+QStringList ICRegistry::filesToReload(const QString &filePath) const
+{
+    // The instances of the file reload, and so do the instances of the files that nest it
+    QStringList files;
+    const QStringList nesting = filesNesting(filePath);
+    if (!findICsByFile(filePath).isEmpty() || nesting.isEmpty()) {
+        files.append(filePath);
+    }
+    files.append(nesting);
+    files.removeDuplicates();
     return files;
 }
 
@@ -202,6 +210,8 @@ void ICRegistry::reloadFile(const QString &filePath)
 
 void ICRegistry::reloadChangedFileCopies(const QMap<QString, QByteArray> &copies, const QString &contextDir)
 {
+    // The changed files reload together, so a file that nests two of them reloads once
+    QStringList reloads;
     for (auto it = copies.cbegin(); it != copies.cend(); ++it) {
         QByteArray savedHash;
         QByteArray savedBytes;
@@ -214,7 +224,11 @@ void ICRegistry::reloadChangedFileCopies(const QMap<QString, QByteArray> &copies
         if (!file.open(QIODevice::ReadOnly) || ICLoader::fileHash(file.readAll()) == savedHash) {
             continue;
         }
-        reloadFile(path);
+        reloads.append(filesToReload(path));
+    }
+    reloads.removeDuplicates();
+    for (const auto &file : std::as_const(reloads)) {
+        reloadFile(file);
     }
 }
 

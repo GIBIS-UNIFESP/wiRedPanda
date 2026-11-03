@@ -60,13 +60,15 @@ public:
 public:
 
     /// Loads the IC circuit from \a fileName and rebuilds the logic mapping.
-    void loadFile(const QString &fileName, const QString &contextDir = {});
+    void loadFile(const QString &fileName, const QString &contextDir = {},
+                  const QMap<QString, QByteArray> *fileCopies = nullptr);
 
     /// Loads the IC from in-memory blob bytes (full .panda file format).
     void loadFromBlob(const QByteArray &blob, const QString &contextDir);
 
     /// Loads the IC from \a bytes, a document's copy of the definition of the file \a fileName, as loadFile() loads it.
-    void loadFileCopy(const QString &fileName, const QByteArray &bytes, const QString &contextDir);
+    void loadFileCopy(const QString &fileName, const QByteArray &bytes, const QString &contextDir,
+                      const QMap<QString, QByteArray> *fileCopies = nullptr);
 
     /// Returns the file reference save() writes for this file-backed IC, written for \a purpose.
     QString fileReference(SerializationPurpose purpose) const;
@@ -76,6 +78,8 @@ public:
 
     /// Returns the files this IC's circuit nests, as it read them, other than its own file (absolute paths).
     QStringList nestedFiles() const;
+    /// Returns the bytes this IC's circuit read from each file, its own and the nested ones, keyed by absolute path.
+    const QMap<QString, QByteArray> &filesRead() const { return m_filesRead; }
     /// Lets this IC, a copy a snapshot is read into before \a live is (CommandUtils::readCopies()), keep the circuit
     /// \a live built instead of building it again from the same bytes: they load, and the copy is thrown away.
     void adoptLoadedCircuit(const IC &live);

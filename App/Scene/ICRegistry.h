@@ -107,7 +107,7 @@ public:
     static void rollbackElements(const QList<Element *> &elements, const QByteArray &snapshot,
                                  Scene *scene);
 
-    /// Reloads each file-backed IC whose file a document's copy shows changed on disk, as a
+    /// Reloads each file-backed IC whose file a document's copy shows changed on disk, and the files nesting it, as a
     /// change in the session does, so the undo of the reload returns to the copy. A file gone or unchanged keeps its copy.
     void reloadChangedFileCopies(const QMap<QString, QByteArray> &copies, const QString &contextDir);
 
@@ -133,6 +133,9 @@ private:
 
     /// Returns the files of the scene's IC instances whose circuits nest \a filePath, other than \a filePath itself.
     QStringList filesNesting(const QString &filePath) const;
+    /// Returns the files to reload after \a filePath changed: its own when it has instances (or nothing nests it), and
+    /// the files that nest it, each once.
+    QStringList filesToReload(const QString &filePath) const;
     /// Maximum recursion depth for makeBlobSelfContained()'s dependency walk. Cycle detection via
     /// its \c visited set alone doesn't bound a long, non-cyclic chain of distinct legitimate
     /// files (A embeds B embeds C embeds ..., no repeats) — mirrors ICLoader's

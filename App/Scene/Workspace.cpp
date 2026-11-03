@@ -22,6 +22,7 @@
 #include "App/Element/IC.h"
 #include "App/Element/ICLoader.h"
 #include "App/Exercise/ExerciseOverlay.h"
+#include "App/IO/ExternalFilePath.h"
 #include "App/IO/FileUtils.h"
 #include "App/IO/Serialization.h"
 #include "App/IO/SerializationContext.h"
@@ -48,8 +49,16 @@ bool isReadOnlyFailure(QFileDevice::FileError error)
         || error == QFileDevice::WriteError;
 }
 
-/// The document's copies of its file-backed ICs' definitions, keyed by each file's name as the document references it.
-/// The hash is the file's as the registry last read it, so a file changed since the read shows as changed on open.
+/// Returns the copy of \a bytes, the definition of the file \a file, for the document. The hash is the file's as the
+/// registry last read it, so a file changed since the read shows as changed on open.
+QByteArray copyOf(Scene &scene, const QString &file, const QByteArray &bytes)
+{
+    const QByteArray &read = scene.icRegistry()->cachedFileBytes(file);
+    return ICLoader::packFileCopy(read.isEmpty() ? QByteArray() : ICLoader::fileHash(read), bytes);
+}
+
+/// The document's copies of its file-backed ICs' definitions, and of the files those nest, keyed by each file's name as
+/// the document references it. The first copy for a name wins; an IC whose own name is taken adds nothing.
 QMap<QString, QByteArray> fileCopiesOf(Scene &scene)
 {
     QMap<QString, QByteArray> copies;
@@ -66,8 +75,15 @@ QMap<QString, QByteArray> fileCopiesOf(Scene &scene)
         if (copies.contains(name)) {
             continue;
         }
-        const QByteArray &read = scene.icRegistry()->cachedFileBytes(ic->file());
-        copies.insert(name, ICLoader::packFileCopy(read.isEmpty() ? QByteArray() : ICLoader::fileHash(read), definition));
+        copies.insert(name, copyOf(scene, ic->file(), definition));
+        const auto &read = ic->filesRead();
+        for (const QString &nested : ic->nestedFiles()) {
+            const QString nestedName = ExternalFilePath::forWriting(nested, SerializationPurpose::PortableFile);
+            if (copies.contains(nestedName)) {
+                continue;
+            }
+            copies.insert(nestedName, copyOf(scene, nested, read.value(nested)));
+        }
     }
     return copies;
 }

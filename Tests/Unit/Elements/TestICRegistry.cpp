@@ -799,6 +799,32 @@ IC *addFileIC(CircuitBuilder &builder, const QString &path, const QString &conte
     builder.addElement(ic);
     return ic;
 }
+
+// Saves to \a outerPath a circuit that nests the file \a leafPath, with one input switch wired to its second input.
+void saveNestingFile(const QString &contextDir, const QString &leafPath, const QString &outerPath)
+{
+    WorkSpace nester;
+    nester.scene()->setContextDir(contextDir);
+    CircuitBuilder builder(nester.scene());
+    IC *nested = addFileIC(builder, leafPath, contextDir);
+    auto *outerSwitch = ElementFactory::buildElement(ElementType::InputSwitch);
+    auto *outerLed = ElementFactory::buildElement(ElementType::Led);
+    builder.add(outerSwitch, outerLed);
+    builder.connect(outerSwitch, 0, nested, 1);
+    builder.connect(nested, 1, outerLed, 0);
+    QVERIFY(nester.save(outerPath) == WorkSpace::SaveOutcome::Saved);
+}
+
+// Returns the first IC inside \a ic, or nothing when it holds none.
+IC *innerICOf(const IC *ic)
+{
+    for (auto *elm : ic->internalElements()) {
+        if (elm->elementType() == ElementType::IC) {
+            return static_cast<IC *>(elm);
+        }
+    }
+    return nullptr;
+}
 } // namespace
 
 void TestICRegistry::testIdenticalRewriteAddsNoUndoStep()
@@ -1722,6 +1748,142 @@ void TestICRegistry::testUndoOfANestedFilesReloadRestoresIt()
     scene->undoStack()->undo();
     QVERIFY(innerOf(outer));
     QCOMPARE(innerOf(outer)->inputSize(), 2);
+}
+
+void TestICRegistry::testNestedFileIsCopiedInTheDocument()
+{
+    // The document keeps a copy of the file its IC nests as well, under the nested file's own name
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("nest_copy_leaf.panda");
+    saveSwitchesToLeds(leafPath, 2);
+    const QString outerPath = dir.filePath("nest_copy_outer.panda");
+    saveNestingFile(dir.path(), leafPath, outerPath);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, outerPath, dir.path());
+
+    const QString savedPath = dir.filePath("nest_copy_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+
+    QFile saved(savedPath);
+    QVERIFY(saved.open(QIODevice::ReadOnly));
+    QByteArray savedBytes = saved.readAll();
+    QDataStream savedStream(&savedBytes, QIODevice::ReadOnly);
+    const QMap<QString, QVariant> metadata = Serialization::readPreamble(savedStream).metadata;
+    QCOMPARE(Serialization::deserializeFileCopies(metadata).keys(),
+             (QList<QString>{"nest_copy_leaf.panda", "nest_copy_outer.panda"}));
+}
+
+void TestICRegistry::testNestedFileGoneKeepsItsCopy()
+{
+    // The nested file is deleted before the document is opened: the copy of it is the definition the outer IC's circuit
+    // loads, so the document opens with the circuit it had, and the inner IC keeps its link to the file
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("nest_gone_leaf.panda");
+    saveSwitchesToLeds(leafPath, 2);
+    const QString outerPath = dir.filePath("nest_gone_outer.panda");
+    saveNestingFile(dir.path(), leafPath, outerPath);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, outerPath, dir.path());
+
+    const QString savedPath = dir.filePath("nest_gone_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+    QVERIFY(QFile::remove(leafPath));
+
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QVERIFY(innerICOf(reopenedIC));
+    QCOMPARE(innerICOf(reopenedIC)->inputSize(), 2);
+    QCOMPARE(innerICOf(reopenedIC)->file(), QFileInfo(leafPath).absoluteFilePath());
+    QVERIFY(!reopened.scene()->undoStack()->canUndo());
+}
+
+void TestICRegistry::testNestedFileChangedSinceSaveReloadsWithAnUndo()
+{
+    // The nested file changed on disk before the document is opened: the outer IC's circuit reloads it as one step, and
+    // the undo of that step returns the inner IC to the nested file the document kept
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("nest_changed_leaf.panda");
+    saveSwitchesToLeds(leafPath, 2);
+    const QString outerPath = dir.filePath("nest_changed_outer.panda");
+    saveNestingFile(dir.path(), leafPath, outerPath);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, outerPath, dir.path());
+
+    const QString savedPath = dir.filePath("nest_changed_doc.panda");
+    QCOMPARE(workspace.save(savedPath), WorkSpace::SaveOutcome::Saved);
+    rewriteLater(leafPath, [&] { saveSwitchesToLeds(leafPath, 1); });
+
+    WorkSpace reopened;
+    reopened.load(savedPath);
+    IC *reopenedIC = nullptr;
+    for (auto *elm : reopened.scene()->elements()) {
+        if (elm->elementType() == ElementType::IC) {
+            reopenedIC = static_cast<IC *>(elm);
+        }
+    }
+    QVERIFY(reopenedIC);
+    QVERIFY(innerICOf(reopenedIC));
+    QCOMPARE(innerICOf(reopenedIC)->inputSize(), 1);
+    QVERIFY(reopened.scene()->undoStack()->canUndo());
+
+    reopened.scene()->undoStack()->undo();
+    QCOMPARE(innerICOf(reopenedIC)->inputSize(), 2);
+
+    reopened.scene()->undoStack()->redo();
+    QCOMPARE(innerICOf(reopenedIC)->inputSize(), 1);
+}
+
+void TestICRegistry::testNestedFileCopyRoundTripsByteForByte()
+{
+    // A document holding a nested file's copy reads back and saves again with the same bytes
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString leafPath = dir.filePath("nest_round_leaf.panda");
+    saveSwitchesToLeds(leafPath, 2);
+    const QString outerPath = dir.filePath("nest_round_outer.panda");
+    saveNestingFile(dir.path(), leafPath, outerPath);
+
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    scene->setContextDir(dir.path());
+    CircuitBuilder builder(scene);
+    addFileIC(builder, outerPath, dir.path());
+
+    const QString firstPath = dir.filePath("nest_round_first.panda");
+    QCOMPARE(workspace.save(firstPath), WorkSpace::SaveOutcome::Saved);
+
+    WorkSpace reopened;
+    reopened.load(firstPath);
+    const QString secondPath = dir.filePath("nest_round_second.panda");
+    QCOMPARE(reopened.save(secondPath), WorkSpace::SaveOutcome::Saved);
+
+    QFile first(firstPath);
+    QFile second(secondPath);
+    QVERIFY(first.open(QIODevice::ReadOnly));
+    QVERIFY(second.open(QIODevice::ReadOnly));
+    QCOMPARE(second.readAll(), first.readAll());
 }
 
 void TestICRegistry::testEmbeddedICRedoRestoresTheBlobAndTheInstance()
