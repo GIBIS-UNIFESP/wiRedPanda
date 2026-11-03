@@ -29,6 +29,7 @@ const QVector<GateCase> &gateCases()
         {ElementType::Not, 1},  {ElementType::And, 2}, {ElementType::And, 3},
         {ElementType::Or, 2},   {ElementType::Or, 3},  {ElementType::Nand, 2}, {ElementType::Nor, 3},
         {ElementType::Xor, 2},  {ElementType::Xor, 3}, {ElementType::Xnor, 2}, {ElementType::Xnor, 3},
+        {ElementType::And, 4},  {ElementType::Or, 4},   {ElementType::Xor, 4},  {ElementType::Nor, 4},
     };
     return cases;
 }

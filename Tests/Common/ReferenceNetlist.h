@@ -8,6 +8,7 @@
 #include <QHash>
 #include <QSet>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 
 #include "App/Core/Enums.h"
@@ -95,6 +96,7 @@ private:
     void recordError(const QString &net);
 
     QString m_contextDir;
+    QStringList m_loading;                            ///< The definition files being read, outermost first.
     std::vector<std::unique_ptr<Scope>> m_scopes;
     std::vector<std::unique_ptr<Definition>> m_definitions;
     QHash<const Element *, QString> m_icFiles;        ///< Each IC element's definition file, as an absolute path.

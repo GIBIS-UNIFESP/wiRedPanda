@@ -95,14 +95,21 @@ const ReferenceNetlist::Scope *ReferenceNetlist::buildScope(const QVector<Elemen
             continue;
         }
         const Definition *inside = nullptr;
-        if (m_icFiles.contains(element)) {
-            inside = loadDefinition(m_icFiles.value(element));
-        } else {
+        if (!m_icFiles.contains(element)) {
             // An embedded IC has no file to read its definition from, so it is not flattened: it is counted as an error
             recordError(QStringLiteral("embedded ic %1").arg(address(element)));
+        } else if (m_loading.contains(m_icFiles.value(element))) {
+            // A file that holds itself, through any chain of files, has no inside to read: the loop is counted, not
+            // read
+            recordError(QStringLiteral("circular ic %1").arg(m_icFiles.value(element)));
+        } else {
+            inside = loadDefinition(m_icFiles.value(element));
         }
         if (inside) {
-            m_insides.insert(element, buildScope(inside->workspace->scene()->elements(), element, scope, inside));
+            m_loading.append(m_icFiles.value(element));
+            const Scope *child = buildScope(inside->workspace->scene()->elements(), element, scope, inside);
+            m_loading.removeLast();
+            m_insides.insert(element, child);
         } else {
             m_insides.insert(element, nullptr);
         }

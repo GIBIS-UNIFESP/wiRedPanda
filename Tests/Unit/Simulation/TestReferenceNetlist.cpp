@@ -436,3 +436,144 @@ void TestReferenceNetlist::testUnknownElementTypeIsRefused()
     QVERIFY(readPandaFile(bytes).has_value());
     QVERIFY(!readPandaFile(rebuilt).has_value());
 }
+
+void TestReferenceNetlist::testReaderSurvivesCorruptFiles()
+{
+    // Adversarial bytes: a seeded generator flips, drops and inserts bytes of a real file. The reader must return
+    // either nothing or a file whose pins can be read; a crash or a hang fails the test by stopping the process.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("and-block"), buildAndBlock);
+    QFile input(path);
+    QVERIFY(input.open(QIODevice::ReadOnly));
+    const QByteArray original = input.readAll();
+    QVERIFY(readPandaFile(original).has_value());
+
+    quint32 state = 0x2545F491U;
+    const auto next = [&state]() {
+        state = state * 1664525U + 1013904223U;
+        return state >> 8;
+    };
+    int accepted = 0;
+    for (int round = 0; round < 3000; ++round) {
+        QByteArray bytes = original;
+        const int edits = 1 + static_cast<int>(next() % 4);
+        for (int edit = 0; edit < edits && !bytes.isEmpty(); ++edit) {
+            const auto at = static_cast<qsizetype>(next() % static_cast<quint32>(bytes.size()));
+            switch (next() % 3) {
+            case 0:
+                bytes[at] = static_cast<char>(next() & 0xFF);
+                break;
+            case 1:
+                bytes.remove(at, 1 + static_cast<qsizetype>(next() % 8));
+                break;
+            default:
+                bytes.insert(at, static_cast<char>(next() & 0xFF));
+                break;
+            }
+        }
+        const auto read = readPandaFile(bytes);
+        if (read) {
+            ++accepted;
+            // Whatever it accepts, its pin orders are readable
+            (void)read->pinOrder(true);
+            (void)read->pinOrder(false);
+        }
+    }
+    // Most corruptions are refused; some change only payload bytes the reader does not check
+    QVERIFY(accepted < 3000);
+
+    // The compressed bytes mostly fail to inflate, so the record parser is fuzzed on the payload itself: each mutation
+    // is inflated, changed, and compressed again under the writer's header, so the reader reaches its records
+    QBuffer buffer;
+    buffer.setData(original);
+    buffer.open(QIODevice::ReadOnly);
+    QDataStream header(&buffer);
+    header.setVersion(QDataStream::Qt_5_12);
+    quint32 magic = 0;
+    QVersionNumber version;
+    header >> magic >> version;
+    const QByteArray payload = qUncompress(buffer.readAll());
+    QVERIFY(!payload.isEmpty());
+    int parsed = 0;
+    for (int round = 0; round < 3000; ++round) {
+        QByteArray changed = payload;
+        const int edits = 1 + static_cast<int>(next() % 3);
+        for (int edit = 0; edit < edits && !changed.isEmpty(); ++edit) {
+            const auto at = static_cast<qsizetype>(next() % static_cast<quint32>(changed.size()));
+            changed[at] = static_cast<char>(next() & 0xFF);
+        }
+        QByteArray rebuilt;
+        QDataStream out(&rebuilt, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_12);
+        out << magic << FormatRev::current;
+        rebuilt.append(qCompress(changed));
+        std::optional<PandaFile> read;
+        try {
+            read = readPandaFile(rebuilt);
+        } catch (const std::exception &error) {
+            qWarning("round %d threw: %s", round, error.what());
+            QFAIL("reader threw");
+        }
+        if (read) {
+            ++parsed;
+            (void)read->pinOrder(true);
+            (void)read->pinOrder(false);
+        }
+    }
+    qInfo("payload fuzz: %d of 3000 accepted; byte fuzz: %d of 3000 accepted", parsed, accepted);
+}
+
+void TestReferenceNetlist::testSelfContainingIcTerminates()
+{
+    // A file that holds an IC of itself, made on disk the way a user could: the file is saved, an instance of it is
+    // placed in a circuit, and then the file is saved again with that instance inside it. The reference must end, and
+    // count the loop, not recurse until the stack is gone.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("loop"), [](CircuitBuilder &builder) {
+        auto *input = make(ElementType::InputSwitch);
+        auto *led = make(ElementType::Led);
+        builder.add(input, led);
+        builder.connect(input, 0, led, 0);
+    });
+
+    auto workspace = TestUtils::createWorkspace();
+    CircuitBuilder builder(workspace->scene());
+    auto *top = instance(builder, path, dir.path());
+    auto *drive = make(ElementType::InputSwitch);
+    auto *out = make(ElementType::Led);
+    builder.add(drive, out);
+    builder.connect(drive, 0, top, 0);
+    builder.connect(top, 0, out, 0);
+
+    // The file now holds an instance of itself
+    WorkSpace inner;
+    inner.scene()->setContextDir(dir.path());
+    CircuitBuilder innerBuilder(inner.scene());
+    auto *loop = new IC();
+    loop->loadFile(path, dir.path());
+    innerBuilder.addElement(loop);
+    inner.save(path);
+
+    const ReferenceNetlist netlist(workspace->scene());
+    QVERIFY(netlist.errorNets() >= 1);
+}
+
+void TestReferenceNetlist::testWirelessLoopReadsUnknown()
+{
+    // A transmitter fed by the receiver of its own channel: each reads the other, around one loop
+    auto workspace = TestUtils::createWorkspace();
+    CircuitBuilder builder(workspace->scene());
+    auto *transmitter = node(WirelessMode::Tx, QStringLiteral("a"));
+    auto *receiver = node(WirelessMode::Rx, QStringLiteral("a"));
+    auto *led = make(ElementType::Led);
+    builder.add(transmitter, receiver, led);
+    builder.connect(receiver, 0, transmitter, 0);
+    builder.connect(receiver, 0, led, 0);
+
+    // The loop has no node in it, so it is a loop of aliases: Unknown, and no net with two drivers
+    const ReferenceNetlist netlist(workspace->scene());
+    QVERIFY(netlist.driver(led, 0).kind == NetKind::Unknown);
+    QCOMPARE(netlist.errorNets(), 0);
+}

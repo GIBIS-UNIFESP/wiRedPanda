@@ -30,4 +30,7 @@ private slots:
     void testPinOrderFallsBackToPositions();
     void testTruncatedFileIsRefused();
     void testUnknownElementTypeIsRefused();
+    void testReaderSurvivesCorruptFiles();
+    void testSelfContainingIcTerminates();
+    void testWirelessLoopReadsUnknown();
 };
