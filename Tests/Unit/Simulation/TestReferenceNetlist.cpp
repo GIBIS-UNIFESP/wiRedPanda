@@ -6,9 +6,11 @@
 #include <functional>
 #include <memory>
 
+#include <QBuffer>
 #include <QFile>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QVersionNumber>
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
@@ -16,6 +18,7 @@
 #include "App/Element/WirelessNode.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Versions.h"
 #include "App/Wiring/Port.h"
 #include "Tests/Common/PandaFile.h"
 #include "Tests/Common/RandomCircuit.h"
@@ -380,4 +383,56 @@ void TestReferenceNetlist::testPinOrderFallsBackToPositions()
     }
     QVERIFY(higher);
     QCOMPARE(order.first(), higher->outputKeys.first());
+}
+
+void TestReferenceNetlist::testTruncatedFileIsRefused()
+{
+    // A file cut short ends its payload's zlib stream early: the reader refuses it rather than reading past the end
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("and-block"), buildAndBlock);
+    QFile input(path);
+    QVERIFY(input.open(QIODevice::ReadOnly));
+    const QByteArray bytes = input.readAll();
+    QVERIFY(readPandaFile(bytes).has_value());
+    QVERIFY(!readPandaFile(bytes.left(bytes.size() / 2)).has_value());
+    QVERIFY(!readPandaFile(bytes.left(bytes.size() - 1)).has_value());
+}
+
+void TestReferenceNetlist::testUnknownElementTypeIsRefused()
+{
+    // The first element's type, rewritten to a number no type has, in a file that is otherwise the writer's own
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("and-block"), buildAndBlock);
+    QFile input(path);
+    QVERIFY(input.open(QIODevice::ReadOnly));
+    const QByteArray bytes = input.readAll();
+
+    // The header holds the magic number and the revision; the payload is the zlib stream the writer compressed
+    QBuffer buffer;
+    buffer.setData(bytes);
+    buffer.open(QIODevice::ReadOnly);
+    QDataStream header(&buffer);
+    header.setVersion(QDataStream::Qt_5_12);
+    quint32 magic = 0;
+    QVersionNumber version;
+    header >> magic >> version;
+    QByteArray payload = qUncompress(buffer.readAll());
+    QVERIFY(!payload.isEmpty());
+
+    // The element tag is an int of the element's item type, then the type, a quint64 that the writer makes eight bytes
+    const QByteArray tag = QByteArray::fromHex("00010003");
+    const qsizetype at = payload.indexOf(tag);
+    QVERIFY(at >= 0);
+    const QByteArray unknown = QByteArray::fromHex("00000000000003e7");
+    payload.replace(at + tag.size(), unknown.size(), unknown);
+
+    QByteArray rebuilt;
+    QDataStream out(&rebuilt, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_12);
+    out << magic << FormatRev::current;
+    rebuilt.append(qCompress(payload));
+    QVERIFY(readPandaFile(bytes).has_value());
+    QVERIFY(!readPandaFile(rebuilt).has_value());
 }

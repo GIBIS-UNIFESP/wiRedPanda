@@ -4,7 +4,9 @@
 #include "Tests/Common/PandaFile.h"
 
 #include <algorithm>
+#include <limits>
 #include <utility>
+#include <zlib.h>
 
 #include <QBuffer>
 #include <QDataStream>
@@ -12,6 +14,7 @@
 #include <QHash>
 #include <QList>
 #include <QStringList>
+#include <QtEndian>
 #include <QVersionNumber>
 
 #include "App/Element/ElementTypeDescriptor.h"
@@ -55,18 +58,58 @@ bool precedes(const Pin &a, const Pin &b)
     return (a.pos.y() < b.pos.y()) || (qFuzzyCompare(a.pos.y(), b.pos.y()) && (a.pos.x() < b.pos.x()));
 }
 
+/// The payload \a raw holds: qCompress()'s four-byte big-endian size, then the zlib stream, which must fill exactly the
+/// size its header gives. A stream that ends early is refused here, not by qUncompress(), which reaches undefined
+/// behaviour on one until Qt 6.11.3 and 6.12.0 (QTBUG-150081).
+std::optional<QByteArray> inflatePayload(const QByteArray &raw)
+{
+    constexpr quint32 kMaxPayload = 1u << 30;
+    if (raw.size() < 4) {
+        return std::nullopt;
+    }
+    const quint32 expected = qFromBigEndian<quint32>(reinterpret_cast<const uchar *>(raw.constData()));
+    const QByteArray compressed = raw.mid(4);
+    if ((expected > kMaxPayload) || std::cmp_greater(compressed.size(), std::numeric_limits<uInt>::max())) {
+        return std::nullopt;
+    }
+
+    QByteArray decompressed(static_cast<qsizetype>(expected), Qt::Uninitialized);
+    z_stream zs = {};
+    if (inflateInit(&zs) != Z_OK) {
+        return std::nullopt;
+    }
+    zs.next_in = reinterpret_cast<Bytef *>(const_cast<char *>(compressed.constData()));
+    zs.avail_in = static_cast<uInt>(compressed.size());
+    zs.next_out = reinterpret_cast<Bytef *>(decompressed.data());
+    zs.avail_out = expected;
+    const int result = inflate(&zs, Z_FINISH);
+    inflateEnd(&zs);
+    if ((result != Z_STREAM_END) || (zs.avail_out != 0)) {
+        return std::nullopt;
+    }
+    return decompressed;
+}
+
 /// Reads one element record, or returns nothing when the stream does not hold one.
 std::optional<PandaElement> readElement(QDataStream &in)
 {
     quint64 typeValue = 0;
+    in >> typeValue;
+    const auto type = static_cast<ElementType>(static_cast<int>(typeValue));
+    // The type's descriptor says whether the record carries parameters and which group the type is in: a type it does
+    // not know has no descriptor, so the file is refused before any descriptor is looked up for it
+    if (!ElementTypeDescriptor::has(type)) {
+        return std::nullopt;
+    }
+
     QMap<QString, QVariant> map;
     QList<QMap<QString, QVariant>> inputs;
     QList<QMap<QString, QVariant>> outputs;
     QList<QMap<QString, QVariant>> appearances;
-    in >> typeValue >> map >> inputs >> outputs >> appearances;
+    in >> map >> inputs >> outputs >> appearances;
 
     PandaElement element;
-    element.type = static_cast<ElementType>(static_cast<int>(typeValue));
+    element.type = type;
     element.id = map.value(QStringLiteral("id")).toInt();
     element.pos = map.value(QStringLiteral("pos")).toPointF();
     element.label = map.value(QStringLiteral("label")).toString();
@@ -163,13 +206,12 @@ std::optional<PandaFile> readPandaFile(const QByteArray &bytes)
         return std::nullopt;
     }
 
-    // qCompress()'s format: a four-byte uncompressed size, then the zlib stream
-    const QByteArray payload = qUncompress(buffer.readAll());
-    if (payload.isEmpty()) {
+    const std::optional<QByteArray> payload = inflatePayload(buffer.readAll());
+    if (!payload || payload->isEmpty()) {
         return std::nullopt;
     }
 
-    QDataStream in(payload);
+    QDataStream in(*payload);
     in.setVersion(QDataStream::Qt_5_12);
     PandaFile file;
     in >> file.metadata;

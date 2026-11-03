@@ -28,4 +28,6 @@ private slots:
     void testWirelessIsPerScope();
     void testReaderAgreesWithTheLoader();
     void testPinOrderFallsBackToPositions();
+    void testTruncatedFileIsRefused();
+    void testUnknownElementTypeIsRefused();
 };
