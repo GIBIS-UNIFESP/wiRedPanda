@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <QWidget>
 #include <QString>
+#include <QWidget>
 
 class QListWidget;
 class QLabel;
@@ -15,22 +15,17 @@ class WarningsPanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit WarningsPanel(QWidget *parent = nullptr, bool summaryOnly = false);
+    explicit WarningsPanel(QWidget *parent = nullptr);
 
     void setScene(Scene *scene);
-    void showElementWarnings(GraphicElement *element);
     void refreshWarningsList();
+    void retranslateUi();
 
 signals:
-    void warningElementActivated(GraphicElement *element);
+    void warningElementActivated(int elementId);
 
 private:
-    QLabel *m_header;
-    QLabel *m_description;
     QLabel *m_count;
-    QLabel *m_emptyState;
-    QListWidget *m_currentWarnings;
     QListWidget *m_warnings;
     Scene *m_scene = nullptr;
-    bool m_summaryOnly = false;
 };

@@ -82,7 +82,6 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ElementWarningLabel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.cpp
@@ -238,7 +237,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ICRegistry.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/InlineLabelEditor.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PortHoverLabel.h
-    ${CMAKE_CURRENT_LIST_DIR}/App/Scene/ElementWarningLabel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/PropertyShortcutHandler.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/Scene.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Scene/SceneDropHandler.h

@@ -7,84 +7,34 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
-#include <QVBoxLayout>
 #include <QVariant>
+#include <QVBoxLayout>
 
-#include "App/Scene/Scene.h"
 #include "App/Element/GraphicElement.h"
+#include "App/Scene/Scene.h"
+#include "App/Wiring/Port.h"
 
-WarningsPanel::WarningsPanel(QWidget *parent, const bool summaryOnly)
+WarningsPanel::WarningsPanel(QWidget *parent)
     : QWidget(parent)
-    , m_summaryOnly(summaryOnly)
 {
-    auto *lay = new QVBoxLayout(this);
-    lay->setContentsMargins(8, 8, 8, 8);
-    lay->setSpacing(6);
+    auto *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(8, 8, 8, 8);
+    layout->setSpacing(6);
 
-    auto *headerLayout = new QHBoxLayout;
-    headerLayout->setContentsMargins(4, 2, 4, 2);
-    headerLayout->setSpacing(6);
-
-    m_header = new QLabel(tr("Warnings"), this);
-    QFont f = m_header->font();
-    f.setBold(true);
-    f.setPointSize(f.pointSize() + 1);
-    m_header->setFont(f);
-    headerLayout->addWidget(m_header);
-
-    m_count = new QLabel(this);
-    m_count->setObjectName(QStringLiteral("warningsCount"));
-    m_count->setAlignment(Qt::AlignCenter);
-    m_count->setMinimumWidth(24);
-    m_count->setText(QStringLiteral("0"));
-    headerLayout->addWidget(m_count);
-    headerLayout->addStretch();
-    lay->addLayout(headerLayout);
-
-    m_description = new QLabel(summaryOnly
-        ? tr("Components with active warnings")
-        : tr("Messages for the selected component"), this);
-    m_description->setObjectName(QStringLiteral("warningsDescription"));
-    m_description->setStyleSheet(QStringLiteral("color: palette(mid);"));
-    m_description->setWordWrap(true);
-    lay->addWidget(m_description);
-
-    m_currentWarnings = new QListWidget(this);
-    m_currentWarnings->setSelectionMode(QAbstractItemView::NoSelection);
-    m_currentWarnings->setFrameShape(QFrame::NoFrame);
-    m_currentWarnings->setWordWrap(true);
-    m_currentWarnings->setUniformItemSizes(false);
-    m_currentWarnings->setSpacing(6);
-    lay->addWidget(m_currentWarnings);
+    m_count = new QLabel(tr("0 issues"), this);
+    layout->addWidget(m_count);
 
     m_warnings = new QListWidget(this);
     m_warnings->setObjectName(QStringLiteral("warningsList"));
     m_warnings->setSelectionMode(QAbstractItemView::SingleSelection);
     m_warnings->setFrameShape(QFrame::NoFrame);
     m_warnings->setAlternatingRowColors(true);
-    m_warnings->setUniformItemSizes(true);
-    m_warnings->setSpacing(2);
-    lay->addWidget(m_warnings);
-
-    m_emptyState = new QLabel(tr("No warnings"), this);
-    m_emptyState->setAlignment(Qt::AlignCenter);
-    m_emptyState->setStyleSheet(QStringLiteral("color: palette(mid); padding: 16px;"));
-    lay->addWidget(m_emptyState);
+    layout->addWidget(m_warnings);
 
     connect(m_warnings, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
-        const auto address = item->data(Qt::UserRole).value<quintptr>();
-        emit warningElementActivated(reinterpret_cast<GraphicElement *>(address));
+        const auto elementId = item->data(Qt::UserRole).toInt();
+        emit warningElementActivated(elementId);
     });
-
-    if (m_summaryOnly) {
-        m_currentWarnings->hide();
-    } else {
-        m_header->hide();
-        m_description->hide();
-        m_warnings->hide();
-        m_emptyState->hide();
-        m_count->hide();
-    }
 }
 
 void WarningsPanel::setScene(Scene *scene)
@@ -93,56 +43,41 @@ void WarningsPanel::setScene(Scene *scene)
     refreshWarningsList();
 }
 
-void WarningsPanel::showElementWarnings(GraphicElement *element)
-{
-    m_currentWarnings->clear();
-    if (!element) {
-        m_header->hide();
-        m_description->hide();
-        m_currentWarnings->hide();
-        return;
-    }
-
-    m_header->show();
-    m_description->show();
-    m_currentWarnings->show();
-    const auto warnings = element->warnings();
-    for (const auto &warning : element->warnings()) {
-        QString detail = warning;
-        const QString explanation = element->warningDetails(warning);
-        if (!explanation.isEmpty()) {
-            detail += QStringLiteral("\n\n") + explanation;
-        }
-        const QString pinName = element->warningPinName(warning);
-        if (!pinName.isEmpty()) {
-            detail += QStringLiteral("\n\n") + tr("Affected pin: %1").arg(pinName);
-        }
-        m_currentWarnings->addItem(detail);
-    }
-}
-
 void WarningsPanel::refreshWarningsList()
 {
     m_warnings->clear();
     if (!m_scene) {
-        m_count->setText(QStringLiteral("0"));
-        m_emptyState->show();
+        m_count->setText(tr("0 issues"));
+        m_warnings->hide();
         return;
     }
 
+    int issueCount = 0;
     for (auto *element : m_scene->elements()) {
-        if (!element->hasWarnings()) {
-            continue;
+        const auto invalid = element->invalidInputs();
+        for (const auto *port : invalid) {
+            const QString pin = port->name().isEmpty()
+                ? tr("input %1").arg(port->index() + 1)
+                : port->name();
+            const QString kind = port->connections().size() > 1
+                ? tr("Multiple drivers")
+                : tr("Not connected");
+            const QString title = tr("%1 (%2) - %3: %4")
+                                      .arg(element->label())
+                                      .arg(element->objectName())
+                                      .arg(pin)
+                                      .arg(kind);
+            auto *item = new QListWidgetItem(title);
+            item->setData(Qt::UserRole, element->id());
+            m_warnings->addItem(item);
+            ++issueCount;
         }
-
-        const QString title = element->objectName().isEmpty()
-            ? tr("Unnamed element")
-            : element->objectName();
-        auto *item = new QListWidgetItem(title);
-        item->setData(Qt::UserRole, QVariant::fromValue<quintptr>(reinterpret_cast<quintptr>(element)));
-        item->setToolTip(element->warnings().join(QStringLiteral("\n")));
-        m_warnings->addItem(item);
     }
-    m_count->setText(QString::number(m_warnings->count()));
-    m_emptyState->setVisible(m_warnings->count() == 0);
+    m_count->setText(issueCount == 1 ? tr("1 issue") : tr("%1 issues").arg(issueCount));
+    m_warnings->setVisible(issueCount != 0);
+}
+
+void WarningsPanel::retranslateUi()
+{
+    refreshWarningsList();
 }

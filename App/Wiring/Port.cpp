@@ -6,9 +6,9 @@
 
 #include "App/Wiring/Port.h"
 
+#include <QObject>
 #include <QPainter>
 #include <QPen>
-#include <QObject>
 
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElement.h"
@@ -73,6 +73,9 @@ void Port::attachConnection(Connection *conn)
     }
 
     updateConnections();
+    if (m_graphicElement) {
+        m_graphicElement->update();
+    }
 }
 
 void Port::detachConnection(Connection *conn)
@@ -90,6 +93,9 @@ void Port::detachConnection(Connection *conn)
     }
 
     updateConnections();
+    if (m_graphicElement) {
+        m_graphicElement->update();
+    }
 }
 
 bool Port::isConnected(Port *otherPort)
@@ -105,32 +111,8 @@ void Port::updateConnections()
         conn->updatePosFromPorts();
     }
 
-    // A port that violates its validity constraints (e.g. required but unconnected,
-    // or multi-driver) must show Error so the wiring problem is clearly visible
     if (!isValid()) {
         setStatus(Status::Error);
-        // Add a specific, localised warning on the owning element so it highlights.
-        if (m_graphicElement) {
-            if (m_connections.size() > 1) {
-                m_graphicElement->addWarning(
-                    QObject::tr("Multiple connections to input port %1").arg(m_name),
-                    GraphicElement::WarningSeverity::Error,
-                    QObject::tr("This input accepts one connection. Remove the extra wire and connect only one signal source."),
-                    m_name);
-            } else if (m_connections.isEmpty() && isRequired()) {
-                m_graphicElement->addWarning(
-                    QObject::tr("Unconnected required input port %1").arg(m_name),
-                    GraphicElement::WarningSeverity::Error,
-                    QObject::tr("This required input has no signal source. Connect it to an output or another valid source."),
-                    m_name);
-            } else {
-                m_graphicElement->addWarning(
-                    QObject::tr("Invalid connection on port %1").arg(m_name),
-                    GraphicElement::WarningSeverity::Error,
-                    QObject::tr("The connection on this input is not valid. Check the wire and the element at its other end."),
-                    m_name);
-            }
-        }
         return;
     }
 
@@ -223,9 +205,10 @@ void Port::setRequired(const bool required)
 {
     m_required = required;
 
-    // Requiredness feeds isValid(): re-derive the displayed status so a port
-    // marked optional recovers from Error and a newly required one shows it
     updateConnections();
+    if (m_graphicElement) {
+        m_graphicElement->update();
+    }
 }
 
 void Port::setGraphicElement(GraphicElement *graphicElement)

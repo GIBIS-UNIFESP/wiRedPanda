@@ -223,10 +223,8 @@ public:
     // --- Element Editor Panel ---
 
     ElementEditor *elementEditor = nullptr;
-    // Panel showing current element warnings and a global warning log.
+    QDockWidget *warningsDock = nullptr;
     class WarningsPanel *warningsPanel = nullptr;
-    // Right-side panel listing elements with current errors.
-    class WarningsPanel *errorPanel = nullptr;
 
     // --- Toolbars & Status ---
 

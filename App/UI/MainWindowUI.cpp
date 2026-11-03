@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "App/UI/MainWindowUI.h"
-#include "App/UI/WarningsPanel.h"
 
+#include <QDockWidget>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
 #include <QtGui/QIcon>
+
+#include "App/UI/WarningsPanel.h"
 
 void MainWindowUi::setupUi(QMainWindow *MainWindow)
 {
@@ -551,12 +553,6 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
 
     gridLayout->addWidget(elementEditor, 2, 0, 1, 3);
 
-    warningsPanel = new WarningsPanel(leftPannel);
-    warningsPanel->setObjectName("warningsPanel");
-    QSizePolicy wp(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    warningsPanel->setSizePolicy(wp);
-    gridLayout->addWidget(warningsPanel, 3, 0, 1, 3);
-
     label = new QLabel(leftPannel);
     label->setObjectName("label");
     QSizePolicy sizePolicy5(QSizePolicy::Fixed, QSizePolicy::Preferred);
@@ -596,12 +592,16 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     tab->setMovable(true); // let users drag tabs to reorder them
     splitter->addWidget(tab);
 
-    errorPanel = new WarningsPanel(splitter, true);
-    errorPanel->setObjectName("errorPanel");
-    errorPanel->setSizePolicy(wp);
-    errorPanel->setMinimumWidth(260);
-    errorPanel->setMaximumWidth(420);
-    splitter->addWidget(errorPanel);
+    warningsPanel = new WarningsPanel(MainWindow);
+    warningsPanel->setObjectName("warningsPanel");
+    warningsDock = new QDockWidget(MainWindow);
+    warningsDock->setObjectName("warningsDock");
+    warningsDock->setWidget(warningsPanel);
+    MainWindow->addDockWidget(Qt::RightDockWidgetArea, warningsDock);
+    warningsDock->setWindowTitle(QCoreApplication::translate("MainWindow", "Warnings"));
+    actionShowWarnings->setCheckable(true);
+    actionShowWarnings->setChecked(true);
+    QObject::connect(actionShowWarnings, &QAction::toggled, warningsDock, &QDockWidget::setVisible);
 
     gridLayout_8->addWidget(splitter, 0, 0, 1, 1);
 
