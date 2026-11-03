@@ -3,6 +3,8 @@
 
 #include "Tests/Common/ReferenceKernels.h"
 
+#include <functional>
+
 namespace {
 
 /// The gate of \a type at levels: \a bits are its inputs, one level each.
@@ -43,7 +45,11 @@ bool atMostInFlatOrder(const Status a, const Status b)
     return (a == b) || (a == Status::Unknown);
 }
 
-Status referenceGate(const ElementType type, const QVector<Status> &inputs)
+namespace {
+
+/// The value of a function of levels, \a levelFunction, on \a inputs: each Unknown or Error input read both ways, and
+/// where the readings disagree, Unknown if an Unknown input decides it, else Error.
+Status evaluate(const QVector<Status> &inputs, const std::function<bool(const QVector<bool> &)> &levelFunction)
 {
     // The inputs that are not levels, each read both ways: a reading is one choice of level for each of them
     QVector<int> open;
@@ -66,14 +72,14 @@ Status referenceGate(const ElementType type, const QVector<Status> &inputs)
     bool sawInactive = false;
     bool sawActive = false;
     for (int reading = 0; reading < (1 << open.size()); ++reading) {
-        (levelOf(type, bitsOf(reading)) ? sawActive : sawInactive) = true;
+        (levelFunction(bitsOf(reading)) ? sawActive : sawInactive) = true;
     }
     if (!(sawInactive && sawActive)) {
         return sawActive ? Status::Active : Status::Inactive;
     }
 
-    // The readings disagree. An Unknown input decides the gate when some setting of the other open inputs makes its own
-    // level change the output; then the gate is Unknown, and otherwise the disagreement is Error's alone.
+    // The readings disagree. An Unknown input decides the value when some setting of the other open inputs makes its
+    // own level change the output; then the value is Unknown, and otherwise the disagreement is Error's alone.
     for (int unknown : open) {
         if (inputs.at(unknown) != Status::Unknown) {
             continue;
@@ -83,10 +89,34 @@ Status referenceGate(const ElementType type, const QVector<Status> &inputs)
             QVector<bool> high = low;
             low[unknown] = false;
             high[unknown] = true;
-            if (levelOf(type, low) != levelOf(type, high)) {
+            if (levelFunction(low) != levelFunction(high)) {
                 return Status::Unknown;
             }
         }
     }
     return Status::Error;
+}
+
+} // namespace
+
+Status referenceGate(const ElementType type, const QVector<Status> &inputs)
+{
+    return evaluate(inputs, [type](const QVector<bool> &bits) { return levelOf(type, bits); });
+}
+
+Status referenceDFlipFlop(const QVector<Status> &inputs)
+{
+    // Order: data, clock, the clock's last level, stored output. A clock whose last value and now are the same status
+    // is kept: it has no edge, Unknown both times included. Otherwise a rising edge loads the data.
+    const bool kept = inputs.at(1) == inputs.at(2);
+    return evaluate(inputs, [kept](const QVector<bool> &bits) {
+        const bool rising = !kept && !bits[2] && bits[1];
+        return rising ? bits[0] : bits[3];
+    });
+}
+
+Status referenceDLatch(const QVector<Status> &inputs)
+{
+    // Order: enable, data, stored output. Level-sensitive: transparent while enabled, holding otherwise.
+    return evaluate(inputs, [](const QVector<bool> &bits) { return bits[0] ? bits[1] : bits[2]; });
 }

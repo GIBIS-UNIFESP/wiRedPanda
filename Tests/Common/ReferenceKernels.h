@@ -21,3 +21,15 @@ bool atMostInFlatOrder(Status a, Status b);
  * (IEEE 1164 ranks Unknown first). Written to be read, not to be fast: it enumerates the readings.
  */
 Status referenceGate(ElementType type, const QVector<Status> &inputs);
+
+/**
+ * \brief The value of a D flip-flop on \a inputs, ordered data, clock, the clock's last level, and the stored output.
+ * \details Stores the data on a rising edge, the clock having gone from Inactive to Active since it last sampled. A
+ * clock whose last value and now are the same status is kept and has no edge, Unknown both times included.
+ */
+Status referenceDFlipFlop(const QVector<Status> &inputs);
+
+/**
+ * \brief The value of a D latch on \a inputs, ordered enable, data, and the stored output: transparent while enabled.
+ */
+Status referenceDLatch(const QVector<Status> &inputs);

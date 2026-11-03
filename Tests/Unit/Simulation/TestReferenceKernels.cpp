@@ -138,3 +138,58 @@ void TestReferenceKernels::testNonLevelsReadBothWays()
     QCOMPARE(referenceGate(ElementType::Not, {Status::Error}), Status::Error);
     QCOMPARE(referenceGate(ElementType::Nor, {Status::Inactive, Status::Error}), Status::Error);
 }
+
+void TestReferenceKernels::testMemoryIsMonotoneOffTheKeptClock()
+{
+    // Stored outputs are dimensions too: every vector of the four values, with the flip-flop's clock pair included. A
+    // lower vector whose clock is kept (its last level and now the same status) is left out, as §4.5 allows
+    int pairs = 0;
+    const QVector<QVector<Status>> flipFlop = everyVector(4);
+    for (const QVector<Status> &lower : flipFlop) {
+        if (lower.at(1) == lower.at(2)) {
+            continue;
+        }
+        for (const QVector<Status> &higher : flipFlop) {
+            bool below = true;
+            for (int input = 0; input < 4; ++input) {
+                below = below && atMostInFlatOrder(lower.at(input), higher.at(input));
+            }
+            if (!below) {
+                continue;
+            }
+            ++pairs;
+            QVERIFY(atMostInFlatOrder(referenceDFlipFlop(lower), referenceDFlipFlop(higher)));
+        }
+    }
+    QVERIFY(pairs > 0);
+
+    // The D latch has no clock pair to leave out: enable, data and stored output, all monotone
+    const QVector<QVector<Status>> latch = everyVector(3);
+    for (const QVector<Status> &lower : latch) {
+        for (const QVector<Status> &higher : latch) {
+            bool below = true;
+            for (int input = 0; input < 3; ++input) {
+                below = below && atMostInFlatOrder(lower.at(input), higher.at(input));
+            }
+            if (below) {
+                QVERIFY(atMostInFlatOrder(referenceDLatch(lower), referenceDLatch(higher)));
+            }
+        }
+    }
+}
+
+void TestReferenceKernels::testMemoryHoldsLoadsAndKeepsItsClock()
+{
+    // A rising edge with a level clock loads the data; no edge holds the stored output
+    QCOMPARE(referenceDFlipFlop({Status::Active, Status::Active, Status::Inactive, Status::Inactive}), Status::Active);
+    QCOMPARE(referenceDFlipFlop({Status::Active, Status::Inactive, Status::Inactive, Status::Active}), Status::Active);
+    QCOMPARE(referenceDFlipFlop({Status::Active, Status::Active, Status::Active, Status::Inactive}), Status::Inactive);
+    // A clock kept at Unknown has no edge, so the stored output holds
+    QCOMPARE(referenceDFlipFlop({Status::Active, Status::Unknown, Status::Unknown, Status::Inactive}),
+             Status::Inactive);
+    // A clock that may have risen decides the output by its Unknown level: the stored output and the data disagree
+    QCOMPARE(referenceDFlipFlop({Status::Active, Status::Active, Status::Unknown, Status::Inactive}), Status::Unknown);
+    // The latch is transparent while enabled and holds otherwise
+    QCOMPARE(referenceDLatch({Status::Active, Status::Active, Status::Inactive}), Status::Active);
+    QCOMPARE(referenceDLatch({Status::Inactive, Status::Active, Status::Inactive}), Status::Inactive);
+}

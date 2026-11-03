@@ -17,4 +17,6 @@ private slots:
     void testLevelsMatchMaster();
     void testRuleIsMonotoneInTheFlatOrder();
     void testNonLevelsReadBothWays();
+    void testMemoryIsMonotoneOffTheKeptClock();
+    void testMemoryHoldsLoadsAndKeepsItsClock();
 };
