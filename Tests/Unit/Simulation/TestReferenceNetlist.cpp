@@ -3,10 +3,14 @@
 
 #include "Tests/Unit/Simulation/TestReferenceNetlist.h"
 
+#include <functional>
+
+#include <QTemporaryDir>
 #include <QTest>
 
 #include "App/Element/Element.h"
 #include "App/Element/ElementFactory.h"
+#include "App/Element/IC.h"
 #include "App/Element/WirelessNode.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -27,6 +31,40 @@ Element *node(const WirelessMode mode, const QString &label)
     WirelessNode::setMode(*element, mode);
     element->setLabel(label);
     return element;
+}
+
+/// Saves the circuit \a build makes as the IC file \a name in \a dir, and returns its path.
+QString saveDefinition(const QString &dir, const QString &name, const std::function<void(CircuitBuilder &)> &build)
+{
+    WorkSpace workspace;
+    workspace.scene()->setContextDir(dir);
+    CircuitBuilder builder(workspace.scene());
+    build(builder);
+    const QString path = dir + '/' + name + ".panda";
+    workspace.save(path);
+    return path;
+}
+
+/// Adds to \a builder an instance of the IC file \a path, loaded from \a dir.
+IC *instance(CircuitBuilder &builder, const QString &path, const QString &dir)
+{
+    auto *ic = new IC();
+    ic->loadFile(path, dir);
+    builder.addElement(ic);
+    return ic;
+}
+
+/// Two switches into an And, its output into an LED: the definition the IC tests instance.
+void buildAndBlock(CircuitBuilder &builder)
+{
+    auto *first = make(ElementType::InputSwitch);
+    auto *second = make(ElementType::InputSwitch);
+    auto *gate = make(ElementType::And);
+    auto *led = make(ElementType::Led);
+    builder.add(first, second, gate, led);
+    builder.connect(first, 0, gate, 0);
+    builder.connect(second, 0, gate, 1);
+    builder.connect(gate, 0, led, 0);
 }
 
 } // namespace
@@ -193,4 +231,96 @@ void TestReferenceNetlist::testOrderDoesNotChangeTheDrivers()
         return kinds.join(',');
     };
     QCOMPARE(describe(true), describe(false));
+}
+
+void TestReferenceNetlist::testIcOutputReadsItsInsideDriver()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("and-block"), buildAndBlock);
+
+    auto workspace = TestUtils::createWorkspace();
+    CircuitBuilder builder(workspace->scene());
+    auto *first = make(ElementType::InputSwitch);
+    auto *second = make(ElementType::InputSwitch);
+    auto *ic = instance(builder, path, dir.path());
+    auto *out = make(ElementType::Led);
+    builder.add(first, second, out);
+    builder.connect(first, 0, ic, 0);
+    builder.connect(second, 0, ic, 1);
+    builder.connect(ic, 0, out, 0);
+
+    const ReferenceNetlist netlist(workspace->scene());
+    const NetDriver driver = netlist.driver(out, 0);
+    QVERIFY(driver.kind == NetKind::Slot);
+    // The driver is the And inside the IC, not any element of the instance.
+    QVERIFY(driver.element != ic);
+    QVERIFY(driver.element->elementType() == ElementType::And);
+    // The And's inputs read the switches wired to the IC's pins outside it.
+    const NetDriver pinOne = netlist.driver(driver.element, 0);
+    QVERIFY(pinOne.kind == NetKind::Slot);
+    QCOMPARE(pinOne.element, first);
+    const NetDriver pinTwo = netlist.driver(driver.element, 1);
+    QVERIFY(pinTwo.kind == NetKind::Slot);
+    QCOMPARE(pinTwo.element, second);
+    QCOMPARE(netlist.errorNets(), 0);
+}
+
+void TestReferenceNetlist::testIcInputsReadTheOutsideDrivers()
+{
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("and-block"), buildAndBlock);
+
+    auto workspace = TestUtils::createWorkspace();
+    CircuitBuilder builder(workspace->scene());
+    auto *first = make(ElementType::InputSwitch);
+    auto *ic = instance(builder, path, dir.path());
+    auto *out = make(ElementType::Led);
+    builder.add(first, out);
+    builder.connect(first, 0, ic, 0);
+    builder.connect(ic, 0, out, 0);
+
+    // The second pin is left open, so the And inside reads its default through the IC.
+    const ReferenceNetlist netlist(workspace->scene());
+    const NetDriver driver = netlist.driver(out, 0);
+    QVERIFY(driver.kind == NetKind::Slot);
+    const NetDriver open = netlist.driver(driver.element, 1);
+    QVERIFY(open.kind == NetKind::Default);
+    QCOMPARE(open.status, ic->inputPort(1)->defaultValue());
+    QCOMPARE(netlist.errorNets(), 0);
+}
+
+void TestReferenceNetlist::testWirelessIsPerScope()
+{
+    // The block sends its input on channel "a" and receives it back on "a" inside itself: its LED reads its own input.
+    QTemporaryDir dir;
+    QVERIFY(dir.isValid());
+    const QString path = saveDefinition(dir.path(), QStringLiteral("channel-block"), [](CircuitBuilder &builder) {
+        auto *input = make(ElementType::InputSwitch);
+        auto *transmitter = node(WirelessMode::Tx, QStringLiteral("a"));
+        auto *receiver = node(WirelessMode::Rx, QStringLiteral("a"));
+        auto *led = make(ElementType::Led);
+        builder.add(input, transmitter, receiver, led);
+        builder.connect(input, 0, transmitter, 0);
+        builder.connect(receiver, 0, led, 0);
+    });
+
+    auto workspace = TestUtils::createWorkspace();
+    CircuitBuilder builder(workspace->scene());
+    auto *outer = make(ElementType::InputSwitch);
+    auto *outerTransmitter = node(WirelessMode::Tx, QStringLiteral("a"));
+    auto *ic = instance(builder, path, dir.path());
+    auto *out = make(ElementType::Led);
+    builder.add(outer, outerTransmitter, out);
+    builder.connect(outer, 0, ic, 0);
+    builder.connect(outer, 0, outerTransmitter, 0);
+    builder.connect(ic, 0, out, 0);
+
+    // The outer transmitter on "a" is not a second driver of the inside receiver's channel: each scope has its own.
+    const ReferenceNetlist netlist(workspace->scene());
+    const NetDriver driver = netlist.driver(out, 0);
+    QVERIFY(driver.kind == NetKind::Slot);
+    QCOMPARE(driver.element, outer);
+    QCOMPARE(netlist.errorNets(), 0);
 }

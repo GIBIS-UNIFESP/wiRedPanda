@@ -7,7 +7,8 @@
 
 /**
  * \brief Checks the reference's reading of the wiring (plan 5, §4.4): junctions, transmitters and receivers followed to
- * their drivers, defaults, nets with two drivers, alias loops, and an answer that does not depend on element order.
+ * their drivers, defaults, nets with two drivers, alias loops, IC boundaries flattened per instance, and an answer that
+ * does not depend on element order.
  */
 class TestReferenceNetlist : public QObject
 {
@@ -22,4 +23,7 @@ private slots:
     void testWiredReceiverReadsError();
     void testAliasLoopReadsUnknown();
     void testOrderDoesNotChangeTheDrivers();
+    void testIcOutputReadsItsInsideDriver();
+    void testIcInputsReadTheOutsideDrivers();
+    void testWirelessIsPerScope();
 };
