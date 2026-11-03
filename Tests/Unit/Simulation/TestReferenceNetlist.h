@@ -33,4 +33,5 @@ private slots:
     void testReaderSurvivesCorruptFiles();
     void testSelfContainingIcTerminates();
     void testWirelessLoopReadsUnknown();
+    void testHugeNestedLengthIsRefused();
 };

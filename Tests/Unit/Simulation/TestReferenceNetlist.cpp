@@ -577,3 +577,21 @@ void TestReferenceNetlist::testWirelessLoopReadsUnknown()
     QVERIFY(netlist.driver(led, 0).kind == NetKind::Unknown);
     QCOMPARE(netlist.errorNets(), 0);
 }
+
+void TestReferenceNetlist::testHugeNestedLengthIsRefused()
+{
+    // A metadata key whose string claims about two gigabytes, with no bytes behind the claim: the reader must refuse the
+    // file without allocating for the claim
+    QByteArray payload;
+    QDataStream out(&payload, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_12);
+    out << quint32(1);            // one metadata entry
+    out << quint32(0x7FFFFFF0);   // the key's length in bytes, and then nothing
+
+    QByteArray bytes;
+    QDataStream header(&bytes, QIODevice::WriteOnly);
+    header.setVersion(QDataStream::Qt_5_12);
+    header << quint32(0x57504346) << FormatRev::current;
+    bytes.append(qCompress(payload));
+    QVERIFY(!readPandaFile(bytes).has_value());
+}
