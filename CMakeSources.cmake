@@ -342,6 +342,7 @@ set(TEST_UTILS_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/Goldens.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/PandaFile.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/RandomCircuit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceKernels.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceNetlist.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TestUtils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/TraceEngine.cpp
@@ -352,6 +353,7 @@ set(TEST_UTILS_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ICTestHelpers.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/PandaFile.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/RandomCircuit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceKernels.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/ReferenceNetlist.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubFileDialogProvider.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Common/StubMainWindowHost.h
@@ -575,6 +577,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestRandomCircuit.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestReferenceKernels.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestReferenceNetlist.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.cpp
@@ -824,6 +827,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Serialization/TestWaveformSimulator.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestDanglingPointer.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestRandomCircuit.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestReferenceKernels.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestReferenceNetlist.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulation.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Simulation/TestSimulationBlocker.h

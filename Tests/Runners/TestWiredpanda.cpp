@@ -238,6 +238,7 @@
 // unit/simulation
 #include "Tests/Unit/Simulation/TestDanglingPointer.h"
 #include "Tests/Unit/Simulation/TestRandomCircuit.h"
+#include "Tests/Unit/Simulation/TestReferenceKernels.h"
 #include "Tests/Unit/Simulation/TestReferenceNetlist.h"
 #include "Tests/Unit/Simulation/TestSimulation.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
@@ -497,6 +498,7 @@ int main(int argc, char **argv)
         {"TestTourEngine", []() -> QObject * { return new TestTourEngine; }},
         {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
         {"TestRandomCircuit", []() -> QObject * { return new TestRandomCircuit; }},
+        {"TestReferenceKernels", []() -> QObject * { return new TestReferenceKernels; }},
         {"TestReferenceNetlist", []() -> QObject * { return new TestReferenceNetlist; }},
         {"TestCircuitExporter", []() -> QObject * { return new TestCircuitExporter; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
