@@ -118,11 +118,12 @@ Values: `Status::Unknown = -1`, `Inactive = 0`, `Active = 1`, `Error = 2` (`App/
 
 ### F8. A flip-flop whose clock is High at power-on loads a value no input gave (high; spec violation)
 
-- Code: the power-on kernel history is set in `DFlipFlop.cpp:53`, `TFlipFlop.cpp:53`, `JKFlipFlop.cpp:56` and
-  `SRFlipFlop.cpp:55`. D and T start with last clock Inactive and last data Active. JK starts with last clock Inactive
-  and both last J and last K Active. SR starts with all three Inactive. With the clock High at the first evaluation,
-  the edge test in `dFlipFlop` (101-104) fires against that history: D stores the stale Active, and T and JK toggle Q
-  from 0 to 1.
+- Code: the power-on kernel history is set in `App/Element/GraphicElements/DFlipFlop.cpp:53`,
+  `App/Element/GraphicElements/TFlipFlop.cpp:53`, `App/Element/GraphicElements/JKFlipFlop.cpp:56` and
+  `App/Element/GraphicElements/SRFlipFlop.cpp:55`. D and T start with last clock Inactive and last data Active. JK
+  starts with last clock Inactive and both last J and last K Active. SR starts with all three Inactive. With the clock
+  High at the first evaluation, the edge test in `dFlipFlop` (101-104) fires against that history: D stores the stale
+  Active, and T and JK toggle Q from 0 to 1.
 - Spec: §2.6, "a fresh memory node ... samples once a round publishes nothing, its last control levels taken from its
   inputs ... and nothing fabricates an edge". §2.4 says clocks start HIGH, shifted by their phase, so a High clock at
   power-on is the ordinary case for a real circuit.
