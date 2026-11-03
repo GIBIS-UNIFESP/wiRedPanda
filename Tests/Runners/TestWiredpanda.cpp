@@ -237,6 +237,7 @@
 #include "Tests/Unit/Serialization/TestWaveformSimulator.h"
 // unit/simulation
 #include "Tests/Unit/Simulation/TestDanglingPointer.h"
+#include "Tests/Unit/Simulation/TestRandomCircuit.h"
 #include "Tests/Unit/Simulation/TestSimulation.h"
 #include "Tests/Unit/Simulation/TestSimulationBlocker.h"
 // unit/tour
@@ -494,6 +495,7 @@ int main(int argc, char **argv)
         {"TestSimulationBlocker", []() -> QObject * { return new TestSimulationBlocker; }},
         {"TestTourEngine", []() -> QObject * { return new TestTourEngine; }},
         {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
+        {"TestRandomCircuit", []() -> QObject * { return new TestRandomCircuit; }},
         {"TestCircuitExporter", []() -> QObject * { return new TestCircuitExporter; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
         {"TestElementPalette", []() -> QObject * { return new TestElementPalette; }},
