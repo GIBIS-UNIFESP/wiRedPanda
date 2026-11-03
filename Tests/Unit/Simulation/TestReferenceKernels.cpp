@@ -56,8 +56,8 @@ QVector<QVector<Status>> everyVector(const int count)
 
 void TestReferenceKernels::testLevelsMatchMaster()
 {
-    // Each input is either wired to a switch, or left open with a level for its default: every mix of the two, and every
-    // level the switches take, is settled by master and compared with the reference's value of the same levels
+    // Each input is either wired to a switch, or left open with a level for its default: every mix of the two, and
+    // every level the switches take, is settled by master and compared with the reference's value of the same levels
     for (const GateCase &gateCase : gateCases()) {
         for (int openMask = 0; openMask < (1 << gateCase.inputs); ++openMask) {
             for (int defaultMask = 0; defaultMask < (1 << gateCase.inputs); ++defaultMask) {
