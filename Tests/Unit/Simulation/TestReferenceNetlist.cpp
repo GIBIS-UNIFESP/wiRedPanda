@@ -580,8 +580,8 @@ void TestReferenceNetlist::testWirelessLoopReadsUnknown()
 
 void TestReferenceNetlist::testHugeNestedLengthIsRefused()
 {
-    // A metadata key whose string claims about two gigabytes, with no bytes behind the claim: the reader must refuse the
-    // file without allocating for the claim
+    // A metadata key whose string claims about two gigabytes, with no bytes behind the claim: the reader must refuse
+    // the file without allocating for the claim
     QByteArray payload;
     QDataStream out(&payload, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_12);
