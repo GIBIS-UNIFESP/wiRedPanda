@@ -30,6 +30,8 @@
 #include <QMenuBar>
 #include <QMenu>
 
+class WarningsDock;
+
 class MainWindowUi
 {
 public:
@@ -101,6 +103,7 @@ public:
     QAction *actionICPreview = nullptr;
     QAction *actionCheckForUpdates = nullptr;
     QAction *actionShowMinimap = nullptr;
+    QAction *actionShowWarnings = nullptr;
     QAction *actionLightTheme = nullptr;
     QAction *actionDarkTheme = nullptr;
     QAction *actionSystemTheme = nullptr;
@@ -222,6 +225,7 @@ public:
     // --- Element Editor Panel ---
 
     ElementEditor *elementEditor = nullptr;
+    WarningsDock *warningsDock = nullptr;
 
     // --- Toolbars & Status ---
 

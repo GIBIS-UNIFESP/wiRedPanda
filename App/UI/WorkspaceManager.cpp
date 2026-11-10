@@ -314,6 +314,7 @@ void WorkspaceManager::loadPandaFile(const QString &fileName)
     m_currentTab->scene()->resizeScene();
     m_host.palette()->updateICList(icListFile());
     m_host.palette()->updateEmbeddedICList(m_currentTab->scene());
+    emit tabContentLoaded(m_currentTab);
     m_host.showStatusMessage(tr("File loaded successfully."), 4000);
 }
 
@@ -351,6 +352,7 @@ void WorkspaceManager::openICInTab(const QString &blobName, int icElementId, con
 
     m_host.palette()->updateICList(icListFile());
     m_host.palette()->updateEmbeddedICList(m_currentTab->scene());
+    emit tabContentLoaded(m_currentTab);
 
     // Connect child tab's save signal to parent
     connect(m_currentTab, &WorkSpace::icBlobSaved, parentWorkspace, &WorkSpace::onChildICBlobSaved);

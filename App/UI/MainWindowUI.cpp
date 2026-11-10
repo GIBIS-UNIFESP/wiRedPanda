@@ -7,6 +7,8 @@
 #include <QtCore/QMetaObject>
 #include <QtGui/QIcon>
 
+#include "App/UI/WarningsDock.h"
+
 void MainWindowUi::setupUi(QMainWindow *MainWindow)
 {
     if (MainWindow->objectName().isEmpty()) {
@@ -584,6 +586,11 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     tab->setMovable(true); // let users drag tabs to reorder them
     splitter->addWidget(tab);
 
+    warningsDock = new WarningsDock(MainWindow);
+    MainWindow->addDockWidget(Qt::RightDockWidgetArea, warningsDock);
+    actionShowWarnings = warningsDock->toggleViewAction();
+    actionShowWarnings->setObjectName("actionShowWarnings");
+
     gridLayout_8->addWidget(splitter, 0, 0, 1, 1);
 
     MainWindow->setCentralWidget(centralWidget);
@@ -726,6 +733,7 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     menuView->addSeparator();
     menuView->addAction(actionFastMode);
     menuView->addAction(actionShowMinimap);
+    menuView->addAction(actionShowWarnings);
     menuView->addSeparator();
     menuView->addAction(menuTheme->menuAction());
     menuView->addAction(actionFullscreen);
@@ -844,6 +852,8 @@ void MainWindowUi::retranslateUi()
     actionLabelsUnderIcons->setText(QCoreApplication::translate("MainWindow", "Labels under icons"));
     actionICPreview->setText(QCoreApplication::translate("MainWindow", "Show IC Preview"));
     actionShowMinimap->setText(QCoreApplication::translate("MainWindow", "Show Minimap"));
+    warningsDock->retranslateUi();
+    actionShowWarnings->setText(QCoreApplication::translate("MainWindow", "Show Warnings"));
     actionAboutThisVersion->setText(QCoreApplication::translate("MainWindow", "About this version"));
     actionCheckForUpdates->setText(QCoreApplication::translate("MainWindow", "Check for updates automatically"));
     actionRestart->setText(QCoreApplication::translate("MainWindow", "&Restart"));

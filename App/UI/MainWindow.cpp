@@ -64,6 +64,7 @@
 #include "App/UI/MainWindowUI.h"
 #include "App/UI/SceneUiBinder.h"
 #include "App/UI/UpdateController.h"
+#include "App/UI/WarningsDock.h"
 #include "App/UI/WorkspaceManager.h"
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
@@ -105,6 +106,11 @@ MainWindow::MainWindow(const QString &fileName, QWidget *parent)
     // The manager owns the tab model and announces active-tab changes; the shell
     // rebinds the chrome. The binder forwards scene-driven navigation back to the manager.
     connect(m_workspaceManager, &WorkspaceManager::currentTabChanged, this, &MainWindow::onCurrentTabChanged);
+    connect(m_workspaceManager, &WorkspaceManager::tabContentLoaded, this, [this](WorkSpace *tab) {
+        if (tab && m_ui->warningsDock && tab == m_workspaceManager->currentTab()) {
+            m_ui->warningsDock->setScene(tab->scene());
+        }
+    });
     connect(m_workspaceManager, &WorkspaceManager::titleChanged,      this, &MainWindow::updateWindowTitle);
     connect(m_binder, &SceneUiBinder::openICRequested, m_workspaceManager, &WorkspaceManager::openICInTab);
     connect(m_binder, &SceneUiBinder::loadFileRequested, m_workspaceManager, &WorkspaceManager::loadPandaFile);
@@ -370,6 +376,7 @@ void MainWindow::setupConnections()
     connect(m_ui->actionICPreview,             &QAction::triggered,       this,                &MainWindow::on_actionICPreview_triggered);
     connect(m_ui->actionCheckForUpdates,       &QAction::triggered,       this,                &MainWindow::on_actionCheckForUpdates_triggered);
     connect(m_ui->actionShowMinimap,           &QAction::triggered,       this,                &MainWindow::on_actionShowMinimap_triggered);
+
     connect(m_ui->actionLightTheme,            &QAction::triggered,       this,                &MainWindow::on_actionLightTheme_triggered);
     connect(m_ui->actionMute,                  &QAction::triggered,       this,                &MainWindow::on_actionMute_triggered);
     connect(m_ui->actionNew,                   &QAction::triggered,       m_workspaceManager,  &WorkspaceManager::newTab);

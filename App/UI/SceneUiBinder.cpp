@@ -12,6 +12,7 @@
 #include <QUndoStack>
 
 #include "App/Core/Common.h"
+#include "App/Element/GraphicElement.h"
 #include "App/Element/IC.h"
 #include "App/Element/ICPreviewPopup.h"
 #include "App/Scene/GraphicsView.h"
@@ -22,6 +23,7 @@
 #include "App/UI/ElementEditor.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/MainWindowUI.h"
+#include "App/UI/WarningsDock.h"
 
 SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPreviewPopup *previewPopup, QWidget *shortcutParent, QObject *parent)
     : QObject(parent)
@@ -132,6 +134,26 @@ void SceneUiBinder::bind(WorkSpace *tab)
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(scene);
 
+    if (m_ui->warningsDock) {
+        m_ui->warningsDock->setScene(scene);
+        m_warningsActivatedConn = connect(m_ui->warningsDock, &WarningsDock::warningElementActivated, this, [this, scene](int elementId) {
+            if (!m_bound || m_bound->scene() != scene) {
+                return;
+            }
+            auto *element = dynamic_cast<GraphicElement *>(scene->itemById(elementId));
+            if (element) {
+                scene->clearSelection();
+                element->setSelected(true);
+                m_bound->view()->centerOn(element);
+            }
+        });
+        m_warningsChangedConn = connect(scene, &Scene::circuitHasChanged, this, [this, scene] {
+            if (m_bound && m_bound->scene() == scene) {
+                m_ui->warningsDock->refresh();
+            }
+        });
+    }
+
     connect(tab->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::syncZoomActions);
     connect(tab->view(),       &GraphicsView::zoomChanged,     this, &SceneUiBinder::updateStatusInfo);
     connect(scene,             &QGraphicsScene::selectionChanged, this, &SceneUiBinder::updateStatusInfo);
@@ -238,6 +260,12 @@ void SceneUiBinder::unbind()
     disconnect(scene,                 &Scene::circuitHasChanged,      this, &SceneUiBinder::updateStatusInfo);
     disconnect(m_bound->simulation(), &Simulation::simulationWarning, this, nullptr);
     disconnect(scene,                 &Scene::showStatusMessageRequested, this, nullptr);
+
+    if (m_ui->warningsDock) {
+        disconnect(m_warningsActivatedConn);
+        disconnect(m_warningsChangedConn);
+        m_ui->warningsDock->setScene(nullptr);
+    }
 
     qCDebug(zero) << "Disconnecting scene shortcuts from previous tab.";
     disconnect(m_prevMainPropShortcut,  nullptr, scene, nullptr);
