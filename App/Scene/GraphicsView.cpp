@@ -46,6 +46,25 @@ GraphicsView::GraphicsView(QWidget *parent)
     setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
 
     setCacheMode(QGraphicsView::CacheBackground);
+
+    connect(horizontalScrollBar(), &QScrollBar::valueChanged, this, [this] {
+        if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+            const QRectF viewportRect = mapToScene(viewport()->rect()).boundingRect();
+            scene_->invalidate(viewportRect, QGraphicsScene::BackgroundLayer);
+        }
+        if (viewport()) {
+            viewport()->update();
+        }
+    });
+    connect(verticalScrollBar(), &QScrollBar::valueChanged, this, [this] {
+        if (auto *scene_ = qobject_cast<Scene *>(scene())) {
+            const QRectF viewportRect = mapToScene(viewport()->rect()).boundingRect();
+            scene_->invalidate(viewportRect, QGraphicsScene::BackgroundLayer);
+        }
+        if (viewport()) {
+            viewport()->update();
+        }
+    });
 }
 
 void GraphicsView::paintEvent(QPaintEvent *event)

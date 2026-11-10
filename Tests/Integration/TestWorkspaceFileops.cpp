@@ -571,6 +571,30 @@ void TestWorkspaceFileops::testDolphinFileNameStorage()
     QCOMPARE(workspace.dolphinFileName(), dolphinName);
 }
 
+void TestWorkspaceFileops::testBackgroundImageStorageRoundTrip()
+{
+    const QString imagePath = m_tempDir.path() + "/background.png";
+    QImage image(16, 16, QImage::Format_ARGB32);
+    image.fill(Qt::green);
+    QVERIFY2(image.save(imagePath), "Test image should save successfully");
+
+    const QString filePath = m_tempDir.path() + "/background_scene.panda";
+    {
+        WorkSpace workspace;
+        workspace.scene()->setBackgroundImage(imagePath);
+        workspace.scene()->undoStack()->setClean();
+        const auto outcome = workspace.save(filePath);
+        QCOMPARE(outcome, WorkSpace::SaveOutcome::Saved);
+    }
+
+    WorkSpace reloaded;
+    reloaded.load(filePath);
+
+    QVERIFY2(!reloaded.scene()->backgroundImage().isNull(),
+             "Background image should survive a full save/load round-trip");
+    QCOMPARE(QFileInfo(reloaded.scene()->backgroundImagePath()).fileName(), QFileInfo(imagePath).fileName());
+}
+
 void TestWorkspaceFileops::testLastIdInitializationValue()
 {
     // Test that lastId is initialized to a valid value
