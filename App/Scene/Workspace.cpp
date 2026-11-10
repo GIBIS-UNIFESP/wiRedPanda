@@ -28,6 +28,7 @@
 #include "App/Scene/ICRegistry.h"
 #include "App/Simulation/SimulationBlocker.h"
 #include "App/UI/MinimapWidget.h"
+#include "App/UI/RecordingOverlay.h"
 #include "App/Versions.h"
 #include "App/Wiring/Connection.h"
 #include "App/Wiring/Port.h"
@@ -66,6 +67,11 @@ WorkSpace::WorkSpace(QWidget *parent)
     m_minimap->setObjectName("minimap");
     m_minimap->raise();
     connect(m_minimap, &MinimapWidget::geometryChangeFinished, this, &WorkSpace::onMinimapGeometryChangeFinished);
+
+    // Recording overlay badge
+    m_recordingOverlay = new RecordingOverlay(this);
+    m_recordingOverlay->setObjectName("recordingOverlay");
+    m_recordingOverlay->hide();
 
     // Adjust the scene rect after every zoom so that all items remain reachable
     // via panning, even when zoomed in very close
@@ -112,6 +118,9 @@ WorkSpace::~WorkSpace()
     delete m_minimap;
     m_minimap = nullptr;
 
+    delete m_recordingOverlay;
+    m_recordingOverlay = nullptr;
+
     /// Mirror the pre-debounce QTemporaryFile semantics: a clean Workspace
     /// destruction discards its autosave so it isn't recovered next launch.
     /// (On a real crash the destructor doesn't run, so the recovery file remains.)
@@ -123,6 +132,11 @@ WorkSpace::~WorkSpace()
         QFile::remove(m_autosaveFileName);
         m_autosaveFileName.clear();
     }
+}
+
+RecordingOverlay *WorkSpace::recordingOverlay()
+{
+    return m_recordingOverlay;
 }
 
 void WorkSpace::resizeEvent(QResizeEvent *event)
@@ -142,6 +156,11 @@ void WorkSpace::resizeEvent(QResizeEvent *event)
 
     if (m_exerciseOverlay && m_exerciseOverlay->isVisible())
         m_exerciseOverlay->repositionToParent();
+
+    if (m_recordingOverlay && m_recordingOverlay->isVisible()) {
+        m_recordingOverlay->move(width() - m_recordingOverlay->width() - 20, 16);
+        m_recordingOverlay->raise();
+    }
 }
 
 void WorkSpace::showEvent(QShowEvent *event)

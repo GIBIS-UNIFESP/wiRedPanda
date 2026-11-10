@@ -193,6 +193,18 @@ void Settings::setAutosaveFiles(const QStringList &files)
     setValue("autosaveFile", files);
 }
 
+// Circuit recorder
+
+QString Settings::lastRecordingPath()
+{
+    return value("recording/lastPath").toString();
+}
+
+void Settings::setLastRecordingPath(const QString &path)
+{
+    setValue("recording/lastPath", path);
+}
+
 bool Settings::hideV4Warning()
 {
     return value("hideV4Warning").toBool();
