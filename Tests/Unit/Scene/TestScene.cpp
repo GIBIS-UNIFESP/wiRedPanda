@@ -33,6 +33,7 @@
 #include "App/Element/GraphicElements/AudioOutputElement.h"
 #include "App/Element/GraphicElements/InputButton.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Node.h"
 #include "App/Element/GraphicElements/Not.h"
@@ -2798,4 +2799,22 @@ void TestScene::testHelpEventFallsBackForNonPortItem()
 
     QVERIFY(event.isAccepted());
     QVERIFY2(!scene->portAt(event.scenePos()), "Precondition: no port must be under the event's scene position");
+}
+
+void TestScene::testDestroySceneWithWiredCircuit()
+{
+    // Regression #1: destroying a scene when elements still have
+    // wires attached must not crash or invoke methods on destroyed objects.
+    auto *scene = new Scene(nullptr);
+    auto *andGate = new And();
+    auto *vcc = new InputVcc();
+    scene->addItem(andGate);
+    scene->addItem(vcc);
+
+    auto *conn = new Connection();
+    conn->setStartPort(vcc->outputPort(0));
+    conn->setEndPort(andGate->inputPort(0));
+    scene->addItem(conn);
+
+    delete scene;
 }
