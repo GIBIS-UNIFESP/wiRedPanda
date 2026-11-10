@@ -68,6 +68,9 @@ private slots:
 
     void testTruthTablePopulatesTableAndShows();
     void testSetTruthTablePropositionTogglesOutputBit();
+    void testTruthTableKeyboardNavigationArrowsAndEnter();
+    void testTruthTableKeyboardNavigationTabAndBacktab();
+    void testTruthTableKeyboardSpaceTogglesEditableCellOnly();
 
     void testAudioBoxGuardsNonAudioBoxSelection();
     void testAudioBoxCancelledDialogIsNoOp();

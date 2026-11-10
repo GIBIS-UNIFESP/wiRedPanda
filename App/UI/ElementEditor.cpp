@@ -3,13 +3,18 @@
 
 #include "App/UI/ElementEditor.h"
 
+#include <algorithm>
 #include <cmath>
+#include <functional>
 
+#include <QAbstractItemView>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QIcon>
 #include <QImageReader>
+#include <QItemSelectionModel>
+#include <QKeyEvent>
 #include <QMessageBox>
 #include <QSize>
 #include <QToolButton>
@@ -35,6 +40,119 @@
 #include "App/UI/LabeledSlider.h"
 #include "App/UI/SelectionCapabilities.h"
 #include "App/Wiring/Connection.h"
+
+namespace {
+
+/// Table widget for the truth table editor with full keyboard navigation:
+/// - Arrow keys navigate between cells
+/// - Space toggles the boolean value (0/1) of an output cell
+/// - Tab / Shift+Tab cycle through editable output cells
+/// - Enter / Return moves to the next row
+class TruthTableWidget : public QTableWidget
+{
+public:
+    explicit TruthTableWidget(std::function<void(int, int)> onToggle, QWidget *parent = nullptr)
+        : QTableWidget(parent)
+        , m_onToggle(std::move(onToggle))
+    {
+        setSelectionMode(QAbstractItemView::SingleSelection);
+        setSelectionBehavior(QAbstractItemView::SelectItems);
+        setEditTriggers(QAbstractItemView::NoEditTriggers);
+        setTabKeyNavigation(false);
+        setStyleSheet(
+            QStringLiteral("QTableWidget::item:selected, QTableWidget::item:focus {"
+                           " background-color: palette(highlight);"
+                           " color: palette(highlighted-text);"
+                           " border: 2px solid palette(highlight);"
+                           "}"));
+    }
+
+    void setFirstEditableColumn(int col)
+    {
+        m_firstEditableCol = col;
+    }
+
+    void selectCell(int row, int col)
+    {
+        const QModelIndex idx = model()->index(row, col);
+        selectionModel()->setCurrentIndex(idx, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
+        scrollTo(idx);
+    }
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override
+    {
+        const int rows = rowCount();
+        const int cols = columnCount();
+        const int row = currentRow();
+        const int col = currentColumn();
+
+        switch (event->key()) {
+        case Qt::Key_Up:
+            selectCell(std::max(0, row - 1), col);
+            event->accept();
+            return;
+        case Qt::Key_Down:
+            selectCell(std::min(rows - 1, row + 1), col);
+            event->accept();
+            return;
+        case Qt::Key_Left:
+            selectCell(row, std::max(0, col - 1));
+            event->accept();
+            return;
+        case Qt::Key_Right:
+            selectCell(row, std::min(cols - 1, col + 1));
+            event->accept();
+            return;
+        case Qt::Key_Space:
+            if (col >= m_firstEditableCol) {
+                m_onToggle(row, col);
+            }
+            event->accept();
+            return;
+        case Qt::Key_0:
+        case Qt::Key_1:
+            if (col >= m_firstEditableCol) {
+                const QString target = (event->key() == Qt::Key_1) ? QStringLiteral("1") : QStringLiteral("0");
+                if (item(row, col)->text() != target) {
+                    m_onToggle(row, col);
+                }
+            }
+            event->accept();
+            return;
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab: {
+            const bool backward = (event->key() == Qt::Key_Backtab) || (event->modifiers() & Qt::ShiftModifier);
+            const int editableCols = cols - m_firstEditableCol;
+            const int totalEditable = rows * editableCols;
+            int nextIdx = 0;
+            if (col < m_firstEditableCol) {
+                nextIdx = (row * editableCols + (backward ? -1 : 0) + totalEditable) % totalEditable;
+            } else {
+                const int curIdx = row * editableCols + (col - m_firstEditableCol);
+                nextIdx = (curIdx + (backward ? -1 : 1) + totalEditable) % totalEditable;
+            }
+            selectCell(nextIdx / editableCols, m_firstEditableCol + (nextIdx % editableCols));
+            event->accept();
+            return;
+        }
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            selectCell((row + 1) % rows, col);
+            event->accept();
+            return;
+        default:
+            QTableWidget::keyPressEvent(event);
+            return;
+        }
+    }
+
+private:
+    std::function<void(int, int)> m_onToggle;
+    int m_firstEditableCol = 0;
+};
+
+} // namespace
 
 ElementEditor::ElementEditor(QWidget *parent)
     : QWidget(parent)
@@ -73,7 +191,16 @@ ElementEditor::ElementEditor(QWidget *parent)
     m_tableBox->setWindowTitle(tr("Truth Table"));
     m_tableBox->setModal(true);
     auto *tableLayout = new QGridLayout(m_tableBox);
-    m_table = new QTableWidget(this);
+    m_table = new TruthTableWidget(
+        [this](int row, int col) { setTruthTableProposition(row, col); },
+        this);
+    const QString truthTableShortcutsTip = tr(
+        "Arrow keys: Navigate between cells\n"
+        "Space / 0 / 1: Toggle or set output value (0/1)\n"
+        "Tab / Shift+Tab: Next / previous editable cell\n"
+        "Enter: Move to next row");
+    m_table->setToolTip(truthTableShortcutsTip);
+    m_ui->pushButtonTruthTable->setToolTip(truthTableShortcutsTip);
     tableLayout->addWidget(m_table);
     m_tableBox->setLayout(tableLayout);
 
@@ -296,6 +423,14 @@ void ElementEditor::fillColorComboBox()
 void ElementEditor::retranslateUi()
 {
     m_ui->retranslateUi(this);
+    m_tableBox->setWindowTitle(tr("Truth Table"));
+    const QString truthTableShortcutsTip = tr(
+        "Arrow keys: Navigate between cells\n"
+        "Space / 0 / 1: Toggle or set output value (0/1)\n"
+        "Tab / Shift+Tab: Next / previous editable cell\n"
+        "Enter: Move to next row");
+    m_table->setToolTip(truthTableShortcutsTip);
+    m_ui->pushButtonTruthTable->setToolTip(truthTableShortcutsTip);
     // Color names are translated strings; rebuild the combo box so current-language
     // names are shown.
     fillColorComboBox();
@@ -852,12 +987,21 @@ void ElementEditor::truthTable()
     // --- Build / refresh table ---
     int nInputs = truthtable->inputSize();
     int nOutputs = truthtable->outputSize();
+    const int totalRows = 1 << nInputs;
+    const int totalCols = nInputs + nOutputs;
+
+    const int prevRow = m_table->currentRow();
+    const int prevCol = m_table->currentColumn();
+    const bool keepCurrent = m_tableBox->isVisible()
+        && prevRow >= 0 && prevRow < totalRows
+        && prevCol >= 0 && prevCol < totalCols;
 
     // Columns: nInputs input columns (A, B, C, …) + nOutputs output columns (S0, S1, …).
     QStringList inputLabels;
-    m_table->setColumnCount(nInputs + nOutputs);
+    m_table->setColumnCount(totalCols);
     // Rows: one per input combination — 2^nInputs.
-    m_table->setRowCount(static_cast<int>(std::pow(2, nInputs)));
+    m_table->setRowCount(totalRows);
+    static_cast<TruthTableWidget *>(m_table)->setFirstEditableColumn(nInputs);
 
     for (int i = 0; i < nInputs; ++i) {
         inputLabels.append(QChar::fromLatin1(static_cast<char>('A' + i)));
@@ -870,7 +1014,7 @@ void ElementEditor::truthTable()
 
     m_table->setHorizontalHeaderLabels(inputLabels);
 
-    for (int i = 0; i < std::pow(2, nInputs); ++i) {
+    for (int i = 0; i < totalRows; ++i) {
         for (int j = 0; j < nInputs; ++j) {
             m_table->setColumnWidth(j, 14);
             // Convert row index to binary string, zero-padded to nInputs digits.
@@ -885,8 +1029,8 @@ void ElementEditor::truthTable()
                 auto *newItem = new QTableWidgetItem(newItemValue.at(j), QTableWidgetItem::Type);
                 newItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, j, newItem);
-                // Input columns are read-only; only output cells can be toggled.
-                m_table->item(i, j)->setFlags(Qt::ItemIsEnabled);
+                // Input columns are read-only; selectable for keyboard navigation.
+                m_table->item(i, j)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
             }
 
             m_table->item(i, j)->setText(newItemValue.at(j));
@@ -905,14 +1049,20 @@ void ElementEditor::truthTable()
                 auto *newOutItem = new QTableWidgetItem(QString(QChar::fromLatin1(static_cast<char>('0' + output))));
                 newOutItem->setTextAlignment(Qt::AlignCenter);
                 m_table->setItem(i, nInputs + z, newOutItem);
-                m_table->item(i, nInputs + z)->setFlags(Qt::ItemIsEnabled);
+                m_table->item(i, nInputs + z)->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
             }
 
             m_table->item(i, nInputs + z)->setText(QString::number(output));
         }
     }
 
+    static_cast<TruthTableWidget *>(m_table)->selectCell(
+        keepCurrent ? prevRow : 0,
+        keepCurrent ? prevCol : nInputs);
+
     m_tableBox->show();
+    m_tableBox->activateWindow();
+    m_table->setFocus();
 }
 
 void ElementEditor::setTruthTableProposition(const int row, const int column)
@@ -938,9 +1088,10 @@ void ElementEditor::setTruthTableProposition(const int row, const int column)
     emit sendCommand(new ToggleTruthTableOutputCommand(truthtable, positionToChange, m_scene));
 
     // Re-render the table so the model state and displayed text stay in sync.
+    // Do NOT call ElementEditor::update() here: setCurrentElements() toggles
+    // setEnabled(false) on ElementEditor, which propagates to the child QDialog
+    // m_tableBox and steals keyboard focus / window activation away from m_table.
     ElementEditor::truthTable();
-
-    update();
 
     m_scene->setCircuitUpdateRequired();
 }

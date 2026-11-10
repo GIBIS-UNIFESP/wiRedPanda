@@ -1123,6 +1123,10 @@ void TestElementEditor::testTruthTablePopulatesTableAndShows()
     QCOMPARE(editor.m_table->columnCount(), tt->inputSize() + tt->outputSize());
     QCOMPARE(editor.m_table->horizontalHeaderItem(0)->text(), QStringLiteral("A"));
     QCOMPARE(editor.m_table->horizontalHeaderItem(tt->inputSize())->text(), QStringLiteral("S0"));
+    QCOMPARE(editor.m_table->currentRow(), 0);
+    QCOMPARE(editor.m_table->currentColumn(), tt->inputSize());
+    QVERIFY(editor.m_table->selectionModel()->isSelected(editor.m_table->model()->index(0, tt->inputSize())));
+    QVERIFY(!editor.m_table->toolTip().isEmpty());
 }
 
 void TestElementEditor::testSetTruthTablePropositionTogglesOutputBit()
@@ -1147,6 +1151,171 @@ void TestElementEditor::testSetTruthTablePropositionTogglesOutputBit()
 
     QCOMPARE(tt->key().at(row), !bitBefore);
     QCOMPARE(editor.m_table->item(row, outputColumn)->text(), (!bitBefore) ? QStringLiteral("1") : QStringLiteral("0"));
+}
+
+void TestElementEditor::testTruthTableKeyboardNavigationArrowsAndEnter()
+{
+    WorkSpace workspace;
+    auto *tt = new TruthTable();
+    workspace.scene()->addItem(tt);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    tt->setSelected(true);
+
+    editor.truthTable();
+
+    const int nInputs = tt->inputSize();
+    const int totalRows = editor.m_table->rowCount();
+    const int totalCols = editor.m_table->columnCount();
+
+    // Starts at (0, nInputs). Up at row 0 clamps to 0.
+    QTest::keyClick(editor.m_table, Qt::Key_Up);
+    QCOMPARE(editor.m_table->currentRow(), 0);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+
+    // Down moves to row 1.
+    QTest::keyClick(editor.m_table, Qt::Key_Down);
+    QCOMPARE(editor.m_table->currentRow(), 1);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+
+    // Left moves into input columns and clamps at column 0.
+    for (int i = 0; i < nInputs + 2; ++i) {
+        QTest::keyClick(editor.m_table, Qt::Key_Left);
+    }
+    QCOMPARE(editor.m_table->currentRow(), 1);
+    QCOMPARE(editor.m_table->currentColumn(), 0);
+
+    // Right moves across columns and clamps at totalCols - 1.
+    for (int i = 0; i < totalCols + 2; ++i) {
+        QTest::keyClick(editor.m_table, Qt::Key_Right);
+    }
+    QCOMPARE(editor.m_table->currentRow(), 1);
+    QCOMPARE(editor.m_table->currentColumn(), totalCols - 1);
+
+    // Enter advances to the next row and wraps at totalRows - 1.
+    QTest::keyClick(editor.m_table, Qt::Key_Return);
+    QCOMPARE(editor.m_table->currentRow(), 2);
+    QTest::keyClick(editor.m_table, Qt::Key_Enter);
+    QCOMPARE(editor.m_table->currentRow(), 3);
+    QTest::keyClick(editor.m_table, Qt::Key_Return);
+    QCOMPARE(editor.m_table->currentRow(), 0 % totalRows);
+
+    // Unhandled key falls through to QTableWidget::keyPressEvent without moving selection.
+    QTest::keyClick(editor.m_table, Qt::Key_F1);
+    QCOMPARE(editor.m_table->currentRow(), 0);
+}
+
+void TestElementEditor::testTruthTableKeyboardNavigationTabAndBacktab()
+{
+    WorkSpace workspace;
+    auto *tt = new TruthTable();
+    tt->setOutputSize(2);
+    workspace.scene()->addItem(tt);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    tt->setSelected(true);
+
+    editor.truthTable();
+
+    const int nInputs = tt->inputSize();
+    const int lastRow = editor.m_table->rowCount() - 1;
+
+    // Starts at (0, nInputs) -> S0 of row 0.
+    QCOMPARE(editor.m_table->currentRow(), 0);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+
+    // Tab advances to S1 of row 0, then S0 of row 1.
+    QTest::keyClick(editor.m_table, Qt::Key_Tab);
+    QCOMPARE(editor.m_table->currentRow(), 0);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs + 1);
+
+    QTest::keyClick(editor.m_table, Qt::Key_Tab);
+    QCOMPARE(editor.m_table->currentRow(), 1);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+
+    // Backtab moves back to S1 of row 0, then S0 of row 0, then wraps to S1 of lastRow.
+    QTest::keyClick(editor.m_table, Qt::Key_Backtab);
+    QCOMPARE(editor.m_table->currentRow(), 0);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs + 1);
+
+    QTest::keyClick(editor.m_table, Qt::Key_Tab, Qt::ShiftModifier);
+    QCOMPARE(editor.m_table->currentRow(), 0);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+
+    QTest::keyClick(editor.m_table, Qt::Key_Backtab);
+    QCOMPARE(editor.m_table->currentRow(), lastRow);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs + 1);
+
+    // When on an input column (col < nInputs), Tab jumps to S0 of the same row,
+    // and Backtab jumps to the last output column of the previous row.
+    QTest::keyClick(editor.m_table, Qt::Key_Left);
+    QTest::keyClick(editor.m_table, Qt::Key_Left);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs - 1);
+
+    QTest::keyClick(editor.m_table, Qt::Key_Tab);
+    QCOMPARE(editor.m_table->currentRow(), lastRow);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+
+    QTest::keyClick(editor.m_table, Qt::Key_Left);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs - 1);
+
+    QTest::keyClick(editor.m_table, Qt::Key_Backtab);
+    QCOMPARE(editor.m_table->currentRow(), lastRow - 1);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs + 1);
+}
+
+void TestElementEditor::testTruthTableKeyboardSpaceTogglesEditableCellOnly()
+{
+    WorkSpace workspace;
+    auto *tt = new TruthTable();
+    workspace.scene()->addItem(tt);
+
+    ElementEditor editor(&workspace);
+    editor.setScene(workspace.scene());
+    workspace.scene()->clearSelection();
+    tt->setSelected(true);
+
+    editor.truthTable();
+
+    const int nInputs = tt->inputSize();
+
+    // Navigate down to row 2, output column S0 (col = nInputs) and press Space.
+    QTest::keyClick(editor.m_table, Qt::Key_Down);
+    QTest::keyClick(editor.m_table, Qt::Key_Down);
+    QCOMPARE(editor.m_table->currentRow(), 2);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+
+    const bool bitBefore = tt->key().at(2);
+    QTest::keyClick(editor.m_table, Qt::Key_Space);
+    QCOMPARE(tt->key().at(2), !bitBefore);
+    QCOMPARE(editor.m_table->item(2, nInputs)->text(), (!bitBefore) ? QStringLiteral("1") : QStringLiteral("0"));
+    // Active cell position and keyboard focus inside m_tableBox are preserved after toggling.
+    QCOMPARE(editor.m_table->currentRow(), 2);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs);
+    QCOMPARE(editor.m_tableBox->focusWidget(), editor.m_table);
+
+    // Direct 0 / 1 keys set the boolean value (and no-op when already equal).
+    QTest::keyClick(editor.m_table, Qt::Key_0);
+    QCOMPARE(tt->key().at(2), false);
+    QTest::keyClick(editor.m_table, Qt::Key_0);
+    QCOMPARE(tt->key().at(2), false);
+    QTest::keyClick(editor.m_table, Qt::Key_1);
+    QCOMPARE(tt->key().at(2), true);
+    QTest::keyClick(editor.m_table, Qt::Key_1);
+    QCOMPARE(tt->key().at(2), true);
+
+    // Move left onto a read-only input cell and press Space / 0 / 1: output bit must not change.
+    QTest::keyClick(editor.m_table, Qt::Key_Left);
+    QCOMPARE(editor.m_table->currentColumn(), nInputs - 1);
+    const QBitArray keySnapshot = tt->key();
+    QTest::keyClick(editor.m_table, Qt::Key_Space);
+    QTest::keyClick(editor.m_table, Qt::Key_0);
+    QTest::keyClick(editor.m_table, Qt::Key_1);
+    QCOMPARE(tt->key(), keySnapshot);
 }
 
 void TestElementEditor::testAudioBoxGuardsNonAudioBoxSelection()
