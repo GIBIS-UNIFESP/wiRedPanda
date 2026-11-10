@@ -11,6 +11,7 @@
 
 #include <QColor>
 #include <QCoreApplication>
+#include <QPen>
 #include <QPixmap>
 #include <QSize>
 #include <QStringList>
@@ -111,10 +112,10 @@ public:
 
     // --- Painting ---
 
-    /// Draws the selection highlight (when \a selected) and the SVG/pixmap body onto \a painter.
-    void render(QPainter *painter, const QRectF &boundingRect, const bool selected) const;
+    /// Draws the selection highlight (when \a selected), the SVG/pixmap body, and the issue outline (when \a hasIssues) onto \a painter.
+    void render(QPainter *painter, const QRectF &boundingRect, const bool selected, const bool hasIssues = false) const;
 
-    /// Applies the selection-highlight colors from \a theme.
+    /// Applies the selection-highlight colors and issue border pen from \a theme.
     void applyTheme(const ThemeAttributes &theme);
 
     /// Fill color of the selection highlight rectangle.
@@ -122,6 +123,9 @@ public:
 
     /// Border color of the selection highlight rectangle.
     QColor selectionPen() const { return m_selectionPen; }
+
+    /// Pen for the issue highlight rectangle.
+    QPen issuePen() const { return m_issuePen; }
 
 private:
     /// Rebuilds m_svgRenderer from the resolved SVG path and the owner's orientation, or clears
@@ -145,4 +149,5 @@ private:
 
     QColor m_selectionBrush; ///< Fill color for the selection highlight rectangle.
     QColor m_selectionPen;   ///< Border color for the selection highlight rectangle.
+    QPen m_issuePen;         ///< Pen for the issue highlight rectangle.
 };

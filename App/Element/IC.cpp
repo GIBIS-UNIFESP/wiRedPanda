@@ -59,6 +59,15 @@ IC::IC(QGraphicsItem *parent)
 
     // Enable hover events so the preview popup can be shown/hidden
     setAcceptHoverEvents(true);
+
+    // Clear tooltip so no native tooltip competes with ICPreviewPopup
+    setToolTip(QString());
+}
+
+void IC::retranslate()
+{
+    GraphicElement::retranslate();
+    setToolTip(QString());
 }
 
 IC::~IC()

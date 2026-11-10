@@ -72,6 +72,9 @@ void Port::attachConnection(Connection *conn)
     }
 
     updateConnections();
+    if (m_graphicElement) {
+        m_graphicElement->update();
+    }
 }
 
 void Port::detachConnection(Connection *conn)
@@ -89,6 +92,9 @@ void Port::detachConnection(Connection *conn)
     }
 
     updateConnections();
+    if (m_graphicElement) {
+        m_graphicElement->update();
+    }
 }
 
 bool Port::isConnected(Port *otherPort)
@@ -203,6 +209,9 @@ void Port::setRequired(const bool required)
     // Requiredness feeds isValid(): re-derive the displayed status so a port
     // marked optional recovers from Error and a newly required one shows it
     updateConnections();
+    if (m_graphicElement) {
+        m_graphicElement->update();
+    }
 }
 
 void Port::setGraphicElement(GraphicElement *graphicElement)
