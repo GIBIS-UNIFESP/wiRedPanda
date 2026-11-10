@@ -28,6 +28,18 @@ public:
     }
 
 protected:
+    bool event(QEvent *event) override
+    {
+        // QLineEdit leaves Escape unclaimed, so a window shortcut bound to it (MainWindow's
+        // Clear Selection) would take it before keyPressEvent() below ever saw it.
+        if ((event->type() == QEvent::ShortcutOverride) && (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Escape)) {
+            event->accept();
+            return true;
+        }
+
+        return QLineEdit::event(event);
+    }
+
     void keyPressEvent(QKeyEvent *event) override
     {
         if (event->key() == Qt::Key_Escape) {
@@ -49,7 +61,10 @@ InlineLabelEditor::InlineLabelEditor(Scene *scene)
 {
 }
 
-InlineLabelEditor::~InlineLabelEditor() = default;
+InlineLabelEditor::~InlineLabelEditor()
+{
+    QObject::disconnect(m_targetDestroyed);
+}
 
 void InlineLabelEditor::start(GraphicElement *element)
 {
@@ -72,6 +87,7 @@ void InlineLabelEditor::start(GraphicElement *element)
 
     QObject::connect(lineEdit, &QLineEdit::returnPressed, lineEdit, [this] { commit(); });
     QObject::connect(lineEdit, &QLineEdit::editingFinished, lineEdit, [this] { commit(); });
+    m_targetDestroyed = QObject::connect(element, &QObject::destroyed, lineEdit, [this] { cancel(); });
 
     m_proxy = m_scene->addWidget(lineEdit);
     m_proxy->setZValue(1000); // above every element/wire on the canvas
@@ -117,6 +133,7 @@ void InlineLabelEditor::cancel()
 
 void InlineLabelEditor::close()
 {
+    QObject::disconnect(m_targetDestroyed);
     m_target = nullptr;
     if (m_proxy) {
         m_proxy->deleteLater();

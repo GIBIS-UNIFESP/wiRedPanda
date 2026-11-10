@@ -82,7 +82,7 @@ jobs:
 
     - uses: actions/setup-python@v7
       with:
-        python-version: '3.12'
+        python-version: '3.14'
         cache: 'pip'
         cache-dependency-path: 'MCP/Client/requirements.txt'
 
@@ -104,6 +104,10 @@ jobs:
         modules: qtmultimedia qtimageformats
         host: ${{ matrix.qt_host }}
         arch: ${{ matrix.qt_arch }}
+        # Reuse the Python set up above (it already meets the action's >=3.14 requirement)
+        # rather than letting the action put a second interpreter first on PATH, which would
+        # hide the MCP client's dependencies from the "MCP Integration Test" step.
+        setup-python: false
 
     - name: ccache
       uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # main
