@@ -212,6 +212,10 @@ void ConnectionManager::updateEditedEnd(const QPointF &scenePos)
 
 void ConnectionManager::updateHover(const QPointF &scenePos)
 {
+    if (!m_issueElementRect.isEmpty() && !m_issueElementRect.contains(scenePos)) {
+        clearHoverLabels();
+    }
+
     // Runs on every mouse move: portAt() is the cheap bounding-box lookup -- itemAt()'s
     // shape-exact queries would re-stroke and clip every wire near the cursor just to
     // discard them here.
@@ -361,6 +365,29 @@ void ConnectionManager::showHoverLabels(Port *port)
     }
 }
 
+void ConnectionManager::showIssueLabels(GraphicElement *element)
+{
+    clearHoverLabels();
+    m_issueElementRect = {};
+    if (!element) {
+        return;
+    }
+
+    m_issueElementRect = element->sceneBoundingRect();
+    for (auto *port : element->invalidInputs()) {
+        if (!port) {
+            continue;
+        }
+        const QString text = port->connections().size() > 1
+            ? tr("Multiple drivers")
+            : tr("Not connected");
+        auto *label = new PortHoverLabel(text, sideFor(port));
+        label->setPos(port->scenePos());
+        m_scene->addItem(label);
+        m_peerLabels.append(label);
+    }
+}
+
 void ConnectionManager::releaseHoverPort()
 {
     clearHoverLabels();
@@ -402,6 +429,7 @@ QList<Port *> ConnectionManager::connectedPeers(Port *port)
 
 void ConnectionManager::clearHoverLabels()
 {
+    m_issueElementRect = {};
     for (const auto &label : std::as_const(m_peerLabels)) {
         if (!label.isNull()) {
             m_scene->removeItem(label);

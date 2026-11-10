@@ -1377,6 +1377,22 @@ void Scene::helpEvent(QGraphicsSceneHelpEvent *event)
         return;
     }
 
+    // Elements with invalid ports show one in-situ chip per offending port.
+    if (auto *item = itemAt(event->scenePos())) {
+        // The hit item may be a child (label, port proxy, etc.). Walk up the
+        // parent chain to locate the owning GraphicElement, if any.
+        QGraphicsItem *cur = item;
+        while (cur && cur->type() != GraphicElement::Type) {
+            cur = cur->parentItem();
+        }
+        if (cur && cur->type() == GraphicElement::Type) {
+            auto *elm = static_cast<GraphicElement *>(cur);
+            if (elm->hasPortIssues()) {
+                m_connectionManager.showIssueLabels(elm);
+            }
+        }
+    }
+
     QGraphicsScene::helpEvent(event);
 }
 
