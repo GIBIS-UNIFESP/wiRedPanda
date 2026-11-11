@@ -121,21 +121,16 @@ void WarningsPanel::refresh()
     QSet<int> currentElementIds;
 
     for (auto *element : m_scene->elements()) {
-        if (!element) {
-            continue;
-        }
         const auto invalid = element->invalidInputs();
         if (invalid.isEmpty()) {
             continue;
         }
 
+        m_issueCount += static_cast<int>(invalid.size());
         const int id = element->id();
         currentElementIds.insert(id);
-        m_issueCount += static_cast<int>(invalid.size());
 
-        const QString typeName = !element->objectName().isEmpty()
-            ? element->objectName()
-            : ElementFactory::translatedName(element->elementType());
+        const QString typeName = ElementFactory::translatedName(element->elementType());
         const QString name = element->label().isEmpty()
             ? typeName
             : QStringLiteral("%1 (%2)").arg(element->label(), typeName);
@@ -183,9 +178,9 @@ void WarningsPanel::refresh()
         }
 
         // Synchronize child detail items while preserving top-level expanded state
-        bool childrenChanged = (item->childCount() != descriptions.size());
+        bool childrenChanged = (item->childCount() != static_cast<int>(descriptions.size()));
         if (!childrenChanged) {
-            for (int i = 0; i < descriptions.size(); ++i) {
+            for (int i = 0; i < item->childCount(); ++i) {
                 if (item->child(i)->text(0) != descriptions.at(i)) {
                     childrenChanged = true;
                     break;

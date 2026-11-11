@@ -15,6 +15,7 @@
 #include <QMimeData>
 #include <QPolygon>
 #include <QScrollBar>
+#include <QToolTip>
 #include <QUrl>
 
 #include "App/Core/Common.h"

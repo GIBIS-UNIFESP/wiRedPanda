@@ -138,7 +138,6 @@ void ConnectionManager::tryComplete(const QPointF &scenePos)
         m_scene->receiveCommand(new AddItemsCommand({connection}, m_scene));
         setEditedConnection(nullptr);
     } else {
-        // Explain why the wire vanished instead of dropping it silently.
         m_scene->showStatusMessage(rejection);
         deleteEditedConnection();
     }

@@ -6,6 +6,7 @@
 
 #include "App/Wiring/Port.h"
 
+#include <QObject>
 #include <QPainter>
 #include <QPen>
 
@@ -110,8 +111,6 @@ void Port::updateConnections()
         conn->updatePosFromPorts();
     }
 
-    // A port that violates its validity constraints (e.g. required but unconnected,
-    // or multi-driver) must show Error so the wiring problem is clearly visible
     if (!isValid()) {
         setStatus(Status::Error);
         return;
@@ -206,8 +205,6 @@ void Port::setRequired(const bool required)
 {
     m_required = required;
 
-    // Requiredness feeds isValid(): re-derive the displayed status so a port
-    // marked optional recovers from Error and a newly required one shows it
     updateConnections();
     if (m_graphicElement) {
         m_graphicElement->update();

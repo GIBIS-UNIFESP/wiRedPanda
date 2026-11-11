@@ -3,6 +3,7 @@
 
 #include "App/UI/MainWindowUI.h"
 
+#include <QDockWidget>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QMetaObject>
 #include <QtGui/QIcon>
@@ -186,6 +187,10 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     actionShowMinimap = new QAction(MainWindow);
     actionShowMinimap->setObjectName("actionShowMinimap");
     actionShowMinimap->setCheckable(true);
+    actionShowWarnings = new QAction(MainWindow);
+    actionShowWarnings->setObjectName("actionShowWarnings");
+    actionShowWarnings->setCheckable(true);
+    actionShowWarnings->setChecked(true);
     actionAboutThisVersion = new QAction(MainWindow);
     actionAboutThisVersion->setObjectName("actionAboutThisVersion");
     actionRestart = new QAction(MainWindow);
@@ -208,7 +213,8 @@ void MainWindowUi::setupUi(QMainWindow *MainWindow)
     gridLayout_8->setContentsMargins(11, 11, 11, 11);
     gridLayout_8->setObjectName("gridLayout_8");
     // --- Main horizontal splitter ---
-    // Left child = component palette + element editor; right child = canvas tabs.
+    // Left child = component palette + element editor; middle = canvas tabs;
+    // right child = live warnings and errors.
     splitter = new QSplitter(centralWidget);
     splitter->setObjectName("splitter");
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);

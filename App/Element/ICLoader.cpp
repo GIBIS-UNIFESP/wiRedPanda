@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+#include <QObject>
 #include <QSaveFile>
 #include <QScopeGuard>
 #include <QSet>

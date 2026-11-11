@@ -15,6 +15,7 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <QPolygonF>
 #include <QRegularExpression>
 #include <QStyleOptionGraphicsItem>
 #include <QSvgRenderer>
