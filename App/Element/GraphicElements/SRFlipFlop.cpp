@@ -58,14 +58,6 @@ void SRFlipFlop::updatePortsProperties()
     outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
     outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
 
-    // S, R, ~Preset, ~Clear are optional; only Clock is always required.
-    // S and R unconnected default to Inactive (no set/reset action on clock edge).
-    // ~Preset and ~Clear unconnected default to Active (HIGH = not asserted).
-    inputPort(0)->setRequired(false);
-    inputPort(2)->setRequired(false);
-    inputPort(3)->setRequired(false);
-    inputPort(4)->setRequired(false);
-
     inputPort(3)->setDefaultStatus(Status::Active);
     inputPort(4)->setDefaultStatus(Status::Active);
 

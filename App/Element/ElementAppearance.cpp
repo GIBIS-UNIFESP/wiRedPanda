@@ -494,13 +494,31 @@ void ElementAppearance::render(QPainter *painter, const QRectF &boundingRect, co
     }
 
     if (hasIssues) {
-        painter->save();
-        painter->setPen(m_issuePen);
-        painter->setBrush(Qt::NoBrush);
-        const qreal halfPen = m_issuePen.widthF() / 2.0;
-        painter->drawRoundedRect(boundingRect.adjusted(halfPen, halfPen, -halfPen, -halfPen), 5, 5);
-        painter->restore();
+        renderIssueBorder(painter, boundingRect);
     }
+}
+
+void ElementAppearance::renderIssueBorder(QPainter *painter, const QRectF &boundingRect) const
+{
+    painter->save();
+    painter->setPen(m_issuePen);
+    painter->setBrush(Qt::NoBrush);
+    const qreal halfPen = m_issuePen.widthF() / 2.0;
+    const QRectF rect = boundingRect.adjusted(halfPen, halfPen, -halfPen, -halfPen);
+    painter->drawRoundedRect(rect, 5, 5);
+
+    // Small triangular warning indicator in the top-right corner
+    QPointF p1(rect.right() - 12, rect.top() + 4);
+    QPointF p2(rect.right() - 4, rect.top() + 4);
+    QPointF p3(rect.right() - 8, rect.top() + 12);
+    QPolygonF triangle;
+    triangle << p1 << p2 << p3;
+
+    painter->setBrush(m_issuePen.color());
+    painter->setPen(Qt::NoPen);
+    painter->drawPolygon(triangle);
+
+    painter->restore();
 }
 
 void ElementAppearance::applyTheme(const ThemeAttributes &theme)

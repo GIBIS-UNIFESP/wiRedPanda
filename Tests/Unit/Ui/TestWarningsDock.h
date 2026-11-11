@@ -4,15 +4,22 @@
 #pragma once
 
 #include <QObject>
-#include <QTest>
 
 class TestWarningsDock : public QObject
 {
     Q_OBJECT
-
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
+
     void testRowsAndCount();
     void testActivation();
     void testRefreshAfterCircuitHasChangedAndTabContentLoaded();
-    void testPersistenceThroughSaveState();
+    void testToggleVisibility();
+    void testDropElementUpdatesWarningsPanel();
+    void testWithRealSettings();
+    void testLoadSavedFile();
+    void testElementHighlightRendering();
+    void testLoadFileWithUnconnectedElements();
+    void testEveryComponentTypeTriggersWarningsWhenInputsOpened();
 };

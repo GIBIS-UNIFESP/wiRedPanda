@@ -216,6 +216,8 @@ void TestConnectionValidity::testPortValidityStyleAtCreation()
     // Ports marked optional after construction recover from the Error override:
     // no configured default reads as undriven, an explicit default as its level.
     auto sr = std::unique_ptr<GraphicElement>(ElementFactory::buildElement(ElementType::SRFlipFlop));
+    sr->inputPort(0)->setRequired(false);
+    sr->inputPort(3)->setRequired(false);
     QCOMPARE(sr->inputPort(0)->status(), Status::Unknown); // S: optional, no default
     QCOMPARE(sr->inputPort(1)->status(), Status::Error);   // Clock: required
     QCOMPARE(sr->inputPort(3)->status(), Status::Active);  // ~Preset: optional, defaults HIGH

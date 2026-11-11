@@ -68,11 +68,15 @@ void TestDisplays::testDisplay7Configuration()
     QVERIFY(display.hasColors());
     QCOMPARE(display.color(), QString("Red"));  // Default color
 
-    // Verify all ports exist and are optional
+    // Verify all ports exist and segment ports are required (DP is optional)
     for (int i = 0; i < display.inputSize(); ++i) {
         auto *port = display.inputPort(i);
         QVERIFY2(port != nullptr, qPrintable(QString("Port %1 should exist").arg(i)));
-        QVERIFY2(!port->isRequired(), qPrintable(QString("Port %1 should be optional").arg(i)));
+        if (i == 6) {
+            QVERIFY2(!port->isRequired(), "DP should be optional");
+        } else {
+            QVERIFY2(port->isRequired(), qPrintable(QString("Port %1 should be required").arg(i)));
+        }
         QCOMPARE(port->defaultValue(), Status::Inactive);
     }
 }
@@ -84,9 +88,13 @@ void TestDisplays::testDisplay7SegmentControl()
     // Verify segment count (7 segments + decimal point = 8 inputs)
     QCOMPARE(display.inputSize(), 8);
 
-    // All inputs start inactive
+    // Unconnected required inputs start with Error; optional DP starts with Inactive
     for (int i = 0; i < display.inputSize(); ++i) {
-        QCOMPARE(display.inputPort(i)->status(), Status::Inactive);
+        if (i == 6) {
+            QCOMPARE(display.inputPort(i)->status(), Status::Inactive);
+        } else {
+            QCOMPARE(display.inputPort(i)->status(), Status::Error);
+        }
     }
 }
 
@@ -141,11 +149,15 @@ void TestDisplays::testDisplay14Configuration()
     QVERIFY(display.hasColors());
     QCOMPARE(display.color(), QString("Red"));  // Default color
 
-    // Verify all ports are optional
+    // Verify all ports exist and segment ports are required (DP is optional)
     for (int i = 0; i < display.inputSize(); ++i) {
         auto *port = display.inputPort(i);
         QVERIFY2(port != nullptr, qPrintable(QString("Port %1 should exist").arg(i)));
-        QVERIFY2(!port->isRequired(), qPrintable(QString("Port %1 should be optional").arg(i)));
+        if (i == 14) {
+            QVERIFY2(!port->isRequired(), "DP should be optional");
+        } else {
+            QVERIFY2(port->isRequired(), qPrintable(QString("Port %1 should be required").arg(i)));
+        }
         QCOMPARE(port->defaultValue(), Status::Inactive);
     }
 }
@@ -157,9 +169,13 @@ void TestDisplays::testDisplay14SegmentControl()
     // Verify 14 segments + 1 decimal point = 15 inputs
     QCOMPARE(display.inputSize(), 15);
 
-    // All inputs start inactive
+    // Unconnected required inputs start with Error; optional DP starts with Inactive
     for (int i = 0; i < display.inputSize(); ++i) {
-        QCOMPARE(display.inputPort(i)->status(), Status::Inactive);
+        if (i == 14) {
+            QCOMPARE(display.inputPort(i)->status(), Status::Inactive);
+        } else {
+            QCOMPARE(display.inputPort(i)->status(), Status::Error);
+        }
     }
 }
 
@@ -185,11 +201,15 @@ void TestDisplays::testDisplay16Configuration()
     QVERIFY(display.hasColors());
     QCOMPARE(display.color(), QString("Red"));  // Default color
 
-    // Verify all ports are optional
+    // Verify all ports exist and segment ports are required (DP is optional)
     for (int i = 0; i < display.inputSize(); ++i) {
         auto *port = display.inputPort(i);
         QVERIFY2(port != nullptr, qPrintable(QString("Port %1 should exist").arg(i)));
-        QVERIFY2(!port->isRequired(), qPrintable(QString("Port %1 should be optional").arg(i)));
+        if (i == 16) {
+            QVERIFY2(!port->isRequired(), "DP should be optional");
+        } else {
+            QVERIFY2(port->isRequired(), qPrintable(QString("Port %1 should be required").arg(i)));
+        }
         QCOMPARE(port->defaultValue(), Status::Inactive);
     }
 }
@@ -201,9 +221,13 @@ void TestDisplays::testDisplay16SegmentControl()
     // Verify 16 segments + 1 decimal point = 17 inputs
     QCOMPARE(display.inputSize(), 17);
 
-    // All inputs start inactive
+    // Unconnected required inputs start with Error; optional DP starts with Inactive
     for (int i = 0; i < display.inputSize(); ++i) {
-        QCOMPARE(display.inputPort(i)->status(), Status::Inactive);
+        if (i == 16) {
+            QCOMPARE(display.inputPort(i)->status(), Status::Inactive);
+        } else {
+            QCOMPARE(display.inputPort(i)->status(), Status::Error);
+        }
     }
 }
 

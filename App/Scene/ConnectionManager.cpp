@@ -350,10 +350,21 @@ void ConnectionManager::showHoverLabels(Port *port)
     // replaces (which silently shows nothing for empty text). Each chip is anchored at its
     // port and biased away from the element body, accounting for rotation/mirroring.
     const auto addLabel = [this](Port *target) {
-        if (!target || target->name().isEmpty()) {
+        if (!target) {
             return;
         }
-        auto *label = new PortHoverLabel(target->name(), sideFor(target));
+        QString text;
+        if (!target->isValid()) {
+            text = target->connections().size() > 1
+                ? tr("Multiple drivers")
+                : tr("Not connected");
+        } else if (!target->name().isEmpty()) {
+            text = target->name();
+        }
+        if (text.isEmpty()) {
+            return;
+        }
+        auto *label = new PortHoverLabel(text, sideFor(target));
         label->setPos(target->scenePos());
         m_scene->addItem(label);
         m_peerLabels.append(label);

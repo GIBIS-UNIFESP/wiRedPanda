@@ -115,6 +115,9 @@ public:
     /// Draws the selection highlight (when \a selected), the SVG/pixmap body, and the issue outline (when \a hasIssues) onto \a painter.
     void render(QPainter *painter, const QRectF &boundingRect, const bool selected, const bool hasIssues = false) const;
 
+    /// Draws the red issue border and warning triangle on \a boundingRect.
+    void renderIssueBorder(QPainter *painter, const QRectF &boundingRect) const;
+
     /// Applies the selection-highlight colors and issue border pen from \a theme.
     void applyTheme(const ThemeAttributes &theme);
 

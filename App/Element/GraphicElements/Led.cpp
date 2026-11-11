@@ -217,7 +217,6 @@ void Led::updatePortsProperties()
 
     for (auto *port : inputs()) {
         port->setName(QString::number(inputs().indexOf(port) + 1));
-        port->setRequired(false);
         port->setDefaultStatus(Status::Inactive);
     }
 

@@ -348,6 +348,10 @@ void IC::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidge
 
     // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
     ICRenderer::drawBody(*this, painter);
+
+    if (hasPortIssues()) {
+        m_appearance.renderIssueBorder(painter, boundingRect());
+    }
 }
 
 void IC::initializeSimulation()

@@ -140,9 +140,11 @@ void Display7::updatePortsProperties()
     if (auto *port = inputPort(7)) { port->setPos(64, 56); port->setName("C (" +  tr("lower right") + ")"); }
 
     for (auto *in : inputs()) {
-        // Segments are individually driven; leaving a pin unconnected turns that segment off
-        in->setRequired(false);
         in->setDefaultStatus(Status::Inactive);
+    }
+    // The decimal point (DP) is optional; digits can be displayed without it
+    if (auto *dpPort = inputPort(6)) {
+        dpPort->setRequired(false);
     }
 
     // This override doesn't chain to the base updatePortsProperties(), so re-apply the current

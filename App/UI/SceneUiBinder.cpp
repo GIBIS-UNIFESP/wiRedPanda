@@ -23,7 +23,7 @@
 #include "App/UI/ElementEditor.h"
 #include "App/UI/ElementPalette.h"
 #include "App/UI/MainWindowUI.h"
-#include "App/UI/WarningsDock.h"
+#include "App/UI/WarningsPanel.h"
 
 SceneUiBinder::SceneUiBinder(MainWindowUi *ui, ElementPalette *palette, ICPreviewPopup *previewPopup, QWidget *shortcutParent, QObject *parent)
     : QObject(parent)
@@ -134,9 +134,9 @@ void SceneUiBinder::bind(WorkSpace *tab)
     qCDebug(zero) << "Connecting current tab to element editor menu in UI.";
     m_ui->elementEditor->setScene(scene);
 
-    if (m_ui->warningsDock) {
-        m_ui->warningsDock->setScene(scene);
-        m_warningsActivatedConn = connect(m_ui->warningsDock, &WarningsDock::warningElementActivated, this, [this, scene](int elementId) {
+    if (m_ui->warningsPanel) {
+        m_ui->warningsPanel->setScene(scene);
+        m_warningsActivatedConn = connect(m_ui->warningsPanel, &WarningsPanel::warningElementActivated, this, [this, scene](int elementId) {
             if (!m_bound || m_bound->scene() != scene) {
                 return;
             }
@@ -149,7 +149,7 @@ void SceneUiBinder::bind(WorkSpace *tab)
         });
         m_warningsChangedConn = connect(scene, &Scene::circuitHasChanged, this, [this, scene] {
             if (m_bound && m_bound->scene() == scene) {
-                m_ui->warningsDock->refresh();
+                m_ui->warningsPanel->refresh();
             }
         });
     }
@@ -261,10 +261,10 @@ void SceneUiBinder::unbind()
     disconnect(m_bound->simulation(), &Simulation::simulationWarning, this, nullptr);
     disconnect(scene,                 &Scene::showStatusMessageRequested, this, nullptr);
 
-    if (m_ui->warningsDock) {
+    if (m_ui->warningsPanel) {
         disconnect(m_warningsActivatedConn);
         disconnect(m_warningsChangedConn);
-        m_ui->warningsDock->setScene(nullptr);
+        m_ui->warningsPanel->setScene(nullptr);
     }
 
     qCDebug(zero) << "Disconnecting scene shortcuts from previous tab.";

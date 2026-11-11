@@ -30,7 +30,7 @@
 #include <QMenuBar>
 #include <QMenu>
 
-class WarningsDock;
+class WarningsPanel;
 
 class MainWindowUi
 {
@@ -225,7 +225,7 @@ public:
     // --- Element Editor Panel ---
 
     ElementEditor *elementEditor = nullptr;
-    WarningsDock *warningsDock = nullptr;
+    WarningsPanel *warningsPanel = nullptr;
 
     // --- Toolbars & Status ---
 

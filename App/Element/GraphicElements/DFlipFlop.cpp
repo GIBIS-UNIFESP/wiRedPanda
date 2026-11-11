@@ -57,11 +57,6 @@ void DFlipFlop::updatePortsProperties()
     outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
     outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
 
-    // ~Preset and ~Clear are optional; when unconnected they default to Active (HIGH = not asserted)
-    // because these signals are active-low — leaving them floating means "no override"
-    inputPort(2)->setRequired(false);
-    inputPort(3)->setRequired(false);
-
     inputPort(2)->setDefaultStatus(Status::Active);
     inputPort(3)->setDefaultStatus(Status::Active);
 

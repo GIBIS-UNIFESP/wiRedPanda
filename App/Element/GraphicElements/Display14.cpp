@@ -112,8 +112,11 @@ void Display14::updatePortsProperties()
     inputPort(14)->setPos(64, 104);    inputPort(14)->setName("N (" + tr("lower left diagonal")    + ")");
 
     for (auto *port : inputs()) {
-        port->setRequired(false);
         port->setDefaultStatus(Status::Inactive);
+    }
+    // The decimal point (DP) is optional; alphanumeric characters can be displayed without it
+    if (auto *dpPort = inputPort(14)) {
+        dpPort->setRequired(false);
     }
 
     // This override doesn't chain to the base updatePortsProperties(), so re-apply the current
