@@ -229,3 +229,33 @@ void TestPort::testHoverEnterAndLeaveChangeBrush()
     port.hoverLeave();
     QCOMPARE(port.brush(), statusBrush);
 }
+
+void TestPort::testRepaintOwnerAndPortWithDestroyedOwnerDoesNothing()
+{
+    // A port with an owner repaints the owner on attach, detach, and setRequired
+    And andGate;
+    auto *port = andGate.inputPort(0);
+    QVERIFY(port != nullptr);
+    QCOMPARE(port->graphicElement(), &andGate);
+
+    auto *conn = new Connection();
+    port->attachConnection(conn);
+    port->detachConnection(conn);
+    delete conn;
+
+    port->setRequired(false);
+    port->setRequired(true);
+
+    // When port has no owner (or owner was destroyed and setGraphicElement(nullptr) was called),
+    // attach, detach and setRequired must safely no-op without dereferencing null
+    InputPort standalonePort;
+    QVERIFY(standalonePort.graphicElement() == nullptr);
+
+    auto *conn2 = new Connection();
+    standalonePort.attachConnection(conn2);
+    standalonePort.detachConnection(conn2);
+    delete conn2;
+
+    standalonePort.setRequired(false);
+    standalonePort.setRequired(true);
+}

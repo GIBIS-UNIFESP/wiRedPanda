@@ -80,7 +80,6 @@ signals:
     /// directly and this signal never fires for them). The owning Scene listens and drives the
     /// actual inline edit widget -- see InlineLabelEditor.
     void inlineEditRequested(GraphicElement *element);
-
 public:
     // --- External file dependencies ---
 
@@ -370,6 +369,14 @@ public:
     /// Returns \c true if the element is fully initialised and connected correctly.
     bool isValid();
 
+    // --- Validity ---
+
+    /// Returns every input port that currently violates its connection requirement.
+    QVector<InputPort *> invalidInputs() const;
+
+    /// Returns true when at least one input port has a connection issue.
+    bool hasPortIssues() const;
+
     // --- Direct Simulation Interface ---
 
     /**
@@ -480,7 +487,7 @@ public:
      * \details Queries ElementFactory for the new translated name and propagates
      * it to setPortName() and setToolTip().
      */
-    void retranslate();
+    virtual void retranslate();
 
     // --- Setters (Port & Logic Configuration) ---
 

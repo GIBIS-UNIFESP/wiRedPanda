@@ -32,4 +32,5 @@ private slots:
     void testInputPortIsValidRequiredVsOptionalUnconnected();
     void testOutputPortIsValidAlwaysTrueRegardlessOfConnections();
     void testHoverEnterAndLeaveChangeBrush();
+    void testRepaintOwnerAndPortWithDestroyedOwnerDoesNothing();
 };

@@ -81,4 +81,7 @@ private:
     QShortcut *m_nextSecndPropShortcut;
     QShortcut *m_changePrevElmShortcut;
     QShortcut *m_changeNextElmShortcut;
+
+    QMetaObject::Connection m_warningsActivatedConn;
+    QMetaObject::Connection m_warningsChangedConn;
 };
