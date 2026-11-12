@@ -657,6 +657,22 @@ if(LINUX)
             COMPONENT icons
         )
     endforeach()
+    install(FILES App/Resources/Assets/Logos/wpanda-256x256.png
+        DESTINATION share/icons/hicolor/256x256/apps
+        RENAME wpanda.png
+        COMPONENT icons
+    )
+    install(FILES App/Resources/Assets/Logos/wpanda.svg
+        DESTINATION share/icons/hicolor/scalable/apps
+        RENAME wpanda.svg
+        COMPONENT icons
+    )
+
+    # Install AppStream MetaInfo definition for software centers and Flathub
+    install(FILES App/Resources/Freedesktop/io.github.gibis_unifesp.wiRedPanda.metainfo.xml
+        DESTINATION share/metainfo
+        COMPONENT metainfo
+    )
 
     # Install shared-mime-info definition for .panda/application/x-wiredpanda
     install(FILES App/Resources/Freedesktop/wiredpanda-mime.xml
@@ -667,6 +683,9 @@ if(LINUX)
 endif()
 
 # ========= TESTS ===================================
+
+option(BUILD_TESTING "Build the test suite" ON)
+if(BUILD_TESTING)
 
 # Add CTest support
 enable_testing()
@@ -1165,6 +1184,8 @@ foreach(TEST ${GUI_TESTS})
         RESOURCE_LOCK "gui_display"
         ENVIRONMENT "QTEST_FUNCTION_TIMEOUT=60000")
 endforeach()
+
+endif() # BUILD_TESTING
 
 # ========= DOCUMENTATION ===================================
 

@@ -7,7 +7,7 @@ arch=('x86_64' 'aarch64')
 url="https://gibis-unifesp.github.io/wiRedPanda/"
 license=('GPL-3.0-or-later')
 depends=('qt6-base' 'qt6-multimedia' 'qt6-svg')
-makedepends=('cmake' 'ninja' 'git')
+makedepends=('cmake' 'ninja' 'git' 'qt6-tools')
 source=("$pkgname-$pkgver.tar.gz::https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/refs/tags/${pkgver}.tar.gz")
 sha256sums=('SKIP')
 
@@ -19,6 +19,7 @@ build() {
 
 check() {
     cd "wiRedPanda-${pkgver}"
+    export HOME="$(mktemp -d)"
     export QT_QPA_PLATFORM=offscreen
     ctest --preset release --output-on-failure -LE gui
 }

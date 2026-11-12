@@ -198,7 +198,8 @@ int main(int argc, char *argv[])
     app.setOrganizationName("GIBIS-UNIFESP");
     app.setApplicationName("wiRedPanda");
     app.setApplicationVersion(APP_VERSION);
-    app.setDesktopFileName("wiredpanda");
+    const QString flatpakId = qEnvironmentVariable("FLATPAK_ID");
+    app.setDesktopFileName(flatpakId.isEmpty() ? QStringLiteral("wiredpanda") : flatpakId);
     // Fusion style provides a consistent cross-platform look and is required for
     // the custom theme colours defined in ThemeManager to render correctly on all OSes
     app.setStyle("Fusion");
