@@ -1122,6 +1122,18 @@ Choose a different name.</translation>
         <source>&lt;Many triggers&gt;</source>
         <translation>&lt;Many triggers&gt;</translation>
     </message>
+    <message>
+        <location filename="../../UI/ElementEditor.cpp" line="197"/>
+        <location filename="../../UI/ElementEditor.cpp" line="427"/>
+        <source>Arrow keys: Navigate between cells
+Space / 0 / 1: Toggle or set output value (0/1)
+Tab / Shift+Tab: Next / previous editable cell
+Enter: Move to next row</source>
+        <translation>Arrow keys: Navigate between cells
+Space / 0 / 1: Toggle or set output value (0/1)
+Tab / Shift+Tab: Next / previous editable cell
+Enter: Move to next row</translation>
+    </message>
 </context>
 <context>
     <name>ElementFactory</name>
