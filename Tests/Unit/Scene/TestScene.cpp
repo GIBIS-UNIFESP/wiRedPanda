@@ -878,9 +878,13 @@ void TestScene::testUndoDelete()
     // Delete
     scene->deleteAction();
     QCOMPARE(scene->elements().size(), 0);
+    QCOMPARE(scene->undoAction()->text(), QStringLiteral("&Undo"));
+    QVERIFY(scene->undoAction()->toolTip().contains(scene->undoStack()->undoText()));
 
     // Undo
     scene->undoStack()->undo();
+    QCOMPARE(scene->undoAction()->text(), QStringLiteral("&Undo"));
+    QCOMPARE(scene->undoAction()->toolTip(), QStringLiteral("Undo"));
 
     // Verify restored
     QCOMPARE(scene->elements().size(), 1);
@@ -907,9 +911,13 @@ void TestScene::testRedoDelete()
     // Undo
     scene->undoStack()->undo();
     QCOMPARE(scene->elements().size(), 1);
+    QCOMPARE(scene->redoAction()->text(), QStringLiteral("&Redo"));
+    QVERIFY(scene->redoAction()->toolTip().contains(scene->undoStack()->redoText()));
 
     // Redo
     scene->undoStack()->redo();
+    QCOMPARE(scene->redoAction()->text(), QStringLiteral("&Redo"));
+    QCOMPARE(scene->redoAction()->toolTip(), QStringLiteral("Redo"));
 
     // Verify removed again
     QCOMPARE(scene->elements().size(), 0);

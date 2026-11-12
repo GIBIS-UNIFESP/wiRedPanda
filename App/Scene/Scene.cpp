@@ -82,6 +82,7 @@ Scene::Scene(QObject *parent)
     m_undoAction->setEnabled(false);
     m_undoAction->setIcon(QIcon(":/Interface/Toolbar/undo.svg"));
     m_undoAction->setShortcut(QKeySequence::Undo);
+    updateUndoText(QString());
     connect(&m_undoStack, &QUndoStack::canUndoChanged, m_undoAction, &QAction::setEnabled);
     connect(&m_undoStack, &QUndoStack::undoTextChanged, this, &Scene::updateUndoText);
     connect(m_undoAction, &QAction::triggered, &m_undoStack, &QUndoStack::undo);
@@ -90,6 +91,7 @@ Scene::Scene(QObject *parent)
     m_redoAction->setEnabled(false);
     m_redoAction->setIcon(QIcon(":/Interface/Toolbar/redo.svg"));
     m_redoAction->setShortcut(QKeySequence::Redo);
+    updateRedoText(QString());
     connect(&m_undoStack, &QUndoStack::canRedoChanged, m_redoAction, &QAction::setEnabled);
     connect(&m_undoStack, &QUndoStack::redoTextChanged, this, &Scene::updateRedoText);
     connect(m_redoAction, &QAction::triggered, &m_undoStack, &QUndoStack::redo);
@@ -768,14 +770,20 @@ void Scene::retranslateUi()
 
 void Scene::updateUndoText(const QString &text)
 {
-    const QString prefix = tr("&Undo");
-    m_undoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
+    const QString label = tr("&Undo");
+    m_undoAction->setText(label);
+    QString tip = label;
+    tip.remove(QLatin1Char('&'));
+    m_undoAction->setToolTip(text.isEmpty() ? tip : tip + QStringLiteral(": ") + text);
 }
 
 void Scene::updateRedoText(const QString &text)
 {
-    const QString prefix = tr("&Redo");
-    m_redoAction->setText(text.isEmpty() ? prefix : prefix + QLatin1Char(' ') + text);
+    const QString label = tr("&Redo");
+    m_redoAction->setText(label);
+    QString tip = label;
+    tip.remove(QLatin1Char('&'));
+    m_redoAction->setToolTip(text.isEmpty() ? tip : tip + QStringLiteral(": ") + text);
 }
 
 void Scene::contextMenu(const QPoint screenPos)
