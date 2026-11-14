@@ -61,6 +61,20 @@ code=$?
 report "B3 install Homebrew qtbase: exit=$code"
 QTCORE=$(find -L "$(brew --prefix qtbase)" -path '*QtCore.framework/Versions/A/QtCore' -type f 2>/dev/null | head -1)
 report "B3 Homebrew QtCore architectures: $(lipo -archs "$QTCORE" 2>&1)"
+# N9 diagnosis: why does find_package(nlohmann_json) fail against the Homebrew install?
+brew install nlohmann-json > nlohmann.log 2>&1
+NJ=$(brew --prefix nlohmann-json)
+report "N9 nlohmann-json cmake config files: $(find -L "$NJ" -name 'nlohmann_jsonConfig*.cmake' 2>/dev/null | tr '
+' ' ')"
+mkdir -p nj-probe
+printf 'cmake_minimum_required(VERSION 3.16)
+project(p NONE)
+find_package(nlohmann_json REQUIRED)
+' > nj-probe/CMakeLists.txt
+cmake -S nj-probe -B nj-probe/build -DCMAKE_PREFIX_PATH="$NJ" --debug-find-pkg=nlohmann_json > nj-find.log 2>&1
+NJ_CODE=$?
+report "N9 find_package(nlohmann_json) with the Homebrew prefix: exit=$NJ_CODE $(grep -i 'nlohmann' nj-find.log | grep -E -i 'not found|found|reject|Config' | tr '
+' ' ' | head -c 400)"
 
 brew install --build-from-source --verbose local/probe/wiredpanda > formula-install.log 2>&1
 code=$?
@@ -75,5 +89,5 @@ else
   report "O4 first error lines: $(grep -m3 -i 'error' formula-install.log | tr '\n' ' ' | head -c 700)"
 fi
 
-cp style.log audit.log qtbase.log formula-install.log probe-out/ 2>/dev/null
+cp style.log audit.log qtbase.log formula-install.log nj-find.log probe-out/ 2>/dev/null
 exit 0
