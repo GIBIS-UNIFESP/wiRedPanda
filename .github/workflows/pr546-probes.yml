@@ -70,6 +70,15 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v7.0.1
+      - name: Install Qt
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
+        with:
+          version: 6.9.3
+          cache: true
+          aqtversion: ==3.*
+          modules: qtmultimedia qtimageformats
+          host: mac
+          arch: clang_64
       - name: Probe
         run: bash .github/probes/macos-floor-build.sh
       - name: Results
