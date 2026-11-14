@@ -10,6 +10,8 @@ let
     <fontconfig>
       <dir>${pkgs.dejavu_fonts}/share/fonts</dir>
       <cachedir>/tmp/fontconfig-cache</cachedir>
+      <!-- The runner has no DejaVu Math TeX Gyre; in the sandbox it ranks first for sans-serif. -->
+      <selectfont><rejectfont><glob>*DejaVuMathTeXGyre*</glob></rejectfont></selectfont>
       <alias><family>sans-serif</family><prefer><family>DejaVu Sans</family></prefer></alias>
       <alias><family>serif</family><prefer><family>DejaVu Serif</family></prefer></alias>
       <alias><family>monospace</family><prefer><family>DejaVu Sans Mono</family></prefer></alias>
