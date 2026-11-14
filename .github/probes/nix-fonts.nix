@@ -2,7 +2,19 @@
 # check environment. Tests whether the fontconfig failures are the only cause of the checkPhase failures.
 let
   pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { };
-  fonts = pkgs.makeFontsConf { fontDirectories = [ pkgs.dejavu_fonts ]; };
+  # Diagnostic round 2: make DejaVu Sans the default sans-serif, as on the Ubuntu runner
+  # (fc-match there gives "DejaVu Sans"; in the sandbox it gave "DejaVu Math TeX Gyre").
+  fonts = pkgs.writeText "fonts.conf" ''
+    <?xml version="1.0"?>
+    <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+    <fontconfig>
+      <dir>${pkgs.dejavu_fonts}/share/fonts</dir>
+      <cachedir>/tmp/fontconfig-cache</cachedir>
+      <alias><family>sans-serif</family><prefer><family>DejaVu Sans</family></prefer></alias>
+      <alias><family>serif</family><prefer><family>DejaVu Serif</family></prefer></alias>
+      <alias><family>monospace</family><prefer><family>DejaVu Sans Mono</family></prefer></alias>
+    </fontconfig>
+  '';
 in
 (pkgs.callPackage ../../Packaging/Nix/package.nix { }).overrideAttrs (old: {
   nativeCheckInputs = (old.nativeCheckInputs or [ ]) ++ [ pkgs.dejavu_fonts ];
