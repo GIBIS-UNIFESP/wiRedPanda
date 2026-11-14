@@ -1,7 +1,8 @@
 # N10 variant: Packaging/Nix/package.nix with DejaVu fonts and an explicit fontconfig file in the
 # check environment. Tests whether the fontconfig failures are the only cause of the checkPhase failures.
 let
-  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz") { };
+  # Round 6: nixos-25.05 ships Qt 6.9.3, the same Qt as upstream CI (nixos-unstable has 6.12.0).
+  pkgs = import (fetchTarball "https://github.com/NixOS/nixpkgs/archive/nixos-25.05.tar.gz") { };
   # Diagnostic round 2: make DejaVu Sans the default sans-serif, as on the Ubuntu runner
   # (fc-match there gives "DejaVu Sans"; in the sandbox it gave "DejaVu Math TeX Gyre").
   fonts = pkgs.writeText "fonts.conf" ''
