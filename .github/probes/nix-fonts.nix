@@ -27,6 +27,7 @@ in
   preCheck = old.preCheck + ''
     export FONTCONFIG_FILE=${fonts}
     export QT_PLUGIN_PATH=${pkgs.lib.makeSearchPath "lib/qt-6/plugins" [ pkgs.qt6.qtbase pkgs.qt6.qtsvg pkgs.qt6.qtmultimedia ]}
+    echo "DIAG nixpkgs qt6.qtbase version: ${pkgs.qt6.qtbase.version}"
     echo "DIAG FONTCONFIG_FILE=$FONTCONFIG_FILE"
     echo "DIAG fonts.conf: $(head -c 400 ${fonts} | tr '\n' ' ')"
     echo "DIAG fc-match 'DejaVu Sans': $(fc-match 'DejaVu Sans' 2>&1)"
