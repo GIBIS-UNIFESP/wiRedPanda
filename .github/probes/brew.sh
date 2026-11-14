@@ -38,12 +38,11 @@ t = p.read_text()
 a = '"-DBUILD_SHARED_LIBS=OFF",'
 b = '"-DCMAKE_PREFIX_PATH=#{validator_prefix}",'
 assert t.count(a) == 1 and t.count(b) == 1
-t = t.replace(a, a + '
-                      "-DCMAKE_PREFIX_PATH=#{Formula["nlohmann-json"].opt_prefix}",')
+t = t.replace(a, a + '\n                      "-DCMAKE_PREFIX_PATH=#{Formula[\'nlohmann-json\'].opt_prefix}",')
 t = t.replace(b, '"-DCMAKE_PREFIX_PATH=#{validator_prefix};#{Formula["nlohmann-json"].opt_prefix}",')
 p.write_text(t)
 PY
-report "N9 variant applied: nlohmann-json prefix added to the resource and app configure"
+if [ $? -eq 0 ]; then report "N9 variant applied: nlohmann-json prefix added to the resource and app configure"; else report "N9 variant NOT applied (patch script failed)"; fi
 
 brew style "$FORMULA" > style.log 2>&1
 code=$?
