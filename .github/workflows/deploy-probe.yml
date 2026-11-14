@@ -7,6 +7,8 @@
 name: Deploy probe
 
 on:
+  push:
+    branches: [probe/pr546-verification]
   workflow_dispatch:
     inputs:
       version:
@@ -82,7 +84,7 @@ jobs:
         if [ -n "${{ github.event.inputs.version }}" ]; then
           echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
         else
-          echo "VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')" >> $GITHUB_ENV
+          echo "VERSION=5.2.2" >> $GITHUB_ENV  # probe copy: push runs have no tag ref
         fi
       shell: bash
 

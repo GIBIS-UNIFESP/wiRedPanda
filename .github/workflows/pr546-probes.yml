@@ -4,6 +4,8 @@
 name: PR 546 probes
 
 on:
+  push:
+    branches: [probe/pr546-verification]
   workflow_dispatch:
 
 permissions:
