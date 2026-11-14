@@ -9,6 +9,8 @@ name: Deploy probe
 on:
   push:
     branches: [probe/pr546-verification]
+    paths:
+      - '.github/workflows/deploy-probe.yml'
   workflow_dispatch:
     inputs:
       version:

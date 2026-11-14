@@ -38,6 +38,7 @@ brew style Packaging/Homebrew/Casks/wiredpanda.rb > cask-style.log 2>&1
 code=$?
 report "O4 brew style cask: exit=$code $(tail -1 cask-style.log)"
 
+brew trust local/probe > trust.log 2>&1
 brew audit --strict local/probe/wiredpanda > audit.log 2>&1
 code=$?
 report "O4 brew audit --strict formula: exit=$code $(tail -1 audit.log | head -c 300)"

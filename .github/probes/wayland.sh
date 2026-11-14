@@ -37,7 +37,7 @@ export WAYLAND_DISPLAY
 report "C10 compositor up: swaysock='${SWAYSOCK:-none}' wayland='${WAYLAND_DISPLAY:-none}'"
 
 if [ -n "$SWAYSOCK" ] && [ -n "${WAYLAND_DISPLAY:-}" ]; then
-  flatpak run --env=QT_QPA_PLATFORM=wayland io.github.gibis_unifesp.wiRedPanda > app.log 2>&1 &
+  dbus-run-session -- flatpak run --env=QT_QPA_PLATFORM=wayland io.github.gibis_unifesp.wiRedPanda > app.log 2>&1 &
   sleep 45
   swaymsg -t get_tree 2> tree.err | jq -r '.. | objects | select(.app_id? != null) | "app_id=\(.app_id) name=\(.name)"' > toplevels.txt 2>> tree.err
   report "C10 toplevels under Flatpak Wayland: $(tr '\n' ' ' < toplevels.txt | head -c 500)"
