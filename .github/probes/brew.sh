@@ -30,6 +30,20 @@ PY
 brew tap-new --no-git local/probe > tap.log 2>&1
 FORMULA="$(brew --repo local/probe)/Formula/wiredpanda.rb"
 cp probe-wiredpanda.rb "$FORMULA"
+# N9 variant: give the json-schema-validator build and the app build the formula's nlohmann-json prefix.
+python3 - "$FORMULA" <<'PY'
+import pathlib, sys
+p = pathlib.Path(sys.argv[1])
+t = p.read_text()
+a = '"-DBUILD_SHARED_LIBS=OFF",'
+b = '"-DCMAKE_PREFIX_PATH=#{validator_prefix}",'
+assert t.count(a) == 1 and t.count(b) == 1
+t = t.replace(a, a + '
+                      "-DCMAKE_PREFIX_PATH=#{Formula["nlohmann-json"].opt_prefix}",')
+t = t.replace(b, '"-DCMAKE_PREFIX_PATH=#{validator_prefix};#{Formula["nlohmann-json"].opt_prefix}",')
+p.write_text(t)
+PY
+report "N9 variant applied: nlohmann-json prefix added to the resource and app configure"
 
 brew style "$FORMULA" > style.log 2>&1
 code=$?

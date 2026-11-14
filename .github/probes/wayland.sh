@@ -37,9 +37,10 @@ export WAYLAND_DISPLAY
 report "C10 compositor up: swaysock='${SWAYSOCK:-none}' wayland='${WAYLAND_DISPLAY:-none}'"
 
 if [ -n "$SWAYSOCK" ] && [ -n "${WAYLAND_DISPLAY:-}" ]; then
-  dbus-run-session -- flatpak run --env=QT_QPA_PLATFORM=wayland io.github.gibis_unifesp.wiRedPanda > app.log 2>&1 &
+  dbus-run-session -- flatpak run --env=QT_QPA_PLATFORM=wayland --env=QT_LOGGING_RULES="qt.qpa.*=true" io.github.gibis_unifesp.wiRedPanda > app.log 2>&1 &
   sleep 90
-  swaymsg -t get_tree 2> tree.err | jq -c '.. | objects | select(.type? == "con" or .type? == "floating_con") | {name, app_id, shell, pid}' > toplevels.txt 2>> tree.err
+  swaymsg -t get_tree 2> tree.err | jq -c '[.. | objects | select(.type? != null) | {type, name, app_id, shell, pid}]' > toplevels.txt 2>> tree.err
+  report "C10 app process alive after 90s: $(pgrep -f 'wiRedPanda|wiredpanda' | wc -l) matching processes"
   report "C10 toplevels under Flatpak Wayland: $(tr '\n' ' ' < toplevels.txt | head -c 500)"
   report "C10 expected app_id: io.github.gibis_unifesp.wiRedPanda"
   pkill -f wiredpanda 2>/dev/null

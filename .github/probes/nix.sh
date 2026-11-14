@@ -17,9 +17,14 @@ else
   report "O3 first error: $(grep -m2 -i 'error' nix-build.err | tr '\n' ' ' | head -c 500)"
 fi
 
+if [ "$SYS" = x86_64-linux ]; then
+  nix-build --no-out-link .github/probes/nix-fonts.nix > nix-fonts.log 2> nix-fonts.err
+  code=$?
+  report "N10 variant with DejaVu fonts and FONTCONFIG_FILE: nix-build exit=$code $(grep -i 'tests passed\|tests failed' nix-fonts.err | tail -1)"
+fi
 nix-instantiate --eval --strict .github/probes/nix-n4.nix > n4.out 2> n4.err
 code=$?
 report "N4 meta.maintainers evaluation on $SYS: exit=$code $(grep -m1 -i 'error' n4.err | head -c 300)"
 
-cp nix-build.err n4.err probe-out/ 2>/dev/null
+cp nix-build.err nix-fonts.err n4.err probe-out/ 2>/dev/null
 exit 0
