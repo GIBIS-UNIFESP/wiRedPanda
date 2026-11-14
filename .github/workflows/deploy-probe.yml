@@ -1,0 +1,1005 @@
+# Copyright 2015 - 2026, GIBIS-Unifesp and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# PROBE COPY of .github/workflows/deploy.yml (PR #546 verification). Only the trigger changed
+# and an upload step was added. Publishing steps are gated on event_name == 'release', so they
+# are skipped here: no Sentry upload, no GitHub release.
+name: Deploy probe
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build (e.g. 5.1.3) — for manual dry-runs only'
+        required: true
+
+jobs:
+  build:
+    permissions:
+      contents: write    # needed for release uploads
+      actions: read      # needed to read workflow artifacts
+    strategy:
+      fail-fast: false
+      matrix:
+        # qt_host / qt_arch are passed verbatim to install-qt-action.
+        # Values verified locally with `aqt list-qt <host> desktop --arch 6.9.3`.
+        include:
+          - { os: ubuntu-24.04,         qt: 6.9.3, arch: x86_64, qt_host: linux,         qt_arch: linux_gcc_64         }
+          - { os: ubuntu-24.04-arm,     qt: 6.9.3, arch: arm64,  qt_host: linux_arm64,   qt_arch: linux_gcc_arm64      }
+          - { os: windows-2025-vs2026,  qt: 6.9.3, arch: x86_64, qt_host: windows,       qt_arch: win64_msvc2022_64    }
+          - { os: windows-11-arm,       qt: 6.9.3, arch: arm64,  qt_host: windows_arm64, qt_arch: win64_msvc2022_arm64 }
+          # CMakeLists.txt forces CMAKE_OSX_ARCHITECTURES="x86_64;arm64" so a
+          # single macOS job produces a universal DMG that runs on both archs;
+          # no per-arch matrix entry is needed.
+          - { os: macos-26,             qt: 6.9.3, arch: universal, qt_host: mac,        qt_arch: clang_64             }
+
+# =================================
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      CCACHE_SLOPPINESS: pch_defines,time_macros,include_file_ctime,include_file_mtime
+
+    steps:
+    - name: Install Ubuntu dependencies
+      if: runner.os == 'Linux'
+      run: |
+        export DEBIAN_FRONTEND=noninteractive
+        sudo apt-get update
+        sudo apt-get install -y \
+          gstreamer1.0-plugins-bad \
+          gstreamer1.0-plugins-base \
+          gstreamer1.0-plugins-good \
+          libcurl4-openssl-dev \
+          libegl-dev \
+          libfuse2t64 \
+          libgl-dev \
+          libpulse-dev \
+          libx11-xcb-dev \
+          libxcb-cursor0 \
+          libxcb-glx0-dev \
+          libxcb-icccm4-dev \
+          libxcb-image0-dev \
+          libxcb-keysyms1-dev \
+          libxcb-randr0-dev \
+          libxcb-render-util0-dev \
+          libxcb-shape0-dev \
+          libxcb-sync0-dev \
+          libxcb-xfixes0-dev \
+          libxfixes-dev \
+          libxi-dev \
+          libxkbcommon-dev \
+          libxkbcommon-x11-dev \
+          patchelf
+
+    - uses: actions/checkout@v7.0.1
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Extract Version
+      run: |
+        if [ -n "${{ github.event.inputs.version }}" ]; then
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+        else
+          echo "VERSION=$(echo $GITHUB_REF | sed 's|refs/tags/||')" >> $GITHUB_ENV
+        fi
+      shell: bash
+
+    - name: Install Sentry CLI
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/getsentry/sentry-cli/releases/latest | jq -r .tag_name)
+          curl -LO "https://github.com/getsentry/sentry-cli/releases/download/$LATEST_VERSION/sentry-cli-Windows-x86_64.exe"
+          mv sentry-cli-Windows-x86_64.exe sentry-cli.exe
+
+          ACTUAL_VERSION=$(./sentry-cli.exe -V 2>&1 | tr -d '\r')
+
+          if [[ ! "$ACTUAL_VERSION" =~ ^sentry-cli ]]; then
+            echo "Downloaded Sentry CLI binary is invalid!" >&2
+            exit 1
+          fi
+        elif [ "$RUNNER_OS" == "Linux" ]; then
+          # Official sentry-cli releases link an unpatched symbolic-debuginfo whose ELF loader
+          # never applies relocations to debug sections in unlinked .o files: every
+          # DW_FORM_line_strp/strp offset silently reads back as the section's own zero
+          # placeholder, which `debug-files upload --include-sources` can resolve into a
+          # directory instead of a file and hard-error on ("Is a directory"). Fix submitted
+          # upstream as https://github.com/getsentry/symbolic/pull/1060; until it ships in a
+          # release, build sentry-cli 3.7.0 from source with that same fix patched in from a
+          # pinned branch (kept in sync with the upstream PR) instead of downloading the binary.
+          git clone --depth 1 --branch 3.7.0 https://github.com/getsentry/sentry-cli.git /tmp/sentry-cli-src
+          {
+            echo ''
+            echo '[patch.crates-io]'
+            echo 'symbolic = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-common = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-debuginfo = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-il2cpp = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-ppdb = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+            echo 'symbolic-symcache = { git = "https://github.com/darktorres/symbolic", branch = "ci-fix-13.8.0-apply-elf-relocations" }'
+          } >> /tmp/sentry-cli-src/Cargo.toml
+          cargo build --release --manifest-path /tmp/sentry-cli-src/Cargo.toml --bin sentry-cli
+          sudo install -m 755 /tmp/sentry-cli-src/target/release/sentry-cli /usr/local/bin/sentry-cli
+        else
+          curl -sL https://sentry.io/get-cli/ | bash
+        fi
+      shell: bash
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
+      with:
+        version: ${{ matrix.qt }}
+        cache: true
+        aqtversion: ==3.*
+        modules: qtmultimedia qtimageformats debug_info
+        host: ${{ matrix.qt_host }}
+        arch: ${{ matrix.qt_arch }}
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # main
+      with:
+        key: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.qt }}
+
+# =================================
+
+    - name: Compile Ubuntu Sentry SDK
+      if: runner.os == 'Linux'
+      run: |
+        git clone --recursive https://github.com/getsentry/sentry-native.git
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+        cmake --build sentry-native/build
+        cmake --install sentry-native/build --prefix thirdparty/sentry
+
+    - name: Build Ubuntu
+      if: runner.os == 'Linux'
+      run: |
+        cmake --preset sentry-crashpad
+        cmake --build --preset sentry-crashpad
+        cp thirdparty/sentry/bin/crashpad_handler build-sentry-crashpad/
+        cp thirdparty/sentry/lib/libsentry.so build-sentry-crashpad/
+        chmod +x build-sentry-crashpad/crashpad_handler
+
+    - name: Test Ubuntu
+      if: runner.os == 'Linux'
+      timeout-minutes: 10
+      run: |
+        ctest --preset sentry-crashpad -V -LE gui
+
+    - name: go-appimage
+      if: runner.os == 'Linux'
+      run: |
+        # uname -m gives "x86_64" or "aarch64"; used for the appimagetool
+        # download, the libtiff symlink path, and the AppImage filename
+        # produced by appimagetool.
+        ARCH_TRIPLE=$(uname -m)
+
+        mkdir -p appimage/usr/lib
+
+        # Installs the binary, .desktop file (version already substituted via
+        # configure_file at CMake-configure time), 6 PNG icon sizes (up to
+        # 256x256) + scalable SVG, AppStream metainfo XML, Examples/, and the
+        # mime XML - everything cmake --install covers for Linux.
+        DESTDIR="$PWD/appimage" cmake --install build-sentry-crashpad --prefix /usr
+
+        cp build-sentry-crashpad/crashpad_handler appimage/usr/bin/
+        cp thirdparty/sentry/lib/libsentry.so appimage/usr/lib/
+
+        wget -q "https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous \
+          -O - | grep "appimagetool-.*-${ARCH_TRIPLE}.AppImage" | head -n 1 | cut -d '"' -f 2)" \
+          -O appimagetool
+        chmod +x appimagetool
+
+        # Copy all runtime Qt plugin categories before deploy so go-appimage
+        # bundles their dependencies and patches their RPATHs too.
+        # (go-appimage only auto-detects plugins loaded at build time)
+        mkdir -p appimage/usr/plugins
+        for dir in \
+          generic \
+          iconengines \
+          imageformats \
+          multimedia \
+          networkinformation \
+          platforminputcontexts \
+          platforms \
+          platformthemes \
+          printsupport \
+          styles \
+          tls \
+          wayland-decoration-client \
+          wayland-graphics-integration-client \
+          wayland-shell-integration \
+          xcbglintegrations; do
+          [ -d "$QT_ROOT_DIR/plugins/$dir" ] && cp -r "$QT_ROOT_DIR/plugins/$dir" appimage/usr/plugins/
+        done
+        find appimage/usr/plugins -name "*.debug" -delete
+
+        # Ubuntu 24.04 ships libtiff.so.6 (t64 transition); Qt plugins built against .so.5.
+        # Symlink so go-appimage can find and bundle it.
+        LIBDIR=/usr/lib/${ARCH_TRIPLE}-linux-gnu
+        sudo ln -sf $LIBDIR/libtiff.so.6 $LIBDIR/libtiff.so.5
+
+        # Bundle GTK 3 and GIO/GVFS modules from the CI host alongside our own
+        # glib so they load against the bundled libglib-2.0 (built on Ubuntu
+        # 24.04, glib ~2.80) instead of the user's system glib (often newer,
+        # ~2.82+).  Without this, GTK and GIO fall back to the *system*
+        # libcanberra-gtk-module.so / libgvfsdbus.so at runtime; they reference
+        # newer glib symbols (e.g. g_variant_builder_init_static) that don't
+        # exist in our bundled glib, producing the "Failed to load module"
+        # warnings.
+        #
+        # Install the providing packages, then resolve the real installed paths
+        # via dpkg -L (so this works on x86_64 and arm64 without hard-coding
+        # multiarch tuples).  Mirror each path under appimage/lib/ — stripping
+        # the leading /usr matches go-appimage's lib/ layout, so the files
+        # appear at the same location where GTK_PATH and GIO discovery search.
+        sudo apt-get install -y libcanberra-gtk3-module gvfs gvfs-libs
+
+        for spec in \
+            "libcanberra-gtk3-module:/libcanberra-gtk-module\.so$" \
+            "gvfs:/libgvfsdbus\.so$" \
+            "gvfs-libs:/libgvfscommon\.so$"; do
+          pkg="${spec%%:*}"
+          pattern="${spec#*:}"
+          src=$(dpkg -L "$pkg" | grep -E "$pattern" | head -1)
+          if [ -z "$src" ] || [ ! -f "$src" ]; then
+            echo "Failed to locate $pattern from package $pkg" >&2
+            exit 1
+          fi
+          dst="appimage${src#/usr}"
+          mkdir -p "$(dirname "$dst")"
+          cp "$src" "$dst"
+          echo "Bundled $src -> $dst"
+        done
+
+        # Deploy: bundle all dependencies (including glibc) and patch RPATHs.
+        # go-appimage uses patchelf internally to set $ORIGIN-relative RPATHs
+        # on all bundled ELFs, covering transitive deps like libGLdispatch.so.0.
+        APPIMAGE_EXTRACT_AND_RUN=1 QTDIR=$QT_ROOT_DIR \
+          ./appimagetool -s deploy appimage/usr/share/applications/wiredpanda.desktop
+
+        # go-appimage deploys copies of the dynamic loader (lib*/ and usr/lib*/)
+        # without the exec bit.  The FUSE mount doesn't enforce mode bits on
+        # exec, but a real filesystem does: --appimage-extract-and-run and
+        # extracted-AppRun runs exec the loader directly and fail with EACCES
+        # unless it is executable.  Same ld-*.so.* pattern AppRun uses to
+        # locate the loader, so it covers every arch's loader name and path.
+        find appimage -name 'ld-*.so.*' -exec chmod 755 {} +
+
+        # go-appimage hardcodes deploying only libqxcb.so from Qt's platforms/
+        # directory (probonopd/go-appimage#322), copying it to the AppDir under
+        # the CI host path (home/runner/work/…).  This creates a second
+        # plugins/platforms/ alongside the complete set we pre-copied to
+        # usr/plugins/platforms/.  The AppRun's find-based QT_PLUGIN_PATH
+        # discovery hits home/ before usr/ alphabetically, so only xcb is
+        # visible at runtime.  Remove every plugins/ tree outside usr/.
+        find appimage -mindepth 2 -not -path 'appimage/usr/*' -type d -name plugins \
+          -exec rm -rf {} + 2>/dev/null || true
+
+        # go-appimage copies fonts.conf as a symlink to the host absolute path,
+        # which breaks in containers and other systems. Dereference it.
+        FONTS_CONF=$(find appimage -name "fonts.conf" -type l | head -1)
+        [ -n "$FONTS_CONF" ] && cp --remove-destination "$(readlink -f "$FONTS_CONF")" "$FONTS_CONF"
+
+        # go-appimage sets QT_QPA_PLATFORMTHEME=gtk2 for GNOME desktops but the
+        # bundled platform theme plugin is libqgtk3.so (key "gtk3"), not gtk2.
+        # Fix the AppRun so Qt loads the correct plugin without the failed-attempt
+        # fallback through gtk2 → ubuntu → gtk3.
+        sed -i 's/QT_QPA_PLATFORMTHEME=gtk2/QT_QPA_PLATFORMTHEME=gtk3/' appimage/AppRun
+
+        # Qt Multimedia probes pipewire-0.3 from a static initializer that fires
+        # before main() — qInstallMessageHandler can't catch it.  Suppress at
+        # the source via QT_LOGGING_RULES, set in AppRun so it's in the env
+        # before the binary is exec'd.  Preserves any user-supplied rules.
+        sed -i '/^HERE=/a\\nexport QT_LOGGING_RULES="qt.multimedia.symbolsresolver=false${QT_LOGGING_RULES:+;$QT_LOGGING_RULES}"' appimage/AppRun
+
+        # Point GIO at our bundled gio/modules so it loads the bundled
+        # libgvfsdbus.so (matched to our bundled glib) and the system one is
+        # ignored.  GTK already finds our bundled libcanberra-gtk-module.so via
+        # GTK_PATH (set by go-appimage to $HERE/lib/.../gtk-3.0/).
+        sed -i '/^export QT_LOGGING_RULES=/a\\nexport GIO_MODULE_DIR="$HERE/lib/'${ARCH_TRIPLE}'-linux-gnu/gio/modules"' appimage/AppRun
+
+        APPIMAGE_EXTRACT_AND_RUN=1 VERSION=$VERSION \
+          ./appimagetool appimage
+
+        # x86_64 gets a digit ("64") right after "Linux-" instead of a letter-led token like
+        # arm64's. This exists only to rescue pre-5.1.3 updater clients: they pick the first
+        # ".AppImage" match with no arch check at all, baked in and unpatchable remotely, so
+        # asset naming is the only lever left. GitHub's Releases API sorts assets
+        # case-insensitively, and a leading digit sorts before a leading letter under
+        # case-sensitive or case-insensitive comparison, so this reliably wins regardless.
+        # 5.1.3+ clients are unaffected either way -- they resolve a direct key from the
+        # site's latest-release.json rather than matching filenames.
+        if [ "${{ matrix.arch }}" = "x86_64" ]; then
+          APPIMAGE_NAME="wiRedPanda-$VERSION-Linux-64-Qt${{ matrix.qt }}-x86_64.AppImage"
+        else
+          APPIMAGE_NAME="wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage"
+        fi
+        mv wiRedPanda-*-${ARCH_TRIPLE}.AppImage "$APPIMAGE_NAME"
+
+    - name: Validate Ubuntu Release Artifacts
+      if: runner.os == 'Linux'
+      run: |
+        # Same asymmetric x86_64-vs-arm64 naming as the build step above (see the comment
+        # there) -- must be reconstructed identically since it's not passed between steps.
+        if [ "${{ matrix.arch }}" = "x86_64" ]; then
+          APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-64-Qt${{ matrix.qt }}-x86_64.AppImage"
+        else
+          APPIMAGE_FILE="wiRedPanda-$VERSION-Linux-${{ matrix.arch }}-Qt${{ matrix.qt }}.AppImage"
+        fi
+
+        if [ ! -f "$APPIMAGE_FILE" ]; then
+          echo "Error: AppImage not found"
+          exit 1
+        fi
+
+        # Verify AppImage build quality and structure
+        chmod +x "$APPIMAGE_FILE"
+        echo "Validating AppImage build quality..."
+
+        echo "AppImage file info:"
+        ls -lh "$APPIMAGE_FILE"
+        file "$APPIMAGE_FILE"
+
+        # Extract AppImage to verify internal structure
+        echo "Extracting AppImage to verify contents..."
+        APPIMAGE_EXTRACT_AND_RUN=1 "./$APPIMAGE_FILE" --appimage-extract >/dev/null 2>&1
+        if [ ! -d "squashfs-root" ]; then
+          echo "Error: AppImage extraction failed - corrupt AppImage"
+          exit 1
+        fi
+
+        # The dynamic loader must be executable: AppRun execs it directly, and
+        # while the FUSE mount doesn't enforce mode bits, a real filesystem
+        # does (--appimage-extract-and-run, extracted-AppRun runs).
+        LOADERS=$(find squashfs-root -name 'ld-*.so.*')
+        if [ -z "$LOADERS" ]; then
+          echo "Error: no dynamic loader (ld-*.so.*) found in AppImage"
+          exit 1
+        fi
+        NONEXEC=$(find squashfs-root -name 'ld-*.so.*' ! -perm -u+x)
+        if [ -n "$NONEXEC" ]; then
+          echo "Error: dynamic loader not executable - AppImage cannot run without FUSE:"
+          echo "$NONEXEC"
+          exit 1
+        fi
+        echo "✓ Dynamic loader executable: $(echo "$LOADERS" | tr '\n' ' ')"
+
+        # Functional no-FUSE check: judge servers, containers, and other
+        # locked-down hosts run the AppImage via extract-and-run.
+        # env -i: the job exports LD_LIBRARY_PATH/QT_PLUGIN_PATH pointing at
+        # the CI Qt install (needed for building); inside the AppImage they
+        # hijack library/plugin resolution away from the bundle.  An end-user
+        # machine has neither, so the check must run with a clean environment.
+        echo "Running --appimage-extract-and-run --version..."
+        if ! env -i HOME="$HOME" PATH="$PATH" QT_QPA_PLATFORM=offscreen "./$APPIMAGE_FILE" --appimage-extract-and-run --version; then
+          echo "Error: AppImage failed to run in no-FUSE (extract-and-run) mode"
+          echo "--- diagnostics: RUNPATHs ---"
+          patchelf --print-rpath squashfs-root/usr/bin/wiredpanda || true
+          find squashfs-root -name 'libQt6Multimedia.so.6' -exec patchelf --print-rpath {} \; || true
+          echo "--- diagnostics: loader and pulse files ---"
+          find squashfs-root \( -name 'ld-*.so.*' -o -name 'libpulse*' -o -name 'libQt6Multimedia*' \) -exec ls -l {} \;
+          echo "--- diagnostics: loader search trace (last 120 lines) ---"
+          cd squashfs-root
+          env -i HOME="$HOME" PATH="$PATH" OWD="$PWD" APPIMAGE="dummy" QT_QPA_PLATFORM=offscreen LD_DEBUG=libs ./AppRun --version 2>&1 | tail -120 || true
+          cd ..
+          exit 1
+        fi
+        echo "✓ AppImage runs without FUSE (extract-and-run)"
+
+        echo "AppImage structure validation:"
+
+        if [ ! -f "squashfs-root/usr/bin/wiredpanda" ]; then
+          echo "Error: Main executable missing from AppImage"
+          exit 1
+        fi
+        echo "✓ Main executable: $(ls -lh squashfs-root/usr/bin/wiredpanda)"
+        echo "✓ Executable type: $(file squashfs-root/usr/bin/wiredpanda)"
+
+        QT_LIBS_COUNT=$(find squashfs-root -name "libQt*.so*" | wc -l)
+        echo "✓ Qt libraries found: $QT_LIBS_COUNT"
+        if [ "$QT_LIBS_COUNT" -lt 3 ]; then
+          echo "Warning: Few Qt libraries found, may cause runtime issues"
+          find squashfs-root -name "libQt*.so*" | head -10
+        fi
+
+        if [ -f "squashfs-root/usr/share/applications/wiredpanda.desktop" ]; then
+          echo "✓ Desktop integration file present"
+        else
+          echo "Warning: Desktop integration file missing"
+        fi
+
+        if [ -f "squashfs-root/usr/share/mime/packages/wiredpanda.xml" ]; then
+          echo "✓ Mime type definition present"
+        else
+          echo "Warning: Mime type definition missing"
+        fi
+
+        # Check dependencies are reasonable
+        echo "✓ Executable dependencies (sample):"
+        ldd squashfs-root/usr/bin/wiredpanda | head -10 | grep -v "not found" || echo "Some dependencies missing (may be normal)"
+
+        if [ -d "squashfs-root/usr/share/wiredpanda/Examples" ]; then
+          EXAMPLE_COUNT=$(find squashfs-root/usr/share/wiredpanda/Examples -name "*.panda" | wc -l)
+          echo "✓ Examples directory present with $EXAMPLE_COUNT files"
+        else
+          echo "Warning: Examples directory missing"
+        fi
+
+        # Verify .DirIcon is a valid PNG (not SVG) so file managers show the app icon
+        if file squashfs-root/.DirIcon | grep -q "PNG image"; then
+          echo "✓ .DirIcon is a valid PNG"
+        else
+          echo "Error: .DirIcon is not a PNG — file manager will show a generic icon"
+          file squashfs-root/.DirIcon
+          exit 1
+        fi
+
+        echo "AppImage build quality validation completed successfully"
+
+        # Verify required Sentry files are included
+        if [ ! -f "appimage/usr/bin/crashpad_handler" ]; then
+          echo "Error: Crashpad handler missing from AppImage"
+          exit 1
+        fi
+
+        if [ ! -f "appimage/usr/lib/libsentry.so" ]; then
+          echo "Error: Sentry library missing from AppImage"
+          exit 1
+        fi
+
+        # Log Sentry configuration for debugging
+        echo "Sentry configuration check:"
+        echo "  - libsentry.so: $(ls -la appimage/usr/lib/libsentry.so)"
+        echo "  - crashpad_handler: $(ls -la appimage/usr/bin/crashpad_handler)"
+        echo "  - RPATH settings: $(objdump -p appimage/usr/bin/wiredpanda | grep RPATH || echo 'No RPATH found')"
+
+        echo "Ubuntu release artifacts validated successfully"
+
+    - name: Upload Ubuntu Debug Symbols to Sentry
+      if: runner.os == 'Linux' && github.event_name == 'release'
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        git config --global --add safe.directory '*'
+        sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
+        sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
+        sentry-cli debug-files upload --include-sources -p wiredpanda build-sentry-crashpad/
+        sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
+        sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
+
+    - name: Publish Ubuntu
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+      if: runner.os == 'Linux' && github.event_name == 'release'
+      with:
+        fail_on_unmatched_files: true
+        files: '*.AppImage'
+
+# =================================
+
+    - name: Setup Windows MSVC Toolchain
+      if: runner.os == 'Windows'
+      uses: TheMrMilchmann/setup-msvc-dev@368ef7d1ee4d1171b31d4a7f67f4d954f903f5a9 # v4.1.0
+      with:
+        arch: ${{ matrix.arch == 'arm64' && 'arm64' || 'x64' }}
+
+    - name: Compile Windows Sentry SDK
+      if: runner.os == 'Windows'
+      run: |
+        git clone --recursive https://github.com/getsentry/sentry-native.git
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=crashpad -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+        cmake --build sentry-native/build
+        cmake --install sentry-native/build --prefix thirdparty/sentry
+
+    - name: Build Windows
+      if: runner.os == 'Windows'
+      run: |
+        cmake --preset sentry-crashpad
+        cmake --build --preset sentry-crashpad
+        cp thirdparty/sentry/bin/crashpad_handler.exe build-sentry-crashpad/
+        cp thirdparty/sentry/bin/sentry.dll build-sentry-crashpad/
+        cp thirdparty/sentry/bin/crashpad_wer.dll build-sentry-crashpad/
+
+    - name: Test Windows
+      if: runner.os == 'Windows'
+      timeout-minutes: 10
+      run: |
+        ctest --preset sentry-crashpad -V -LE gui
+
+    - name: windeployqt
+      if: runner.os == 'Windows'
+      run : |
+        # Create clean distribution directory
+        cd build-sentry-crashpad
+        cmake --install . --prefix _stage
+        mkdir wiredpanda-$env:VERSION
+
+        # _stage/bin already has wiredpanda.exe and Examples/ colocated (matches
+        # InstallRelativePaths' Windows search: appDir + "/Examples"); copy that
+        # whole tree, then add the Sentry files install() doesn't cover.
+        Copy-Item -Recurse _stage/bin/* wiredpanda-$env:VERSION/
+        cp crashpad_handler.exe wiredpanda-$env:VERSION/
+        cp sentry.dll wiredpanda-$env:VERSION/
+        cp crashpad_wer.dll wiredpanda-$env:VERSION/
+
+        # Run windeployqt in the clean directory
+        cd wiredpanda-$env:VERSION
+        windeployqt --compiler-runtime wiredpanda.exe
+
+        # Create the ZIP from the clean directory
+        cd ..
+        # x86_64 gets a digit ("64") right after "Windows-" instead of a letter-led token like
+        # arm64's -- see the matching Linux comment above for the full reasoning. Reconstructed
+        # identically in the validate step below since it's not passed between steps.
+        if ("${{ matrix.arch }}" -eq "x86_64") {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-64-Qt${{ matrix.qt }}-Portable-x86_64.zip"
+        } else {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip"
+        }
+        Compress-Archive -Path wiredpanda-$env:VERSION -DestinationPath $zipName
+
+    - name: Validate Windows Release Artifacts
+      if: runner.os == 'Windows'
+      run: |
+        if ("${{ matrix.arch }}" -eq "x86_64") {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-64-Qt${{ matrix.qt }}-Portable-x86_64.zip"
+        } else {
+          $zipName = "wiRedPanda-$env:VERSION-Windows-${{ matrix.arch }}-Qt${{ matrix.qt }}-Portable.zip"
+        }
+
+        # Verify ZIP file exists
+        if (!(Test-Path "build-sentry-crashpad/$zipName")) {
+          Write-Error "Error: Windows ZIP file not found"
+          exit 1
+        }
+
+        # Verify executable exists in the extracted folder
+        if (!(Test-Path "build-sentry-crashpad/wiredpanda-$env:VERSION/wiredpanda.exe")) {
+          Write-Error "Error: wiredpanda.exe not found in package"
+          exit 1
+        }
+
+        # Verify required Sentry files are included
+        if (!(Test-Path "build-sentry-crashpad/wiredpanda-$env:VERSION/sentry.dll")) {
+          Write-Error "Error: Sentry DLL missing from package"
+          exit 1
+        }
+
+        if (!(Test-Path "build-sentry-crashpad/wiredpanda-$env:VERSION/crashpad_handler.exe")) {
+          Write-Error "Error: Crashpad handler missing from package"
+          exit 1
+        }
+
+        # Validate Windows executable build quality
+        Write-Output "Validating Windows executable build quality..."
+
+        $executablePath = "build-sentry-crashpad/wiredpanda-$env:VERSION/wiredpanda.exe"
+
+        # Check executable file properties
+        if (Test-Path $executablePath) {
+          $fileInfo = Get-Item $executablePath
+          Write-Output "✓ Executable file info:"
+          Write-Output "  Size: $([math]::Round($fileInfo.Length / 1MB, 2)) MB"
+          Write-Output "  Created: $($fileInfo.CreationTime)"
+          Write-Output "  Modified: $($fileInfo.LastWriteTime)"
+        } else {
+          Write-Error "Error: Main executable not found"
+          exit 1
+        }
+
+        # Check if executable is a valid PE file
+        try {
+          $peHeader = [System.IO.File]::ReadAllBytes($executablePath)[0..1]
+          $peSignature = [System.Text.Encoding]::ASCII.GetString($peHeader)
+          if ($peSignature -eq "MZ") {
+            Write-Output "✓ Valid PE executable format"
+          } else {
+            Write-Output "Warning: Unexpected executable format"
+          }
+        } catch {
+          Write-Output "Warning: Could not verify PE format"
+        }
+
+        # Check Qt DLLs are present
+        $qtDlls = Get-ChildItem "build-sentry-crashpad/wiredpanda-$env:VERSION" -Filter "Qt*.dll" | Measure-Object
+        Write-Output "✓ Qt DLLs found: $($qtDlls.Count)"
+        if ($qtDlls.Count -lt 3) {
+          Write-Output "Warning: Few Qt DLLs found, may cause runtime issues"
+          Get-ChildItem "build-sentry-crashpad/wiredpanda-$env:VERSION" -Filter "Qt*.dll" | Select-Object Name, Length
+        }
+
+        # Check for required runtime libraries
+        $requiredDlls = @("vcruntime*.dll", "msvcp*.dll")
+        foreach ($pattern in $requiredDlls) {
+          $found = Get-ChildItem "build-sentry-crashpad/wiredpanda-$env:VERSION" -Filter $pattern | Measure-Object
+          if ($found.Count -gt 0) {
+            Write-Output "✓ Runtime libraries found: $pattern"
+          } else {
+            Write-Output "Warning: Runtime libraries not found: $pattern (may be system-provided)"
+          }
+        }
+
+        # Verify examples directory
+        if (Test-Path "build-sentry-crashpad/wiredpanda-$env:VERSION/Examples") {
+          $exampleCount = (Get-ChildItem "build-sentry-crashpad/wiredpanda-$env:VERSION/Examples" -Recurse -File | Measure-Object).Count
+          Write-Output "✓ Examples directory present with $exampleCount files"
+        } else {
+          Write-Error "Error: Examples directory missing"
+          exit 1
+        }
+
+        # Functional check: actually run the packaged executable from its deployed
+        # directory, proving it launches standalone (all Qt/Sentry DLLs resolve via
+        # windeployqt's same-directory layout) - not just that the right files exist.
+        # wiredpanda.exe is a WIN32_EXECUTABLE (GUI subsystem); $LASTEXITCODE after
+        # the "&" call operator is unreliable for GUI-subsystem processes, so use
+        # Start-Process -Wait -PassThru, which reliably captures the real exit code
+        # via the Win32 process APIs.
+        Write-Output "Running wiredpanda.exe --version..."
+        $stdoutFile = "version-stdout.txt"
+        $stderrFile = "version-stderr.txt"
+        $proc = Start-Process -FilePath $executablePath -ArgumentList "--version" -NoNewWindow -PassThru -Wait `
+          -RedirectStandardOutput $stdoutFile -RedirectStandardError $stderrFile
+        $stdout = Get-Content $stdoutFile -Raw -ErrorAction SilentlyContinue
+        $stderr = Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue
+        if ($proc.ExitCode -ne 0) {
+          Write-Error "Error: wiredpanda.exe --version exited with code $($proc.ExitCode)"
+          Write-Output "stdout: $stdout"
+          Write-Output "stderr: $stderr"
+          exit 1
+        }
+        Write-Output "✓ wiredpanda.exe runs and exits successfully:"
+        Write-Output $stdout
+
+        Write-Output "Windows build quality validation completed successfully"
+
+        Write-Output "Windows release artifacts validated successfully"
+
+    - name: Upload Windows Debug Symbols to Sentry
+      if: runner.os == 'Windows' && github.event_name == 'release'
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        ./sentry-cli.exe login --auth-token $env:SENTRY_AUTH_TOKEN
+        ./sentry-cli.exe releases new wiredpanda@$env:VERSION -p wiredpanda
+        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda build-sentry-crashpad/
+        ./sentry-cli.exe debug-files upload --include-sources -p wiredpanda $env:QT_ROOT_DIR
+        ./sentry-cli.exe releases set-commits --auto wiredpanda@$env:VERSION --log-level=debug
+
+    - name: Publish Windows
+      if: runner.os == 'Windows' && github.event_name == 'release'
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+      with:
+        fail_on_unmatched_files: true
+        files: 'build-sentry-crashpad/*.zip'
+
+# =================================
+
+    - name: Compile macOS Sentry SDK
+      if: runner.os == 'macOS'
+      run: |
+        git clone --recursive https://github.com/getsentry/sentry-native.git
+        cmake -S sentry-native -B sentry-native/build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DSENTRY_BACKEND=breakpad -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON
+        cmake --build sentry-native/build
+        cmake --install sentry-native/build --prefix thirdparty/sentry
+
+    - name: Build macOS
+      if: runner.os == 'macOS'
+      run: |
+        cmake --preset sentry-breakpad
+        cmake --build --preset sentry-breakpad
+        # MACOSX_BUNDLE means the build itself already produces
+        # build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda; cmake --install
+        # adds Contents/Resources/Examples on top of that (Contents/Frameworks/ and the
+        # Sentry dylib aren't part of install() and stay manual).
+        cmake --install build-sentry-breakpad --prefix "$PWD/build-sentry-breakpad"
+        mkdir -p build-sentry-breakpad/wiredpanda.app/Contents/Frameworks
+        # Note: breakpad backend doesn't generate crashpad_handler (in-process crash handling)
+        cp thirdparty/sentry/lib/libsentry.dylib build-sentry-breakpad/wiredpanda.app/Contents/Frameworks/
+
+    - name: Generate macOS dSYM Symbols
+      if: runner.os == 'macOS'
+      run: |
+        cd build-sentry-breakpad
+        dsymutil wiredpanda.app/Contents/MacOS/wiredpanda -o wiredpanda.app.dSYM
+
+    - name: Test macOS
+      if: runner.os == 'macOS'
+      timeout-minutes: 10
+      run: |
+        ctest --preset sentry-breakpad -V -LE gui
+
+    - name: macdeployqt
+      if: runner.os == 'macOS'
+      run: |
+        cd build-sentry-breakpad
+
+        # Verify app bundle structure before deployment
+        echo "Verifying app bundle structure..."
+        if [ ! -d "wiredpanda.app/Contents/MacOS" ]; then
+          echo "Error: App bundle MacOS directory missing"
+          exit 1
+        fi
+
+        # Ensure executable has proper permissions and is linked correctly
+        chmod +x wiredpanda.app/Contents/MacOS/wiredpanda
+
+        # cmake's MACOSX_BUNDLE_INFO_PLIST should always produce this now (see
+        # CMakeLists.txt's if(APPLE) block) - this is a temporary defensive fallback for
+        # the first few real CI runs of the new bundle path, not expected to ever fire.
+        # Remove once proven stable. Kept in sync with App/Resources/macOS/Info.plist.in.
+        if [ ! -f "wiredpanda.app/Contents/Info.plist" ]; then
+          echo "Warning: Info.plist missing after cmake --install - creating a fallback..."
+          cat > wiredpanda.app/Contents/Info.plist << INFOPLIST
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>CFBundleExecutable</key>
+            <string>wiredpanda</string>
+            <key>CFBundleIdentifier</key>
+            <string>io.github.gibis_unifesp.wiRedPanda</string>
+            <key>CFBundleName</key>
+            <string>wiRedPanda</string>
+            <key>CFBundleVersion</key>
+            <string>$VERSION</string>
+            <key>CFBundleShortVersionString</key>
+            <string>$VERSION</string>
+            <key>CFBundlePackageType</key>
+            <string>APPL</string>
+        </dict>
+        </plist>
+        INFOPLIST
+        fi
+
+        # Show Qt installation path and verify it's accessible
+        echo "Qt installation path: $QT_ROOT_DIR"
+        echo "Qt binary path: $(which macdeployqt)"
+
+        # Check what frameworks the executable currently links to
+        echo "Current framework dependencies:"
+        otool -L wiredpanda.app/Contents/MacOS/wiredpanda | head -20
+
+        # Run macdeployqt with verbose output and additional options
+        echo "Running macdeployqt with verbose output..."
+        macdeployqt wiredpanda.app -verbose=2 -always-overwrite -dmg || {
+          echo "macdeployqt failed, attempting with force option..."
+          # If macdeployqt fails, try to manually copy Qt frameworks and try again
+          mkdir -p wiredpanda.app/Contents/Frameworks
+
+          # Find and copy critical Qt libraries that might be missing
+          for qtlib in QtCore QtGui QtWidgets; do
+            if [ -f "$QT_ROOT_DIR/lib/lib${qtlib}.dylib" ]; then
+              echo "Manually copying $qtlib..."
+              cp "$QT_ROOT_DIR/lib/lib${qtlib}.dylib" wiredpanda.app/Contents/Frameworks/ || true
+            elif [ -f "$QT_ROOT_DIR/lib/${qtlib}.framework/${qtlib}" ]; then
+              echo "Manually copying $qtlib framework..."
+              cp -R "$QT_ROOT_DIR/lib/${qtlib}.framework" wiredpanda.app/Contents/Frameworks/ || true
+            fi
+          done
+
+          # Try macdeployqt again after manual framework copying
+          macdeployqt wiredpanda.app -verbose=2 -dmg
+        }
+
+        # Verify the DMG was created
+        if [ ! -f "wiredpanda.dmg" ]; then
+          echo "Error: DMG creation failed"
+          ls -la
+          exit 1
+        fi
+
+        mv wiredpanda.dmg wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg
+
+    - name: Validate macOS Release Artifacts
+      if: runner.os == 'macOS'
+      run: |
+        # Verify DMG file exists
+        if [ ! -f "build-sentry-breakpad/wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg" ]; then
+          echo "Error: macOS DMG file not found"
+          exit 1
+        fi
+
+        # Verify app bundle exists
+        if [ ! -d "build-sentry-breakpad/wiredpanda.app" ]; then
+          echo "Error: wiredpanda.app bundle not found"
+          exit 1
+        fi
+
+        # Verify executable exists in app bundle
+        if [ ! -f "build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda" ]; then
+          echo "Error: wiredpanda executable not found in app bundle"
+          exit 1
+        fi
+
+        # Verify Examples are included in app bundle
+        if [ -d "build-sentry-breakpad/wiredpanda.app/Contents/Resources/Examples" ]; then
+          EXAMPLE_COUNT=$(find build-sentry-breakpad/wiredpanda.app/Contents/Resources/Examples -name "*.panda" | wc -l)
+          echo "✓ Examples directory present with $EXAMPLE_COUNT files"
+        else
+          echo "Error: Examples directory missing from app bundle"
+          exit 1
+        fi
+
+        # Verify required Sentry files are included (breakpad backend)
+        if [ ! -f "build-sentry-breakpad/wiredpanda.app/Contents/Frameworks/libsentry.dylib" ]; then
+          echo "Error: Sentry library missing from app bundle"
+          exit 1
+        fi
+
+        # CRITICAL: Verify Qt frameworks are properly deployed
+        echo "Checking Qt framework deployment..."
+        FRAMEWORKS_DIR="build-sentry-breakpad/wiredpanda.app/Contents/Frameworks"
+        MISSING_FRAMEWORKS=()
+
+        # Check for essential Qt frameworks
+        for framework in QtCore QtGui QtWidgets; do
+          if [ ! -d "$FRAMEWORKS_DIR/${framework}.framework" ] && [ ! -f "$FRAMEWORKS_DIR/lib${framework}.dylib" ]; then
+            MISSING_FRAMEWORKS+=("$framework")
+          fi
+        done
+
+        if [ ${#MISSING_FRAMEWORKS[@]} -gt 0 ]; then
+          echo "Error: Missing Qt frameworks: ${MISSING_FRAMEWORKS[*]}"
+          echo "Contents of Frameworks directory:"
+          ls -la "$FRAMEWORKS_DIR/" || echo "Frameworks directory not found"
+          echo "Executable dependencies:"
+          otool -L "build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda" | grep -E "(Qt|@rpath)" || echo "No Qt dependencies found"
+          exit 1
+        fi
+
+        # Verify frameworks are properly linked (no external Qt paths)
+        echo "Verifying Qt framework linking..."
+        EXTERNAL_QT_DEPS=$(otool -L "build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda" | grep -E "/Users/.*/Qt|/usr/local.*/Qt" | wc -l)
+        if [ "$EXTERNAL_QT_DEPS" -gt 0 ]; then
+          echo "Warning: Found external Qt dependencies (may cause runtime issues):"
+          otool -L "build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda" | grep -E "/Users/.*/Qt|/usr/local.*/Qt"
+        fi
+
+        # Verify DMG contents by mounting it temporarily
+        echo "Verifying DMG contents..."
+        hdiutil attach "build-sentry-breakpad/wiRedPanda-$VERSION-macOS-Qt${{ matrix.qt }}.dmg" -mountpoint /tmp/wiredpanda_dmg -readonly || {
+          echo "Error: Failed to mount DMG for verification"
+          exit 1
+        }
+
+        # Check if the app in DMG has Qt frameworks
+        if [ ! -d "/tmp/wiredpanda_dmg/wiredpanda.app/Contents/Frameworks" ]; then
+          echo "Error: DMG app bundle missing Frameworks directory"
+          hdiutil detach /tmp/wiredpanda_dmg
+          exit 1
+        fi
+
+        DMG_FRAMEWORKS_COUNT=$(find "/tmp/wiredpanda_dmg/wiredpanda.app/Contents/Frameworks" -name "*.framework" -o -name "*.dylib" | wc -l)
+        echo "Found $DMG_FRAMEWORKS_COUNT frameworks/libraries in DMG"
+
+        if [ "$DMG_FRAMEWORKS_COUNT" -lt 3 ]; then
+          echo "Error: Insufficient frameworks in DMG (expected at least 3 Qt frameworks + Sentry)"
+          echo "DMG Frameworks contents:"
+          ls -la "/tmp/wiredpanda_dmg/wiredpanda.app/Contents/Frameworks/"
+          hdiutil detach /tmp/wiredpanda_dmg
+          exit 1
+        fi
+
+        hdiutil detach /tmp/wiredpanda_dmg
+
+        # Verify dSYM symbols were generated
+        if [ ! -d "build-sentry-breakpad/wiredpanda.app.dSYM" ]; then
+          echo "Error: dSYM symbols not found"
+          exit 1
+        fi
+
+        # Validate macOS app bundle build quality
+        echo "Validating macOS app bundle build quality..."
+
+        # Check executable file properties
+        EXECUTABLE_PATH="build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda"
+        if [ ! -f "$EXECUTABLE_PATH" ]; then
+          echo "Error: Main executable missing from app bundle"
+          exit 1
+        fi
+
+        echo "✓ Executable file info:"
+        ls -lh "$EXECUTABLE_PATH"
+        echo "✓ Executable type: $(file "$EXECUTABLE_PATH")"
+
+        # Verify app bundle structure
+        echo "✓ App bundle structure validation:"
+        if [ -f "build-sentry-breakpad/wiredpanda.app/Contents/Info.plist" ]; then
+          echo "  ✓ Info.plist present"
+        else
+          echo "  Warning: Info.plist missing"
+        fi
+
+        if [ -d "build-sentry-breakpad/wiredpanda.app/Contents/Resources" ]; then
+          echo "  ✓ Resources directory present"
+        else
+          echo "  Warning: Resources directory missing"
+        fi
+
+        # Check framework dependencies and linking
+        echo "✓ Framework dependencies (first 10):"
+        otool -L "$EXECUTABLE_PATH" | head -10
+
+        # Verify Qt frameworks are bundled (not external)
+        EXTERNAL_QT=$(otool -L "$EXECUTABLE_PATH" | grep -E "/Users/.*/Qt|/usr/local.*/Qt" | wc -l)
+        if [ "$EXTERNAL_QT" -eq 0 ]; then
+          echo "✓ No external Qt dependencies found (properly bundled)"
+        else
+          echo "Warning: Found $EXTERNAL_QT external Qt dependencies:"
+          otool -L "$EXECUTABLE_PATH" | grep -E "/Users/.*/Qt|/usr/local.*/Qt"
+        fi
+
+        # Check architecture
+        ARCH_INFO=$(file "$EXECUTABLE_PATH" | grep -o "x86_64\|arm64\|universal")
+        echo "✓ Architecture: $ARCH_INFO"
+
+        # Verify code signing (basic check)
+        CODESIGN_STATUS=$(codesign -dv "$EXECUTABLE_PATH" 2>&1 | grep -o "adhoc\|signed" || echo "unsigned")
+        echo "✓ Code signing status: $CODESIGN_STATUS"
+
+        # Functional check: actually run the packaged executable from inside the
+        # bundle, proving it launches standalone (Qt frameworks resolve via the
+        # bundle's own @rpath) - not just that otool -L looks right statically.
+        echo "Running wiredpanda --version..."
+        VERSION_OUTPUT=$("$EXECUTABLE_PATH" --version 2>&1)
+        VERSION_EXIT=$?
+        if [ "$VERSION_EXIT" -ne 0 ]; then
+          echo "Error: wiredpanda --version exited with code $VERSION_EXIT"
+          echo "$VERSION_OUTPUT"
+          exit 1
+        fi
+        echo "✓ wiredpanda runs and exits successfully:"
+        echo "$VERSION_OUTPUT"
+
+        echo "macOS build quality validation completed successfully"
+
+        # Log Sentry configuration for debugging (breakpad backend)
+        echo "Sentry configuration check:"
+        echo "  - libsentry.dylib: $(ls -la build-sentry-breakpad/wiredpanda.app/Contents/Frameworks/libsentry.dylib)"
+        echo "  - Backend: breakpad (in-process, no separate handler required)"
+        echo "  - dylib dependencies: $(otool -L build-sentry-breakpad/wiredpanda.app/Contents/MacOS/wiredpanda | grep sentry || echo 'No sentry dylib dependency found')"
+
+        echo "macOS release artifacts validated successfully"
+
+    - name: Upload macOS Debug Symbols to Sentry
+      if: runner.os == 'macOS' && github.event_name == 'release'
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      run: |
+        sentry-cli login --auth-token "$SENTRY_AUTH_TOKEN"
+        sentry-cli releases new "wiredpanda@$VERSION" -p wiredpanda
+        sentry-cli debug-files upload --include-sources -p wiredpanda build-sentry-breakpad/
+        sentry-cli debug-files upload --include-sources -p wiredpanda $QT_ROOT_DIR
+        sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
+
+    - name: Publish macOS
+      if: runner.os == 'macOS' && github.event_name == 'release'
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
+      with:
+        fail_on_unmatched_files: true
+        files: 'build-sentry-breakpad/*.dmg'
+
+    - name: Upload build artifacts on failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: deploy-logs-${{ matrix.os }}-${{ matrix.qt }}
+        path: |
+          build-*/CMakeCache.txt
+          build-*/CMakeFiles/CMakeOutput.log
+          build-*/CMakeFiles/CMakeError.log
+        retention-days: 7
+
+    - name: Probe - keep the release files
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: probe-deploy-${{ matrix.os }}-${{ matrix.arch }}
+        path: |
+          *.AppImage
+          build-*/*.zip
+          build-*/*.dmg
+          build-*/*.AppImage
+        if-no-files-found: ignore
+        retention-days: 7
