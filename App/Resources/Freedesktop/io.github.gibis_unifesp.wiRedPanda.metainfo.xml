@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors -->
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<component type="desktop-application">
+  <id>io.github.gibis_unifesp.wiRedPanda</id>
+  <name>wiRedPanda</name>
+  <summary>Learn about logic circuits in an easy and friendly way</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <developer id="io.github.gibis_unifesp">
+    <name>GIBIS-UNIFESP</name>
+  </developer>
+
+  <description>
+    <p>
+      wiRedPanda is a free software designed to help students learn about
+      digital logic circuits and simulate them in an easy and friendly way.
+    </p>
+    <p>Main features:</p>
+    <ul>
+      <li>Real-time digital logic circuit simulation</li>
+      <li>Intuitive drag-and-drop interface with logic gates, flip-flops, multiplexers, displays, and clocks</li>
+      <li>Custom Integrated Circuits (ICs) and hierarchical subcircuits</li>
+      <li>Built-in waveform viewer (beWavedDolphin) and truth table generator</li>
+      <li>Export circuits to Arduino C++ code, SystemVerilog, images, or PDF</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">wiredpanda.desktop</launchable>
+
+  <url type="homepage">https://gibis-unifesp.github.io/wiRedPanda/</url>
+  <url type="bugtracker">https://github.com/GIBIS-UNIFESP/wiRedPanda/issues</url>
+  <url type="translate">https://hosted.weblate.org/projects/wiredpanda/wiredpanda/</url>
+  <url type="vcs-browser">https://github.com/GIBIS-UNIFESP/wiRedPanda</url>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#f5d6c6</color>
+    <color type="primary" scheme_preference="dark">#1e293b</color>
+  </branding>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Digital logic circuit editor and real-time simulation in wiRedPanda</caption>
+      <image>https://raw.githubusercontent.com/GIBIS-UNIFESP/wiRedPanda/site/src/images/panda/panda1.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Designing and simulating complex logic circuits</caption>
+      <image>https://raw.githubusercontent.com/GIBIS-UNIFESP/wiRedPanda/site/src/images/panda/panda2.png</image>
+    </screenshot>
+  </screenshots>
+
+  <provides>
+    <binary>wiredpanda</binary>
+    <mediatype>application/x-wiredpanda</mediatype>
+  </provides>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="5.2.2" date="2026-08-30" />
+    <release version="5.2.1" date="2026-07-19" />
+    <release version="5.2.0" date="2026-07-17" />
+    <release version="5.1.3" date="2026-06-24" />
+    <release version="5.1.2" date="2026-05-23" />
+  </releases>
+</component>

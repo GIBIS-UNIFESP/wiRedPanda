@@ -1,0 +1,75 @@
+# Copyright 2015 - 2026, GIBIS-UNIFESP and the wiRedPanda contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+id: io.github.gibis_unifesp.wiRedPanda
+runtime: org.kde.Platform
+runtime-version: '6.11'
+sdk: org.kde.Sdk
+command: wiredpanda
+
+rename-desktop-file: wiredpanda.desktop
+rename-icon: wpanda
+rename-mime-file: wiredpanda.xml
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=dri
+  - --filesystem=xdg-documents
+
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
+
+modules:
+  - name: nlohmann-json
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DJSON_BuildTests=OFF
+      - -DJSON_MultipleHeaders=ON
+    cleanup:
+      - '*'
+    sources:
+      - type: archive
+        url: https://github.com/nlohmann/json/archive/refs/tags/v3.12.0.tar.gz
+        sha256: 3a927344a64466c839c3ed28f64d2996a52b4e6564b8af0dc36fd9d6a4807f92
+
+  - name: json-schema-validator
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DBUILD_SHARED_LIBS=OFF
+      - -DJSON_VALIDATOR_BUILD_TESTS=OFF
+      - -DJSON_VALIDATOR_BUILD_EXAMPLES=OFF
+    cleanup:
+      - /include
+      - /lib/cmake
+      - '*.a'
+    sources:
+      - type: archive
+        url: https://github.com/pboettch/json-schema-validator/archive/refs/tags/2.4.0.tar.gz
+        sha256: 2ea2a4c3fbadb3fb60f9dabdd3bb552d4211385159289ef3427cfbf7168e5cf2
+
+  - name: wiredpanda
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DWIREDPANDA_USE_SYSTEM_JSON=ON
+      - -DBUILD_TESTING=OFF
+    sources:
+      - type: archive
+        url: https://github.com/GIBIS-UNIFESP/wiRedPanda/archive/refs/tags/5.2.2.tar.gz
+        sha256: f099a92d7ac4e7babce79b293076946e78eb53830e90a6be26184f368d2ea398
+        x-checker-data:
+          type: github
+          repo: GIBIS-UNIFESP/wiRedPanda
+          tag-pattern: ^([\d.]+)$
