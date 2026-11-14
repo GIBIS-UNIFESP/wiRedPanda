@@ -40,6 +40,10 @@ b = '"-DCMAKE_PREFIX_PATH=#{validator_prefix}",'
 assert t.count(a) == 1 and t.count(b) == 1
 t = t.replace(a, a + '\n                      "-DCMAKE_PREFIX_PATH=#{Formula[\'nlohmann-json\'].opt_prefix}",\n                      "-Dnlohmann_json_DIR=#{Formula[\'nlohmann-json\'].opt_share}/cmake/nlohmann_json",')
 t = t.replace(b, '"-DCMAKE_PREFIX_PATH=#{validator_prefix};#{Formula["nlohmann-json"].opt_prefix}",')
+# N9 variant 2: make the validator's own nlohmann_json target exist before its FetchContent branch.
+c = 'resource("json-schema-validator").stage do'
+assert t.count(c) == 1
+t = t.replace(c, c + '\n      inreplace "CMakeLists.txt", "if (NOT TARGET nlohmann_json)", "find_package(nlohmann_json REQUIRED)\\n  if (NOT TARGET nlohmann_json)\\n    add_library(nlohmann_json ALIAS nlohmann_json::nlohmann_json)\\n  endif()\\n  if (FALSE)"')
 p.write_text(t)
 PY
 if [ $? -eq 0 ]; then report "N9 variant applied: nlohmann-json prefix added to the resource and app configure"; else report "N9 variant NOT applied (patch script failed)"; fi
