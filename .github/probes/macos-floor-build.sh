@@ -8,7 +8,7 @@ report() { echo "- $*" >> probe-out/results.md; }
 echo "## macOS build, deployment target 12.0 [B1]" >> probe-out/results.md
 
 python3 -m venv "$RUNNER_TEMP/aqt" && "$RUNNER_TEMP/aqt/bin/pip" install --quiet aqtinstall
-"$RUNNER_TEMP/aqt/bin/aqt" install-qt mac desktop 6.9.3 clang_64 -O "$RUNNER_TEMP/qt" > aqt.log 2>&1
+"$RUNNER_TEMP/aqt/bin/aqt" install-qt mac desktop 6.9.3 clang_64 -m qtmultimedia qtimageformats qtsvg -O "$RUNNER_TEMP/qt" > aqt.log 2>&1
 code=$?
 QT="$RUNNER_TEMP/qt/6.9.3/macos"
 report "setup: Qt 6.9.3 (clang_64, universal) installed, aqt exit=$code"

@@ -12,7 +12,7 @@ OS=$(sw_vers -productVersion)
 echo "## Launch on macOS $OS [B1]" >> probe-out/results.md
 
 run_once() { # $1 label, $2 binary path
-  QT_QPA_PLATFORM=offscreen "$2" --version > "$1.out" 2> "$1.err"
+  "$2" --version > "$1.out" 2> "$1.err"
   code=$?
   report "B1 $1 --version on macOS $OS: exit=$code stdout='$(head -1 "$1.out")' stderr='$(head -c 240 "$1.err" | tr '\n' ' ')'"
 }
