@@ -25,7 +25,11 @@ in
   preCheck = old.preCheck + ''
     export FONTCONFIG_FILE=${fonts}
     export QT_PLUGIN_PATH=${pkgs.lib.makeSearchPath "lib/qt-6/plugins" [ pkgs.qt6.qtbase pkgs.qt6.qtsvg pkgs.qt6.qtmultimedia ]}
-    echo "DIAG sandbox fc-match sans-serif: $(fc-match sans-serif 2>&1)"
+    echo "DIAG FONTCONFIG_FILE=$FONTCONFIG_FILE"
+    echo "DIAG fonts.conf: $(head -c 400 ${fonts} | tr '\n' ' ')"
+    echo "DIAG fc-match 'DejaVu Sans': $(fc-match 'DejaVu Sans' 2>&1)"
+    echo "DIAG fc-match sans-serif: $(fc-match sans-serif 2>&1)"
+    echo "DIAG fc-match -s sans-serif top 4: $(fc-match -s sans-serif 2>&1 | head -4 | tr '\n' ';')"
     echo "DIAG sandbox fc-list families: $(fc-list : family 2>/dev/null | sort -u | head -60 | tr '\n' ';')"
     echo "DIAG sandbox /etc/hostname: $(ls -l /etc/hostname 2>&1)"
     echo "DIAG sandbox id: $(id)"
