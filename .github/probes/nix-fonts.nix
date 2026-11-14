@@ -14,6 +14,8 @@ let
       <!-- The runner has no DejaVu Math TeX Gyre; in the sandbox it ranks first for sans-serif. -->
       <selectfont><rejectfont><glob>*DejaVuMathTeXGyre*</glob></rejectfont></selectfont>
       <alias><family>sans-serif</family><prefer><family>DejaVu Sans</family></prefer></alias>
+      <!-- Qt asks for its default application font as "Sans Serif", not the generic name. -->
+      <alias><family>Sans Serif</family><prefer><family>DejaVu Sans</family></prefer></alias>
       <alias><family>serif</family><prefer><family>DejaVu Serif</family></prefer></alias>
       <alias><family>monospace</family><prefer><family>DejaVu Sans Mono</family></prefer></alias>
     </fontconfig>
