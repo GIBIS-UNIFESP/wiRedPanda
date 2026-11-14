@@ -18,6 +18,7 @@ else
 fi
 
 if [ "$SYS" = x86_64-linux ]; then
+  { echo "runner fc-match sans-serif: $(fc-match sans-serif 2>&1)"; echo "runner fc-list families: $(fc-list : family 2>/dev/null | sort -u | head -60 | tr '\n' ';')"; echo "runner /etc/hostname: $(ls -l /etc/hostname 2>&1)"; } >> probe-out/results.md
   nix-build --no-out-link .github/probes/nix-fonts.nix > nix-fonts.log 2> nix-fonts.err
   code=$?
   report "N10 variant with DejaVu fonts and FONTCONFIG_FILE: nix-build exit=$code $(grep -i 'tests passed\|tests failed' nix-fonts.err | tail -1)"
