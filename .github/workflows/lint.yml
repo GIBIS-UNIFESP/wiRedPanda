@@ -55,7 +55,7 @@ jobs:
 
     - uses: actions/setup-python@v7
       with:
-        python-version: '3.12'
+        python-version: '3.14'
         cache: 'pip'
         cache-dependency-path: 'MCP/Client/requirements.txt'
 
@@ -108,7 +108,7 @@ jobs:
 
     - uses: actions/setup-python@v7
       with:
-        python-version: '3.12'
+        python-version: '3.14'
         cache: 'pip'
         cache-dependency-path: 'MCP/Client/requirements.txt'
 
