@@ -110,7 +110,7 @@ jobs:
         setup-python: false
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # main
+      uses: hendrikmuhs/ccache-action@dbeefd73e8e2ffc1bbc412570072735eb4db3607 # main
       with:
         key: ${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
 
