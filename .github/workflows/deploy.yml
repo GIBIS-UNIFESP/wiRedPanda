@@ -173,22 +173,16 @@ jobs:
         # produced by appimagetool.
         ARCH_TRIPLE=$(uname -m)
 
-        mkdir -p appimage/usr/lib \
-                 appimage/usr/share/icons/hicolor/scalable/apps \
-                 appimage/usr/share/icons/hicolor/256x256/apps
+        mkdir -p appimage/usr/lib
 
         # Installs the binary, .desktop file (version already substituted via
-        # configure_file at CMake-configure time), 5 PNG icon sizes, Examples/,
-        # and the mime XML - everything cmake --install now covers for Linux.
+        # configure_file at CMake-configure time), 6 PNG icon sizes (up to
+        # 256x256) + scalable SVG, AppStream metainfo XML, Examples/, and the
+        # mime XML - everything cmake --install covers for Linux.
         DESTDIR="$PWD/appimage" cmake --install build-sentry-crashpad --prefix /usr
 
         cp build-sentry-crashpad/crashpad_handler appimage/usr/bin/
         cp thirdparty/sentry/lib/libsentry.so appimage/usr/lib/
-
-        # install() only ships PNGs up to 128x128; keep the scalable/256 assets
-        # it doesn't cover so the AppImage's app-menu icon looks its best.
-        cp App/Resources/Assets/Logos/wpanda.svg appimage/usr/share/icons/hicolor/scalable/apps/wpanda.svg
-        cp App/Resources/Assets/Logos/wpanda-256x256.png appimage/usr/share/icons/hicolor/256x256/apps/wpanda.png
 
         wget -q "https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous \
           -O - | grep "appimagetool-.*-${ARCH_TRIPLE}.AppImage" | head -n 1 | cut -d '"' -f 2)" \
