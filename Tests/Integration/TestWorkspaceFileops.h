@@ -38,6 +38,7 @@ private slots:
     void testSaveFailureLeavesFileIdentityUnchanged();
 
     void testDolphinFileNameStorage();
+    void testBackgroundImageStorageRoundTrip();
     void testLastIdInitializationValue();
     void testLastIdGetterSetter();
     void testLastIdPersistenceOnLoad();

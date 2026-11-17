@@ -8,6 +8,7 @@
 
 #include <QClipboard>
 #include <QDrag>
+#include <QFileInfo>
 #include <QGraphicsSceneDragDropEvent>
 #include <QGraphicsSceneHelpEvent>
 #include <QKeyEvent>
@@ -222,6 +223,11 @@ SerializationContext Scene::deserializationContext(QHash<quint64, Port *> &portM
 
 void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    if (!m_backgroundRenderingEnabled) {
+        QGraphicsScene::drawBackground(painter, rect);
+        return;
+    }
+
     // Flush any pending visibility reapply before items are painted: drawBackground()
     // always runs before Qt's item-painting pass for this same frame (Qt calls
     // drawBackground(), then paints visible items, then drawForeground()), so applying
@@ -233,12 +239,72 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
     }
 
     // m11() is the X-axis scale factor of the view transform; below 0.3 the grid dots
-    // would be sub-pixel and invisible anyway, so skip drawing for performance
-    if (view() and view()->transform().m11() < 0.3) {
+    // would be sub-pixel and invisible anyway, so skip drawing for performance.
+    // A custom background image is a different case: keep it visible even at tiny zooms,
+    // but do not spend time drawing the dot grid when it would be useless anyway.
+    if (view() && view()->transform().m11() < 0.3 && m_backgroundImage.isNull()) {
         return;
     }
 
     QGraphicsScene::drawBackground(painter, rect);
+
+    if (!m_backgroundImage.isNull()) {
+        QRectF targetRect = rect.isValid() ? rect : sceneRect();
+        if (view()) {
+            const QRectF viewportRect = view()->mapToScene(view()->viewport()->rect()).boundingRect();
+            if (!viewportRect.isEmpty()) {
+                targetRect = viewportRect;
+            }
+        }
+
+        switch (m_backgroundMode) {
+        case BackgroundMode::Tile: {
+            const qreal imgW = static_cast<qreal>(m_backgroundImage.width());
+            const qreal imgH = static_cast<qreal>(m_backgroundImage.height());
+            const qreal startX = std::floor(targetRect.left() / imgW) * imgW;
+            const qreal startY = std::floor(targetRect.top() / imgH) * imgH;
+            for (qreal y = startY; y < targetRect.bottom(); y += imgH) {
+                for (qreal x = startX; x < targetRect.right(); x += imgW) {
+                    painter->drawPixmap(QRectF(x, y, imgW, imgH), m_backgroundImage,
+                                        QRectF(0, 0, imgW, imgH));
+                }
+            }
+            break;
+        }
+        case BackgroundMode::Stretch: {
+            painter->drawPixmap(targetRect, m_backgroundImage, QRectF(m_backgroundImage.rect()));
+            break;
+        }
+        case BackgroundMode::Center: {
+            const QRectF sourceRect = QRectF(m_backgroundImage.rect());
+            const QRectF drawRect(
+                targetRect.center().x() - sourceRect.width() / 2.0,
+                targetRect.center().y() - sourceRect.height() / 2.0,
+                sourceRect.width(),
+                sourceRect.height());
+            painter->drawPixmap(drawRect, m_backgroundImage, sourceRect);
+            break;
+        }
+        case BackgroundMode::Fit:
+        default: {
+            const QSizeF targetSize = targetRect.size();
+            const QSize fitSize = m_backgroundImage.size().scaled(
+                QSize(static_cast<int>(std::max(1.0, targetSize.width())),
+                      static_cast<int>(std::max(1.0, targetSize.height()))),
+                Qt::KeepAspectRatio);
+            const QPointF offset(
+                targetRect.left() + (targetRect.width() - fitSize.width()) / 2.0,
+                targetRect.top() + (targetRect.height() - fitSize.height()) / 2.0);
+            painter->drawPixmap(QRectF(offset, QSizeF(fitSize)), m_backgroundImage,
+                                QRectF(m_backgroundImage.rect()));
+            break;
+        }
+        }
+    }
+
+    if (view() && view()->transform().m11() < 0.3) {
+        return;
+    }
 
     const int gridSize = Constants::gridSize;
     const int left = static_cast<int>(std::floor(rect.left() / gridSize)) * gridSize;
@@ -283,6 +349,84 @@ void Scene::drawBackground(QPainter *painter, const QRectF &rect)
 void Scene::setDots(const QPen &dots)
 {
     m_dots = dots;
+}
+
+void Scene::setBackgroundImage(const QString &path)
+{
+    if (path.isEmpty()) {
+        clearBackgroundImage();
+        return;
+    }
+
+    const QFileInfo info(path);
+    if (!info.exists() || !info.isFile()) {
+        clearBackgroundImage();
+        return;
+    }
+
+    QPixmap image(path);
+    if (image.isNull()) {
+        clearBackgroundImage();
+        return;
+    }
+
+    m_backgroundImage = image;
+    m_backgroundImagePath = info.absoluteFilePath();
+    if (m_view) {
+        m_view->setCacheMode(QGraphicsView::CacheNone);
+        const QRectF viewportRect = m_view->mapToScene(m_view->viewport()->rect()).boundingRect();
+        invalidate(viewportRect, QGraphicsScene::BackgroundLayer);
+        m_view->viewport()->update();
+    } else {
+        invalidate(sceneRect(), QGraphicsScene::BackgroundLayer);
+    }
+    update();
+}
+
+void Scene::setBackgroundRenderingEnabled(bool enabled)
+{
+    if (m_backgroundRenderingEnabled == enabled) {
+        return;
+    }
+
+    m_backgroundRenderingEnabled = enabled;
+    if (m_view) {
+        const QRectF viewportRect = m_view->mapToScene(m_view->viewport()->rect()).boundingRect();
+        invalidate(viewportRect, QGraphicsScene::BackgroundLayer);
+        m_view->viewport()->update();
+    }
+    update();
+}
+
+void Scene::setBackgroundMode(const BackgroundMode mode)
+{
+    if (m_backgroundMode == mode) {
+        return;
+    }
+
+    m_backgroundMode = mode;
+    if (m_view) {
+        const QRectF viewportRect = m_view->mapToScene(m_view->viewport()->rect()).boundingRect();
+        invalidate(viewportRect, QGraphicsScene::BackgroundLayer);
+        m_view->viewport()->update();
+    }
+    update();
+}
+
+void Scene::clearBackgroundImage()
+{
+    m_backgroundImage = QPixmap();
+    m_backgroundImagePath.clear();
+    m_backgroundMode = BackgroundMode::Fit;
+    if (m_view) {
+        m_view->setCacheMode(QGraphicsView::CacheBackground);
+        const QRectF viewportRect = m_view->mapToScene(m_view->viewport()->rect()).boundingRect();
+        invalidate(viewportRect, QGraphicsScene::BackgroundLayer);
+        m_view->viewport()->update();
+    } else {
+        invalidate(sceneRect(), QGraphicsScene::BackgroundLayer);
+    }
+    update();
 }
 
 Simulation *Scene::simulation()
