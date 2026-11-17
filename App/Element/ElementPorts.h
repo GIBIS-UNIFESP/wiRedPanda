@@ -35,6 +35,8 @@ public:
     {
     }
 
+    ~ElementPorts();
+
     // --- Read access ---
 
     /// Returns the input port vector.

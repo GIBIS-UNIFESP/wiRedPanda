@@ -15,9 +15,11 @@
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/Display14.h"
 #include "App/Element/GraphicElements/Display16.h"
+#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/GraphicElements/Line.h"
 #include "App/Element/GraphicElements/Text.h"
+#include "App/Element/IC.h"
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
@@ -336,4 +338,120 @@ void TestGraphicElement::testRetranslateUpdatesTranslatedNameToolTipAndPortName(
     const QString expected = ElementFactory::translatedName(gate.elementType());
     QCOMPARE(gate.toolTip(), expected);
     QCOMPARE(gate.objectName(), expected);
+}
+
+void TestGraphicElement::testPortIssuesDerivedFromPorts()
+{
+    And andGate;
+    QVERIFY(andGate.hasPortIssues());
+    const auto invalid = andGate.invalidInputs();
+    QCOMPARE(invalid.size(), 2);
+    QCOMPARE(invalid.at(0), andGate.inputPort(0));
+    QCOMPARE(invalid.at(1), andGate.inputPort(1));
+}
+
+void TestGraphicElement::testPortIssuesClearingOnConnect()
+{
+    Scene scene;
+    auto *andGate = new And();
+    auto *vcc = new InputVcc();
+    scene.addItem(andGate);
+    scene.addItem(vcc);
+
+    QVERIFY(andGate->hasPortIssues());
+
+    auto *conn0 = new Connection();
+    conn0->setStartPort(vcc->outputPort(0));
+    conn0->setEndPort(andGate->inputPort(0));
+    scene.addItem(conn0);
+
+    QVERIFY(andGate->hasPortIssues());
+    QCOMPARE(andGate->invalidInputs().size(), 1);
+
+    auto *conn1 = new Connection();
+    conn1->setStartPort(vcc->outputPort(0));
+    conn1->setEndPort(andGate->inputPort(1));
+    scene.addItem(conn1);
+
+    QVERIFY(!andGate->hasPortIssues());
+    QVERIFY(andGate->invalidInputs().isEmpty());
+}
+
+void TestGraphicElement::testPortIssuesPortCountChanges()
+{
+    Scene scene;
+    auto *andGate = new And();
+    auto *vcc = new InputVcc();
+    scene.addItem(andGate);
+    scene.addItem(vcc);
+
+    auto *conn0 = new Connection();
+    conn0->setStartPort(vcc->outputPort(0));
+    conn0->setEndPort(andGate->inputPort(0));
+    scene.addItem(conn0);
+
+    auto *conn1 = new Connection();
+    conn1->setStartPort(vcc->outputPort(0));
+    conn1->setEndPort(andGate->inputPort(1));
+    scene.addItem(conn1);
+
+    QVERIFY(!andGate->hasPortIssues());
+
+    // Expand to 3 inputs: new input is unconnected and required
+    andGate->setInputSize(3);
+    QVERIFY(andGate->hasPortIssues());
+    QCOMPARE(andGate->invalidInputs().size(), 1);
+    QCOMPARE(andGate->invalidInputs().at(0), andGate->inputPort(2));
+
+    // Shrink back to 2 inputs: only connected inputs remain
+    andGate->setInputSize(2);
+    QVERIFY(!andGate->hasPortIssues());
+    QVERIFY(andGate->invalidInputs().isEmpty());
+}
+
+void TestGraphicElement::testPortIssuesUndoRedoDelete()
+{
+    WorkSpace ws;
+    auto *scene = ws.scene();
+    auto *andGate = new And();
+    scene->addItem(andGate);
+
+    QVERIFY(andGate->hasPortIssues());
+    const int gateId = andGate->id();
+
+    // Select and delete via deleteAction()
+    scene->clearSelection();
+    andGate->setSelected(true);
+    scene->deleteAction();
+
+    QVERIFY(!scene->contains(gateId));
+
+    // Undo delete
+    scene->undoStack()->undo();
+    auto *restored = dynamic_cast<GraphicElement *>(scene->itemById(gateId));
+    QVERIFY(restored != nullptr);
+    QVERIFY(restored->hasPortIssues());
+    QCOMPARE(restored->invalidInputs().size(), 2);
+
+    // Redo delete
+    scene->undoStack()->redo();
+    QVERIFY(!scene->contains(gateId));
+
+    // Undo again
+    scene->undoStack()->undo();
+    restored = dynamic_cast<GraphicElement *>(scene->itemById(gateId));
+    QVERIFY(restored != nullptr);
+    QVERIFY(restored->hasPortIssues());
+}
+
+void TestGraphicElement::testElementAndICTooltipWithIssues()
+{
+    And andGate;
+    QVERIFY(andGate.hasPortIssues());
+    // Element tooltip must remain its name, not contaminated by warning text
+    QCOMPARE(andGate.toolTip(), QStringLiteral("And"));
+
+    IC ic;
+    // IC tooltip deliberately stays empty so it doesn't collide with ICPreviewPopup
+    QVERIFY(ic.toolTip().isEmpty());
 }

@@ -51,6 +51,8 @@ public:
     static void setLabelsUnderIcons(bool enabled);
     static bool icPreviewDisabled();
     static void setIcPreviewDisabled(bool disabled);
+    static bool showWarnings();
+    static void setShowWarnings(bool show);
 
     // Language
     static QString language();

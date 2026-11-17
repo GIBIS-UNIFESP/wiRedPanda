@@ -48,4 +48,11 @@ private slots:
 
     // retranslate()'s translated-name/tooltip/port-name refresh
     void testRetranslateUpdatesTranslatedNameToolTipAndPortName();
+
+    // Port issues and validity tests
+    void testPortIssuesDerivedFromPorts();
+    void testPortIssuesClearingOnConnect();
+    void testPortIssuesPortCountChanges();
+    void testPortIssuesUndoRedoDelete();
+    void testElementAndICTooltipWithIssues();
 };

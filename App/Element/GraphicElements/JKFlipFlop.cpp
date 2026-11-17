@@ -58,11 +58,6 @@ void JKFlipFlop::updatePortsProperties()
     outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
     outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
 
-    inputPort(0)->setRequired(false);
-    inputPort(2)->setRequired(false);
-    inputPort(3)->setRequired(false);
-    inputPort(4)->setRequired(false);
-
     // J and K default to Active (HIGH) when unconnected, so the flip-flop toggles on every
     // clock edge by default — a useful demonstration behavior for the educational context.
     // ~Preset and ~Clear default to Active (HIGH = not asserted).

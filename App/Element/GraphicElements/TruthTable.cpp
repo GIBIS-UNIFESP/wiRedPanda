@@ -223,6 +223,10 @@ void TruthTable::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
     // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
     drawBody(painter);
+
+    if (hasPortIssues()) {
+        m_appearance.renderIssueBorder(painter, boundingRect());
+    }
 }
 
 void TruthTable::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)

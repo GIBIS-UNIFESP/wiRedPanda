@@ -137,6 +137,9 @@ public:
     // --- Serialization ---
 
     /// \reimp
+    void retranslate() override;
+
+    /// \reimp
     void load(QDataStream &stream, SerializationContext &context) override;
     /// \reimp
     void save(QDataStream &stream, SerializationOptions options) const override;

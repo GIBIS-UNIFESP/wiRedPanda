@@ -127,6 +127,17 @@ void Settings::setIcPreviewDisabled(bool disabled)
     setValue("icPreviewDisabled", disabled);
 }
 
+bool Settings::showWarnings()
+{
+    const QVariant saved = value("MainWindow/showWarnings");
+    return saved.isValid() ? saved.toBool() : true;
+}
+
+void Settings::setShowWarnings(const bool show)
+{
+    setValue("MainWindow/showWarnings", show);
+}
+
 bool Settings::updateChecksDisabled()
 {
     return value("updateChecksDisabled").toBool();

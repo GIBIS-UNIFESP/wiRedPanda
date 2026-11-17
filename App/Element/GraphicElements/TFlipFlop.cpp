@@ -56,12 +56,6 @@ void TFlipFlop::updatePortsProperties()
     outputPort(0)->setPos(64, 16);    outputPort(0)->setName("Q");
     outputPort(1)->setPos(64, 48);    outputPort(1)->setName("~Q");
 
-    // T is optional; when unconnected its default Inactive (LOW) means "hold" on every clock edge.
-    // ~Preset and ~Clear default to Active (HIGH = not asserted).
-    inputPort(0)->setRequired(false);
-    inputPort(2)->setRequired(false);
-    inputPort(3)->setRequired(false);
-
     inputPort(2)->setDefaultStatus(Status::Active);
     inputPort(3)->setDefaultStatus(Status::Active);
 

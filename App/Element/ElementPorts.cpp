@@ -7,6 +7,20 @@
 #include "App/Element/GraphicElement.h"
 #include "App/Wiring/Port.h"
 
+ElementPorts::~ElementPorts()
+{
+    for (auto *port : m_inputPorts) {
+        if (port) {
+            port->setGraphicElement(nullptr);
+        }
+    }
+    for (auto *port : m_outputPorts) {
+        if (port) {
+            port->setGraphicElement(nullptr);
+        }
+    }
+}
+
 InputPort *ElementPorts::inputPort(const int index) const
 {
     if (index < 0 || index >= m_inputPorts.size()) {

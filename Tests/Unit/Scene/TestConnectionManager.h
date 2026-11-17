@@ -57,4 +57,8 @@ private slots:
 
     void testShowHoverLabelsWithNullPortIsNoOp();
     void testConnectedPeersWithNullPortReturnsEmpty();
+
+    void testRejectedConnectionLeavesNoElementState();
+    void testShowIssueLabelsSpawnsChipPerInvalidPort();
+    void testShowIssueLabelsClearsWhenCursorLeavesElement();
 };

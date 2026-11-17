@@ -159,6 +159,10 @@ void Mux::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidg
 
     // Draw the body as vectors (crisp at any zoom) rather than blitting a fixed-resolution pixmap.
     drawBody(painter);
+
+    if (hasPortIssues()) {
+        m_appearance.renderIssueBorder(painter, boundingRect());
+    }
 }
 
 void Mux::updateLogic()

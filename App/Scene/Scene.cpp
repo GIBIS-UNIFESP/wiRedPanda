@@ -15,6 +15,7 @@
 #include <QMimeData>
 #include <QPolygon>
 #include <QScrollBar>
+#include <QToolTip>
 #include <QUrl>
 
 #include "App/Core/Common.h"
@@ -1375,6 +1376,22 @@ void Scene::helpEvent(QGraphicsSceneHelpEvent *event)
     if (auto *port = portAt(event->scenePos())) {
         m_connectionManager.showHoverLabels(port);
         return;
+    }
+
+    // Elements with invalid ports show one in-situ chip per offending port.
+    if (auto *item = itemAt(event->scenePos())) {
+        // The hit item may be a child (label, port proxy, etc.). Walk up the
+        // parent chain to locate the owning GraphicElement, if any.
+        QGraphicsItem *cur = item;
+        while (cur && cur->type() != GraphicElement::Type) {
+            cur = cur->parentItem();
+        }
+        if (cur && cur->type() == GraphicElement::Type) {
+            auto *elm = static_cast<GraphicElement *>(cur);
+            if (elm->hasPortIssues()) {
+                m_connectionManager.showIssueLabels(elm);
+            }
+        }
     }
 
     QGraphicsScene::helpEvent(event);

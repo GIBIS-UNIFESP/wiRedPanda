@@ -17,6 +17,7 @@
 #include "App/IO/SerializationContext.h"
 #include "App/Scene/Scene.h"
 #include "App/Scene/Workspace.h"
+#include "App/Wiring/Connection.h"
 #include "Tests/Common/TestUtils.h"
 
 // ============================================================================
@@ -83,8 +84,8 @@ void TestLED::testInputPortNames()
         // Port name should be the index as string
         QCOMPARE(port->name(), QString::number(i + 1));
 
-        // Ports should not be required (optional)
-        QVERIFY(!port->isRequired());
+        // Ports should be required
+        QVERIFY(port->isRequired());
     }
 }
 
@@ -193,6 +194,15 @@ void TestLED::testColorIndexTwoInputs()
     led->setInputSize(2);
     QCOMPARE(led->inputSize(), 2);
 
+    OutputPort out0;
+    OutputPort out1;
+    Connection c0;
+    Connection c1;
+    c0.setStartPort(&out0);
+    c0.setEndPort(led->inputPort(0));
+    c1.setStartPort(&out1);
+    c1.setEndPort(led->inputPort(1));
+
     auto *port0 = led->inputPort(0);
     auto *port1 = led->inputPort(1);
     QVERIFY2(port0 != nullptr && port1 != nullptr, "2-input LED should have 2 input ports");
@@ -221,6 +231,13 @@ void TestLED::testColorIndexThreeInputs()
     led->setInputSize(3);
     QCOMPARE(led->inputSize(), 3);
 
+    OutputPort outs[3];
+    Connection conns[3];
+    for (int i = 0; i < 3; ++i) {
+        conns[i].setStartPort(&outs[i]);
+        conns[i].setEndPort(led->inputPort(i));
+    }
+
     for (int value = 0; value < 8; ++value) {
         for (int i = 0; i < 3; ++i) {
             led->inputPort(i)->setStatus((value & (1 << i)) ? Status::Active : Status::Inactive);
@@ -235,6 +252,13 @@ void TestLED::testColorIndexFourInputs()
     auto led = std::make_unique<Led>();
     led->setInputSize(4);
     QCOMPARE(led->inputSize(), 4);
+
+    OutputPort outs[4];
+    Connection conns[4];
+    for (int i = 0; i < 4; ++i) {
+        conns[i].setStartPort(&outs[i]);
+        conns[i].setEndPort(led->inputPort(i));
+    }
 
     for (int value = 0; value < 16; ++value) {
         for (int i = 0; i < 4; ++i) {

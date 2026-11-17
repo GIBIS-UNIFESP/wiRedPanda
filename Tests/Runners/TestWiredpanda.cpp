@@ -235,6 +235,7 @@
 #include "Tests/Unit/Ui/TestSelectionCapabilities.h"
 #include "Tests/Unit/Ui/TestTrashButton.h"
 #include "Tests/Unit/Ui/TestUpdateController.h"
+#include "Tests/Unit/Ui/TestWarningsDock.h"
 #include "Tests/Unit/Ui/TestWorkspaceManager.h"
 // unit/wiring
 #include "Tests/Unit/Wiring/TestConnection.h"
@@ -460,6 +461,7 @@ int main(int argc, char **argv)
         {"TestSelectionCapabilities", []() -> QObject * { return new TestSelectionCapabilities; }},
         {"TestTrashButton", []() -> QObject * { return new TestTrashButton; }},
         {"TestUpdateController", []() -> QObject * { return new TestUpdateController; }},
+        {"TestWarningsDock", []() -> QObject * { return new TestWarningsDock; }},
         {"TestWorkspaceManager", []() -> QObject * { return new TestWorkspaceManager; }},
     });
 }

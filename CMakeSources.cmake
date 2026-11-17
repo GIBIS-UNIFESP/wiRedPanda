@@ -101,6 +101,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WarningsPanel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ExportController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/FileDialogProvider.cpp
@@ -117,6 +118,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WarningsPanel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/ConnectionSerializer.cpp
@@ -254,6 +256,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ClockDialogUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementContextMenu.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditor.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WarningsPanel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementEditorUI.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementPalette.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/ElementTabNavigator.h
@@ -273,6 +276,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/SelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/TrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/UpdateController.h
+    ${CMAKE_CURRENT_LIST_DIR}/App/UI/WarningsPanel.h
     ${CMAKE_CURRENT_LIST_DIR}/App/UI/WorkspaceManager.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Versions.h
     ${CMAKE_CURRENT_LIST_DIR}/App/Wiring/Connection.h
@@ -533,6 +537,7 @@ set(TEST_WIREDPANDA_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestUpdateController.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWarningsDock.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.cpp
@@ -758,6 +763,7 @@ set(TEST_WIREDPANDA_HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestSelectionCapabilities.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestTrashButton.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestUpdateController.h
+    ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWarningsDock.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Ui/TestWorkspaceManager.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnection.h
     ${CMAKE_CURRENT_LIST_DIR}/Tests/Unit/Wiring/TestConnections.h

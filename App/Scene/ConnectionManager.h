@@ -12,6 +12,7 @@
 #include <QPair>
 #include <QPointer>
 #include <QPointF>
+#include <QRectF>
 
 class GraphicElement;
 class PortHoverLabel;
@@ -90,6 +91,9 @@ public:
      */
     void showHoverLabels(Port *port);
 
+    /// Shows translated issue chips at every invalid input port of an element.
+    void showIssueLabels(GraphicElement *element);
+
     // --- Validation ---
 
     /**
@@ -134,6 +138,7 @@ private:
 
     /// Transient label chips shown for the hovered port and its connected peers.
     QList<QPointer<PortHoverLabel>> m_peerLabels;
+    QRectF m_issueElementRect;
 
     /// Peers actually given hoverEnter() by the current hover, stored as element ID + port
     /// index (same scheme as m_hoverPortElmId/m_hoverPortNumber — Port isn't a QObject,

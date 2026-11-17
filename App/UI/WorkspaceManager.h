@@ -84,6 +84,7 @@ public slots:
 signals:
     /// Emitted when the active tab changes (or becomes null); the shell rebinds the chrome.
     void currentTabChanged(WorkSpace *tab);
+    void tabContentLoaded(WorkSpace *tab);
     /// Emitted when a file-backed tab is (re)named, to feed the recent-files list.
     void recentFileAdded(const QString &filePath);
     /// Emitted when the current tab's title or modified state changes, so the shell can

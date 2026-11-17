@@ -12,6 +12,7 @@
 #include "App/Core/ThemeManager.h"
 #include "App/Element/GraphicElements/And.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
+#include "App/Element/GraphicElements/InputVCC.h"
 #include "App/Scene/Commands.h"
 #include "App/Scene/ConnectionManager.h"
 #include "App/Scene/PortHoverLabel.h"
@@ -593,4 +594,115 @@ void TestConnectionManager::testShowHoverLabelsWithNullPortIsNoOp()
 void TestConnectionManager::testConnectedPeersWithNullPortReturnsEmpty()
 {
     QVERIFY(ConnectionManager::connectedPeers(nullptr).isEmpty());
+}
+
+void TestConnectionManager::testRejectedConnectionLeavesNoElementState()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *manager = scene->connectionManager();
+
+    auto *andGate = new And();
+    scene->addItem(andGate);
+
+    manager->startFromOutput(andGate->outputPort(0));
+    manager->tryComplete(andGate->inputPort(0)->scenePos());
+
+    QVERIFY(manager->editedConnection() == nullptr);
+    QCOMPARE(andGate->invalidInputs().size(), 2);
+}
+
+void TestConnectionManager::testShowIssueLabelsSpawnsChipPerInvalidPort()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *manager = scene->connectionManager();
+
+    auto *andGate = new And();
+    auto *vcc = new InputVcc();
+    scene->addItem(andGate);
+    scene->addItem(vcc);
+
+    auto *conn0 = new Connection();
+    conn0->setStartPort(vcc->outputPort(0));
+    conn0->setEndPort(andGate->inputPort(0));
+    scene->addItem(conn0);
+
+    manager->showIssueLabels(andGate);
+
+    QList<PortHoverLabel *> chips;
+    for (auto *item : scene->items()) {
+        if (auto *chip = dynamic_cast<PortHoverLabel *>(item)) {
+            chips.append(chip);
+        }
+    }
+    QCOMPARE(chips.size(), 1);
+    QCOMPARE(chips.first()->text(), QStringLiteral("Not connected"));
+
+    auto *conn1 = new Connection();
+    conn1->setStartPort(vcc->outputPort(0));
+    conn1->setEndPort(andGate->inputPort(1));
+    scene->addItem(conn1);
+
+    manager->showIssueLabels(andGate);
+    chips.clear();
+    for (auto *item : scene->items()) {
+        if (auto *chip = dynamic_cast<PortHoverLabel *>(item)) {
+            chips.append(chip);
+        }
+    }
+    QCOMPARE(chips.size(), 0);
+
+    auto *conn2 = new Connection();
+    conn2->setStartPort(vcc->outputPort(0));
+    conn2->setEndPort(andGate->inputPort(1));
+    scene->addItem(conn2);
+
+    manager->showIssueLabels(andGate);
+    chips.clear();
+    for (auto *item : scene->items()) {
+        if (auto *chip = dynamic_cast<PortHoverLabel *>(item)) {
+            chips.append(chip);
+        }
+    }
+    QCOMPARE(chips.size(), 1);
+    QCOMPARE(chips.first()->text(), QStringLiteral("Multiple drivers"));
+}
+
+void TestConnectionManager::testShowIssueLabelsClearsWhenCursorLeavesElement()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *manager = scene->connectionManager();
+
+    auto *andGate = new And();
+    scene->addItem(andGate);
+
+    manager->showIssueLabels(andGate);
+
+    int chipCount = 0;
+    for (auto *item : scene->items()) {
+        if (dynamic_cast<PortHoverLabel *>(item)) {
+            ++chipCount;
+        }
+    }
+    QCOMPARE(chipCount, 2);
+
+    manager->updateHover(andGate->sceneBoundingRect().center());
+    chipCount = 0;
+    for (auto *item : scene->items()) {
+        if (dynamic_cast<PortHoverLabel *>(item)) {
+            ++chipCount;
+        }
+    }
+    QCOMPARE(chipCount, 2);
+
+    manager->updateHover(andGate->sceneBoundingRect().bottomRight() + QPointF(200, 200));
+    chipCount = 0;
+    for (auto *item : scene->items()) {
+        if (dynamic_cast<PortHoverLabel *>(item)) {
+            ++chipCount;
+        }
+    }
+    QCOMPARE(chipCount, 0);
 }

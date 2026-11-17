@@ -465,7 +465,7 @@ QStringList ElementAppearance::externalFiles() const
     return result;
 } // LCOV_EXCL_LINE — recurring pattern 1: compiler-generated cleanup for the returned QStringList, never reached after the return above.
 
-void ElementAppearance::render(QPainter *painter, const QRectF &boundingRect, const bool selected) const
+void ElementAppearance::render(QPainter *painter, const QRectF &boundingRect, const bool selected, const bool hasIssues) const
 {
     if (selected) {
         painter->save();
@@ -492,10 +492,38 @@ void ElementAppearance::render(QPainter *painter, const QRectF &boundingRect, co
         // (centre of the pixmap) is set separately via setTransformOriginPoint().
         painter->drawPixmap(QPoint(0, 0), m_pixmap);
     }
+
+    if (hasIssues) {
+        renderIssueBorder(painter, boundingRect);
+    }
+}
+
+void ElementAppearance::renderIssueBorder(QPainter *painter, const QRectF &boundingRect) const
+{
+    painter->save();
+    painter->setPen(m_issuePen);
+    painter->setBrush(Qt::NoBrush);
+    const qreal halfPen = m_issuePen.widthF() / 2.0;
+    const QRectF rect = boundingRect.adjusted(halfPen, halfPen, -halfPen, -halfPen);
+    painter->drawRoundedRect(rect, 5, 5);
+
+    // Small triangular warning indicator in the top-right corner
+    QPointF p1(rect.right() - 12, rect.top() + 4);
+    QPointF p2(rect.right() - 4, rect.top() + 4);
+    QPointF p3(rect.right() - 8, rect.top() + 12);
+    QPolygonF triangle;
+    triangle << p1 << p2 << p3;
+
+    painter->setBrush(m_issuePen.color());
+    painter->setPen(Qt::NoPen);
+    painter->drawPolygon(triangle);
+
+    painter->restore();
 }
 
 void ElementAppearance::applyTheme(const ThemeAttributes &theme)
 {
     m_selectionBrush = theme.m_selectionBrush;
     m_selectionPen = theme.m_selectionPen;
+    m_issuePen = QPen(theme.m_connectionError, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 }
