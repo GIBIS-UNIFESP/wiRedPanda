@@ -257,10 +257,6 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
         return;
     }
 
-    // Remember the displayed size so a growth (small SVG → large custom raster) can trigger a
-    // full device-cache reset below; captured before applyOrientation() replaces m_pixmap.
-    const QSize previousSize = m_pixmap.size();
-
     // The pixmap about to load may have different dimensions than the current one,
     // which changes what boundingRect() reports (it's derived from pixmap().rect()) —
     // Qt requires prepareGeometryChange() before any such geometry-affecting mutation,
@@ -304,12 +300,9 @@ void ElementAppearance::setPixmap(const QString &pixmapPath)
     // element is rotated or flipped.
     applyOrientation();
 
-    // A size change grows/shrinks boundingRect(); DeviceCoordinateCache keeps the old device
-    // tile on a plain update(), so reset the cache to force a full re-render and avoid a stale
-    // ghost of the previous appearance.
-    if (m_pixmap.size() != previousSize) {
-        m_owner->invalidateRenderCache();
-    }
+    // Reset DeviceCoordinateCache on any pixmap change to force a full re-render
+    // and avoid showing a stale cached tile of the previous appearance.
+    m_owner->invalidateRenderCache();
 
     // The transform origin must be updated whenever the pixmap changes so that
     // rotation and scale operations remain centred on the new image

@@ -37,6 +37,27 @@
 #include "thirdparty/sentry/include/sentry.h"
 #endif
 
+#if defined(__SANITIZE_ADDRESS__) || (defined(__has_feature) && __has_feature(address_sanitizer))
+// Provide default LeakSanitizer suppressions for OS and Qt platform plugins
+// (e.g. libxkbcommon compose tables, QtWayland client, PulseAudio, fontconfig)
+// that perform one-time per-process heap allocations not freed at process exit.
+extern "C" const char *__lsan_default_suppressions()
+{
+    return "leak:libxkbcommon.so\n"
+           "leak:libQt6WaylandClient.so\n"
+           "leak:libqwayland.so\n"
+           "leak:libffi.so\n"
+           "leak:xkb_\n"
+           "leak:libpulse.so\n"
+           "leak:libQt6Multimedia.so\n"
+           "leak:libfontconfig.so\n"
+           "leak:libexpat.so\n"
+           "leak:QFontconfigDatabase\n"
+           "leak:libdrm.so\n"
+           "leak:libavutil.so\n";
+}
+#endif
+
 #ifdef Q_OS_LINUX
 namespace {
 

@@ -219,6 +219,7 @@
 #include "Tests/Unit/Tour/TestTourEngine.h"
 // unit/ui
 #include "Tests/Unit/Ui/TestCircuitExporter.h"
+#include "Tests/Unit/Ui/TestCircuitRecorder.h"
 #include "Tests/Unit/Ui/TestDialogs.h"
 #include "Tests/Unit/Ui/TestElementContextMenu.h"
 #include "Tests/Unit/Ui/TestElementEditor.h"
@@ -448,6 +449,7 @@ int main(int argc, char **argv)
         {"TestTourEngine", []() -> QObject * { return new TestTourEngine; }},
         {"TestDanglingPointer", []() -> QObject * { return new TestDanglingPointer; }},
         {"TestCircuitExporter", []() -> QObject * { return new TestCircuitExporter; }},
+        {"TestCircuitRecorder", []() -> QObject * { return new TestCircuitRecorder; }},
         {"TestDialogs", []() -> QObject * { return new TestDialogs; }},
         {"TestElementPalette", []() -> QObject * { return new TestElementPalette; }},
         {"TestFileDialogProviderUnit", []() -> QObject * { return new TestFileDialogProviderUnit; }},

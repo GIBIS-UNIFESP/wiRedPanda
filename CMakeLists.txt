@@ -952,6 +952,7 @@ add_test(NAME TestWorkspaceUnit COMMAND test_wiredpanda TestWorkspaceUnit WORKIN
 add_test(NAME TestApplication COMMAND test_wiredpanda TestApplication WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestArduinoCodeGenUnit COMMAND test_wiredpanda TestArduinoCodeGenUnit WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCircuitExporter COMMAND test_wiredpanda TestCircuitExporter WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_test(NAME TestCircuitRecorder COMMAND test_wiredpanda TestCircuitRecorder WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestCodeGenUtils COMMAND test_wiredpanda TestCodeGenUtils WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnection COMMAND test_wiredpanda TestConnection WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_test(NAME TestConnectionManager COMMAND test_wiredpanda TestConnectionManager WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -1141,7 +1142,7 @@ set(ALL_TESTS
     TestApplication TestCoreSettings TestDragDropPayload TestExerciseTourResources
     TestExternalFilePath TestInstallRelativePaths TestUpdateChecker
     TestArduinoCodeGenUnit TestCodeGenUtils TestSystemVerilogCodeGenUnit
-    TestCircuitExporter TestElementEditor TestElementPalette
+    TestCircuitExporter TestCircuitRecorder TestElementEditor TestElementPalette
     TestElementTabNavigator TestExportController TestICController TestICDropZone TestLabeledSlider
     TestLanguageManager TestMinimapWidget TestSceneUiBinder TestSelectionCapabilities
     TestTrashButton TestWorkspaceManager
