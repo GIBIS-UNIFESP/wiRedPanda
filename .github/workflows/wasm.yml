@@ -68,7 +68,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y ninja-build
 
     - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@dbeefd73e8e2ffc1bbc412570072735eb4db3607 # main
+      uses: hendrikmuhs/ccache-action@e91f31892a1d1b8c44424b1a94c0b7f52d337168 # main
       with:
         key: wasm-${{ runner.os }}
 
