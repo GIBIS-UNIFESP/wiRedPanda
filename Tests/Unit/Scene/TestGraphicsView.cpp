@@ -4,10 +4,13 @@
 #include "Tests/Unit/Scene/TestGraphicsView.h"
 
 #include <QApplication>
+#include <QBuffer>
 #include <QGraphicsScene>
+#include <QImage>
 #include <QKeyEvent>
 #include <QPainter>
 #include <QSignalSpy>
+#include <QTemporaryFile>
 #include <QWheelEvent>
 
 #include "App/Element/GraphicElements/InputSwitch.h"
@@ -109,6 +112,34 @@ void TestGraphicsView::testDragModeToggle()
     QCOMPARE(view->dragMode(), QGraphicsView::ScrollHandDrag);
     view->setDragMode(QGraphicsView::NoDrag);
     QCOMPARE(view->dragMode(), QGraphicsView::NoDrag);
+}
+
+void TestGraphicsView::testBackgroundImageFillsViewport()
+{
+    WorkSpace workspace;
+    auto *scene = workspace.scene();
+    auto *view = workspace.view();
+    view->resize(400, 300);
+
+    QImage image(100, 80, QImage::Format_ARGB32);
+    image.fill(Qt::red);
+
+    QTemporaryFile file;
+    QVERIFY(file.open());
+    QVERIFY(image.save(&file, "PNG"));
+
+    scene->setBackgroundImage(file.fileName());
+
+    QImage snapshot(view->viewport()->size(), QImage::Format_ARGB32);
+    snapshot.fill(Qt::transparent);
+    QPainter painter(&snapshot);
+    const QRect targetRect(QPoint(), view->viewport()->size());
+    const QRect sourceRect = view->viewport()->rect();
+    view->render(&painter, targetRect, sourceRect);
+
+    const QPoint center = snapshot.rect().center();
+    QVERIFY2(snapshot.pixelColor(center) == QColor(Qt::red),
+             "Scene background image should fill the visible viewport when added");
 }
 
 void TestGraphicsView::testAccessibleNameSet()

@@ -14,6 +14,7 @@
 #include <QHash>
 #include <QMap>
 #include <QMimeData>
+#include <QPixmap>
 #include <QPoint>
 #include <QTimer>
 #include <QUndoCommand>
@@ -195,6 +196,30 @@ public:
     /// Returns the path of the first local `.panda` file in \a mimeData's URL list (the file
     /// a file-manager drop would open), or an empty string if there is none.
     static QString droppedPandaFile(const QMimeData *mimeData);
+    enum class BackgroundMode {
+        Tile,
+        Stretch,
+        Center,
+        Fit
+    };
+
+    /// Sets the scene background image from \a path and stores the resolved file path.
+    void setBackgroundImage(const QString &path);
+    /// Sets how the background image is positioned inside the viewport.
+    void setBackgroundMode(const BackgroundMode mode);
+    /// Clears any scene background image and path metadata.
+    void clearBackgroundImage();
+    /// Temporarily suppresses scene-background painting for off-view render passes such as the
+    /// minimap thumbnail, while leaving the actual scene background image intact for the main view.
+    void setBackgroundRenderingEnabled(bool enabled);
+    /// Returns the currently loaded background image pixmap, or an empty pixmap if none.
+    [[nodiscard]] const QPixmap &backgroundImage() const { return m_backgroundImage; }
+    /// Returns the currently selected background placement mode.
+    [[nodiscard]] BackgroundMode backgroundMode() const { return m_backgroundMode; }
+    /// Returns the absolute path of the current background image, or an empty string if none.
+    [[nodiscard]] QString backgroundImagePath() const { return m_backgroundImagePath; }
+    /// Returns whether scene-background painting is enabled.
+    [[nodiscard]] bool backgroundRenderingEnabled() const { return m_backgroundRenderingEnabled; }
     /// Returns all graphic elements without the topological sort — for hot
     /// paths (key triggers, mute) that don't care about evaluation order.
     const QVector<GraphicElement *> unsortedElements() const;
@@ -489,6 +514,10 @@ private:
 
     // Rendering
     QPen m_dots;
+    QPixmap m_backgroundImage;
+    QString m_backgroundImagePath;
+    BackgroundMode m_backgroundMode = BackgroundMode::Fit;
+    bool m_backgroundRenderingEnabled = true;
 
     // Mouse-move re-entrancy guard. Stays on Scene (not SceneInteraction) because it
     // must wrap the base QGraphicsScene::mouseMoveEvent call, where the re-entrancy
