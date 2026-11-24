@@ -14,6 +14,7 @@
 #include <QSize>
 #include <QToolButton>
 
+#include "App/Core/Application.h"
 #include "App/Core/Common.h"
 #include "App/Core/SentryHelpers.h"
 #include "App/Core/ThemeManager.h"
@@ -157,7 +158,9 @@ void ElementEditor::contextMenu(QPoint screenPos, QGraphicsItem *itemAtMouse)
         [this] { emit extractToFileRequested(); },
         [this] {
             if (!m_scene || m_elements.isEmpty()) return;
-            m_scene->icRegistry()->createICFromSelection(m_elements);
+            Application::guardedSlot(this, [this] {
+                m_scene->icRegistry()->createICFromSelection(m_elements);
+            });
         },
         [this] {
             if (!m_scene || m_elements.size() != 1) return;

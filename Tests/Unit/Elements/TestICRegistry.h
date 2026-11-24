@@ -27,9 +27,13 @@ private slots:
 
     // Selection-to-IC coverage: selected I/O boundaries, crossing wires, layout, and flattening.
     void testCreateICFromSelectionIncludesSelectedInputAndOutput();
-    void testFlattenICWithoutBoundaryElements();
+    void testFlattenICWithUnconnectedGateInputsAndOutputs();
     void testCreateICFromSelectionAndFlattenRestoreWiring();
     void testCreateICFromSelectionSpacesBoundaryElements();
+    void testCreateICFromSelectionRejectsRotaryInputs();
+    void testCreateICFromSelectionAllowsButtonAndClockInputs();
+    void testCreateICFromSelectionAddsMissingGateInputsAndFlattens();
+    void testCreateICFromSelectionAddsMissingFunctionalInputsAndOutputs();
 
     // Regression: embedICsByFile()'s reload lambda used to call setBlobName() before
     // loadFromBlob(), so a load failure left the target half-mutated (blobName changed,

@@ -85,7 +85,9 @@ public:
 
     /// Replaces \a elements with an embedded IC in one undoable operation.
     /// Connections crossing the selection become IC pins; selected input/output elements
-    /// themselves provide pins, while generated boundary elements are added for other crossings.
+    /// themselves provide pins (except rotary switches), while generated boundaries are added
+    /// for other crossings, unconnected logic, mux, memory, or truth-table inputs, and
+    /// unconnected outputs.
     /// Throws if the selection is empty, contains duplicates, or includes an element outside this scene.
     IC *createICFromSelection(const QList<GraphicElement *> &elements);
 

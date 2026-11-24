@@ -99,6 +99,21 @@ bool isGeneratedBoundary(const GraphicElement *element, const QString &prefix)
     return ok && index > 0;
 }
 
+bool hasGeneratedInputBoundaries(const GraphicElement *element)
+{
+    switch (element->elementGroup()) {
+    case ElementGroup::Gate:
+        return element->elementType() != ElementType::Node;
+    case ElementGroup::Memory:
+    case ElementGroup::Mux:
+        return true;
+    case ElementGroup::IC:
+        return element->elementType() == ElementType::TruthTable;
+    default:
+        return false;
+    }
+}
+
 QByteArray makeCircuitBlob(const QList<QGraphicsItem *> &items,
                            const QMap<QString, QByteArray> &blobs,
                            const QRectF &sceneRect)
@@ -407,6 +422,9 @@ IC *ICRegistry::createICFromSelection(const QList<GraphicElement *> &targets)
         if (!element || element->scene() != m_scene || selected.contains(element)) {
             throw PANDACEPTION("The IC selection contains an invalid element.");
         }
+        if (element->elementType() == ElementType::InputRotary) {
+            throw PANDACEPTION("Rotary switches cannot be used as IC inputs.");
+        }
         selected.insert(element);
         bounds = firstBounds ? element->sceneBoundingRect() : bounds.united(element->sceneBoundingRect());
         firstBounds = false;
@@ -419,7 +437,13 @@ IC *ICRegistry::createICFromSelection(const QList<GraphicElement *> &targets)
 
     for (auto *element : targets) {
         for (auto *port : element->inputs()) {
-            for (auto *connection : port->connections()) {
+            const auto connections = port->connections();
+            if (connections.isEmpty()
+                && hasGeneratedInputBoundaries(element)) {
+                inputs.append({nullptr, port, element});
+                continue;
+            }
+            for (auto *connection : connections) {
                 auto *source = connection->startPort();
                 if (!source || !source->graphicElement()) continue;
                 if (selected.contains(source->graphicElement())) {
@@ -430,7 +454,13 @@ IC *ICRegistry::createICFromSelection(const QList<GraphicElement *> &targets)
             }
         }
         for (auto *port : element->outputs()) {
-            for (auto *connection : port->connections()) {
+            const auto connections = port->connections();
+            if (connections.isEmpty()) {
+                outputIndex.insert(port, outputs.size());
+                outputs.append(BoundaryOutput{port, QList<InputPort *>{}, nullptr});
+                continue;
+            }
+            for (auto *connection : connections) {
                 auto *destination = connection->endPort();
                 if (!destination || !destination->graphicElement()) continue;
                 if (selected.contains(destination->graphicElement())) {
@@ -572,6 +602,7 @@ IC *ICRegistry::createICFromSelection(const QList<GraphicElement *> &targets)
     m_scene->receiveCommand(new DeleteItemsCommand(itemsToDelete, m_scene));
 
     for (int i = 0; i < inputs.size(); ++i) {
+        if (!inputs[i].source) continue;
         auto *connection = new Connection();
         connection->setStartPort(inputs[i].source);
         connection->setEndPort(ic->inputPort(inputBoundaryIndices.value(inputs[i].boundaryPort)));

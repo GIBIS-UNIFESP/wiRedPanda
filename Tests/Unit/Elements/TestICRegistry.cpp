@@ -11,7 +11,11 @@
 #include <QSignalSpy>
 #include <QTemporaryDir>
 
+#include "App/Element/ElementFactory.h"
 #include "App/Element/GraphicElements/And.h"
+#include "App/Element/GraphicElements/Clock.h"
+#include "App/Element/GraphicElements/InputButton.h"
+#include "App/Element/GraphicElements/InputRotary.h"
 #include "App/Element/GraphicElements/InputSwitch.h"
 #include "App/Element/GraphicElements/Led.h"
 #include "App/Element/IC.h"
@@ -302,10 +306,11 @@ void TestICRegistry::testCreateICFromSelectionAndFlattenRestoreWiring()
     auto *registry = scene->icRegistry();
     IC *ic = registry->createICFromSelection({gate});
     QVERIFY(registry->hasBlob(ic->blobName()));
-    QCOMPARE(ic->inputSize(), 1);
+    QCOMPARE(ic->inputSize(), 2);
     QCOMPARE(ic->outputSize(), 1);
     QCOMPARE(ic->inputPort(0)->connections().size(), 1);
     QCOMPARE(ic->inputPort(0)->connections().constFirst()->startPort()->graphicElement(), source);
+    QVERIFY(ic->inputPort(1)->connections().isEmpty());
     QCOMPARE(ic->outputPort(0)->connections().size(), 1);
     QCOMPARE(ic->outputPort(0)->connections().constFirst()->endPort()->graphicElement(), sink);
 
@@ -452,7 +457,7 @@ void TestICRegistry::testCreateICFromSelectionIncludesSelectedInputAndOutput()
                         [outsideSink](Connection *connection) { return connection->endPort() == outsideSink->inputPort(0); }));
 }
 
-void TestICRegistry::testFlattenICWithoutBoundaryElements()
+void TestICRegistry::testFlattenICWithUnconnectedGateInputsAndOutputs()
 {
     WorkSpace workspace;
     Scene *scene = workspace.scene();
@@ -460,13 +465,18 @@ void TestICRegistry::testFlattenICWithoutBoundaryElements()
     scene->addItem(gate);
 
     IC *ic = scene->icRegistry()->createICFromSelection({gate});
-    QCOMPARE(ic->inputSize(), 0);
-    QCOMPARE(ic->outputSize(), 0);
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(ic->outputSize(), 1);
+    QVERIFY(ic->outputPort(0)->connections().isEmpty());
 
     scene->icRegistry()->flattenIC(ic);
     const auto elements = scene->elements();
     QCOMPARE(elements.size(), 1);
-    QVERIFY(qobject_cast<And *>(elements.constFirst()));
+    auto *flattenedGate = qobject_cast<And *>(elements.constFirst());
+    QVERIFY(flattenedGate);
+    QVERIFY(flattenedGate->inputPort(0)->connections().isEmpty());
+    QVERIFY(flattenedGate->inputPort(1)->connections().isEmpty());
+    QVERIFY(flattenedGate->outputPort(0)->connections().isEmpty());
 }
 
 void TestICRegistry::testCreateICFromSelectionSpacesBoundaryElements()
@@ -511,7 +521,7 @@ void TestICRegistry::testCreateICFromSelectionSpacesBoundaryElements()
     scene->addItem(secondOutgoing);
 
     IC *ic = scene->icRegistry()->createICFromSelection({gate, secondGate});
-    QCOMPARE(ic->inputSize(), 3);
+    QCOMPARE(ic->inputSize(), 5);
     QCOMPARE(ic->outputSize(), 2);
 
     const auto &internalElements = ic->internalElements();
@@ -521,6 +531,142 @@ void TestICRegistry::testCreateICFromSelectionSpacesBoundaryElements()
             const QRectF second = internalElements[j]->boundingRect().translated(internalElements[j]->pos());
             QVERIFY2(!first.intersects(second), "Generated IC elements overlap.");
         }
+    }
+}
+
+void TestICRegistry::testCreateICFromSelectionRejectsRotaryInputs()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *rotary = new InputRotary();
+    auto *gate = new And();
+    scene->addItem(rotary);
+    scene->addItem(gate);
+
+    bool rejected = false;
+    try {
+        scene->icRegistry()->createICFromSelection({rotary, gate});
+    } catch (...) {
+        rejected = true;
+    }
+
+    QVERIFY(rejected);
+    QCOMPARE(scene->elements().size(), 2);
+    QVERIFY(scene->icRegistry()->blobMap().isEmpty());
+}
+
+void TestICRegistry::testCreateICFromSelectionAllowsButtonAndClockInputs()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *button = new InputButton();
+    auto *clock = new Clock();
+    auto *gate = new And();
+    scene->addItem(button);
+    scene->addItem(clock);
+    scene->addItem(gate);
+
+    auto *buttonConnection = new Connection();
+    buttonConnection->setStartPort(button->outputPort(0));
+    buttonConnection->setEndPort(gate->inputPort(0));
+    scene->addItem(buttonConnection);
+    auto *clockConnection = new Connection();
+    clockConnection->setStartPort(clock->outputPort(0));
+    clockConnection->setEndPort(gate->inputPort(1));
+    scene->addItem(clockConnection);
+
+    IC *ic = scene->icRegistry()->createICFromSelection({button, clock, gate});
+    QCOMPARE(ic->inputSize(), 2);
+
+    scene->icRegistry()->flattenIC(ic);
+    bool foundButton = false;
+    bool foundClock = false;
+    for (auto *element : scene->elements()) {
+        foundButton |= qobject_cast<InputButton *>(element) != nullptr;
+        foundClock |= qobject_cast<Clock *>(element) != nullptr;
+    }
+    QVERIFY(foundButton);
+    QVERIFY(foundClock);
+}
+
+void TestICRegistry::testCreateICFromSelectionAddsMissingGateInputsAndFlattens()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    auto *source = new InputSwitch();
+    auto *gate = new And();
+    scene->addItem(source);
+    scene->addItem(gate);
+
+    auto *incoming = new Connection();
+    incoming->setStartPort(source->outputPort(0));
+    incoming->setEndPort(gate->inputPort(0));
+    scene->addItem(incoming);
+
+    IC *ic = scene->icRegistry()->createICFromSelection({gate});
+    QCOMPARE(ic->inputSize(), 2);
+    QCOMPARE(ic->inputPort(0)->connections().size(), 1);
+    QCOMPARE(ic->inputPort(0)->connections().constFirst()->startPort(), source->outputPort(0));
+    QVERIFY(ic->inputPort(1)->connections().isEmpty());
+
+    scene->icRegistry()->flattenIC(ic);
+    And *flattenedGate = nullptr;
+    for (auto *element : scene->elements()) {
+        if (auto *candidate = qobject_cast<And *>(element)) flattenedGate = candidate;
+    }
+    QVERIFY(flattenedGate);
+    QCOMPARE(flattenedGate->inputPort(0)->connections().size(), 1);
+    QCOMPARE(flattenedGate->inputPort(0)->connections().constFirst()->startPort(), source->outputPort(0));
+    QVERIFY(flattenedGate->inputPort(1)->connections().isEmpty());
+}
+
+void TestICRegistry::testCreateICFromSelectionAddsMissingFunctionalInputsAndOutputs()
+{
+    WorkSpace workspace;
+    Scene *scene = workspace.scene();
+    const QList<ElementType> types{
+        ElementType::TruthTable,
+        ElementType::Mux,
+        ElementType::Demux,
+        ElementType::DLatch,
+        ElementType::SRLatch,
+        ElementType::DFlipFlop,
+        ElementType::JKFlipFlop,
+        ElementType::SRFlipFlop,
+        ElementType::TFlipFlop,
+    };
+
+    QList<GraphicElement *> selected;
+    int expectedInputs = 0;
+    int expectedOutputs = 0;
+    for (qsizetype i = 0; i < types.size(); ++i) {
+        auto *element = ElementFactory::buildElement(types.at(i));
+        QVERIFY(element);
+        element->setPos(QPointF(static_cast<qreal>(i) * 200.0, 0));
+        scene->addItem(element);
+        selected.append(element);
+        expectedInputs += element->inputSize();
+        expectedOutputs += element->outputSize();
+    }
+
+    IC *ic = scene->icRegistry()->createICFromSelection(selected);
+    QCOMPARE(ic->inputSize(), expectedInputs);
+    QCOMPARE(ic->outputSize(), expectedOutputs);
+
+    scene->icRegistry()->flattenIC(ic);
+    const auto elements = scene->elements();
+    QCOMPARE(elements.size(), types.size());
+    for (const auto type : types) {
+        GraphicElement *element = nullptr;
+        for (auto *candidate : elements) {
+            if (candidate->elementType() == type) {
+                element = candidate;
+                break;
+            }
+        }
+        QVERIFY(element);
+        for (auto *port : element->inputs()) QVERIFY(port->connections().isEmpty());
+        for (auto *port : element->outputs()) QVERIFY(port->connections().isEmpty());
     }
 }
 
