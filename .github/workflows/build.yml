@@ -82,7 +82,7 @@ jobs:
 
     - uses: actions/setup-python@v7
       with:
-        python-version: '3.12'
+        python-version: '3.14'
         cache: 'pip'
         cache-dependency-path: 'MCP/Client/requirements.txt'
 
@@ -96,7 +96,7 @@ jobs:
       run: sudo rm -f /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
+      uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
       with:
         version: ${{ matrix.qt }}
         cache: true
@@ -104,9 +104,13 @@ jobs:
         modules: qtmultimedia qtimageformats
         host: ${{ matrix.qt_host }}
         arch: ${{ matrix.qt_arch }}
+        # Reuse the Python set up above, which meets the action's >=3.14 requirement, rather than letting the action put
+        # a second interpreter first on PATH, which would hide the MCP client's dependencies from the "MCP Integration
+        # Test" step.
+        setup-python: false
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # main
+      uses: hendrikmuhs/ccache-action@e91f31892a1d1b8c44424b1a94c0b7f52d337168 # main
       with:
         key: ${{ matrix.os }}-${{ matrix.qt }}${{ contains(matrix.cmake_args, 'ENABLE_UNITY=OFF') && '-no-unity' || contains(matrix.cmake_args, 'BATCH_SIZE=1000') && '-mega-unity' || '' }}
 

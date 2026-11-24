@@ -126,7 +126,7 @@ jobs:
       shell: bash
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4.4.1
+      uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
       with:
         version: ${{ matrix.qt }}
         cache: true
@@ -136,7 +136,7 @@ jobs:
         arch: ${{ matrix.qt_arch }}
 
     - name: ccache
-      uses: hendrikmuhs/ccache-action@f09c25b45002a07be2955cbe52e8cee55643f89d # main
+      uses: hendrikmuhs/ccache-action@e91f31892a1d1b8c44424b1a94c0b7f52d337168 # main
       with:
         key: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.qt }}
 
@@ -474,7 +474,7 @@ jobs:
         sentry-cli releases set-commits --auto "wiredpanda@$VERSION" --log-level=debug
 
     - name: Publish Ubuntu
-      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
       if: runner.os == 'Linux' && github.event_name == 'release'
       with:
         fail_on_unmatched_files: true
@@ -673,7 +673,7 @@ jobs:
 
     - name: Publish Windows
       if: runner.os == 'Windows' && github.event_name == 'release'
-      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
       with:
         fail_on_unmatched_files: true
         files: 'build-sentry-crashpad/*.zip'
@@ -980,7 +980,7 @@ jobs:
 
     - name: Publish macOS
       if: runner.os == 'macOS' && github.event_name == 'release'
-      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+      uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
       with:
         fail_on_unmatched_files: true
         files: 'build-sentry-breakpad/*.dmg'
