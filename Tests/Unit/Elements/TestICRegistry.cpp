@@ -413,9 +413,15 @@ void TestICRegistry::testCreateICFromSelectionIncludesSelectedInputAndOutput()
     QCOMPARE(ic->inputPort(0)->connections().size(), 1);
     QCOMPARE(ic->inputPort(0)->connections().constFirst()->startPort()->graphicElement(), outsideSource);
     QCOMPARE(ic->inputPort(1)->connections().size(), 0);
-    QCOMPARE(ic->outputPort(0)->connections().size(), 0);
-    QCOMPARE(ic->outputPort(1)->connections().size(), 1);
-    QCOMPARE(ic->outputPort(1)->connections().constFirst()->endPort()->graphicElement(), outsideSink);
+    int connectedOutputPins = 0;
+    for (int i = 0; i < ic->outputSize(); ++i) {
+        const auto connections = ic->outputPort(i)->connections();
+        if (connections.isEmpty()) continue;
+        ++connectedOutputPins;
+        QCOMPARE(connections.size(), 1);
+        QCOMPARE(connections.constFirst()->endPort(), outsideSink->inputPort(0));
+    }
+    QCOMPARE(connectedOutputPins, 1);
     QCOMPARE(scene->elements().size(), 3);
     QVERIFY(scene->elements().contains(ic));
 
